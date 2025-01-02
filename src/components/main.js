@@ -6,7 +6,7 @@ import { AdminDashboard } from './dashboard/admin-dashboard'
  * @since 1.0.0
  */
 export const Main = () => {
-    return <main class="cmg-main" id="cmg-main">
+    return <main className="cmg-main" id="cmg-main">
         <AdminDashboard />
     </main>
 }

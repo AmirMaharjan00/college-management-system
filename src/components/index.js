@@ -5,7 +5,7 @@ import { Sidebar } from './sidebar'
 export const Index = () => {
     return <>
         <Header />
-        <div class="cmg-body" id="cmg-body">
+        <div className="cmg-body" id="cmg-body">
             <Main />
             <Sidebar />
         </div>
