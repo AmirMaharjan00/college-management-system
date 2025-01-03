@@ -1,3 +1,6 @@
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faTableList } from '@fortawesome/free-solid-svg-icons';
+
 /**
  * Sidebar
  * 
@@ -19,7 +22,7 @@ export const Sidebar = () => {
                     </li>
                     <li className="cmg-list-item">
                         <a href="#" className="cmg-icon-wrapper">
-                            <span className="cmg-icon"><i className="fa-solid fa-table-list"></i></span>
+                            <span className="cmg-icon"><FontAwesomeIcon icon={ faTableList } /></span>
                             <span className="cmg-icon-label">Application</span>
                         </a>
                     </li>

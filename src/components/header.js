@@ -1,7 +1,9 @@
+import { useContext } from 'react'
 import logo from './assets/images/sscollege-logo.jpg'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faBars, faGraduationCap, faUserGroup, faUsers, faFileInvoiceDollar, faMoon, faBell, faMessage, faUser } from '@fortawesome/free-solid-svg-icons';
 import { faSquarePlus} from '@fortawesome/free-regular-svg-icons';
+import { GLOBALCONTEXT } from '../App';
 
 /**
  * Header
@@ -9,6 +11,9 @@ import { faSquarePlus} from '@fortawesome/free-regular-svg-icons';
  * @since 1.0.0
  */
 export const Header = () => {
+    const Global = useContext( GLOBALCONTEXT )
+    const {} = Global
+
     return <>
         <header className="cmg-header" id="cmg-header">
             <div className="header">

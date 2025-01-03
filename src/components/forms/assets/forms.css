@@ -1,0 +1,42 @@
+/*
+========================
+LOGIN
+========================
+*/
+    #root {
+        background-image: url('../../assets/images/gradient-background.jpg');
+        background-repeat: no-repeat;
+        background-size: cover;
+        height: 100vh;
+    }
+
+    #cmg-login {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: 700px;
+        height: 500px;
+        display: flex;
+    }
+
+    #cmg-login .college-logo-wrapper {
+        flex: 60%;
+    }
+
+    #cmg-login .login-logo {
+        width: 100%;
+        height: 100%;
+    }
+
+    #cmg-login .login-logo img {
+        width: 100%;
+        height: 100%;
+    }
+
+    #cmg-login .quote {
+        color: #fff;
+        display: block;
+        text-align: center;
+    }
+    
