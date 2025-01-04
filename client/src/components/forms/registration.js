@@ -1,5 +1,5 @@
-import { useContext, useState } from 'react'
-import { Link } from 'react-router-dom'
+import { useContext, useState, useEffect } from 'react'
+import { Link, useNavigate } from 'react-router-dom'
 import './assets/forms.css'
 import { GLOBALCONTEXT } from '../../App'
 
@@ -23,6 +23,14 @@ export const Registration = () => {
     const [ passwordErrorMsg, setPasswordErrorMsg ] = useState( '*' )
     const [ contactNumberErrorMsg, setContactNumberErrorMsg ] = useState( '*' )
     const [ addressErrorMsg, setAddressErrorMsg ] = useState( '*' )
+    const [ registrationSuccess, setRegistrationSuccess ] = useState( false )
+    const navigate = useNavigate()
+
+    useEffect(() => {
+        if( registrationSuccess ) {
+            navigate( '/login' )
+        }
+    }, [ registrationSuccess ])
 
     /* 
     * MARK:Handle Input Change
@@ -189,76 +197,87 @@ export const Registration = () => {
                 name: 'John Doe',
                 email: 'john@example.com'
             };
-            // console.log( name )
-            // console.log( email )
-            // console.log( password )
-            // console.log( contactNumber )
-            // console.log( address )
-            // console.log( gender )
+
+            fetch( 'http://localhost:5000/insert', {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({ name, email, password, contactNumber, address, gender })
+            })
+            .then(( result ) => result.json())
+            .then( ( data ) => { 
+                console.log( data )
+                if( data.success ) {
+                    setRegistrationSuccess( true )
+                }
+            })
         }
     }
 
     /*
     * MARK: Main
     */
-    return <div className='cmg-registration' id="cmg-registration">
-        <div className="college-logo-wrapper"></div>
-        <form id="registration-form" method="POST" onSubmit={ formSubmit }>
-            <div className='form-head'>
-                <h2 className='form-title'>{ 'Register Here.' }</h2>
-                <span className='form-excerpt'>{ 'Create a new account.' }</span>
-            </div>
-            <div className='form-field'>
-                <div className='form-field-label-wrapper'>
-                    <label className='form-label'>{ 'Name' }</label>
-                    <span className='form-error'>{ nameErrorMsg }</span>
+    return <div id="root-inner">
+        <div className='cmg-registration' id="cmg-registration">
+            <div className="college-logo-wrapper"></div>
+            <form id="registration-form" method="POST">
+                <div className='form-head'>
+                    <h2 className='form-title'>{ 'Register Here.' }</h2>
+                    <span className='form-excerpt'>{ 'Create a new account.' }</span>
                 </div>
-                <input type="text" name="name" value={ name } onChange={ handleInputChange } required />
-            </div>
-            <div className='form-field'>
-                <div className='form-field-label-wrapper'>
-                    <label className='form-label'>{ 'Email' }</label>
-                    <span className='form-error'>{ emailErrorMsg }</span>
-                </div>
-                <input type="email" name="email" value={ email } onChange={ handleInputChange } required/>
-            </div>
-            <div className='form-field'>
-                <div className='form-field-label-wrapper'>
-                    <label className='form-label'>{ 'Password' }</label>
-                    <span className='form-error'>{ passwordErrorMsg }</span>
-                </div>
-                <input type="password" name="password" value={ password } onChange={ handleInputChange } required/>
-            </div>
-            <div className='form-field'>
-                <div className='form-field-label-wrapper'>
-                    <label className='form-label'>{ 'Contact Number' }</label>
-                    <span className='form-error'>{ contactNumberErrorMsg }</span>
-                </div>
-                <input type="number" name="contactNumber" value={ contactNumber } onChange={ handleInputChange } required/>
-            </div>
-            <div className='form-field'>
-                <div className='form-field-label-wrapper'>
-                    <label className='form-label'>{ 'Address' }</label>
-                    <span className='form-error'>{ addressErrorMsg }</span>
-                </div>
-                <input type="text" name="address" value={ address } onChange={ handleInputChange } required/>
-            </div>
-            <div className='form-field is-flex radio-field'>
-                <label className='form-label'>{ 'Gender : ' }</label>
-                <div className='form-field-inner-wrapper is-flex'>
-                    <div className='form-field-inner'>
-                        <input type="radio" name="gender" value="male" checked={ gender === 'male' ? true : false } onChange={ handleInputChange } required/>
-                        <label className='form-label'>{ 'Male' }</label>
+                <div className='form-field'>
+                    <div className='form-field-label-wrapper'>
+                        <label className='form-label'>{ 'Name' }</label>
+                        <span className='form-error'>{ nameErrorMsg }</span>
                     </div>
-                    <div className='form-field-inner'>
-                        <input type="radio" name="gender" value="female" checked={ gender === 'female' ? true : false } onChange={ handleInputChange } required/>
-                        <label className='form-label'>{ 'Female' }</label>
+                    <input type="text" name="name" value={ name } onChange={ handleInputChange } required />
+                </div>
+                <div className='form-field'>
+                    <div className='form-field-label-wrapper'>
+                        <label className='form-label'>{ 'Email' }</label>
+                        <span className='form-error'>{ emailErrorMsg }</span>
+                    </div>
+                    <input type="email" name="email" value={ email } onChange={ handleInputChange } required/>
+                </div>
+                <div className='form-field'>
+                    <div className='form-field-label-wrapper'>
+                        <label className='form-label'>{ 'Password' }</label>
+                        <span className='form-error'>{ passwordErrorMsg }</span>
+                    </div>
+                    <input type="password" name="password" value={ password } onChange={ handleInputChange } required/>
+                </div>
+                <div className='form-field'>
+                    <div className='form-field-label-wrapper'>
+                        <label className='form-label'>{ 'Contact Number' }</label>
+                        <span className='form-error'>{ contactNumberErrorMsg }</span>
+                    </div>
+                    <input type="number" name="contactNumber" value={ contactNumber } onChange={ handleInputChange } required/>
+                </div>
+                <div className='form-field'>
+                    <div className='form-field-label-wrapper'>
+                        <label className='form-label'>{ 'Address' }</label>
+                        <span className='form-error'>{ addressErrorMsg }</span>
+                    </div>
+                    <input type="text" name="address" value={ address } onChange={ handleInputChange } required/>
+                </div>
+                <div className='form-field is-flex radio-field'>
+                    <label className='form-label'>{ 'Gender : ' }</label>
+                    <div className='form-field-inner-wrapper is-flex'>
+                        <div className='form-field-inner'>
+                            <input type="radio" name="gender" value="male" checked={ gender === 'male' ? true : false } onChange={ handleInputChange } required/>
+                            <label className='form-label'>{ 'Male' }</label>
+                        </div>
+                        <div className='form-field-inner'>
+                            <input type="radio" name="gender" value="female" checked={ gender === 'female' ? true : false } onChange={ handleInputChange } required/>
+                            <label className='form-label'>{ 'Female' }</label>
+                        </div>
                     </div>
                 </div>
-            </div>
-            <div className='form-submit'>
-                <button>{ 'Register' }</button>
-            </div>
-        </form>
+                <div className='form-submit'>
+                    <button onClick={ formSubmit }>{ 'Register' }</button>
+                </div>
+            </form>
+        </div>
     </div>
 }

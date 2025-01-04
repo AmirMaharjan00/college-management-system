@@ -7,8 +7,9 @@ import { Login } from './forms/login'
 
 export const Index = () => {
     const global = useContext( GLOBALCONTEXT )
-    const { isLoggedIn } = global
+    const { isLoggedIn, loggedInUser } = global
     let wrapperClass = 'cmg-wrapper';
+    console.log( loggedInUser )
 
     return isLoggedIn ? <div className={ wrapperClass } id="cmg-wrapper">
         <Header />

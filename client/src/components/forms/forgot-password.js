@@ -13,30 +13,32 @@ export const ForgotPassword = () => {
     const global = useContext( GLOBALCONTEXT )
     const { isLoggedIn, setIsloggedIn } = global
 
-    return <div className='cmg-forgot-password' id="cmg-forgot-password">
-        <div className="college-logo-wrapper"></div>
-        <form id="forgot-password-form">
-            <div className='form-head'>
-                <h2 className='form-title'>{ 'Change your password' }</h2>
-                <span className='form-excerpt'>{ 'Enter a new password below to change your password.' }</span>
-            </div>
-            <div className='form-field'>
-                <div className='form-field-label-wrapper'>
-                    <label className='form-label'>{ 'New Password' }</label>
-                    <span className='form-error'>{ '*' }</span>
+    return <div id="root-inner">
+        <div className='cmg-forgot-password' id="cmg-forgot-password">
+            <div className="college-logo-wrapper"></div>
+            <form id="forgot-password-form">
+                <div className='form-head'>
+                    <h2 className='form-title'>{ 'Change your password' }</h2>
+                    <span className='form-excerpt'>{ 'Enter a new password below to change your password.' }</span>
                 </div>
-                <input type="password" required/>
-            </div>
-            <div className='form-field'>
-                <div className='form-field-label-wrapper'>
-                    <label className='form-label'>{ 'Confirm Password' }</label>
-                    <span className='form-error'>{ '*' }</span>
+                <div className='form-field'>
+                    <div className='form-field-label-wrapper'>
+                        <label className='form-label'>{ 'New Password' }</label>
+                        <span className='form-error'>{ '*' }</span>
+                    </div>
+                    <input type="password" required/>
                 </div>
-                <input type="password" required/>
-            </div>
-            <div className='form-submit'>
-                <button>{ 'Change Password' }</button>
-            </div>
-        </form>
+                <div className='form-field'>
+                    <div className='form-field-label-wrapper'>
+                        <label className='form-label'>{ 'Confirm Password' }</label>
+                        <span className='form-error'>{ '*' }</span>
+                    </div>
+                    <input type="password" required/>
+                </div>
+                <div className='form-submit'>
+                    <button>{ 'Change Password' }</button>
+                </div>
+            </form>
+        </div>
     </div>
 }

@@ -13,11 +13,14 @@ export const GLOBALCONTEXT = createContext()
 
 function App() {
   const [ isLoggedIn, setIsloggedIn ] = useState( false )
+  const [ loggedInUser, setLoggedInUser ] = useState({})
 
   /* Global Context Object */
   let globalContextObject = {
     isLoggedIn,
-    setIsloggedIn
+    setIsloggedIn,
+    loggedInUser,
+    setLoggedInUser
   }
 
   return <GLOBALCONTEXT.Provider value={ globalContextObject }>

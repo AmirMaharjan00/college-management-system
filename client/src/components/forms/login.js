@@ -1,5 +1,5 @@
 import { useContext, useState, useEffect } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import './assets/forms.css'
 import { GLOBALCONTEXT } from '../../App'
 
@@ -11,15 +11,20 @@ import { GLOBALCONTEXT } from '../../App'
  */
 export const Login = () => {
     const global = useContext( GLOBALCONTEXT )
-    const { isLoggedIn, setIsloggedIn } = global
+    const { setIsloggedIn, loggedInUser, setLoggedInUser } = global
+    const navigate = useNavigate()
     const [ username, setUsername ] = useState( '' )
     const [ usernameErrorMsg, setUsernameErrorMsg ] = useState( '*' )
     const [ password, setPassword ] = useState( '' )
     const [ passwordErrorMsg, setPasswordErrorMsg ] = useState( '*' )
+    const [ loginSuccess, setLoginSuccess ] = useState( false )
 
     useEffect(() => {
-        fetch( 'http://localhost:5000/api' ).then(( result ) => result.json()).then( ( data ) => { console.log( data ) } )
-    }, [])
+        if( loginSuccess ) {
+            setIsloggedIn( true )
+            navigate( '/' )
+        }
+    }, [ loginSuccess ])
 
     /* 
     * MARK: Input Change Handle
@@ -43,7 +48,21 @@ export const Login = () => {
         let isValidEmail = validateEmail()
         let isValidPassword = validatePassword()
         if( isValidEmail && isValidPassword ) {
-            console.log( 'Username & password are both valid. You can proceed.' )
+            fetch( 'http://localhost:5000/select', {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({ username, password })
+            })
+            .then(( result ) => result.json())
+            .then( ( data ) => { 
+                console.log( data )
+                if( data.success ) {
+                    setLoggedInUser( data.result[0] )
+                    setLoginSuccess( true )
+                }
+            })
         }
     }
 
@@ -103,35 +122,37 @@ export const Login = () => {
     /**
      * MARK: Main
      */
-    return <div className='cmg-login' id="cmg-login">
-        <div className="college-logo-wrapper"></div>
-        <form id="login-form" onSubmit={ formSubmit } method="POST">
-            <div className='form-head'>
-                <h2 className='form-title'>{ 'Log In' }</h2>
-                <span className='form-excerpt'>{ 'Welcome Back ! Please enter your details.' }</span>
-            </div>
-            <div className='form-field'>
-                <div className='form-field-label-wrapper'>
-                    <label className='form-label'>{ 'Email' }</label>
-                    <span className='form-error'>{ usernameErrorMsg }</span>
+    return <div id="root-inner">
+        <div className='cmg-login' id="cmg-login">
+            <div className="college-logo-wrapper"></div>
+            <form id="login-form" onSubmit={ formSubmit } method="POST">
+                <div className='form-head'>
+                    <h2 className='form-title'>{ 'Log In' }</h2>
+                    <span className='form-excerpt'>{ 'Welcome Back ! Please enter your details.' }</span>
                 </div>
-                <input type="text" name="username" value={ username } onChange={ handleInputChange } required/>
-            </div>
-            <div className='form-field'>
-                <div className='form-field-label-wrapper'>
-                    <label className='form-label'>{ 'Password' }</label>
-                    <span className='form-error'>{ passwordErrorMsg }</span>
+                <div className='form-field'>
+                    <div className='form-field-label-wrapper'>
+                        <label className='form-label'>{ 'Email' }</label>
+                        <span className='form-error'>{ usernameErrorMsg }</span>
+                    </div>
+                    <input type="email" name="username" value={ username } onChange={ handleInputChange } required/>
                 </div>
-                <input type="password" name="password" value={ password } onChange={ handleInputChange } required/>
-                <span className='form-desc'><Link to="/forgot-password">{ 'Forgot Password ?' }</Link></span>
-            </div>
-            <div className='form-submit'>
-                <button>{ 'Log In' }</button>
-            </div>
-            <div className='form-field form-sign-up'>
-                <span>{ 'Don\'t have account ? ' }</span>
-                <Link to="/registration">{ 'Sign Up' }</Link>
-            </div>
-        </form>
+                <div className='form-field'>
+                    <div className='form-field-label-wrapper'>
+                        <label className='form-label'>{ 'Password' }</label>
+                        <span className='form-error'>{ passwordErrorMsg }</span>
+                    </div>
+                    <input type="password" name="password" value={ password } onChange={ handleInputChange } required/>
+                    <span className='form-desc'><Link to="/forgot-password">{ 'Forgot Password ?' }</Link></span>
+                </div>
+                <div className='form-submit'>
+                    <button>{ 'Log In' }</button>
+                </div>
+                <div className='form-field form-sign-up'>
+                    <span>{ 'Don\'t have account ? ' }</span>
+                    <Link to="/registration">{ 'Sign Up' }</Link>
+                </div>
+            </form>
+        </div>
     </div>
 }
