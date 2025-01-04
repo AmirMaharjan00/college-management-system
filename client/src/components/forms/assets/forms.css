@@ -1,0 +1,342 @@
+
+    #root {
+        background-image: url('../../assets/images/background.jpg' );
+        background-size: cover;
+        background-position: center;
+        height: 100vh;
+    }
+
+/*
+========================
+MARK: LOGIN
+========================
+*/
+    #cmg-login {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: 800px;
+        height: 500px;
+        display: flex;
+        box-shadow: 0px 0px 20px 5px #ffffff44;
+        border-radius: 30px;
+    }
+
+    #cmg-login #login-form {
+        flex: 1;
+        background: var(--white);
+        border-radius: 0 30px 30px 0;
+    }
+
+    #cmg-login .college-logo-wrapper {
+        flex: 1;
+        background-image: url('../../assets/images/gradient-logo.jpg' );
+        background-size: cover;
+        border-radius: 30px 0 0 30px;
+        background-color: rgba(0, 128, 0, 0.445);
+    }
+
+    #cmg-login #login-form .form-head {
+        text-align: center;
+        margin: 40px 0;
+    }
+
+    #cmg-login #login-form h2.form-title {
+        margin-bottom: 5px;
+    }
+    
+    #cmg-login #login-form input {
+        display: block;
+        width: 100%;
+        box-sizing: border-box;
+        margin-top: 5px;
+        border-radius: 5px;
+        border: 1px solid black;
+    }
+
+    #cmg-login #login-form .form-field {
+        padding: 0 50px;
+        margin-bottom: 20px;
+    }
+
+    #cmg-login #login-form .form-desc {
+        margin-top: 5px;
+        display: block;
+        color: #a755f7;
+    }
+
+    #cmg-login #login-form .form-excerpt,
+    #cmg-login #login-form .form-desc,
+    #cmg-login #login-form .form-sign-up,
+    #cmg-login #login-form .form-label {
+        font-size: 14px;
+    }
+
+    #cmg-login #login-form .form-label {
+        font-weight: 600;
+    }
+
+    #cmg-login #login-form .form-sign-up {
+        margin-top: 100px;
+        text-align: center;
+    }
+    
+    #cmg-login #login-form .form-submit {
+        text-align: center;
+        padding: 0 50px;
+    }
+
+    #cmg-login #login-form .form-submit button {
+        background-color: #a755f7;
+        padding: 8px 10px;
+        width: 100%;
+        border-radius: 5px;
+        color: #fff;
+    }
+
+    #cmg-login .quote {
+        color: #fff;
+        display: block;
+        text-align: center;
+    }
+
+    #cmg-login .form-field-label-wrapper {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    #cmg-login .form-error {
+        color: #ff0000;
+        font-size: 12px;
+    }
+
+/*
+========================
+MARK: REGISTRATION
+========================
+*/
+    #cmg-registration {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: 700px;
+        height: 550px;
+        display: flex;
+        box-shadow: 0px 0px 20px 5px #ffffff44;
+        border-radius: 30px;
+    }
+
+    #cmg-registration #registration-form {
+        flex: 1;
+        background: var(--white);
+        border-radius: 0 30px 30px 0;
+    }
+
+    #cmg-registration #registration-form .form-field.is-flex {
+        display: flex;
+        gap: 5px;
+    }
+
+    #cmg-registration #registration-form .form-field-inner-wrapper.is-flex {
+        display: flex;
+        gap: 15px;
+    }
+
+    #cmg-registration #registration-form .form-field-inner {
+        display: flex;
+        align-items: center;
+    }
+
+    #cmg-registration .college-logo-wrapper {
+        flex: 1;
+        background-image: url('../../assets/images/gradient-logo.jpg' );
+        background-size: cover;
+        border-radius: 30px 0 0 30px;
+        background-color: rgba(0, 128, 0, 0.445);
+    }
+
+    #cmg-registration #registration-form .form-head {
+        text-align: center;
+        margin: 10px 0;
+    }
+
+    #cmg-registration #registration-form h2.form-title {
+        margin-bottom: 5px;
+    }
+
+    #cmg-registration #registration-form input:not(input[type="radio"]) {
+        display: block;
+        width: 100%;
+        box-sizing: border-box;
+        margin-top: 5px;
+        border-radius: 5px;
+        border: 1px solid black;
+    }
+
+    #cmg-registration #registration-form input[type="radio"] {
+        margin-right: 5px;
+    }
+
+    #cmg-registration #registration-form .form-field {
+        padding: 0 50px;
+        margin-bottom: 10px;
+    }
+
+    #cmg-registration #registration-form .form-desc {
+        margin-top: 5px;
+        display: block;
+        color: #a755f7;
+    }
+
+    #cmg-registration #registration-form .form-excerpt,
+    #cmg-registration #registration-form .form-desc,
+    #cmg-registration #registration-form .form-label {
+        font-size: 14px;
+    }
+
+    #cmg-registration #registration-form .form-label {
+        font-weight: 600;
+    }
+
+    #cmg-registration #registration-form .form-submit {
+        text-align: center;
+        padding: 0 50px;
+    }
+
+    #cmg-registration #registration-form .form-submit button {
+        background-color: #a755f7;
+        padding: 8px 10px;
+        width: 100%;
+        border-radius: 5px;
+        color: #fff;
+    }
+
+    #cmg-registration .quote {
+        color: #fff;
+        display: block;
+        text-align: center;
+    }
+
+    #cmg-registration .form-field-label-wrapper {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    #cmg-registration .form-error {
+        color: #ff0000;
+        font-size: 12px;
+    }
+
+/*
+========================
+MARK: FORGOT PASSWORD
+========================
+*/
+    #cmg-forgot-password {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: 700px;
+        height: 400px;
+        display: flex;
+        box-shadow: 0px 0px 20px 5px #ffffff44;
+        border-radius: 30px;
+    }
+
+    #cmg-forgot-password #forgot-password-form {
+        flex: 1;
+        background: var(--white);
+        border-radius: 0 30px 30px 0;
+    }
+
+    #cmg-forgot-password #forgot-password-form .form-field.is-flex {
+        display: flex;
+        gap: 5px;
+    }
+
+    #cmg-forgot-password #forgot-password-form .form-field-inner-wrapper.is-flex {
+        display: flex;
+        gap: 15px;
+    }
+
+    #cmg-forgot-password .college-logo-wrapper {
+        flex: 1;
+        background-image: url('../../assets/images/gradient-logo.jpg' );
+        background-size: cover;
+        border-radius: 30px 0 0 30px;
+        background-color: rgba(0, 128, 0, 0.445);
+    }
+
+    #cmg-forgot-password #forgot-password-form .form-head {
+        text-align: center;
+        margin: 40px 0;
+    }
+
+    #cmg-forgot-password #forgot-password-form h2.form-title {
+        margin-bottom: 5px;
+    }
+
+    #cmg-forgot-password #forgot-password-form input:not(input[type="radio"]) {
+        display: block;
+        width: 100%;
+        box-sizing: border-box;
+        margin-top: 5px;
+        border-radius: 5px;
+        border: 1px solid black;
+    }
+
+    #cmg-forgot-password #forgot-password-form .form-field {
+        padding: 0 50px;
+        margin-bottom: 20px;
+    }
+
+    #cmg-forgot-password #forgot-password-form .form-desc {
+        margin-top: 5px;
+        display: block;
+        color: #a755f7;
+    }
+
+    #cmg-forgot-password #forgot-password-form .form-excerpt,
+    #cmg-forgot-password #forgot-password-form .form-desc,
+    #cmg-forgot-password #forgot-password-form .form-label {
+        font-size: 14px;
+    }
+
+    #cmg-forgot-password #forgot-password-form .form-label {
+        font-weight: 600;
+    }
+
+    #cmg-forgot-password #forgot-password-form .form-submit {
+        text-align: center;
+        padding: 0 50px;
+    }
+
+    #cmg-forgot-password #forgot-password-form .form-submit button {
+        background-color: #a755f7;
+        padding: 8px 10px;
+        width: 100%;
+        border-radius: 5px;
+        color: #fff;
+    }
+
+    #cmg-forgot-password .quote {
+        color: #fff;
+        display: block;
+        text-align: center;
+    }
+    
+    #cmg-forgot-password .form-field-label-wrapper {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    #cmg-forgot-password .form-error {
+        color: #ff0000;
+        font-size: 12px;
+    }
