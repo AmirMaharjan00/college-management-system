@@ -1,0 +1,68 @@
+/*
+==========================
+MARK: USER
+==========================
+*/
+#cmg-head-user-wrapper {
+    position: relative;
+}
+
+#cmg-head-user-wrapper .user-dropdown {
+    position: absolute;
+    top: 55px;
+    right: 0;
+    background: #fff;
+    padding: 20px;
+    width: 300px;
+    box-shadow: 0px 0px 10px 0px #0000001f;
+    border-radius: 3px;
+    z-index: 99;
+}
+
+#cmg-head-user-wrapper .user-dropdown .head {
+    display: block;
+}
+
+#cmg-head-user-wrapper .user-dropdown .body {
+    padding: 10px;
+    border-radius: 3px;
+}
+
+#cmg-head-user-wrapper .user-dropdown .body:hover {
+    transform: scale(1.03);
+    background: var(--default);
+    color: var(--white);
+}
+
+#cmg-head-user-wrapper .user-dropdown .seperator {
+    height: 1px;
+    width: 100%;
+    background: black;
+    margin: 5px 0;
+}
+
+#cmg-head-user-wrapper .user-dropdown .head-wrapper .name {
+    margin-bottom: 3px;
+}
+
+#cmg-head-user-wrapper .user-dropdown .head-wrapper .email {
+    margin-bottom: 5px;
+}
+
+#cmg-head-user-wrapper .user-dropdown .head-wrapper .role {
+    color: var(--default);
+}
+
+#cmg-head-user-wrapper .user-dropdown .logout-button {
+    width: 100%;
+    text-align: left;
+    background: var(--blue);
+    color: var(--white);
+    padding: 10px;
+    border-radius: 3px;
+}
+
+#cmg-head-user-wrapper .user-dropdown .logout-button:hover {
+    box-shadow: 0px 0px 10px 0px #0d27f0cf;
+    transform: scale(1.03);
+}

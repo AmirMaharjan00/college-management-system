@@ -86,6 +86,19 @@ app.post( '/login', ( request, res ) => {
 });
 
 /**
+* MARK: Log out
+*/
+app.post( '/logout', ( request, res ) => {
+  request.session.destroy(( error ) => {
+    if( error ) {
+      return res.json({ message: 'Failed', logout: false })
+    } else {
+      return res.json({ message: 'Success', logout: true })
+    }
+  })
+});
+
+/**
 * MARK: Is logged In
 */
 app.post( '/isLoggedIn', ( request, res ) => { 

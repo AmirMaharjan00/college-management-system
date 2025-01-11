@@ -99,6 +99,19 @@ MARK: Global
 
 /*
 =========================
+MARK: OVERLAY
+=========================
+*/
+    #cmg-overlay {
+        position: absolute;
+        background: #00000063;
+        height: 100%;
+        width: 100%;
+        z-index: 9;
+    }
+
+/*
+=========================
 BREADCRUMB
 MARK: Breadcrumb
 =========================
@@ -196,6 +209,7 @@ MARK: Sidebar
 
     #cmg-sidebar .canvas-icon:hover {
         color: var(--default);
+        transform: scale(1.5);
     }
 
 /*

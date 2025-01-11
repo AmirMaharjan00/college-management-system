@@ -1,10 +1,13 @@
-import { useContext } from 'react'
+import { useContext, createContext } from 'react'
+import { useNavigate } from 'react-router-dom';
 import logo from './assets/images/sscollege-logo.jpg'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faBars, faGraduationCap, faUserGroup, faUsers, faFileInvoiceDollar, faMoon, faBell, faMessage, faUser } from '@fortawesome/free-solid-svg-icons';
 import { faSquarePlus} from '@fortawesome/free-regular-svg-icons';
 import { GLOBALCONTEXT } from '../App';
+import './assets/css/header.css'
 
+const HeaderContext = createContext()
 /**
  * Header
  * 
@@ -13,6 +16,10 @@ import { GLOBALCONTEXT } from '../App';
 export const Header = () => {
     const Global = useContext( GLOBALCONTEXT )
     const { loggedInUser } = Global
+
+    const contextObject = {
+
+    }
 
     return <>
         <header className="cmg-header" id="cmg-header">
@@ -78,11 +85,82 @@ export const Header = () => {
                     <div className="action message-wrapper">
                         <span className="message-icon"><FontAwesomeIcon icon={ faMessage } /></span>
                     </div>
-                    <div className="action user-wrapper">
-                        <span className="user-icon"><FontAwesomeIcon icon={ faUser } /></span>
-                    </div>
+                    <User />
                 </div>
             </div>
         </header>
     </>
+}
+
+/**
+ * MARK: User
+ * 
+ * @since 1.0.0
+ */
+const User = () => {
+    /* Global Context */
+    const Global = useContext( GLOBALCONTEXT )
+    const navigate = useNavigate()
+    const {
+        setIsloggedIn,
+        loggedInUser,
+        setLoggedInUser,
+        setOverlay,
+        isUserLogoutDropdownActive,
+        setIsUserLogoutDropdownActive
+    } = Global
+
+    /* Handle Click */
+    const handleClick = () => {
+        setIsUserLogoutDropdownActive( true )
+        setOverlay( true )
+    }
+    
+    /* Handle Logout */
+    const handleLogout = () => {
+        fetch( 'http://localhost:5000/logout', {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            credentials: 'include'
+        })
+        .then(( result ) => result.json())
+        .then(( data ) => { 
+            console.log( data )
+            let { logout } = data
+            if( logout ) {
+                setLoggedInUser({})
+                setIsloggedIn( false )
+                setOverlay( false )
+                setIsUserLogoutDropdownActive( false )
+                navigate( '/login' )
+            }
+        })
+    }
+
+    return <div className="action user-wrapper" id='cmg-head-user-wrapper'>
+        <span className="user-icon" onClick={ handleClick }><FontAwesomeIcon icon={ faUser } /></span>
+        { isUserLogoutDropdownActive && <ul className='user-dropdown'>
+            <li className='head-wrapper cmg-list-item'>
+                <h2 className='head name'>{ loggedInUser }</h2>
+                <span className='head email'>{ 'mhrznamir.am@gmail.com' }</span>
+                <span className='head role'>{ 'Student' }</span>
+            </li>
+            <li className='seperator'></li>
+            <li className='body cmg-list-item'>{ 'Dashboard' }</li>
+            <li className='body cmg-list-item'>{ 'Profile' }</li>
+            <li className='seperator'></li>
+            <li className='body cmg-list-item'>{ 'Grades' }</li>
+            <li className='body cmg-list-item'>{ 'Calender' }</li>
+            <li className='body cmg-list-item'>{ 'Private files' }</li>
+            <li className='body cmg-list-item'>{ 'Reports' }</li>
+            <li className='seperator'></li>
+            <li className='body cmg-list-item'>{ 'Preferences' }</li>
+            <li className='seperator'></li>
+            <li className='foot cmg-list-item'>
+                <button className='logout-button' onClick={ handleLogout }>{ 'Log out' }</button>
+            </li>
+        </ul>}
+    </div>
 }
