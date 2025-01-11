@@ -12,7 +12,7 @@ import { GLOBALCONTEXT } from '../App';
  */
 export const Header = () => {
     const Global = useContext( GLOBALCONTEXT )
-    const {} = Global
+    const { loggedInUser } = Global
 
     return <>
         <header className="cmg-header" id="cmg-header">

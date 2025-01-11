@@ -8,23 +8,24 @@ import { GLOBALCONTEXT } from '../App'
 export const Index = () => {
     const global = useContext( GLOBALCONTEXT )
     const navigate = useNavigate()
-    const { isLoggedIn, loggedInUser, setIsloggedIn } = global
+    const { setIsloggedIn, setLoggedInUser } = global
 
     useEffect(() => {
         fetch( 'http://localhost:5000/isLoggedIn', {
             method: "POST",
-            // headers: {
-            //     "Content-Type": "application/json",
-            // }
+            headers: {
+                "Content-Type": "application/json",
+            },
+            credentials: 'include'
         })
         .then(( result ) => result.json())
         .then( ( data ) => { 
-            console.log( data )
-            if( data.success ) {
-                // setLoggedInUser( data.result[0] )
-                // setLoginSuccess( true )
+            let { isLoggedIn, name } = data
+            if( isLoggedIn ) {
+                setLoggedInUser( name )
+                setIsloggedIn( isLoggedIn )
             } else {
-                // navigate( '/login' )
+                navigate( '/login' )
             }
         })
     }, [])

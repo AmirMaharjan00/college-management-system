@@ -1,9 +1,9 @@
-const con = require( './database' )
+import { con } from './database.js'
 
 /**
  * MARK: Username & password
  */
-exports.isValidUser = function ( userLogin ) {
+export const isValidUser = function ( userLogin ) {
     const { username, password } = userLogin
     const selectQuery = `SELECT * FROM users WHERE email='${username}' AND password='${password}'`
     return new Promise(( resolve, reject ) => {

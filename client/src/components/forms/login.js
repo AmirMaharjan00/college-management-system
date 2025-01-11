@@ -53,15 +53,12 @@ export const Login = () => {
                 headers: {
                     "Content-Type": "application/json",
                 },
+                credentials: 'include',
                 body: JSON.stringify({ username, password })
             })
             .then(( result ) => result.json())
             .then( ( data ) => {
-                console.log( data )
-                // if( data.success ) {
-                    // setLoggedInUser( data.result[0] )
-                    setLoginSuccess( data )
-                // }
+                if( data.login ) setLoginSuccess( data )
             })
         }
     }

@@ -1,25 +1,44 @@
-const express = require('express');
-const cors = require('cors');
+import express from 'express'
+import session from 'express-session'
+import bodyParser from "body-parser"
+import cors from 'cors'
+import cookieParser from 'cookie-parser'
+import { con } from './database.js'
+// import api from './api.js'
+
 const app = express();
 const port = process.env.PORT || 5000;
-const bodyParser = require("body-parser");
-const session = require('express-session');
-const con = require( './database' )
 
-app.use(cors());
-app.use(bodyParser.json()); // for parsing application/json
+app.use( express.json() );
+app.use( cookieParser() );
+app.use( bodyParser.json() ); // for parsing application/json
+app.use( cors({
+  origin: 'http://localhost:3000', // Replace with your React app's URL
+  methods: [ 'POST', 'GET' ],
+  credentials: true // Allow credentials (cookies)
+}) );
 
 /**
  * MARK: Session
  */
 app.use(session({
-  secret: 'secret-key',
+  secret: 'hello-secret-key',
   resave: false,
-  saveUninitialized: true,
-  // cookie: { maxAge: 60000 } // session timeout of 60 seconds
+  saveUninitialized: false, /* Will generate a new session id every time we make a request */
+  cookie: { maxAge: 1000 * 60 * 60 * 24 } // session timeout of 1 day
 }));
 
-/* Insert Query */
+app.use((req, res, next) => {
+  next();
+});
+
+app.listen(port, () => {
+  console.log(`Server is running on port ${port}`);
+});
+
+/**
+ * MARK: Insert Query
+ */
 app.post('/insert', (req, res) => {
   const { name, email, password, contactNumber, address, gender } = req.body
   const insertQuery = 'INSERT INTO users (name, email, password, contact_number, address, gender) VALUES (?, ?, ?, ?, ?, ?)'
@@ -33,7 +52,9 @@ app.post('/insert', (req, res) => {
   })
 });
 
-/* Select Query */
+/**
+* MARK: Select Query
+*/
 app.post('/select', (req, res) => {
   const { username, password } = req.body
   const selectQuery = `SELECT * FROM users WHERE email='${username}' AND password='${password}'`
@@ -48,38 +69,26 @@ app.post('/select', (req, res) => {
 });
 
 /**
- * MARK: Login
- */
+* MARK: Login
+*/
 app.post( '/login', ( request, res ) => {
   const { username, password } = request.body;
   const selectQuery = `SELECT * FROM users WHERE email='${username}' AND password='${password}'`
   con.query( selectQuery, ( error, result ) => {
     if ( error ) {
-      console.error("Error selecting data:", error);
-      res.send( false )
-      // res.status( 200 ).json({ result, success: false });
+      return res.json({ message: 'Error Inside Server.', login: false })
+    } else {
+      request.session.isLoggedIn = true
+      request.session.name = result[ 0 ].name
+      return res.json({ message: 'Success', login: true })
     }
-    request.session.name = result[0].name
-    request.session.isLoggedIn = true
-    res.send( true )
-    // res.status( 200 ).json({ result, success: true });
   });
 });
 
 /**
- * MARK: Is logged In
- */
-app.post( '/isLoggedIn', ( request, res ) => {
-  const isLoggedIn = request.session.isLoggedIn;
-  const username = request.session.name;
-  console.log( request.session )
-  if ( isLoggedIn ) {
-    res.status( 200 ).json({ message: 'I am logged in.', success: true });
-  } else {
-    res.status( 200 ).json({ message: 'I am not logged in.', success: false });
-  }
-});
-
-app.listen(port, () => {
-  console.log(`Server is running on port ${port}`);
+* MARK: Is logged In
+*/
+app.post( '/isLoggedIn', ( request, res ) => { 
+  const { isLoggedIn, name } = request.session;
+  return res.json({ isLoggedIn, name })
 });

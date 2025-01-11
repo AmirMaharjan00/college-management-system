@@ -192,7 +192,6 @@ export const Registration = () => {
         let isValidAddress = validateAddress()
         let isValidGender = validateGender()
         if( isValidName && isValidEmail && isValidPassword && isValidContactNumber && isValidAddress && isValidGender ) {
-            console.log( 'You can proceed.' )
             const userData = {
                 name: 'John Doe',
                 email: 'john@example.com'
@@ -206,8 +205,7 @@ export const Registration = () => {
                 body: JSON.stringify({ name, email, password, contactNumber, address, gender })
             })
             .then(( result ) => result.json())
-            .then( ( data ) => { 
-                console.log( data )
+            .then( ( data ) => {
                 if( data.success ) {
                     setRegistrationSuccess( true )
                 }

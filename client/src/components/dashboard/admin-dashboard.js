@@ -1,3 +1,5 @@
+import { useContext } from 'react'
+import { GLOBALCONTEXT } from '../../App'
 import student from '../assets/images/student.png'
 import teacher from '../assets/images/teacher.png'
 import course from '../assets/images/course.png'
@@ -12,6 +14,9 @@ import { faFlag } from '@fortawesome/free-regular-svg-icons';
  * @since 1.0.0
  */
 export const AdminDashboard = () => {
+    const Global = useContext( GLOBALCONTEXT )
+    const { loggedInUser } = Global
+
     return <>
         <div className="dashboard-head">
             <div className="dashboard-intro">
@@ -31,7 +36,7 @@ export const AdminDashboard = () => {
         </div>{/* .dashboard-head */}
         <div className="dashboard-welcome">
             <div className="welcome-wrapper">
-                <h2 className="welcome-label">Welcome Back, Mr. Herald</h2>
+                <h2 className="welcome-label">{`Welcome Back, ${ loggedInUser }`}</h2>
                 <span className="welcome-description">Have a Good Day at Work.</span>
             </div>
             <div className="update-wrapper">
