@@ -22,7 +22,7 @@ export const Login = () => {
     useEffect(() => {
         if( loginSuccess ) {
             setIsloggedIn( true )
-            navigate( '/' )
+            navigate( '/dashboard' )
         }
     }, [ loginSuccess ])
 
@@ -48,7 +48,7 @@ export const Login = () => {
         let isValidEmail = validateEmail()
         let isValidPassword = validatePassword()
         if( isValidEmail && isValidPassword ) {
-            fetch( 'http://localhost:5000/select', {
+            fetch( 'http://localhost:5000/login', {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
@@ -56,12 +56,12 @@ export const Login = () => {
                 body: JSON.stringify({ username, password })
             })
             .then(( result ) => result.json())
-            .then( ( data ) => { 
+            .then( ( data ) => {
                 console.log( data )
-                if( data.success ) {
-                    setLoggedInUser( data.result[0] )
-                    setLoginSuccess( true )
-                }
+                // if( data.success ) {
+                    // setLoggedInUser( data.result[0] )
+                    setLoginSuccess( data )
+                // }
             })
         }
     }

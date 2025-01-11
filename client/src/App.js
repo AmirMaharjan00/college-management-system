@@ -51,7 +51,7 @@ const Links = () => {
       <Route exact path='/registration' element={ <Registration /> }/>
       <Route exact path='/forgot-password' element={ <ForgotPassword/> }/>
       {/* <Route exact path='/swt-admin/swt-registration' element={ AdminRegistration }/> */}
-      <Route exact path='/' element={ <Index/> }/>
+      <Route exact path='/dashboard' element={ <Index/> }/>
       <Route path='*' element={ <ErrorPage/> } />
     </Routes>
   );
