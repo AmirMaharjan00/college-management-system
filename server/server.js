@@ -44,11 +44,9 @@ app.post('/insert', (req, res) => {
   const insertQuery = 'INSERT INTO users (name, email, password, contact_number, address, gender) VALUES (?, ?, ?, ?, ?, ?)'
   con.query( insertQuery, [ name, email, password, contactNumber, address, gender ], ( error, result ) => {
     if ( error ) {
-      console.error( "Error inserting data:", error );
       return res.status( 500 ).json({ error: "Database insertion failed" });
     }
-    console.log( "Number of records inserted:", result.affectedRows );
-    res.status( 200 ).json({ message: "Data inserted successfully!", id: result.insertId, success: true });
+    return res.status( 200 ).json({ message: "Data inserted successfully!", id: result.insertId, success: true });
   })
 });
 
@@ -60,11 +58,9 @@ app.post('/select', (req, res) => {
   const selectQuery = `SELECT * FROM users WHERE email='${username}' AND password='${password}'`
   con.query( selectQuery, ( error, result ) => {
     if ( error ) {
-      console.error( "Error selecting data:", error );
       return res.status( 500 ).json({ error: "Database selection failed" });
     }
-    console.log( "Number of records selected:", result );
-    res.status( 200 ).json({ result, success: true });
+    return res.status( 200 ).json({ result, success: true });
   })
 });
 
@@ -104,4 +100,30 @@ app.post( '/logout', ( request, res ) => {
 app.post( '/isLoggedIn', ( request, res ) => { 
   const { isLoggedIn, name } = request.session;
   return res.json({ isLoggedIn, name })
+});
+
+/**
+* MARK: Users API
+*/
+app.post( '/users', ( request, res ) => { 
+  const selectQuery = `SELECT * FROM users`
+  con.query( selectQuery, ( error, result ) => {
+    if ( error ) {
+      return res.status( 500 ).json({ error: "Database selection failed" });
+    }
+    return res.status( 200 ).json({ result, success: true });
+  })
+});
+
+/**
+* MARK: Courses API
+*/
+app.post( '/courses', ( request, res ) => { 
+  const selectQuery = `SELECT * FROM courses`
+  con.query( selectQuery, ( error, result ) => {
+    if ( error ) {
+      return res.status( 500 ).json({ error: "Database selection failed" });
+    }
+    return res.status( 200 ).json({ result, success: true });
+  })
 });

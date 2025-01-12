@@ -1,4 +1,4 @@
-import { useContext } from 'react'
+import { useContext, useEffect, useState } from 'react'
 import { GLOBALCONTEXT } from '../../App'
 import student from '../assets/images/student.png'
 import teacher from '../assets/images/teacher.png'
@@ -7,6 +7,7 @@ import staff from '../assets/images/staff.png'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faArrowsRotate, faChevronDown, faChevronRight, faCheckDouble, faXmark, faCircleExclamation, faIcons, faCoins, faSackDollar, faCalendarDays, faMoneyBillTrendUp } from '@fortawesome/free-solid-svg-icons';
 import { faFlag } from '@fortawesome/free-regular-svg-icons';
+import { ourFetch } from '../functions'
 
 /**
  * Admin Dashboard
@@ -44,84 +45,7 @@ export const AdminDashboard = () => {
                 <span className="update-label">Updated Recently on 15 June 2024</span>
             </div>
         </div>{/* .dashboard-welcome */}
-        <div className="dashboard-highlights">
-            <div className="highlight student">
-                <div className="highlight-head">
-                    <figure className="highlight-thumb"><img src={ student } alt="student" /></figure>
-                    <div className="highlight-info">
-                        <span className="count total-count">3697</span>
-                        <span className="label highlight-label">Total Students</span>
-                    </div>
-                </div>
-                <div className="highlight-foot">
-                    <div className="old-wrapper">
-                        <span className="old-label">Old: </span>
-                        <span className="old-count">3696</span>
-                    </div>
-                    <div className="new-wrapper">
-                        <span className="new-label">New: </span>
-                        <span className="new-count">1</span>
-                    </div>
-                </div>
-            </div>
-            <div className="highlight teacher">
-                <div className="highlight-head">
-                    <figure className="highlight-thumb"><img src={ teacher } alt="teacher" /></figure>
-                    <div className="highlight-info">
-                        <span className="count total-count">3697</span>
-                        <span className="label highlight-label">Total Teachers</span>
-                    </div>
-                </div>
-                <div className="highlight-foot">
-                    <div className="old-wrapper">
-                        <span className="old-label">Old: </span>
-                        <span className="old-count">3696</span>
-                    </div>
-                    <div className="new-wrapper">
-                        <span className="new-label">New: </span>
-                        <span className="new-count">1</span>
-                    </div>
-                </div>
-            </div>
-            <div className="highlight staff">
-                <div className="highlight-head">
-                    <figure className="highlight-thumb"><img src={ staff } alt="staff" /></figure>
-                    <div className="highlight-info">
-                        <span className="count total-count">3697</span>
-                        <span className="label highlight-label">Total Staffs</span>
-                    </div>
-                </div>
-                <div className="highlight-foot">
-                    <div className="old-wrapper">
-                        <span className="old-label">Old: </span>
-                        <span className="old-count">3696</span>
-                    </div>
-                    <div className="new-wrapper">
-                        <span className="new-label">New: </span>
-                        <span className="new-count">1</span>
-                    </div>
-                </div>
-            </div>
-            <div className="highlight course">
-                <div className="highlight-head">
-                    <figure className="highlight-thumb"><img src={ course } alt="course" /></figure>
-                    <div className="highlight-info">
-                        <span className="count total-count">3697</span>
-                        <span className="label highlight-label">Total Courses</span>
-                    </div>
-                </div>
-                <div className="highlight-foot">
-                    <div className="old-wrapper">
-                        <span className="old-label">Old: </span>
-                        <span className="old-count">3696</span>
-                    </div>
-                    <div className="new-wrapper">
-                        <span className="new-label">New: </span>
-                        <span className="new-count">1</span>
-                    </div>
-                </div>
-            </div>
-        </div>{/* .dashboard-highlights */}
+        <Highlights />
         <div className="fees-leave-request-wrapper" id="fees-leave-request-wrapper">
             <div className="fees-collection-wrapper element">
                 <div className="head">
@@ -538,4 +462,114 @@ export const AdminDashboard = () => {
         </div>
 
     </>
+}
+
+/**
+ * MARK: HIGHLIGHT
+ */
+const Highlights = () => {
+    const [ counts, setCounts ] = useState({
+       student: {
+            new: 0,
+            old: 0
+       } ,
+       teacher: {
+            new: 0,
+            old: 0
+       } ,
+       staff: {
+            new: 0,
+            old: 0
+       } ,
+       course: {
+            new: 0,
+            old: 0
+       } 
+    })
+
+    useEffect(() => {
+        ourFetch({
+            api: '/users',
+            callback: usersFetchCallback
+        })
+        ourFetch({
+            api: '/courses',
+            callback: coursesFetchCallback
+        })
+    }, [])
+
+    let highlightsArray = {
+        student: {
+            label: 'Total Students',
+            image: student
+        },
+        teacher: {
+            label: 'Total Teachers',
+            image: teacher
+        },
+        staff: {
+            label: 'Total Staffs',
+            image: staff
+        },
+        course: {
+            label: 'Total Courses',
+            image: course
+        }
+    }
+    
+    /* Users Callback */
+    const usersFetchCallback = ( data ) => {
+        let { result, success } = data
+        if( success ) {
+            result.map(( user ) => {
+                let { role } = user
+                if( role in counts ) {
+                    setCounts({ 
+                        ...counts,
+                        [ role ]: { ...counts[ role ], new: counts[ role ][ 'new' ] + 1 }
+                    })
+                }
+            })
+        }
+    }
+    
+    /* Courses Callback */
+    const coursesFetchCallback = ( data ) => {
+        let { result, success } = data
+        if( success ) {
+            setCounts(( prev ) => {
+                return { 
+                    ...prev,
+                    course: { ...prev[ 'course' ], new: result.length }
+                }
+            })
+        }
+    }
+
+    return <div className="dashboard-highlights">
+        {
+            Object.entries( highlightsArray ).map(([ id, values ]) => {
+                let { label, image } = values
+                return <div className={ `highlight ${id}` } key={ id }>
+                    <div className="highlight-head">
+                        <figure className="highlight-thumb"><img src={ image } alt={ id } /></figure>
+                        <div className="highlight-info">
+                            <span className="count total-count">{ counts[ id ].old + counts[ id ].new }</span>
+                            <span className="label highlight-label">{ label }</span>
+                        </div>
+                    </div>
+                    <div className="highlight-foot">
+                        <div className="old-wrapper">
+                            <span className="old-label">{ 'Old: ' }</span>
+                            <span className="old-count">{ counts[ id ].old }</span>
+                        </div>
+                        <div className="new-wrapper">
+                            <span className="new-label">{ 'New: ' }</span>
+                            <span className="new-count">{ counts[ id ].new }</span>
+                        </div>
+                    </div>
+                </div>
+            })
+        }
+    </div>
 }

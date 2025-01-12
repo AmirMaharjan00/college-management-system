@@ -29,12 +29,42 @@ con.connect(function(err) {
           userQuery += "contact_number BIGINT NOT NULL,"
           userQuery += "address VARCHAR(255) DEFAULT 'Nepal',"
           userQuery += "gender VARCHAR(255) DEFAULT 'male',"
-          userQuery += "role VARCHAR(255) DEFAULT 'subscriber', "
+          userQuery += "role VARCHAR(255) DEFAULT 'student', "
           userQuery += "registered_date DATETIME DEFAULT CURRENT_TIMESTAMP "
           userQuery += ");"
         con.query( userQuery, function (err, result) {
           if( err ) throw err
           console.log( 'Users Table created.' )
+        });
+
+        /**
+         * Create Courses Table
+         * MARK: Courses
+         */
+        let coursesQuery = "CREATE TABLE IF NOT EXISTS courses ("
+          coursesQuery += "id INT(11) NOT NULL AUTO_INCREMENT PRIMARY KEY,"
+          coursesQuery += "name VARCHAR(255) NOT NULL,"
+          coursesQuery += "registered_date DATETIME DEFAULT CURRENT_TIMESTAMP "
+          coursesQuery += ");"
+        con.query( coursesQuery, function (err, result) {
+          if( err ) throw err
+          console.log( 'Courses Table created.' )
+        });
+
+        /**
+         * Create Courses Table
+         * MARK: Courses
+         */
+        let subjectsQuery = "CREATE TABLE IF NOT EXISTS subjects ("
+          subjectsQuery += "id INT(11) NOT NULL AUTO_INCREMENT PRIMARY KEY,"
+          subjectsQuery += "name VARCHAR(255) NOT NULL,"
+          subjectsQuery += "course_id INT(11) NOT NULL,"
+          subjectsQuery += "registered_date DATETIME DEFAULT CURRENT_TIMESTAMP,"
+          subjectsQuery += "FOREIGN KEY(course_id) REFERENCES courses(id) "
+          subjectsQuery += ");"
+        con.query( subjectsQuery, function (err, result) {
+          if( err ) throw err
+          console.log( 'Subjects Table created.' )
         });
       }
     });

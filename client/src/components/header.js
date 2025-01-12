@@ -126,8 +126,7 @@ const User = () => {
             credentials: 'include'
         })
         .then(( result ) => result.json())
-        .then(( data ) => { 
-            console.log( data )
+        .then(( data ) => {
             let { logout } = data
             if( logout ) {
                 setLoggedInUser({})
