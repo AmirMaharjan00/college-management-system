@@ -18,6 +18,7 @@ export const Registration = () => {
     const [ contactNumber, setContactNumber ] = useState( '' )
     const [ address, setAddress ] = useState( '' )
     const [ gender, setGender ] = useState( 'male' )
+    const [ role, setRole ] = useState( 'student' )
     const [ nameErrorMsg, setNameErrorMsg ] = useState( '*' )
     const [ emailErrorMsg, setEmailErrorMsg ] = useState( '*' )
     const [ passwordErrorMsg, setPasswordErrorMsg ] = useState( '*' )
@@ -55,6 +56,9 @@ export const Registration = () => {
         }
         if( nameAttribute === 'gender' ) {
             setGender( value )
+        }
+        if( nameAttribute === 'role' ) {
+            setRole( value )
         }
     }
 
@@ -181,6 +185,20 @@ export const Registration = () => {
     }
 
     /* 
+    * Validate Role
+    * MARK: Role
+    */
+    const validateRole = () => {
+        const roleRegex = /[a-zA-Z]/;
+        let isValidRole = roleRegex.test( role );
+        if( ! isValidRole ) {
+            return false
+        } else {
+            return true
+        }
+    }
+
+    /* 
     * MARK: Form Submit
     */
     const formSubmit = ( event ) => {
@@ -191,18 +209,15 @@ export const Registration = () => {
         let isValidContactNumber = validateContactNumber()
         let isValidAddress = validateAddress()
         let isValidGender = validateGender()
-        if( isValidName && isValidEmail && isValidPassword && isValidContactNumber && isValidAddress && isValidGender ) {
-            const userData = {
-                name: 'John Doe',
-                email: 'john@example.com'
-            };
+        let isvalidateRole = validateRole()
+        if( isValidName && isValidEmail && isValidPassword && isValidContactNumber && isValidAddress && isValidGender && isvalidateRole ) {
 
             fetch( 'http://localhost:5000/insert', {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
                 },
-                body: JSON.stringify({ name, email, password, contactNumber, address, gender })
+                body: JSON.stringify({ name, email, password, contactNumber, address, gender, role })
             })
             .then(( result ) => result.json())
             .then( ( data ) => {
@@ -269,6 +284,19 @@ export const Registration = () => {
                         <div className='form-field-inner'>
                             <input type="radio" name="gender" value="female" checked={ gender === 'female' ? true : false } onChange={ handleInputChange } required/>
                             <label className='form-label'>{ 'Female' }</label>
+                        </div>
+                    </div>
+                </div>
+                <div className='form-field is-flex radio-field'>
+                    <label className='form-label'>{ 'Role : ' }</label>
+                    <div className='form-field-inner-wrapper is-flex'>
+                        <div className='form-field-inner'>
+                            <input type="radio" name="role" value="student" checked={ role === 'student' ? true : false } onChange={ handleInputChange } required/>
+                            <label className='form-label'>{ 'Student' }</label>
+                        </div>
+                        <div className='form-field-inner'>
+                            <input type="radio" name="role" value="teacher" checked={ role === 'teacher' ? true : false } onChange={ handleInputChange } required/>
+                            <label className='form-label'>{ 'Teacher' }</label>
                         </div>
                     </div>
                 </div>

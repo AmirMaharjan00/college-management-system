@@ -30,6 +30,7 @@ con.connect(function(err) {
           userQuery += "address VARCHAR(255) DEFAULT 'Nepal',"
           userQuery += "gender VARCHAR(255) DEFAULT 'male',"
           userQuery += "role VARCHAR(255) DEFAULT 'student', "
+          userQuery += "view VARCHAR(255) DEFAULT 'light', "
           userQuery += "registered_date DATETIME DEFAULT CURRENT_TIMESTAMP "
           userQuery += ");"
         con.query( userQuery, function (err, result) {
@@ -69,5 +70,5 @@ con.connect(function(err) {
       }
     });
 });
-
+ 
 // module.exports = con

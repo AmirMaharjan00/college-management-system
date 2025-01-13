@@ -6,6 +6,7 @@ import { faBars, faGraduationCap, faUserGroup, faUsers, faFileInvoiceDollar, faM
 import { faSquarePlus} from '@fortawesome/free-regular-svg-icons';
 import { GLOBALCONTEXT } from '../App';
 import './assets/css/header.css'
+import { ourFetch } from './functions';
 
 const HeaderContext = createContext()
 /**
@@ -76,20 +77,66 @@ export const Header = () => {
                             </ul>
                         </div>
                     </div>
-                    <div className="action dark-mode-wrapper">
-                        <span className="dark-mode-icon"><FontAwesomeIcon icon={ faMoon } /></span>
-                    </div>
-                    <div className="action notification-wrapper">
-                        <span className="notification-icon"><FontAwesomeIcon icon={ faBell } /></span>
-                    </div>
-                    <div className="action message-wrapper">
-                        <span className="message-icon"><FontAwesomeIcon icon={ faMessage } /></span>
-                    </div>
+                    <DarkMode />
+                    <Notification />
+                    <Message />
                     <User />
                 </div>
             </div>
         </header>
     </>
+}
+
+/**
+ * MARK: Dark Mode
+ * 
+ * @since 1.0.0
+ */
+const DarkMode = () =>{
+    const Global = useContext( GLOBALCONTEXT )
+    const { setIsDarkMode, isDarkMode, loggedInUser } = Global
+    const { id } = loggedInUser
+
+    const handleDarkMode = () => {
+        let currentDarkMode = ( isDarkMode === 'dark' ? 'light' : 'dark' )
+        ourFetch({
+            api: '/set-dark-mode',
+            callback: setDarkModeCallback,
+            body: JSON.stringify({ view: currentDarkMode, id })
+        })
+    }
+
+    /* Callback */
+    const setDarkModeCallback = ( data ) => {
+        let { success, view } = data
+        if( success ) setIsDarkMode( view )
+    }
+
+    return <div className="action dark-mode-wrapper" onClick={ handleDarkMode }>
+        <span className="dark-mode-icon"><FontAwesomeIcon icon={ faMoon } /></span>
+    </div>
+}
+
+/**
+ * MARK: Notification
+ * 
+ * @since 1.0.0
+ */
+const Notification = () =>{
+    return <div className="action notification-wrapper">
+        <span className="notification-icon"><FontAwesomeIcon icon={ faBell } /></span>
+    </div>
+}
+
+/**
+ * MARK: Message
+ * 
+ * @since 1.0.0
+ */
+const Message = () =>{
+    return <div className="action message-wrapper">
+        <span className="message-icon"><FontAwesomeIcon icon={ faMessage } /></span>
+    </div>
 }
 
 /**
@@ -109,6 +156,7 @@ const User = () => {
         isUserLogoutDropdownActive,
         setIsUserLogoutDropdownActive
     } = Global
+    const { role, name, email } = loggedInUser
 
     /* Handle Click */
     const handleClick = () => {
@@ -142,9 +190,9 @@ const User = () => {
         <span className="user-icon" onClick={ handleClick }><FontAwesomeIcon icon={ faUser } /></span>
         { isUserLogoutDropdownActive && <ul className='user-dropdown'>
             <li className='head-wrapper cmg-list-item'>
-                <h2 className='head name'>{ loggedInUser }</h2>
-                <span className='head email'>{ 'mhrznamir.am@gmail.com' }</span>
-                <span className='head role'>{ 'Student' }</span>
+                <h2 className='head name'>{ name }</h2>
+                <span className='head email'>{ email }</span>
+                <span className='head role'>{ role.slice( 0, 1 ).toUpperCase() + role.slice( 1 ) }</span>
             </li>
             <li className='seperator'></li>
             <li className='body cmg-list-item'>{ 'Dashboard' }</li>

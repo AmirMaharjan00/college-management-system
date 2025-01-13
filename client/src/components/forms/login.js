@@ -58,7 +58,7 @@ export const Login = () => {
             })
             .then(( result ) => result.json())
             .then( ( data ) => {
-                if( data.login ) setLoginSuccess( data )
+                if( data.login ) setLoginSuccess( true )
             })
         }
     }

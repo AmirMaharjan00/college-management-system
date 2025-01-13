@@ -1,4 +1,4 @@
-import { createContext, useState } from 'react'
+import { createContext, useState, useEffect } from 'react'
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import './App.css';
 import './components/assets/css/main.css';
@@ -8,6 +8,7 @@ import { Login } from './components/forms/login.js'
 import { Registration } from './components/forms/registration.js'
 import { ForgotPassword } from './components/forms/forgot-password.js'
 import { ErrorPage } from './components/404.js'
+import { ourFetch } from './components/functions.js'
 
 export const GLOBALCONTEXT = createContext()
 
@@ -15,6 +16,7 @@ function App() {
   const [ isLoggedIn, setIsloggedIn ] = useState( false )
   const [ loggedInUser, setLoggedInUser ] = useState({})
   const [ overlay, setOverlay ] = useState( false )
+  const [ isDarkMode, setIsDarkMode ] = useState( 'light' )
   const [ isUserLogoutDropdownActive, setIsUserLogoutDropdownActive ] = useState( false )
 
   /* Global Context Object */
@@ -27,6 +29,8 @@ function App() {
     setOverlay,
     isUserLogoutDropdownActive,
     setIsUserLogoutDropdownActive,
+    isDarkMode,
+    setIsDarkMode
   }
 
   return <GLOBALCONTEXT.Provider value={ globalContextObject }>

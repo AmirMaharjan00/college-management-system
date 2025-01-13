@@ -4,33 +4,47 @@ import { Header } from './header'
 import { Main } from './main'
 import { Sidebar } from './sidebar'
 import { GLOBALCONTEXT } from '../App'
+import { ourFetch } from './functions'
 
 export const Index = () => {
     const global = useContext( GLOBALCONTEXT )
     const navigate = useNavigate()
-    const { setIsloggedIn, setLoggedInUser, setOverlay, overlay, isUserLogoutDropdownActive, setIsUserLogoutDropdownActive } = global
+    const { setIsloggedIn, setLoggedInUser, setOverlay, overlay, setIsUserLogoutDropdownActive, setIsDarkMode, isDarkMode } = global
 
     useEffect(() => {
-        fetch( 'http://localhost:5000/isLoggedIn', {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            credentials: 'include'
-        })
-        .then(( result ) => result.json())
-        .then( ( data ) => { 
-            let { isLoggedIn, name } = data
-            if( isLoggedIn ) {
-                setLoggedInUser( name )
-                setIsloggedIn( isLoggedIn )
-            } else {
-                navigate( '/login' )
-            }
+        ourFetch({
+            api: '/isLoggedIn',
+            callback: userCallback,
         })
     }, [])
 
+    /* User Callback */
+    const userCallback = ( data ) => {
+        let { isLoggedIn, user } = data
+        if( isLoggedIn ) {
+            setLoggedInUser( user )
+            setIsloggedIn( isLoggedIn )
+            if( isLoggedIn ) {
+                let { id } = user
+                ourFetch({
+                    api: '/dark-mode',
+                    callback: darkModeCallback,
+                    body: JSON.stringify({ id })
+                })
+            }
+        } else {
+            navigate( '/login' )
+        }
+    }
+    
+    /* Dark Mode Callback */
+    const darkModeCallback = ( data ) => {
+        let { view, success } = data
+        if( success ) setIsDarkMode( view )
+    }
+
     let wrapperClass = 'cmg-wrapper';
+    wrapperClass += ` ${isDarkMode}`;
 
     /**
      * MARK: OVERLAY CLICK

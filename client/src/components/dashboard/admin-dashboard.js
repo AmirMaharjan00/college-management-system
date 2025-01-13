@@ -10,13 +10,14 @@ import { faFlag } from '@fortawesome/free-regular-svg-icons';
 import { ourFetch } from '../functions'
 
 /**
- * Admin Dashboard
+ * MARK: Admin Dashboard
  * 
  * @since 1.0.0
  */
 export const AdminDashboard = () => {
-    const Global = useContext( GLOBALCONTEXT )
-    const { loggedInUser } = Global
+    const global = useContext( GLOBALCONTEXT )
+    const { loggedInUser } = global
+    const { role, name } = loggedInUser
 
     return <>
         <div className="dashboard-head">
@@ -37,7 +38,7 @@ export const AdminDashboard = () => {
         </div>{/* .dashboard-head */}
         <div className="dashboard-welcome">
             <div className="welcome-wrapper">
-                <h2 className="welcome-label">{`Welcome Back, ${ loggedInUser }`}</h2>
+                <h2 className="welcome-label">{`Welcome Back, ${ name }`}</h2>
                 <span className="welcome-description">Have a Good Day at Work.</span>
             </div>
             <div className="update-wrapper">
@@ -522,11 +523,13 @@ const Highlights = () => {
         let { result, success } = data
         if( success ) {
             result.map(( user ) => {
-                let { role } = user
+                let { role, total } = user
                 if( role in counts ) {
-                    setCounts({ 
-                        ...counts,
-                        [ role ]: { ...counts[ role ], new: counts[ role ][ 'new' ] + 1 }
+                    setCounts(( prev ) => {
+                        return {
+                            ...prev,
+                            [ role ]: { ...prev[ role ], new: total }
+                        }
                     })
                 }
             })

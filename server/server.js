@@ -40,9 +40,9 @@ app.listen(port, () => {
  * MARK: Insert Query
  */
 app.post('/insert', (req, res) => {
-  const { name, email, password, contactNumber, address, gender } = req.body
-  const insertQuery = 'INSERT INTO users (name, email, password, contact_number, address, gender) VALUES (?, ?, ?, ?, ?, ?)'
-  con.query( insertQuery, [ name, email, password, contactNumber, address, gender ], ( error, result ) => {
+  const { name, email, password, contactNumber, address, gender, role } = req.body
+  const insertQuery = 'INSERT INTO users (name, email, password, contact_number, address, gender, role) VALUES (?, ?, ?, ?, ?, ?, ?)'
+  con.query( insertQuery, [ name, email, password, contactNumber, address, gender, role ], ( error, result ) => {
     if ( error ) {
       return res.status( 500 ).json({ error: "Database insertion failed" });
     }
@@ -75,7 +75,7 @@ app.post( '/login', ( request, res ) => {
       return res.json({ message: 'Error Inside Server.', login: false })
     } else {
       request.session.isLoggedIn = true
-      request.session.name = result[ 0 ].name
+      request.session.user = result[ 0 ]
       return res.json({ message: 'Success', login: true })
     }
   });
@@ -98,15 +98,15 @@ app.post( '/logout', ( request, res ) => {
 * MARK: Is logged In
 */
 app.post( '/isLoggedIn', ( request, res ) => { 
-  const { isLoggedIn, name } = request.session;
-  return res.json({ isLoggedIn, name })
+  const { isLoggedIn, user } = request.session;
+  return res.json({ isLoggedIn, user })
 });
 
 /**
 * MARK: Users API
 */
 app.post( '/users', ( request, res ) => { 
-  const selectQuery = `SELECT * FROM users`
+  const selectQuery = `SELECT role, COUNT(id) AS total FROM users WHERE role IN ('student', 'teacher') GROUP BY role;`
   con.query( selectQuery, ( error, result ) => {
     if ( error ) {
       return res.status( 500 ).json({ error: "Database selection failed" });
@@ -125,5 +125,32 @@ app.post( '/courses', ( request, res ) => {
       return res.status( 500 ).json({ error: "Database selection failed" });
     }
     return res.status( 200 ).json({ result, success: true });
+  })
+});
+
+/**
+* MARK: Dark Mode API
+*/
+app.post( '/dark-mode', ( request, res ) => {
+  const selectQuery = `SELECT view FROM users WHERE id="${ request.body.id }" `
+  con.query( selectQuery, ( error, result ) => {
+    if ( error ) {
+      return res.status( 500 ).json({ error: "Database selection failed" });
+    }
+    return res.status( 200 ).json({ view: result[0].view, success: true });
+  })
+});
+
+/**
+* MARK: Set Dark Mode API
+*/
+app.post( '/set-dark-mode', ( request, res ) => {
+  const { view, id } = request.body
+  const selectQuery = `UPDATE users SET view="${ view }" WHERE id=${ id }`
+  con.query( selectQuery, ( error, result ) => {
+    if ( error ) {
+      return res.status( 500 ).json({ success: false, error: "Database selection failed" });
+    }
+    return res.status( 200 ).json({ success: true, view });
   })
 });
