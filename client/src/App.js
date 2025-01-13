@@ -18,19 +18,20 @@ function App() {
   const [ overlay, setOverlay ] = useState( false )
   const [ isDarkMode, setIsDarkMode ] = useState( 'light' )
   const [ isUserLogoutDropdownActive, setIsUserLogoutDropdownActive ] = useState( false )
+  const [ isUserAddNewActive, setIsUserAddNewActive ] = useState( false )
+  const [ isAcademicYearActive, setIsAcademicYearActive ] = useState( false )
+  const [ isLanguageActive, setIsLanguageActive ] = useState( false )
 
   /* Global Context Object */
   let globalContextObject = {
-    isLoggedIn,
-    setIsloggedIn,
-    loggedInUser,
-    setLoggedInUser,
-    overlay,
-    setOverlay,
-    isUserLogoutDropdownActive,
-    setIsUserLogoutDropdownActive,
-    isDarkMode,
-    setIsDarkMode
+    isLoggedIn, setIsloggedIn,
+    loggedInUser, setLoggedInUser,
+    overlay, setOverlay,
+    isUserLogoutDropdownActive, setIsUserLogoutDropdownActive,
+    isDarkMode, setIsDarkMode,
+    isUserAddNewActive, setIsUserAddNewActive,
+    isAcademicYearActive, setIsAcademicYearActive,
+    isLanguageActive, setIsLanguageActive
   }
 
   return <GLOBALCONTEXT.Provider value={ globalContextObject }>

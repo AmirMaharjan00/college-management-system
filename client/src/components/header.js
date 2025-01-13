@@ -1,5 +1,5 @@
 import { useContext, createContext } from 'react'
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import logo from './assets/images/sscollege-logo.jpg'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faBars, faGraduationCap, faUserGroup, faUsers, faFileInvoiceDollar, faMoon, faBell, faMessage, faUser } from '@fortawesome/free-solid-svg-icons';
@@ -25,12 +25,12 @@ export const Header = () => {
     return <>
         <header className="cmg-header" id="cmg-header">
             <div className="header">
-                <a href="{% url 'members' %}" className="logo-wrapper">
+                <Link to="/dashboard" className="logo-wrapper">
                     <figure className="image-wrapper">
                         <img src={ logo } alt="Shahid Smarak College Logo" />
                     </figure>
                     <h2 className="header-title">Shahid Smarak College</h2>
-                </a>
+                </Link>
                 <button className="canvas-icon"><FontAwesomeIcon icon={ faBars } /></button>
             </div>
             <div className="cmg-search-actions-wrapper">
@@ -38,45 +38,9 @@ export const Header = () => {
                     <input type="search" name="search" id="search" placeholder="Search..."/>
                 </form>
                 <div className="cmg-header-actions">
-                    <div className="action academic-year-wrapper">
-                        <span className="cmg-active-dropdown-item active-academic-year">Academic Year: 2080</span>
-                        <ul className="academic-year-dropdown cmg-dropdown">
-                            <li className="cmg-list-item active">Academic Year: 2080</li>
-                            <li className="cmg-list-item">Academic Year: 2079</li>
-                            <li className="cmg-list-item">Academic Year: 2078</li>
-                        </ul>
-                    </div>
-                    <div className="action language-wrapper">
-                        <span className="cmg-active-dropdown-item active-language">English</span>
-                        <ul className="language-dropdown cmg-dropdown">
-                            <li className="cmg-list-item active">English</li>
-                            <li className="cmg-list-item">Nepali</li>
-                        </ul>
-                    </div>
-                    <div className="action add-new-wrapper">
-                        <span className="cmg-active-dropdown-item"><FontAwesomeIcon icon={ faSquarePlus } /></span>
-                        <div className="dropdown-box cmg-dropdown">
-                            <h2>Add New</h2>
-                            <ul className="add-new-dropdown">
-                                <li className="cmg-list-item">
-                                    <span className="add-new-icon student"><FontAwesomeIcon icon={ faGraduationCap } /></span>
-                                    <span>Student</span>
-                                </li>
-                                <li className="cmg-list-item">
-                                    <span className="add-new-icon teacher"><FontAwesomeIcon icon={ faUserGroup } /></span>
-                                    <span>Teachers</span>
-                                </li>
-                                <li className="cmg-list-item">
-                                    <span className="add-new-icon staff"><FontAwesomeIcon icon={ faUsers } /></span>
-                                    <span>Staffs</span>
-                                </li>
-                                <li className="cmg-list-item invoice">
-                                    <span className="add-new-icon"><FontAwesomeIcon icon={ faFileInvoiceDollar } /></span>
-                                    <span>Invoice</span>
-                                </li>
-                            </ul>
-                        </div>
-                    </div>
+                    <AcademicYear />
+                    <Language />
+                    <AddNew />
                     <DarkMode />
                     <Notification />
                     <Message />
@@ -85,6 +49,96 @@ export const Header = () => {
             </div>
         </header>
     </>
+}
+
+/**
+ * MARK: Academic Year
+ * 
+ * @since 1.0.0
+ */
+const AcademicYear = () => {
+    const Global = useContext( GLOBALCONTEXT )
+    const { isAcademicYearActive, setIsAcademicYearActive, setOverlay } = Global
+
+    /* Handle Click */
+    const handleClick = () => {
+        setIsAcademicYearActive( ! isAcademicYearActive )
+        setOverlay( true )
+    }
+
+    return <div className="action academic-year-wrapper" id="academic-year-wrapper">
+        <span className="cmg-active-dropdown-item active-academic-year" onClick={ handleClick }>Academic Year: 2080</span>
+        { isAcademicYearActive && <ul className="academic-year-dropdown">
+            <li className="cmg-list-item active">Academic Year: 2080</li>
+            <li className="cmg-list-item">Academic Year: 2079</li>
+            <li className="cmg-list-item">Academic Year: 2078</li>
+        </ul> }
+    </div>
+}
+
+/**
+ * MARK: Language
+ * 
+ * @since 1.0.0
+ */
+const Language = () => {
+    const Global = useContext( GLOBALCONTEXT )
+    const { isLanguageActive, setIsLanguageActive, setOverlay } = Global
+
+    /* Handle Click */
+    const handleClick = () => {
+        setIsLanguageActive( ! isLanguageActive )
+        setOverlay( true )
+    }
+
+    return <div className="action language-wrapper" id="language-wrapper">
+        <span className="cmg-active-dropdown-item active-language" onClick={ handleClick }>English</span>
+        { isLanguageActive && <ul className="language-dropdown">
+            <li className="cmg-list-item active">English</li>
+            <li className="cmg-list-item">Nepali</li>
+        </ul> }
+    </div>
+}
+
+/**
+ * MARK: Add New
+ * 
+ * @since 1.0.0
+ */
+const AddNew = () => {
+    const Global = useContext( GLOBALCONTEXT )
+    const { isUserAddNewActive, setIsUserAddNewActive, setOverlay } = Global
+
+    /* Handle Click */
+    const handleClick = () => {
+        setIsUserAddNewActive( ! isUserAddNewActive )
+        setOverlay( true )
+    }
+
+    return <div className="action add-new-wrapper" id="add-new-wrapper">
+        <span className="cmg-active-dropdown-item" onClick={ handleClick }><FontAwesomeIcon icon={ faSquarePlus } /></span>
+        { isUserAddNewActive && <div className="dropdown-box add-new-dropdown">
+            <h2 className='dropdown-head'>Add New</h2>
+            <ul className="add-new-dropdown-list">
+                <li className="cmg-list-item">
+                    <span className="add-new-icon student"><FontAwesomeIcon icon={ faGraduationCap } /></span>
+                    <span className='add-new-label'>Student</span>
+                </li>
+                <li className="cmg-list-item">
+                    <span className="add-new-icon teacher"><FontAwesomeIcon icon={ faUserGroup } /></span>
+                    <span className='add-new-label'>Teachers</span>
+                </li>
+                <li className="cmg-list-item">
+                    <span className="add-new-icon staff"><FontAwesomeIcon icon={ faUsers } /></span>
+                    <span className='add-new-label'>Staffs</span>
+                </li>
+                <li className="cmg-list-item invoice">
+                    <span className="add-new-icon"><FontAwesomeIcon icon={ faFileInvoiceDollar } /></span>
+                    <span className='add-new-label'>Invoice</span>
+                </li>
+            </ul>
+        </div> }
+    </div>
 }
 
 /**
@@ -112,8 +166,8 @@ const DarkMode = () =>{
         if( success ) setIsDarkMode( view )
     }
 
-    return <div className="action dark-mode-wrapper" onClick={ handleDarkMode }>
-        <span className="dark-mode-icon"><FontAwesomeIcon icon={ faMoon } /></span>
+    return <div className="action dark-mode-wrapper">
+        <span className="cmg-active-dropdown-item" onClick={ handleDarkMode }><FontAwesomeIcon icon={ faMoon } /></span>
     </div>
 }
 
@@ -124,7 +178,7 @@ const DarkMode = () =>{
  */
 const Notification = () =>{
     return <div className="action notification-wrapper">
-        <span className="notification-icon"><FontAwesomeIcon icon={ faBell } /></span>
+        <span className="cmg-active-dropdown-item"><FontAwesomeIcon icon={ faBell } /></span>
     </div>
 }
 
@@ -135,7 +189,7 @@ const Notification = () =>{
  */
 const Message = () =>{
     return <div className="action message-wrapper">
-        <span className="message-icon"><FontAwesomeIcon icon={ faMessage } /></span>
+        <span className="cmg-active-dropdown-item"><FontAwesomeIcon icon={ faMessage } /></span>
     </div>
 }
 
@@ -187,7 +241,7 @@ const User = () => {
     }
 
     return <div className="action user-wrapper" id='cmg-head-user-wrapper'>
-        <span className="user-icon" onClick={ handleClick }><FontAwesomeIcon icon={ faUser } /></span>
+        <span className="cmg-active-dropdown-item" onClick={ handleClick }><FontAwesomeIcon icon={ faUser } /></span>
         { isUserLogoutDropdownActive && <ul className='user-dropdown'>
             <li className='head-wrapper cmg-list-item'>
                 <h2 className='head name'>{ name }</h2>
@@ -195,15 +249,15 @@ const User = () => {
                 <span className='head role'>{ role.slice( 0, 1 ).toUpperCase() + role.slice( 1 ) }</span>
             </li>
             <li className='seperator'></li>
-            <li className='body cmg-list-item'>{ 'Dashboard' }</li>
-            <li className='body cmg-list-item'>{ 'Profile' }</li>
+            <li className='body cmg-list-item'><Link to="/dashboard" className='inner-item'>{ 'Dashboard' }</Link></li>
+            <li className='body cmg-list-item'><Link className='inner-item'>{ 'Profile' }</Link></li>
             <li className='seperator'></li>
-            <li className='body cmg-list-item'>{ 'Grades' }</li>
-            <li className='body cmg-list-item'>{ 'Calender' }</li>
-            <li className='body cmg-list-item'>{ 'Private files' }</li>
-            <li className='body cmg-list-item'>{ 'Reports' }</li>
+            <li className='body cmg-list-item'><Link className='inner-item'>{ 'Grades' }</Link></li>
+            <li className='body cmg-list-item'><Link className='inner-item'>{ 'Calender' }</Link></li>
+            <li className='body cmg-list-item'><Link className='inner-item'>{ 'Private files' }</Link></li>
+            <li className='body cmg-list-item'><Link className='inner-item'>{ 'Reports' }</Link></li>
             <li className='seperator'></li>
-            <li className='body cmg-list-item'>{ 'Preferences' }</li>
+            <li className='body cmg-list-item'><Link className='inner-item'>{ 'Preferences' }</Link></li>
             <li className='seperator'></li>
             <li className='foot cmg-list-item'>
                 <button className='logout-button' onClick={ handleLogout }>{ 'Log out' }</button>

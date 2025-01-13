@@ -1,5 +1,22 @@
 /*
 ==========================
+MARK: GLOBAL
+==========================
+*/
+    #cmg-header .action .cmg-active-dropdown-item {
+        padding: 10px;
+        border: 1px solid var(--actionBorder);
+        color: var(--headerColor);
+        border-radius: 5px;
+    }
+
+    #cmg-header .action .cmg-active-dropdown-item:hover {
+        transform: scale(1.1);
+        cursor: pointer;
+    }
+
+/*
+==========================
 MARK: USER
 ==========================
 */
@@ -11,10 +28,10 @@ MARK: USER
     position: absolute;
     top: 55px;
     right: 0;
-    background: #fff;
+    background: var(--background);
     padding: 20px;
     width: 300px;
-    box-shadow: 0px 0px 10px 0px #0000001f;
+    box-shadow: var(--boxShadow);
     border-radius: 3px;
     z-index: 99;
 }
@@ -23,12 +40,14 @@ MARK: USER
     display: block;
 }
 
-#cmg-head-user-wrapper .user-dropdown .body {
+#cmg-head-user-wrapper .user-dropdown .body .inner-item {
     padding: 10px;
     border-radius: 3px;
+    display: block;
+    color: var(--color);
 }
 
-#cmg-head-user-wrapper .user-dropdown .body:hover {
+#cmg-head-user-wrapper .user-dropdown .body .inner-item:hover {
     transform: scale(1.03);
     background: var(--default);
     color: var(--white);
@@ -37,16 +56,18 @@ MARK: USER
 #cmg-head-user-wrapper .user-dropdown .seperator {
     height: 1px;
     width: 100%;
-    background: black;
+    background: #a9a9a9;
     margin: 5px 0;
 }
 
 #cmg-head-user-wrapper .user-dropdown .head-wrapper .name {
     margin-bottom: 3px;
+    color: var(--color);
 }
 
 #cmg-head-user-wrapper .user-dropdown .head-wrapper .email {
     margin-bottom: 5px;
+    color: var(--color);
 }
 
 #cmg-head-user-wrapper .user-dropdown .head-wrapper .role {
@@ -66,3 +87,119 @@ MARK: USER
     box-shadow: 0px 0px 10px 0px #0d27f0cf;
     transform: scale(1.03);
 }
+
+/*
+==========================
+MARK: ADD NEW
+==========================
+*/
+    #add-new-wrapper .add-new-dropdown {
+        position: absolute;
+        top: 55px;
+        right: 0;
+        box-shadow: var(--boxShadow);
+        border-radius: 3px;
+        z-index: 99;
+    }
+
+    #add-new-wrapper .add-new-dropdown .dropdown-head {
+        background: var(--background);
+        padding: 10px;
+        color: var(--color);
+    }
+
+    #add-new-wrapper .add-new-dropdown-list {
+        display: grid;
+        grid-template-columns: repeat(2, 50%);
+        background: var(--default);
+    }
+
+    #add-new-wrapper .add-new-dropdown-list .cmg-list-item:hover {
+        background: var(--blue);
+        cursor: pointer;
+    }
+
+    #add-new-wrapper .cmg-list-item {
+        padding: 20px;
+        text-align: center;
+    }
+
+    #add-new-wrapper span.add-new-label {
+        display: block;
+        margin-top: 12px;
+        color: var(--white);
+    }
+
+    #add-new-wrapper .add-new-icon {
+        background: var(--white);
+        padding: 10px;
+        border-radius: 50%;
+    }
+
+/*
+==========================
+MARK: ACADEMIC YEAR
+==========================
+*/
+    #academic-year-wrapper .academic-year-dropdown {
+        position: absolute;
+        top: 50px;
+        width: 200px;
+        left: 50%;
+        box-shadow: var(--boxShadow);
+        transform: translate(-50%);
+        z-index: 9;
+        background: var(--background);
+        border-radius: 3px;
+    }
+
+    #academic-year-wrapper .cmg-list-item.active {
+        background: var(--default);
+        color: var(--color);
+    }
+
+    #academic-year-wrapper .cmg-list-item {
+        padding: 10px;
+        text-align: center;
+        color: var(--color);
+    }
+
+    #academic-year-wrapper .cmg-list-item:not(.active):hover {
+        background: var(--blue);
+        cursor: pointer;
+        color: var(--white);
+    }
+
+/*
+==========================
+MARK: LANGUAGE
+==========================
+*/
+    #language-wrapper .language-dropdown {
+        position: absolute;
+        top: 50px;
+        width: 200px;
+        left: 50%;
+        box-shadow: var(--boxShadow);
+        transform: translate(-50%);
+        z-index: 9;
+        background: var(--background);
+        border-radius: 3px;
+    }
+
+    #language-wrapper .cmg-list-item.active {
+        background: var(--default);
+        color: var(--color);
+    }
+
+    #language-wrapper .cmg-list-item {
+        padding: 10px;
+        text-align: center;
+        color: var(--color);
+    }
+
+    #language-wrapper .cmg-list-item:not(.active):hover {
+        background: var(--blue);
+        cursor: pointer;
+        color: var(--white);
+    }

@@ -7,15 +7,15 @@
 :root {
     --white: #ffffff;
     --black: #000000;
+    --color: var(--black);
+    --headerColor: #515b73;
+    --background: var(--white);
     --default: rgb(255 0 51);
     --darkGrey: #555;
     --lightGrey: #888;
     --actionBorder: #e9edf4;
     --blue: #0d29f0;
-}
-
-#cmg-wrapper {
-    background: var(--white);
+    --boxShadow: 0px 0px 10px 0px #0000001f;
 }
 
 a {
@@ -61,6 +61,10 @@ GLOBAL
 MARK: Global
 =========================
 */
+    #cmg-wrapper {
+        background: var(--background);
+    }
+
     #root .cmg-icon-wrapper {
         display: flex !important;
         gap: 10px;
@@ -89,16 +93,6 @@ MARK: Global
 
     #root .cmg-active-dropdown-item .label {
         margin-right: 5px;
-    }
-
-    #root .cmg-list-item.active {
-        background: var(--default);
-        color: var(--white);
-    }
-
-    #root .cmg-dropdown .cmg-list-item {
-        padding: 10px;
-        text-align: center;
     }
 
     body::-webkit-scrollbar {
@@ -135,7 +129,13 @@ MARK: DARK MODE
 =========================
 */
     #cmg-wrapper.dark {
-        background: var(--black);
+        /* --white: #000000;
+        --black: #ffffff; */
+        --actionBorder: #555;
+        --color: var(--white);
+        --background: var(--black);
+        --headerColor: var(--white);
+        --boxShadow: 0px 0px 10px 0px #efefef2e;
         /* --white: #ffffff;
         --black: #000000;
         --default: rgb(255 0 51);
@@ -157,6 +157,7 @@ MARK: Breadcrumb
 
     #cmg-breadcrumb .breadcrumb-item {
         font-size: 14px;
+        color: var(--color);
     }
 
     #cmg-breadcrumb .breadcrumb-item:not(:last-child):after {
@@ -173,7 +174,7 @@ MARK: Sidebar
     #root #cmg-sidebar {
         width: 250px;
         height: 100%;
-        background-color: var( --white );
+        background: var( --background );
         position: fixed;
         z-index: 1;
         padding: 10px 0 10px 10px;
@@ -226,24 +227,24 @@ MARK: Sidebar
     #cmg-sidebar .cmg-menu-item .cmg-list-item a {
         padding: 10px;
         display: block;
-        color: var( --black );
+        color: var( --color );
         font-size: 14px;
     }
 
     #cmg-sidebar .cmg-menu-item .cmg-list-item a:hover,
     #cmg-sidebar .cmg-menu-item .cmg-list-item.active a {
         background: var( --default );
-        color: var( --white );
+        color: var( --color );
     }
 
-    #cmg-sidebar .canvas-icon {
-        color: var(--darkGrey);
+    #cmg-header .canvas-icon {
+        color: var(--color);
         font-size: 18px;
     }
 
-    #cmg-sidebar .canvas-icon:hover {
+    #cmg-header .canvas-icon:hover {
         color: var(--default);
-        transform: scale(1.5);
+        transform: scale(1.1);
     }
 
 /*
@@ -262,7 +263,7 @@ MARK: Header
         display: flex;
         justify-content: space-between;
         align-items: center;
-        box-shadow: 0px 2px 10px -4px #00000026;
+        box-shadow: var(--boxShadow);
         padding: 0 20px;
         margin-left: 260px;
     }
@@ -301,7 +302,7 @@ MARK: Header
 
     #cmg-header .header .header-title {
         font-size: 16px;
-        color: var(--darkGrey);
+        color: var(--color);
     }
 
     #root .cmg-header-actions {
@@ -315,13 +316,8 @@ MARK: Header
         border-radius: 5px;
         border: 1px solid var(--actionBorder);
         width: 400px;
-    }
-
-    #cmg-header .action {
-        padding: 10px;
-        border: 1px solid var(--actionBorder);
-        color: #515b73;
-        border-radius: 5px;
+        background: var(--background);
+        color: var(--color);
     }
 
     #cmg-header .language-wrapper,
@@ -330,36 +326,10 @@ MARK: Header
         position: relative;
     }
 
-    #cmg-header .add-new-wrapper {
-        padding: 10px;
-    }
-
     #cmg-header .add-new-wrapper h2 {
         text-align: center;
     }
 
-    #cmg-header .add-new-wrapper .add-new-dropdown {
-        display: grid;
-        grid-template-columns: repeat( 2, 50% );   
-    }
-
-    #cmg-header .add-new-wrapper .add-new-dropdown .cmg-list-item span {
-        display: block;
-    }
-
-    #cmg-header .add-new-wrapper .add-new-dropdown .cmg-list-item {
-        background: var(--default);
-    }
-
-    #cmg-header .add-new-wrapper .add-new-dropdown .cmg-list-item {
-        background: var(--default);
-    }
-
-    #cmg-header .add-new-wrapper .add-new-dropdown .cmg-list-item .add-new-icon {
-        background: var(--white);
-        padding: 10px;
-        border-radius: 50%;
-    }
 /*
 ==============================
 ADMIN DASHBOARD
@@ -385,21 +355,24 @@ MARK: Admin Dashboard
 
     #cmg-main .dashboard-head .user-name{
         margin-bottom: 5px;
+        color: var(--color);
     }
 
     #cmg-main .dashboard-head .button-action {
         padding: 10px;
         border-radius: 5px;
-        color: var(--white);
+        color: var(--color);
     }
 
     #cmg-main .dashboard-head .button-action.add-student {
         background: var(--blue);
         margin-right: 10px;
+        color: #fff;
     }
 
     #cmg-main .dashboard-head .button-action.fees {
         background: var(--darkGrey);
+        color: var(--white);
     }
 
     #cmg-main .dashboard-welcome {
@@ -439,7 +412,7 @@ MARK: Admin Dashboard
     }
 
     #cmg-main .dashboard-highlights .highlight {
-        box-shadow: 0px 0px 10px 0px #0000001f;
+        box-shadow: var(--boxShadow);
         border-radius: 5px;
         padding: 20px;
     }
@@ -453,6 +426,7 @@ MARK: Admin Dashboard
         font-size: 30px;
         font-weight: 600;
         margin-bottom: 3px;
+        color: var(--color);
     }
 
     #cmg-main .dashboard-highlights .highlight-info .label {
@@ -513,12 +487,14 @@ MARK: Admin Dashboard
     #cmg-main .dashboard-highlights .highlight-foot .new-label,
     #cmg-main .dashboard-highlights .highlight-foot .new-count {
         font-size: 14px;
+        color: var(--color);
     }
 
     #cmg-main .dashboard-highlights .highlight-foot .old-count,
     #cmg-main .dashboard-highlights .highlight-foot .new-count {
         font-weight: 600;
         margin-left: 3px;
+        color: var(--color);
     }
 
     #fees-leave-request-wrapper {
@@ -529,7 +505,7 @@ MARK: Admin Dashboard
     }
 
     #fees-leave-request-wrapper .element {
-        box-shadow: 0px 0px 10px 0px #0000001f;
+        box-shadow: var(--boxShadow);
         border-radius: 5px;
     }
 
@@ -549,6 +525,7 @@ MARK: Admin Dashboard
         height: 50px;
         border-bottom: 1px solid var(--actionBorder);
         padding: 0 20px;
+        color: var(--color);
     }
 
     #fees-leave-request-wrapper .leave-requests-wrapper .body,
@@ -600,6 +577,7 @@ MARK: Admin Dashboard
         display: flex;
         justify-content: space-between;
         padding-top: 20px;
+        color: var(--color);
     }
 
     #fees-leave-request-wrapper .leave-requests-wrapper .applicant-thumb {
@@ -614,10 +592,12 @@ MARK: Admin Dashboard
 
     #fees-leave-request-wrapper .leave-requests-wrapper .applicant-info .applicant-post {
         font-size: 14px;
+        color: var(--color);
     }
 
     #fees-leave-request-wrapper .leave-requests-wrapper .applicant-info .applicant {
         font-size: 16px;
+        color: var(--color);
     }
 
     #fees-leave-request-wrapper .leave-requests-wrapper .applicant-info .application-type {
@@ -654,12 +634,13 @@ MARK: Admin Dashboard
 
     #fees-leave-request-wrapper .leave-requests-wrapper .request-accept {
         background: green;
-        color: var(--white);
+        color: var(--color);
+        margin-right: 10px;
     }
 
     #fees-leave-request-wrapper .leave-requests-wrapper .request-reject {
         background: red;
-        color: var(--white);
+        color: var(--color);
     }
 
     #dashboard-links {
@@ -678,11 +659,12 @@ MARK: Admin Dashboard
         border: 2px solid var(--white);
         padding: 20px;
         border-radius: 5px;
+        color: var(--color);
     }
 
     #dashboard-links .link .link-icon {
         padding: 15px;
-        color: var(--white);
+        color: var(--color);
         border-radius: 5px;
     }
 
@@ -733,6 +715,7 @@ MARK: Admin Dashboard
         border-radius: 50%;
         background: var(--white);
         font-size: 12px;
+        color: var(--black);
     }
 
     #dashboard-earnings {
@@ -755,7 +738,7 @@ MARK: Admin Dashboard
 
     #dashboard-earnings .finance-wrapper .finance {
         padding: 20px;
-        box-shadow: 0px 0px 10px 0px #0000001f;
+        box-shadow: var(--boxShadow);
         height: calc(290px/2);
     }
 
@@ -764,13 +747,17 @@ MARK: Admin Dashboard
     }
 
     #dashboard-earnings .finance-wrapper .finance .finance-label {
-        color: var(--lightGrey)
+        color: var(--lightGrey);
+    }
+
+    #dashboard-earnings .finance-wrapper .finance .finance-number {
+        color: var(--color);
     }
 
     #dashboard-earnings .finance-wrapper .finance .finance-icon {
         padding: 15px;
         background: #1abe17;
-        color: var(--white);
+        color: var(--color);
         border-radius: 5px;
     }
 
@@ -788,7 +775,7 @@ MARK: Admin Dashboard
 
     #dashboard-earnings .finance-details .collection {
         padding: 20px;
-        box-shadow: 0px 0px 10px 0px #0000001f;
+        box-shadow: var(--boxShadow);
         display: flex;
         justify-content: space-between;
         align-items: center;
@@ -806,6 +793,7 @@ MARK: Admin Dashboard
 
     #dashboard-earnings .finance-details .collection .money {
         font-size: 18px;
+        color: var(--color);
     }
 
     #dashboard-earnings .finance-details .collection .collection-percent {
@@ -837,7 +825,7 @@ MARK: Admin Dashboard
     #dashboard-earnings .notice-board {
         flex: 1;
         border-radius: 5px;
-        box-shadow: 0px 0px 10px 0px #0000001f;
+        box-shadow: var(--boxShadow);
     }
 
     #dashboard-earnings .notice-board .head {
@@ -853,13 +841,14 @@ MARK: Admin Dashboard
 
     #dashboard-earnings .notice-board .head .label {
         font-size: 18px;
+        color: var(--color);
     }
 
     #dashboard-earnings .notice-board .head .view-all {
         font-size: 14px;
         padding: 3px 5px;
         background: #1abe17;
-        color: var(--white);
+        color: var(--color);
         border-radius: 5px;
     }
 
@@ -902,6 +891,7 @@ MARK: Admin Dashboard
 
     #dashboard-earnings .notice-board .foot .notice .notice-title {
         margin-bottom: 5px;
+        color: var(--color);
     }
 
     #dashboard-earnings .notice-board .foot .notice .notice-date-icon {
@@ -919,7 +909,7 @@ MARK: Admin Dashboard
         background: var(--lightGrey);
         padding: 5px;
         border-radius: 5px;
-        color: var(--white);
+        color: var(--color);
         font-size: 14px;
     }
 
@@ -930,8 +920,9 @@ MARK: Admin Dashboard
 
     #dashboard-foot .dashboard-foot-item {
         flex: 1;
-        box-shadow: 0px 0px 10px 0px #0000001f;
+        box-shadow: var(--boxShadow);
         border-radius: 5px;
+        color: var(--color);
     }
 
     #dashboard-foot .dashboard-foot-item .head {
@@ -1065,7 +1056,7 @@ MARK: Admin Dashboard
 
     #dashboard-foot .to-do-list .foot .list .todo-status {
         font-size: 14px;
-        color: var(--white);
+        color: var(--color);
         padding: 3px 5px;
         border-radius: 5px;
     }

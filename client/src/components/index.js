@@ -9,7 +9,18 @@ import { ourFetch } from './functions'
 export const Index = () => {
     const global = useContext( GLOBALCONTEXT )
     const navigate = useNavigate()
-    const { setIsloggedIn, setLoggedInUser, setOverlay, overlay, setIsUserLogoutDropdownActive, setIsDarkMode, isDarkMode } = global
+    const { 
+        setIsloggedIn,
+        setLoggedInUser,
+        setOverlay,
+        overlay,
+        setIsUserLogoutDropdownActive,
+        setIsDarkMode,
+        isDarkMode,
+        setIsUserAddNewActive,
+        setIsAcademicYearActive,
+        setIsLanguageActive
+    } = global
 
     useEffect(() => {
         ourFetch({
@@ -52,6 +63,9 @@ export const Index = () => {
     const handleOverlay = () => {
         setOverlay( false )
         setIsUserLogoutDropdownActive( false )
+        setIsUserAddNewActive( false )
+        setIsAcademicYearActive( false )
+        setIsLanguageActive( false )
     }
 
     return <>
