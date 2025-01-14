@@ -19,7 +19,8 @@ export const Index = () => {
         isDarkMode,
         setIsUserAddNewActive,
         setIsAcademicYearActive,
-        setIsLanguageActive
+        setIsLanguageActive,
+        setNewRegister
     } = global
 
     useEffect(() => {
@@ -66,6 +67,7 @@ export const Index = () => {
         setIsUserAddNewActive( false )
         setIsAcademicYearActive( false )
         setIsLanguageActive( false )
+        setNewRegister( false )
     }
 
     return <>

@@ -45,6 +45,8 @@ con.connect(function(err) {
         let coursesQuery = "CREATE TABLE IF NOT EXISTS courses ("
           coursesQuery += "id INT(11) NOT NULL AUTO_INCREMENT PRIMARY KEY,"
           coursesQuery += "name VARCHAR(255) NOT NULL,"
+          coursesQuery += "abbreviation VARCHAR(255) NOT NULL,"
+          coursesQuery += "duration INT(11) NOT NULL DEFAULT 4,"
           coursesQuery += "registered_date DATETIME DEFAULT CURRENT_TIMESTAMP "
           coursesQuery += ");"
         con.query( coursesQuery, function (err, result) {
@@ -60,6 +62,8 @@ con.connect(function(err) {
           subjectsQuery += "id INT(11) NOT NULL AUTO_INCREMENT PRIMARY KEY,"
           subjectsQuery += "name VARCHAR(255) NOT NULL,"
           subjectsQuery += "course_id INT(11) NOT NULL,"
+          subjectsQuery += "semester INT(11) NOT NULL,"
+          subjectsQuery += "year INT(11) NOT NULL,"
           subjectsQuery += "registered_date DATETIME DEFAULT CURRENT_TIMESTAMP,"
           subjectsQuery += "FOREIGN KEY(course_id) REFERENCES courses(id) "
           subjectsQuery += ");"
@@ -67,8 +71,26 @@ con.connect(function(err) {
           if( err ) throw err
           console.log( 'Subjects Table created.' )
         });
+
+        /**
+         * Create Notification Table
+         * MARK: Notification
+         */
+        let notificationQuery = "CREATE TABLE IF NOT EXISTS notification ("
+          notificationQuery += "id INT(11) NOT NULL AUTO_INCREMENT PRIMARY KEY,"
+          notificationQuery += "title VARCHAR(255) NOT NULL,"
+          notificationQuery += "excerpt LONGTEXT NOT NULL,"
+          notificationQuery += "sender INT(11) NOT NULL,"
+          notificationQuery += "receiver VARCHAR(255) NOT NULL,"
+          notificationQuery += "registered_date DATETIME DEFAULT CURRENT_TIMESTAMP,"
+          notificationQuery += "FOREIGN KEY(sender) REFERENCES users(id) "
+          notificationQuery += ");"
+        con.query( notificationQuery, function (err, result) {
+          if( err ) throw err
+          console.log( 'Notifications Table created.' )
+        });
       }
     });
 });
- 
+  
 // module.exports = con

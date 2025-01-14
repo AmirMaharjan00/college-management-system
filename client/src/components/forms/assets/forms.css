@@ -129,7 +129,41 @@ MARK: REGISTRATION
         border-radius: 30px;
     }
 
-    #cmg-registration #registration-form {
+    #cmg-registration.new-register {
+        z-index: 99;
+    }
+
+    #cmg-registration.new-register .form-overlay {
+        z-index: 9;
+        position: absolute;
+        height: 100%;
+        width: 50%;
+        border-radius: 0px 30px 30px 0px;
+    }
+    #cmg-registration.new-register .form-overlay.success {
+        background: #008d00db;
+    }
+
+    #cmg-registration.new-register .form-overlay.error {
+        background: #8d0000db;
+    }
+
+    #cmg-registration.new-register .form-overlay .overlay-message {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        color: white;
+        text-align: center;
+    }
+
+    #cmg-registration.new-register .form-wrapper {
+        flex: 1;
+        background: var(--white);
+        border-radius: 0 30px 30px 0;
+    }
+
+    #cmg-registration:not(.new-register) #registration-form {
         flex: 1;
         background: var(--white);
         border-radius: 0 30px 30px 0;
@@ -160,20 +194,27 @@ MARK: REGISTRATION
 
     #cmg-registration #registration-form .form-head {
         text-align: center;
-        margin: 10px 0;
+        margin: 20px 0;
     }
 
     #cmg-registration #registration-form h2.form-title {
         margin-bottom: 5px;
     }
 
-    #cmg-registration #registration-form input:not(input[type="radio"]) {
+    #cmg-registration #registration-form input:not(input[type="radio"]),
+    #cmg-registration #registration-form select,
+    #cmg-registration #registration-form textarea {
         display: block;
         width: 100%;
         box-sizing: border-box;
         margin-top: 5px;
         border-radius: 5px;
         border: 1px solid black;
+    }
+
+    #cmg-registration #registration-form textarea {
+        height: 200px;
+        padding: 10px;
     }
 
     #cmg-registration #registration-form input[type="radio"] {

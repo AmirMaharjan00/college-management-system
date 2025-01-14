@@ -37,9 +37,9 @@ app.listen(port, () => {
 });
 
 /**
- * MARK: Insert Query
+ * MARK: User Insert Query
  */
-app.post('/insert', (req, res) => {
+app.post('/insert-user', (req, res) => {
   const { name, email, password, contactNumber, address, gender, role } = req.body
   const insertQuery = 'INSERT INTO users (name, email, password, contact_number, address, gender, role) VALUES (?, ?, ?, ?, ?, ?, ?)'
   con.query( insertQuery, [ name, email, password, contactNumber, address, gender, role ], ( error, result ) => {
@@ -47,6 +47,81 @@ app.post('/insert', (req, res) => {
       return res.status( 500 ).json({ error: "Database insertion failed" });
     }
     return res.status( 200 ).json({ message: "Data inserted successfully!", id: result.insertId, success: true });
+  })
+});
+
+/**
+ * MARK: Course Insert Query
+ */
+app.post('/insert-course', (req, res) => {
+  const { name, abbreviation, duration } = req.body
+  const selectQuery = `SELECT * FROM courses WHERE name="${ name }" AND abbreviation="${ abbreviation }"`
+  const insertQuery = 'INSERT INTO courses (name, abbreviation, duration) VALUES (?, ?, ?)'
+  con.query( selectQuery, ( error, result ) => {
+    if ( error ) {
+      return res.status( 500 ).json({ isError: true, success: false, message: "Something went wrong. Please Try again." });
+    }
+    if( result.length <= 0 ) {
+      con.query( insertQuery, [ name, abbreviation, duration ], ( error, result ) => {
+        if ( error ) {
+          return res.status( 500 ).json({ message: "Failed ! Please Try again.", success: false, isError: true });
+        }
+        return res.status( 200 ).json({ message: "SuccessFully Registered.", id: result.insertId, success: true });
+      })
+    } else {
+      return res.status( 200 ).json({ message: "Course already Exists.", success: false, isExists: true });
+    }
+  })
+});
+
+/**
+ * MARK: Subject Insert Query
+ */
+app.post('/insert-subject', (req, res) => {
+  console.log( req.body )
+  const { name, semester, duration, course } = req.body
+  const selectQuery = `SELECT * FROM subjects WHERE name="${ name }" AND semester="${ semester }" AND year="${ duration }" AND course_id="${ course }"`
+  const insertQuery = 'INSERT INTO subjects (name, semester, year, course_id) VALUES (?, ?, ?, ?)'
+  con.query( selectQuery, ( error, result ) => {
+    if ( error ) {
+      return res.status( 500 ).json({ isError: true, success: false, message: "Something went wrong. Please Try again." });
+    }
+    if( result.length <= 0 ) {
+      con.query( insertQuery, [ name, semester, duration, course ], ( error, result ) => {
+        console.log( error )
+        if ( error ) {
+          return res.status( 500 ).json({ message: "Failed ! Please Try again.", success: false, isError: true });
+        }
+        return res.status( 200 ).json({ message: "SuccessFully Registered.", id: result.insertId, success: true });
+      })
+    } else {
+      return res.status( 200 ).json({ message: "Subject already Exists.", success: false, isExists: true });
+    }
+  })
+});
+
+/**
+ * MARK: Notification Insert Query
+ */
+app.post('/insert-notification', (req, res) => {
+  console.log( req.body )
+  const { title, details, sendTo, id } = req.body
+  const selectQuery = `SELECT * FROM notification WHERE title="${ title }" AND excerpt="${ details }" AND sender="${ id }" AND receiver="${ sendTo }"`
+  const insertQuery = 'INSERT INTO notification (title, excerpt, sender, receiver) VALUES (?, ?, ?, ?)'
+  con.query( selectQuery, ( error, result ) => {
+    if ( error ) {
+      return res.status( 500 ).json({ isError: true, success: false, message: "Something went wrong. Please Try again." });
+    }
+    if( result.length <= 0 ) {
+      con.query( insertQuery, [ title, details, id, sendTo ], ( error, result ) => {
+        if ( error ) {
+          return res.status( 500 ).json({ message: "Failed ! Please Try again.", success: false, isError: true });
+        }
+        return res.status( 200 ).json({ message: "SuccessFully Added.", id: result.insertId, success: true });
+      })
+    } else {
+      return res.status( 200 ).json({ message: "Notification already Exists.", success: false, isExists: true });
+    }
   })
 });
 
@@ -120,6 +195,19 @@ app.post( '/users', ( request, res ) => {
 */
 app.post( '/courses', ( request, res ) => { 
   const selectQuery = `SELECT * FROM courses`
+  con.query( selectQuery, ( error, result ) => {
+    if ( error ) {
+      return res.status( 500 ).json({ error: "Database selection failed" });
+    }
+    return res.status( 200 ).json({ result, success: true });
+  })
+});
+
+/**
+* MARK: Subjects API
+*/
+app.post( '/subjects', ( request, res ) => { 
+  const selectQuery = `SELECT * FROM subjects`
   con.query( selectQuery, ( error, result ) => {
     if ( error ) {
       return res.status( 500 ).json({ error: "Database selection failed" });

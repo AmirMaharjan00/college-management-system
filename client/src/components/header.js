@@ -1,14 +1,17 @@
-import { useContext, createContext } from 'react'
+import { useContext, createContext, useState } from 'react'
 import { useNavigate, Link } from 'react-router-dom';
 import logo from './assets/images/sscollege-logo.jpg'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faBars, faGraduationCap, faUserGroup, faUsers, faFileInvoiceDollar, faMoon, faBell, faMessage, faUser } from '@fortawesome/free-solid-svg-icons';
+import { faBars, faGraduationCap, faUserGroup, faUsers, faBook, faMoon, faBell, faMessage, faUser } from '@fortawesome/free-solid-svg-icons';
 import { faSquarePlus} from '@fortawesome/free-regular-svg-icons';
 import { GLOBALCONTEXT } from '../App';
 import './assets/css/header.css'
 import { ourFetch } from './functions';
+import { AddNewUser } from './forms/add-new-user'
+import { AddNewCourseSubject } from './forms/add-new-cs'
+import { AddNewNotification } from './forms/add-new-notification'
 
-const HeaderContext = createContext()
+export const HeaderContext = createContext()
 /**
  * Header
  * 
@@ -16,13 +19,14 @@ const HeaderContext = createContext()
  */
 export const Header = () => {
     const Global = useContext( GLOBALCONTEXT )
-    const { loggedInUser } = Global
+    const { newRegister } = Global
+    const [ registerNew, setRegisterNew ] = useState( 'student' )
 
     const contextObject = {
-
+        registerNew, setRegisterNew
     }
 
-    return <>
+    return <HeaderContext.Provider value={ contextObject }>
         <header className="cmg-header" id="cmg-header">
             <div className="header">
                 <Link to="/dashboard" className="logo-wrapper">
@@ -48,7 +52,10 @@ export const Header = () => {
                 </div>
             </div>
         </header>
-    </>
+        { newRegister && ( [ 'student', 'teacher', 'staffs' ].includes( registerNew ) ) && <AddNewUser role={ registerNew }/> }
+        { newRegister && ( [ 'course', 'subject' ].includes( registerNew ) ) && <AddNewCourseSubject type={ registerNew }/> }
+        { newRegister && ( [ 'notification' ].includes( registerNew ) ) && <AddNewNotification type={ registerNew }/> }
+    </HeaderContext.Provider>
 }
 
 /**
@@ -107,7 +114,9 @@ const Language = () => {
  */
 const AddNew = () => {
     const Global = useContext( GLOBALCONTEXT )
-    const { isUserAddNewActive, setIsUserAddNewActive, setOverlay } = Global
+    const Header = useContext( HeaderContext )
+    const { isUserAddNewActive, setIsUserAddNewActive, setOverlay, setNewRegister } = Global
+    const { setRegisterNew } = Header
 
     /* Handle Click */
     const handleClick = () => {
@@ -115,27 +124,36 @@ const AddNew = () => {
         setOverlay( true )
     }
 
+    /* Add New Array */
+    const addNewArray = {
+        student: faGraduationCap,
+        teacher: faUserGroup,
+        staffs: faUsers,
+        course: faBook,
+        subject: faBook,
+        notification: faBell
+    }
+
+    /* Handle Item Click */
+    const handleItemClick = ( toRegister ) => {
+        setNewRegister( true )
+        setIsUserAddNewActive( false )
+        setRegisterNew( toRegister )
+    }
+
     return <div className="action add-new-wrapper" id="add-new-wrapper">
         <span className="cmg-active-dropdown-item" onClick={ handleClick }><FontAwesomeIcon icon={ faSquarePlus } /></span>
         { isUserAddNewActive && <div className="dropdown-box add-new-dropdown">
             <h2 className='dropdown-head'>Add New</h2>
             <ul className="add-new-dropdown-list">
-                <li className="cmg-list-item">
-                    <span className="add-new-icon student"><FontAwesomeIcon icon={ faGraduationCap } /></span>
-                    <span className='add-new-label'>Student</span>
-                </li>
-                <li className="cmg-list-item">
-                    <span className="add-new-icon teacher"><FontAwesomeIcon icon={ faUserGroup } /></span>
-                    <span className='add-new-label'>Teachers</span>
-                </li>
-                <li className="cmg-list-item">
-                    <span className="add-new-icon staff"><FontAwesomeIcon icon={ faUsers } /></span>
-                    <span className='add-new-label'>Staffs</span>
-                </li>
-                <li className="cmg-list-item invoice">
-                    <span className="add-new-icon"><FontAwesomeIcon icon={ faFileInvoiceDollar } /></span>
-                    <span className='add-new-label'>Invoice</span>
-                </li>
+                {
+                    Object.entries( addNewArray ).map(([ key, value ]) => {
+                        return <li className="cmg-list-item" onClick={() => handleItemClick( key )} key={ key }>
+                            <span className="add-new-icon"><FontAwesomeIcon icon={ value } /></span>
+                            <span className='add-new-label'>{ key.slice( 0, 1 ).toUpperCase() + key.slice( 1 ) }</span>
+                        </li>
+                    })
+                }
             </ul>
         </div> }
     </div>

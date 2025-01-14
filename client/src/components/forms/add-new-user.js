@@ -1,6 +1,5 @@
-import { useState, useEffect } from 'react'
-import { useNavigate } from 'react-router-dom'
-import './assets/forms.css'
+import { useState, useEffect, useContext } from 'react'
+import { GLOBALCONTEXT } from '../../App'
 
 /**
  * Registration Form
@@ -8,25 +7,29 @@ import './assets/forms.css'
  * MARK: Registration
  * @since 1.0.0
  */
-export const Registration = () => {
+export const AddNewUser = ( args ) => {
+    const Global = useContext( GLOBALCONTEXT )
+    const { setOverlay, setNewRegister } = Global
+    const { role = 'student' } = args
     const [ name, setName ] = useState( '' )
     const [ email, setEmail ] = useState( '' )
     const [ password, setPassword ] = useState( '' )
     const [ contactNumber, setContactNumber ] = useState( '' )
     const [ address, setAddress ] = useState( '' )
     const [ gender, setGender ] = useState( 'male' )
-    const [ role, setRole ] = useState( 'student' )
     const [ nameErrorMsg, setNameErrorMsg ] = useState( '*' )
     const [ emailErrorMsg, setEmailErrorMsg ] = useState( '*' )
     const [ passwordErrorMsg, setPasswordErrorMsg ] = useState( '*' )
     const [ contactNumberErrorMsg, setContactNumberErrorMsg ] = useState( '*' )
     const [ addressErrorMsg, setAddressErrorMsg ] = useState( '*' )
     const [ registrationSuccess, setRegistrationSuccess ] = useState( false )
-    const navigate = useNavigate()
 
     useEffect(() => {
         if( registrationSuccess ) {
-            navigate( '/login' )
+            setTimeout(() => {
+                setNewRegister( false )
+                setOverlay( false )
+            }, 3000)
         }
     }, [ registrationSuccess ])
 
@@ -53,9 +56,6 @@ export const Registration = () => {
         }
         if( nameAttribute === 'gender' ) {
             setGender( value )
-        }
-        if( nameAttribute === 'role' ) {
-            setRole( value )
         }
     }
 
@@ -185,7 +185,7 @@ export const Registration = () => {
     * Validate Role
     * MARK: Role
     */
-    const validateRole = () => {
+    const validateRole = ( role ) => {
         const roleRegex = /[a-zA-Z]/;
         let isValidRole = roleRegex.test( role );
         if( ! isValidRole ) {
@@ -208,7 +208,6 @@ export const Registration = () => {
         let isValidGender = validateGender()
         let isvalidateRole = validateRole()
         if( isValidName && isValidEmail && isValidPassword && isValidContactNumber && isValidAddress && isValidGender && isvalidateRole ) {
-
             fetch( 'http://localhost:5000/insert-user', {
                 method: "POST",
                 headers: {
@@ -228,12 +227,13 @@ export const Registration = () => {
     /*
     * MARK: Main
     */
-    return <div id="root-inner">
-        <div className='cmg-registration' id="cmg-registration">
-            <div className="college-logo-wrapper"></div>
+    return <div className='cmg-registration new-register' id="cmg-registration">
+        <div className="college-logo-wrapper"></div>
+        <div className='form-wrapper'>
+            { registrationSuccess && <div className='form-overlay'></div> }
             <form id="registration-form" method="POST">
                 <div className='form-head'>
-                    <h2 className='form-title'>{ 'Register Here.' }</h2>
+                    <h2 className='form-title'>{ `Register ${ role.slice( 0, 1 ).toUpperCase() + role.slice( 1 ) }.` }</h2>
                     <span className='form-excerpt'>{ 'Create a new account.' }</span>
                 </div>
                 <div className='form-field'>
@@ -284,21 +284,8 @@ export const Registration = () => {
                         </div>
                     </div>
                 </div>
-                <div className='form-field is-flex radio-field'>
-                    <label className='form-label'>{ 'Role : ' }</label>
-                    <div className='form-field-inner-wrapper is-flex'>
-                        <div className='form-field-inner'>
-                            <input type="radio" name="role" value="student" checked={ role === 'student' ? true : false } onChange={ handleInputChange } required/>
-                            <label className='form-label'>{ 'Student' }</label>
-                        </div>
-                        <div className='form-field-inner'>
-                            <input type="radio" name="role" value="teacher" checked={ role === 'teacher' ? true : false } onChange={ handleInputChange } required/>
-                            <label className='form-label'>{ 'Teacher' }</label>
-                        </div>
-                    </div>
-                </div>
                 <div className='form-submit'>
-                    <button onClick={ formSubmit }>{ 'Register' }</button>
+                    <button onClick={ formSubmit } disabled={ registrationSuccess }>{ registrationSuccess ? 'Registered Successfully' : 'Register' }</button>
                 </div>
             </form>
         </div>

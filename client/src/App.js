@@ -21,6 +21,7 @@ function App() {
   const [ isUserAddNewActive, setIsUserAddNewActive ] = useState( false )
   const [ isAcademicYearActive, setIsAcademicYearActive ] = useState( false )
   const [ isLanguageActive, setIsLanguageActive ] = useState( false )
+  const [ newRegister, setNewRegister ] = useState( false )
 
   /* Global Context Object */
   let globalContextObject = {
@@ -31,7 +32,8 @@ function App() {
     isDarkMode, setIsDarkMode,
     isUserAddNewActive, setIsUserAddNewActive,
     isAcademicYearActive, setIsAcademicYearActive,
-    isLanguageActive, setIsLanguageActive
+    isLanguageActive, setIsLanguageActive,
+    newRegister, setNewRegister
   }
 
   return <GLOBALCONTEXT.Provider value={ globalContextObject }>

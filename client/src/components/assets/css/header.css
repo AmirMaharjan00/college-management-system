@@ -117,6 +117,7 @@ MARK: ADD NEW
     #add-new-wrapper .add-new-dropdown-list .cmg-list-item:hover {
         background: var(--blue);
         cursor: pointer;
+        transform: scale(1.03);
     }
 
     #add-new-wrapper .cmg-list-item {

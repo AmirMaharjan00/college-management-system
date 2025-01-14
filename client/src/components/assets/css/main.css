@@ -36,6 +36,10 @@ input {
     padding: 10px;
 }
 
+select {
+    padding: 10px 0;
+}
+
 /* latin-ext */
 @font-face {
     font-family: 'Outfit';
