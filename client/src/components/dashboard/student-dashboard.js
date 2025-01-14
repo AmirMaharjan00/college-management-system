@@ -486,7 +486,7 @@ const Highlights = () => {
 
     useEffect(() => {
         ourFetch({
-            api: '/users',
+            api: '/users-student-teacher',
             callback: usersFetchCallback
         })
         ourFetch({

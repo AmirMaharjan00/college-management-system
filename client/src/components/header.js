@@ -1,8 +1,9 @@
-import { useContext, createContext, useState } from 'react'
+import { useContext, createContext, useState, useEffect, useMemo } from 'react'
 import { useNavigate, Link } from 'react-router-dom';
 import logo from './assets/images/sscollege-logo.jpg'
+import background from './assets/images/background.jpg'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faBars, faGraduationCap, faUserGroup, faUsers, faBook, faMoon, faBell, faMessage, faUser } from '@fortawesome/free-solid-svg-icons';
+import { faBars, faGraduationCap, faCircleXmark, faXmark, faPaperPlane, faUserGroup, faUsers, faBook, faMoon, faBell, faMessage, faUser } from '@fortawesome/free-solid-svg-icons';
 import { faSquarePlus} from '@fortawesome/free-regular-svg-icons';
 import { GLOBALCONTEXT } from '../App';
 import './assets/css/header.css'
@@ -19,7 +20,7 @@ export const HeaderContext = createContext()
  */
 export const Header = () => {
     const Global = useContext( GLOBALCONTEXT )
-    const { newRegister } = Global
+    const { newRegister, isNotificationShown, notificationId, chatId, showChat } = Global
     const [ registerNew, setRegisterNew ] = useState( 'student' )
 
     const contextObject = {
@@ -27,6 +28,7 @@ export const Header = () => {
     }
 
     return <HeaderContext.Provider value={ contextObject }>
+        { isNotificationShown && <div className='notification-overlay'></div> }
         <header className="cmg-header" id="cmg-header">
             <div className="header">
                 <Link to="/dashboard" className="logo-wrapper">
@@ -55,6 +57,8 @@ export const Header = () => {
         { newRegister && ( [ 'student', 'teacher', 'staffs' ].includes( registerNew ) ) && <AddNewUser role={ registerNew }/> }
         { newRegister && ( [ 'course', 'subject' ].includes( registerNew ) ) && <AddNewCourseSubject type={ registerNew }/> }
         { newRegister && ( [ 'notification' ].includes( registerNew ) ) && <AddNewNotification type={ registerNew }/> }
+        { isNotificationShown && <ShowNotification id={ notificationId } /> }
+        { showChat && <Chat id={ chatId } /> }
     </HeaderContext.Provider>
 }
 
@@ -195,8 +199,68 @@ const DarkMode = () =>{
  * @since 1.0.0
  */
 const Notification = () =>{
-    return <div className="action notification-wrapper">
-        <span className="cmg-active-dropdown-item"><FontAwesomeIcon icon={ faBell } /></span>
+    const Global = useContext( GLOBALCONTEXT )
+    const { isNotificationDropdownActive, setIsNotificationDropdownActive, setOverlay, loggedInUser, setIsNotificationShown, setNotificationId } = Global
+    const { role, id } = loggedInUser
+    const [ notifications, setNotifications ] = useState([])
+    const [ loadAll, setLoadAll ] = useState( false )
+
+    useEffect(() => {
+        ourFetch({
+            api: '/notification',
+            callback: notificationCallback
+        })
+    }, [])
+
+    /* Notification Callback */
+    const notificationCallback = ( data ) => {
+        let { success, result } = data
+        if( success ) setNotifications( result )
+    }
+
+    /* Handle Click */
+    const handleClick = () => {
+        setIsNotificationDropdownActive( ! isNotificationDropdownActive )
+        setOverlay( true )
+    }
+
+    /* Handle show all notification */
+    const handleShowAllNotification = () => {
+        setLoadAll( true )
+    }
+
+    /* Get Notification */
+    const getNofication = ( notificationId ) => {
+        setNotificationId( notificationId )
+        setIsNotificationShown( true )
+        setIsNotificationDropdownActive( false )
+        setOverlay( false )
+    }
+
+    return <div className="action notification-wrapper" id="notification-wrapper">
+        <span className="cmg-active-dropdown-item" onClick={ handleClick }><FontAwesomeIcon icon={ faBell } /></span>
+        { isNotificationDropdownActive && <ul className='notification-dropdown'>
+            <div className='notification-head'>
+                <h2 className='title'>{ 'Notifications' }</h2>
+            </div>
+            {
+                notifications.map(( notification, index ) => {
+                    let { id: notificationId, title, registered_date: date, receiver, sender } = notification 
+                    if( ( receiver !== role && receiver !== 'all' ) || ( sender === id ) ) return
+                    if( ! loadAll ) {
+                        if( index >= 7 ) return
+                    }
+                    return <div className='cmg-list-item' onClick={() => getNofication( notificationId ) } key={ index }>
+                        <figure className='thumb-wrapper'></figure>
+                        <div className='notification-content'>
+                            <h2 className='title'>{ title }</h2>
+                            <span className='date'>{ date }</span>
+                        </div>
+                    </div>
+                })
+            }
+            { ! loadAll && <button className='notification-button' onClick={ handleShowAllNotification }>{ 'Show all notification' }</button> }
+        </ul>}
     </div>
 }
 
@@ -206,8 +270,73 @@ const Notification = () =>{
  * @since 1.0.0
  */
 const Message = () =>{
-    return <div className="action message-wrapper">
-        <span className="cmg-active-dropdown-item"><FontAwesomeIcon icon={ faMessage } /></span>
+    const Global = useContext( GLOBALCONTEXT )
+    const { isMessageDropdownActive, setIsMessageDropdownActive, setOverlay, setChatId, setShowChat } = Global
+    const [ search, setSearch ] = useState( '' )
+    const [ users, setUsers ] = useState( '' )
+
+    useEffect(() => {
+        ourFetch({
+            api: '/users',
+            callback: usersCallback
+        })
+    }, [])
+
+    /* Users Callback */
+    const usersCallback = ( data ) => {
+        let { success, result } = data
+        if( success ) setUsers( result )
+    }
+
+    /* Handle Click */
+    const handleClick = () => {
+        setIsMessageDropdownActive( true )
+        setOverlay( true )
+    }
+
+    /* Handle Search */
+    const handleSearch = ( event ) => {
+        setSearch( event.target.value )
+    }
+
+    /* Filter users according to search */
+    const filteredUsers = useMemo(() => {
+        if( search ) {
+            return users.filter( user => user.name.toLowerCase().includes( search.toLowerCase() ) )
+        }
+        return users
+    }, [ search, users ])
+
+    /* Get Chat */
+    const getChat = ( userId ) => {
+        setIsMessageDropdownActive( false )
+        setShowChat( true )
+        setChatId( userId )
+        setOverlay( false )
+    }
+
+    return <div className="action message-wrapper" id="message-wrapper">
+        <span className="cmg-active-dropdown-item" onClick={ handleClick }><FontAwesomeIcon icon={ faMessage } /></span>
+        { isMessageDropdownActive && <ul className='message-dropdown'>
+            <div className='message-head'>
+                <h2 className='title'>{ 'Chats' }</h2>
+                <input type="text" placeholder='Search...' value={ search } onChange={ handleSearch } autoFocus/>
+            </div>
+            <div className='inner-list'>
+                {
+                    filteredUsers?.map(( user, index ) => {
+                        let { name, id: userId } = user
+                        return <div className='cmg-list-item' onClick={() => getChat( userId ) } key={ index }>
+                            <figure className='thumb-wrapper'></figure>
+                            <div className='notification-content'>
+                                <span className='title'>{ name }</span>
+                                <span className='last-message'>{ 'Hello, This is my last message.' }</span>
+                            </div>
+                        </div>
+                    })
+                }
+            </div>
+        </ul>}
     </div>
 }
 
@@ -281,5 +410,102 @@ const User = () => {
                 <button className='logout-button' onClick={ handleLogout }>{ 'Log out' }</button>
             </li>
         </ul>}
+    </div>
+}
+
+/**
+ * MARK: Show Notification
+ * 
+ * @since 1.0.0
+ */
+const ShowNotification = ( props ) => {
+    const Global = useContext( GLOBALCONTEXT )
+    const { setIsNotificationShown } = Global
+    const { id } = props
+    const [ notification, setNotification ] = useState({})
+
+    useEffect(() => {
+        ourFetch({
+            api: '/notification-by-id',
+            callback: notificationCallback,
+            body: JSON.stringify({ id })
+        })
+    }, [])
+
+    /* Notification Callback */
+    const notificationCallback = ( data ) => {
+        let { result, success } = data
+        if( success ) {
+            setNotification( result )
+        }
+    }
+
+    /* Handle Close */
+    const handleClose = () => {
+        setIsNotificationShown( false )
+    }
+
+    return <div className='cmg-view-notification' id="cmg-view-notification">
+        <h2 className='title'>{ notification.title }</h2>
+        <span className='date'>{ notification.registered_date }</span>
+        <figure className='thumb-wrapper'>
+            <img src={ background } alt="Notification Image" />
+        </figure>
+        <p className='excerpt'>{ notification.excerpt }</p>
+        <FontAwesomeIcon className="close" icon={ faCircleXmark } onClick={ handleClose }/>
+    </div>
+}
+
+/**
+ * MARK: Chat
+ * 
+ * @since 1.0.0
+ */
+const Chat = ( props ) => {
+    const Global = useContext( GLOBALCONTEXT )
+    const { setShowChat } = Global
+    const { id } = props
+    const [ chat, setChat ] = useState({})
+    const { name } = chat
+
+    useEffect(() => {
+        ourFetch({
+            api: '/user-by-id',
+            callback: chatCallback,
+            body: JSON.stringify({ id })
+        })
+    }, [])
+
+    /* Chat Callback */
+    const chatCallback = ( data ) => {
+        console.log( data )
+        let { result, success } = data
+        if( success ) {
+            setChat( result )
+        }
+    }
+
+    /* Handle Close */
+    const handleClose = () => {
+        setShowChat( false )
+    }
+
+    return <div className='cmg-chat' id="cmg-chat">
+        <div className='head'>
+            <div className='user'>
+                <figure className='thumb-wrapper'>
+                    <img src={ background } alt="Notification Image" />
+                </figure>
+                <h2 className='title'>{ name }</h2>
+            </div>
+            <FontAwesomeIcon className="close" icon={ faXmark } onClick={ handleClose } />
+        </div>
+        <div className='body'>
+            Say hi.
+        </div>
+        <div className='foot'>
+            <input type="text" placeholder='Aa' autoFocus/>
+            <FontAwesomeIcon className="send" icon={ faPaperPlane } />
+        </div>
     </div>
 }

@@ -22,6 +22,12 @@ function App() {
   const [ isAcademicYearActive, setIsAcademicYearActive ] = useState( false )
   const [ isLanguageActive, setIsLanguageActive ] = useState( false )
   const [ newRegister, setNewRegister ] = useState( false )
+  const [ isNotificationDropdownActive, setIsNotificationDropdownActive ] = useState( false )
+  const [ isMessageDropdownActive, setIsMessageDropdownActive ] = useState( false )
+  const [ isNotificationShown, setIsNotificationShown ] = useState( false )
+  const [ notificationId, setNotificationId ] = useState( 0 )
+  const [ showChat, setShowChat ] = useState( false )
+  const [ chatId, setChatId ] = useState( 0 )
 
   /* Global Context Object */
   let globalContextObject = {
@@ -33,7 +39,13 @@ function App() {
     isUserAddNewActive, setIsUserAddNewActive,
     isAcademicYearActive, setIsAcademicYearActive,
     isLanguageActive, setIsLanguageActive,
-    newRegister, setNewRegister
+    newRegister, setNewRegister,
+    isNotificationDropdownActive, setIsNotificationDropdownActive,
+    isMessageDropdownActive, setIsMessageDropdownActive,
+    isNotificationShown, setIsNotificationShown,
+    notificationId, setNotificationId,
+    showChat, setShowChat,
+    chatId, setChatId
   }
 
   return <GLOBALCONTEXT.Provider value={ globalContextObject }>

@@ -204,3 +204,304 @@ MARK: LANGUAGE
         cursor: pointer;
         color: var(--white);
     }
+
+/*
+==========================
+MARK: NOTIFICATION
+==========================
+*/
+    #notification-wrapper {
+        position: relative;
+    }
+
+    #notification-wrapper .notification-dropdown {
+        position: absolute;
+        top: 55px;
+        right: -90px;
+        background: var(--background);
+        padding: 10px;
+        width: 300px;
+        box-shadow: var(--boxShadow);
+        border-radius: 3px;
+        z-index: 99;
+    }
+
+    #notification-wrapper .notification-dropdown .cmg-list-item {
+        padding: 10px;
+        border-radius: 3px;
+        display: block;
+        color: var(--color);
+        display: flex;
+        gap: 10px;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    #notification-wrapper .notification-dropdown .cmg-list-item:hover {
+        background: var(--actionBorder);
+        cursor: pointer;
+        /* color: var(--white); */
+    }
+
+    #notification-wrapper .notification-dropdown .thumb-wrapper {
+        height: 50px;
+        width: 50px;
+        background: var(--color);
+        border-radius: 50%;
+    }
+
+    #notification-wrapper .notification-dropdown .notification-head .title {
+        font-size: 30px;
+        text-align: center;
+        color: var(--color);
+        border-bottom: 1px solid var(--actionBorder);
+        margin-bottom: 5px;
+    }
+
+    #notification-wrapper .notification-dropdown .notification-content {
+        flex: 1;
+    }
+
+    #notification-wrapper .notification-dropdown .notification-content .title {
+        display: block;
+        font-weight: 600;
+        font-size: 16px;
+        margin-bottom: 5px;
+    }
+
+    #notification-wrapper .notification-dropdown .notification-content .date {
+        display: block;
+        color: var(--lightGrey);
+        font-size: 13px;
+    }
+
+    #notification-wrapper .notification-dropdown .notification-button {
+        text-align: center;
+        display: block;
+        width: 100%;
+        background: var(--default);
+        padding: 10px;
+        border-radius: 3px;
+        color: var(--white);
+        font-weight: 600;
+    }
+
+    #notification-wrapper .notification-dropdown .notification-button:hover {
+        box-shadow: var(--boxShadow);
+        transform: scale(1.03);
+    }
+
+/*
+=====================
+MARK: SHOW NOTIFICATION
+=====================
+*/
+    #cmg-view-notification {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        background: var(--background);
+        z-index: 9;
+        padding: 10px;
+        color: var(--color);
+        box-shadow: var(--boxShadow);
+        width: 600px;
+    }
+
+    .notification-overlay {
+        position: absolute;
+        height: 100%;
+        width: 100%;
+        background: #00000063;
+        z-index: 9
+    }
+
+    #cmg-view-notification .title {
+        text-align: center;
+        margin-bottom: 10px;
+    }
+
+    #cmg-view-notification .date {
+        text-align: center;
+        display: block;
+    }
+
+    #cmg-view-notification .thumb-wrapper {
+        height: 300px;
+        width: 100%;
+        margin: 10px 0;
+    }
+
+    #cmg-view-notification .thumb-wrapper img {
+        height: 100%;
+        width: 100%;
+        object-fit: cover;
+    }
+
+    #cmg-view-notification .close {
+        position: absolute;
+        top: -15px;
+        right: -10px;
+        font-size: 30px;
+        color: var(--default);
+        border-radius: 100%;
+        background: white;
+        cursor: pointer;
+    }
+
+/*
+==========================
+MARK: MESSAGE
+==========================
+*/
+    #message-wrapper {
+        position: relative;
+    }
+
+    #message-wrapper .message-dropdown {
+        position: absolute;
+        top: 55px;
+        right: -45px;
+        background: var(--background);
+        padding: 10px;
+        width: 300px;
+        box-shadow: var(--boxShadow);
+        border-radius: 3px;
+        z-index: 99;
+    }
+
+    #message-wrapper .message-dropdown .cmg-list-item {
+        padding: 10px;
+        border-radius: 3px;
+        display: block;
+        color: var(--color);
+        display: flex;
+        gap: 10px;
+        align-items: center;
+    }
+
+    #message-wrapper .message-dropdown .cmg-list-item:hover {
+        background: var(--actionBorder);
+        cursor: pointer;
+    }
+
+    #message-wrapper .message-dropdown .thumb-wrapper {
+        height: 50px;
+        width: 50px;
+        background: var(--color);
+        border-radius: 50%;
+    }
+
+    #message-wrapper .inner-list .title {
+        display: block;
+        font-weight: 600;
+        font-size: 16px;
+        margin-bottom: 5px;
+    }
+
+    #message-wrapper .inner-list .last-message {
+        display: block;
+        color: var(--lightGrey);
+        font-size: 13px;
+    }
+
+    #message-wrapper .message-head .title {
+        display: block;
+        text-align: center;
+        margin-bottom: 10px;
+        color: var(--color);
+    }
+
+    #message-wrapper .message-head input {
+        width: 100%;
+        box-sizing: border-box;
+        border-radius: 3px;
+        border: 1px solid var(--black);
+        margin-bottom: 10px;
+    }
+
+/*
+=========================
+MARK: CHAT
+=========================
+*/
+    #cmg-chat {
+        position: fixed;
+        bottom: 30px;
+        right: 24px;
+        width: 300px;
+        height: 400px;
+        z-index: 9;
+        background: var(--background);
+        border-radius: 5px;
+        display: flex;
+        flex-direction: column;
+        color: var(--color);
+        box-shadow: var(--boxShadow);
+    }
+
+    #cmg-chat .head,
+    #cmg-chat .head .user {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 7px;
+    }
+
+    #cmg-chat .head {
+        padding: 10px;
+        background: var(--default);
+        border-radius: 5px 5px 0 0;
+    }
+
+    #cmg-chat .head .title {
+        font-size: 18px;
+    }
+
+    #cmg-chat .head .thumb-wrapper {
+        height: 35px;
+        width: 35px;
+    }
+
+    #cmg-chat .head .thumb-wrapper img {
+        height: 100%;
+        width: 100%;
+        object-fit: cover;
+        border-radius: 100%;
+    }
+
+    #cmg-chat .close {
+        font-size: 25px;
+        color: var(--blue);
+        cursor: pointer;
+    }
+
+    #cmg-chat .body {
+        height: 100%;
+        margin: 50% 0;
+        text-align: center;
+    }
+
+    #cmg-chat .foot {
+        display: flex;
+        gap: 10px;
+        justify-content: center;
+        align-items: center;
+        padding: 10px;
+        background: var(--default);
+        border-radius: 0 0 3px 3px;
+    }
+
+    #cmg-chat .foot input {
+        flex: 90%;
+        border-radius: 30px;
+        border: 1px solid var(--actionBorder);
+        background: var(--background);
+        color: var(--color);
+    }
+
+    #cmg-chat .foot .send {
+        font-size: 20px;
+        color: var(--blue);
+    }

@@ -20,7 +20,11 @@ export const Index = () => {
         setIsUserAddNewActive,
         setIsAcademicYearActive,
         setIsLanguageActive,
-        setNewRegister
+        setNewRegister,
+        setIsNotificationDropdownActive,
+        setIsNotificationShown,
+        setNotificationId,
+        setIsMessageDropdownActive
     } = global
 
     useEffect(() => {
@@ -68,6 +72,10 @@ export const Index = () => {
         setIsAcademicYearActive( false )
         setIsLanguageActive( false )
         setNewRegister( false )
+        setIsNotificationDropdownActive( false )
+        setIsNotificationShown( false )
+        setNotificationId( 0 )
+        setIsMessageDropdownActive( false )
     }
 
     return <>

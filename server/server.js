@@ -178,15 +178,42 @@ app.post( '/isLoggedIn', ( request, res ) => {
 });
 
 /**
-* MARK: Users API
+* MARK: Users Student and Teacher API
 */
-app.post( '/users', ( request, res ) => { 
+app.post( '/users-student-teacher', ( request, res ) => { 
   const selectQuery = `SELECT role, COUNT(id) AS total FROM users WHERE role IN ('student', 'teacher') GROUP BY role;`
   con.query( selectQuery, ( error, result ) => {
     if ( error ) {
       return res.status( 500 ).json({ error: "Database selection failed" });
     }
     return res.status( 200 ).json({ result, success: true });
+  })
+});
+
+/**
+* MARK: Users API
+*/
+app.post( '/Users', ( request, res ) => { 
+  const selectQuery = `SELECT * FROM users`
+  con.query( selectQuery, ( error, result ) => {
+    if ( error ) {
+      return res.status( 500 ).json({ error: "Database selection failed" });
+    }
+    return res.status( 200 ).json({ result, success: true });
+  })
+});
+
+/**
+* MARK: Users By API
+*/
+app.post( '/user-by-id', ( request, res ) => { 
+  const { id } = request.body;
+  const selectQuery = `SELECT * FROM users WHERE id="${ id }"`
+  con.query( selectQuery, ( error, result ) => {
+    if ( error ) {
+      return res.status( 500 ).json({ error: "Database selection failed" });
+    }
+    return res.status( 200 ).json({ result: result[0], success: true });
   })
 });
 
@@ -213,6 +240,34 @@ app.post( '/subjects', ( request, res ) => {
       return res.status( 500 ).json({ error: "Database selection failed" });
     }
     return res.status( 200 ).json({ result, success: true });
+  })
+});
+
+/**
+* MARK: Notification API
+*/
+app.post( '/notification', ( request, res ) => { 
+  const selectQuery = `SELECT * FROM notification`
+  con.query( selectQuery, ( error, result ) => {
+    if ( error ) {
+      return res.status( 500 ).json({ error: "Database selection failed" });
+    }
+    return res.status( 200 ).json({ result, success: true });
+  })
+});
+
+/**
+* MARK: Notification API by Id
+*/
+app.post( '/notification-by-id', ( request, res ) => { 
+  const { id } = request.body;
+  const selectQuery = `SELECT * FROM notification WHERE id="${ id }"`
+  con.query( selectQuery, ( error, result ) => {
+    console.log( result )
+    if ( error ) {
+      return res.status( 500 ).json({ error: "Database selection failed" });
+    }
+    return res.status( 200 ).json({ result: result[ 0 ], success: true });
   })
 });
 
