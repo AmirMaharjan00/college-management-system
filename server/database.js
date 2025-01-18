@@ -22,16 +22,17 @@ con.connect(function(err) {
          * MARK: users
          */
         let userQuery = "CREATE TABLE IF NOT EXISTS users ("
-          userQuery += "id INT(11) NOT NULL AUTO_INCREMENT PRIMARY KEY,"
-          userQuery += "name VARCHAR(255) NOT NULL,"
-          userQuery += "email VARCHAR(255) NOT NULL,"
-          userQuery += "password VARCHAR(255) NOT NULL,"
-          userQuery += "contact_number BIGINT NOT NULL,"
-          userQuery += "address VARCHAR(255) DEFAULT 'Nepal',"
-          userQuery += "gender VARCHAR(255) DEFAULT 'male',"
+          userQuery += "id INT(11) NOT NULL AUTO_INCREMENT PRIMARY KEY, "
+          userQuery += "name VARCHAR(255) NOT NULL, "
+          userQuery += "email VARCHAR(255) NOT NULL, "
+          userQuery += "password VARCHAR(255) NOT NULL, "
+          userQuery += "contact BIGINT NOT NULL, "
+          userQuery += "address VARCHAR(255) DEFAULT 'Nepal', "
+          userQuery += "gender VARCHAR(255) DEFAULT 'male', "
           userQuery += "role VARCHAR(255) DEFAULT 'student', "
           userQuery += "view VARCHAR(255) DEFAULT 'light', "
-          userQuery += "registered_date DATETIME DEFAULT CURRENT_TIMESTAMP "
+          userQuery += "profile BLOB, "
+          userQuery += "registered_date DATETIME DEFAULT CURRENT_TIMESTAMP"
           userQuery += ");"
         con.query( userQuery, function (err, result) {
           if( err ) throw err
@@ -43,10 +44,14 @@ con.connect(function(err) {
          * MARK: Courses
          */
         let coursesQuery = "CREATE TABLE IF NOT EXISTS courses ("
-          coursesQuery += "id INT(11) NOT NULL AUTO_INCREMENT PRIMARY KEY,"
-          coursesQuery += "name VARCHAR(255) NOT NULL,"
-          coursesQuery += "abbreviation VARCHAR(255) NOT NULL,"
-          coursesQuery += "duration INT(11) NOT NULL DEFAULT 4,"
+          coursesQuery += "id INT(11) NOT NULL AUTO_INCREMENT PRIMARY KEY, "
+          coursesQuery += "name VARCHAR(255) NOT NULL, "
+          coursesQuery += "abbreviation VARCHAR(255) NOT NULL, "
+          coursesQuery += "duration INT(11) NOT NULL DEFAULT 4, "
+          coursesQuery += "semester INT(11) NOT NULL DEFAULT 4, "
+          coursesQuery += "cost INT(11) NOT NULL, "
+          coursesQuery += "monthlyCost INT GENERATED ALWAYS AS( cost / ( duration * 12 ) ) STORED, "
+          coursesQuery += "semesterCost INT GENERATED ALWAYS AS( cost / semester ) STORED, "
           coursesQuery += "registered_date DATETIME DEFAULT CURRENT_TIMESTAMP "
           coursesQuery += ");"
         con.query( coursesQuery, function (err, result) {
@@ -59,12 +64,12 @@ con.connect(function(err) {
          * MARK: Courses
          */
         let subjectsQuery = "CREATE TABLE IF NOT EXISTS subjects ("
-          subjectsQuery += "id INT(11) NOT NULL AUTO_INCREMENT PRIMARY KEY,"
-          subjectsQuery += "name VARCHAR(255) NOT NULL,"
-          subjectsQuery += "course_id INT(11) NOT NULL,"
-          subjectsQuery += "semester INT(11) NOT NULL,"
-          subjectsQuery += "year INT(11) NOT NULL,"
-          subjectsQuery += "registered_date DATETIME DEFAULT CURRENT_TIMESTAMP,"
+          subjectsQuery += "id INT(11) NOT NULL AUTO_INCREMENT PRIMARY KEY, "
+          subjectsQuery += "name VARCHAR(255) NOT NULL, "
+          subjectsQuery += "course_id INT(11) NOT NULL, "
+          subjectsQuery += "semester INT(11) NOT NULL, "
+          subjectsQuery += "year INT(11) NOT NULL, "
+          subjectsQuery += "registered_date DATETIME DEFAULT CURRENT_TIMESTAMP, "
           subjectsQuery += "FOREIGN KEY(course_id) REFERENCES courses(id) "
           subjectsQuery += ");"
         con.query( subjectsQuery, function (err, result) {
@@ -77,20 +82,53 @@ con.connect(function(err) {
          * MARK: Notification
          */
         let notificationQuery = "CREATE TABLE IF NOT EXISTS notification ("
-          notificationQuery += "id INT(11) NOT NULL AUTO_INCREMENT PRIMARY KEY,"
-          notificationQuery += "title VARCHAR(255) NOT NULL,"
-          notificationQuery += "excerpt LONGTEXT NOT NULL,"
-          notificationQuery += "sender INT(11) NOT NULL,"
-          notificationQuery += "receiver VARCHAR(255) NOT NULL,"
-          notificationQuery += "registered_date DATETIME DEFAULT CURRENT_TIMESTAMP,"
+          notificationQuery += "id INT(11) NOT NULL AUTO_INCREMENT PRIMARY KEY, "
+          notificationQuery += "title VARCHAR(255) NOT NULL, "
+          notificationQuery += "excerpt LONGTEXT NOT NULL, "
+          notificationQuery += "sender INT(11) NOT NULL, "
+          notificationQuery += "receiver VARCHAR(255) NOT NULL, "
+          notificationQuery += "registered_date DATETIME DEFAULT CURRENT_TIMESTAMP, "
           notificationQuery += "FOREIGN KEY(sender) REFERENCES users(id) "
           notificationQuery += ");"
         con.query( notificationQuery, function (err, result) {
           if( err ) throw err
           console.log( 'Notifications Table created.' )
         });
+
+        /**
+         * Create Fees Table
+         * MARK: Fees
+         */
+        let feesQuery = "CREATE TABLE IF NOT EXISTS fees ("
+          feesQuery += "id INT(11) NOT NULL AUTO_INCREMENT PRIMARY KEY, "
+          feesQuery += "userId INT(11) NOT NULL, "
+          feesQuery += "amount INT(11) NOT NULL, "
+          feesQuery += "message LONGTEXT NOT NULL, "
+          feesQuery += "date DATETIME DEFAULT CURRENT_TIMESTAMP, "
+          feesQuery += "FOREIGN KEY(userId) REFERENCES users(id) "
+          feesQuery += ");"
+        con.query( feesQuery, function (err, result) {
+          if( err ) throw err
+          console.log( 'Fees Table created.' )
+        });
+
+        /**
+         * Create Images Table
+         * MARK: Images
+         */
+        let imageQuery = "CREATE TABLE IF NOT EXISTS images ("
+          imageQuery += "id INT(11) NOT NULL AUTO_INCREMENT PRIMARY KEY, "
+          imageQuery += "userId INT(11) NOT NULL, "
+          imageQuery += "url BLOB, "
+          imageQuery += "date DATETIME DEFAULT CURRENT_TIMESTAMP, "
+          imageQuery += "FOREIGN KEY(userId) REFERENCES users(id) "
+          imageQuery += ");"
+        con.query( imageQuery, function (err, result) {
+          if( err ) throw err
+          console.log( 'Images Table created.' )
+        });
       }
     });
 });
-  
+ 
 // module.exports = con

@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import './assets/forms.css'
+import defaultProfile from '../assets/images/user.jpg'
 
 /**
  * Registration Form
@@ -12,17 +13,33 @@ export const Registration = () => {
     const [ name, setName ] = useState( '' )
     const [ email, setEmail ] = useState( '' )
     const [ password, setPassword ] = useState( '' )
-    const [ contactNumber, setContactNumber ] = useState( '' )
+    const [ contact, setContact ] = useState( '' )
     const [ address, setAddress ] = useState( '' )
     const [ gender, setGender ] = useState( 'male' )
     const [ role, setRole ] = useState( 'student' )
+    const [ profile, setProfile ] = useState( '' )
     const [ nameErrorMsg, setNameErrorMsg ] = useState( '*' )
     const [ emailErrorMsg, setEmailErrorMsg ] = useState( '*' )
     const [ passwordErrorMsg, setPasswordErrorMsg ] = useState( '*' )
-    const [ contactNumberErrorMsg, setContactNumberErrorMsg ] = useState( '*' )
+    const [ contactErrorMsg, setContactErrorMsg ] = useState( '*' )
     const [ addressErrorMsg, setAddressErrorMsg ] = useState( '*' )
     const [ registrationSuccess, setRegistrationSuccess ] = useState( false )
     const navigate = useNavigate()
+
+    useEffect(() => {
+        const convertImageToBlob = async () => {
+            try {
+              const response = await fetch(defaultProfile);
+              const blob = await response.blob();
+              console.log( blob )
+              setProfile( blob );
+            } catch ( error ) {
+              console.error( 'Error converting image to Blob:', error );
+            }
+        };
+      
+        convertImageToBlob();
+    }, [])
 
     useEffect(() => {
         if( registrationSuccess ) {
@@ -45,8 +62,8 @@ export const Registration = () => {
         if( nameAttribute === 'password' ) {
             setPassword( value )
         }
-        if( nameAttribute === 'contactNumber' ) {
-            setContactNumber( value )
+        if( nameAttribute === 'contact' ) {
+            setContact( value )
         }
         if( nameAttribute === 'address' ) {
             setAddress( value )
@@ -141,11 +158,11 @@ export const Registration = () => {
     * Validate Contact Number
     * MARK: Contact Number
     */
-    const validateContactNumber = () => {
+    const validateContact = () => {
         const numberRegex = /[0-9]/;
-        let isValidContactNumber = numberRegex.test( contactNumber );
-        if( ! isValidContactNumber ) {
-            setContactNumberErrorMsg( 'Number is not valid.' )
+        let isValidContact = numberRegex.test( contact );
+        if( ! isValidContact ) {
+            setContactErrorMsg( 'Number is not valid.' )
             return false
         } else {
             return true
@@ -203,18 +220,26 @@ export const Registration = () => {
         let isValidName = validateName()
         let isValidEmail = validateEmail()
         let isValidPassword = validatePassword()
-        let isValidContactNumber = validateContactNumber()
+        let isValidContact = validateContact()
         let isValidAddress = validateAddress()
         let isValidGender = validateGender()
         let isvalidateRole = validateRole()
-        if( isValidName && isValidEmail && isValidPassword && isValidContactNumber && isValidAddress && isValidGender && isvalidateRole ) {
-
+        if( isValidName && isValidEmail && isValidPassword && isValidContact && isValidAddress && isValidGender && isvalidateRole ) {
+            const formData = new FormData()
+            // formData.append( 'name', name )
+            // formData.append( 'email', email )
+            // formData.append( 'password', password )
+            // formData.append( 'contact', contact )
+            // formData.append( 'address', address )
+            // formData.append( 'gender', gender )
+            // formData.append( 'role', role )
+            // formData.append( 'profile', name )
             fetch( 'http://localhost:5000/insert-user', {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
                 },
-                body: JSON.stringify({ name, email, password, contactNumber, address, gender, role })
+                body: JSON.stringify({ name, email, password, contact, address, gender, role, profile })
             })
             .then(( result ) => result.json())
             .then( ( data ) => {
@@ -231,7 +256,7 @@ export const Registration = () => {
     return <div id="root-inner">
         <div className='cmg-registration' id="cmg-registration">
             <div className="college-logo-wrapper"></div>
-            <form id="registration-form" method="POST">
+            <form id="registration-form" method="POST" encType='multipart/formdata'>
                 <div className='form-head'>
                     <h2 className='form-title'>{ 'Register Here.' }</h2>
                     <span className='form-excerpt'>{ 'Create a new account.' }</span>
@@ -260,9 +285,9 @@ export const Registration = () => {
                 <div className='form-field'>
                     <div className='form-field-label-wrapper'>
                         <label className='form-label'>{ 'Contact Number' }</label>
-                        <span className='form-error'>{ contactNumberErrorMsg }</span>
+                        <span className='form-error'>{ contactErrorMsg }</span>
                     </div>
-                    <input type="number" name="contactNumber" value={ contactNumber } onChange={ handleInputChange } required/>
+                    <input type="number" name="contact" value={ contact } onChange={ handleInputChange } required/>
                 </div>
                 <div className='form-field'>
                     <div className='form-field-label-wrapper'>

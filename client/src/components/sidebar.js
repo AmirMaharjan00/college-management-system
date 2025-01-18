@@ -28,27 +28,14 @@ export const Sidebar = () => {
                     </li>
                 </ul>
             </div>
-            <div className="cmg-menu-item layout-menu">
+            <div className="cmg-menu-item">
                 <h2 className="submenu-heading">
-                    <span>Layout</span>
+                    <span>Attendence</span>
                 </h2>
                 <ul className="cmg-submenu">
-                    <li className="cmg-list-item"><a href="#">Default</a></li>
-                    <li className="cmg-list-item"><a href="#">Mini</a></li>
-                    <li className="cmg-list-item"><a href="#">RTL</a></li>
-                    <li className="cmg-list-item"><a href="#">Box</a></li>
-                    <li className="cmg-list-item"><a href="#">Dark</a></li>
-                </ul>
-            </div>
-            <div className="cmg-menu-item peoples-menu">
-                <h2 className="submenu-heading">
-                    <span>Peoples</span>
-                </h2>
-                <ul className="cmg-submenu">
-                    <li className="cmg-list-item"><a href="#">Student</a></li>
-                    <li className="cmg-list-item"><a href="#">Parents</a></li>
-                    <li className="cmg-list-item"><a href="#">Guardians</a></li>
                     <li className="cmg-list-item"><a href="#">Teachers</a></li>
+                    <li className="cmg-list-item"><a href="#">Students</a></li>
+                    <li className="cmg-list-item"><a href="#">Staffs</a></li>
                 </ul>
             </div>
             <div className="cmg-menu-item academic-menu">
@@ -66,6 +53,26 @@ export const Sidebar = () => {
                     <li className="cmg-list-item"><a href="#">Home Work</a></li>
                     <li className="cmg-list-item"><a href="#">Examinations</a></li>
                     <li className="cmg-list-item"><a href="#">Reasons</a></li>
+                </ul>
+            </div>
+            <div className="cmg-menu-item">
+                <h2 className="submenu-heading">
+                    <span>Library</span>
+                </h2>
+                <ul className="cmg-submenu">
+                    <li className="cmg-list-item"><a href="#">Issued</a></li>
+                    <li className="cmg-list-item"><a href="#">Books</a></li>
+                    <li className="cmg-list-item"><a href="#">Fines</a></li>
+                </ul>
+            </div>
+            <div className="cmg-menu-item">
+                <h2 className="submenu-heading">
+                    <span>Account</span>
+                </h2>
+                <ul className="cmg-submenu">
+                    <li className="cmg-list-item"><a href="#">Issued</a></li>
+                    <li className="cmg-list-item"><a href="#">Books</a></li>
+                    <li className="cmg-list-item"><a href="#">Fines</a></li>
                 </ul>
             </div>
         </div>

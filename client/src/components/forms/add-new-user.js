@@ -14,13 +14,13 @@ export const AddNewUser = ( args ) => {
     const [ name, setName ] = useState( '' )
     const [ email, setEmail ] = useState( '' )
     const [ password, setPassword ] = useState( '' )
-    const [ contactNumber, setContactNumber ] = useState( '' )
+    const [ contact, setContact ] = useState( '' )
     const [ address, setAddress ] = useState( '' )
     const [ gender, setGender ] = useState( 'male' )
     const [ nameErrorMsg, setNameErrorMsg ] = useState( '*' )
     const [ emailErrorMsg, setEmailErrorMsg ] = useState( '*' )
     const [ passwordErrorMsg, setPasswordErrorMsg ] = useState( '*' )
-    const [ contactNumberErrorMsg, setContactNumberErrorMsg ] = useState( '*' )
+    const [ contactErrorMsg, setContactErrorMsg ] = useState( '*' )
     const [ addressErrorMsg, setAddressErrorMsg ] = useState( '*' )
     const [ registrationSuccess, setRegistrationSuccess ] = useState( false )
 
@@ -48,8 +48,8 @@ export const AddNewUser = ( args ) => {
         if( nameAttribute === 'password' ) {
             setPassword( value )
         }
-        if( nameAttribute === 'contactNumber' ) {
-            setContactNumber( value )
+        if( nameAttribute === 'contact' ) {
+            setContact( value )
         }
         if( nameAttribute === 'address' ) {
             setAddress( value )
@@ -141,11 +141,11 @@ export const AddNewUser = ( args ) => {
     * Validate Contact Number
     * MARK: Contact Number
     */
-    const validateContactNumber = () => {
+    const validateContact = () => {
         const numberRegex = /[0-9]/;
-        let isValidContactNumber = numberRegex.test( contactNumber );
-        if( ! isValidContactNumber ) {
-            setContactNumberErrorMsg( 'Number is not valid.' )
+        let isValidContact = numberRegex.test( contact );
+        if( ! isValidContact ) {
+            setContactErrorMsg( 'Number is not valid.' )
             return false
         } else {
             return true
@@ -203,17 +203,17 @@ export const AddNewUser = ( args ) => {
         let isValidName = validateName()
         let isValidEmail = validateEmail()
         let isValidPassword = validatePassword()
-        let isValidContactNumber = validateContactNumber()
+        let isValidContact = validateContact()
         let isValidAddress = validateAddress()
         let isValidGender = validateGender()
         let isvalidateRole = validateRole()
-        if( isValidName && isValidEmail && isValidPassword && isValidContactNumber && isValidAddress && isValidGender && isvalidateRole ) {
+        if( isValidName && isValidEmail && isValidPassword && isValidContact && isValidAddress && isValidGender && isvalidateRole ) {
             fetch( 'http://localhost:5000/insert-user', {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
                 },
-                body: JSON.stringify({ name, email, password, contactNumber, address, gender, role })
+                body: JSON.stringify({ name, email, password, contact, address, gender, role })
             })
             .then(( result ) => result.json())
             .then( ( data ) => {
@@ -260,9 +260,9 @@ export const AddNewUser = ( args ) => {
                 <div className='form-field'>
                     <div className='form-field-label-wrapper'>
                         <label className='form-label'>{ 'Contact Number' }</label>
-                        <span className='form-error'>{ contactNumberErrorMsg }</span>
+                        <span className='form-error'>{ contactErrorMsg }</span>
                     </div>
-                    <input type="number" name="contactNumber" value={ contactNumber } onChange={ handleInputChange } required/>
+                    <input type="number" name="contact" value={ contact } onChange={ handleInputChange } required/>
                 </div>
                 <div className='form-field'>
                     <div className='form-field-label-wrapper'>

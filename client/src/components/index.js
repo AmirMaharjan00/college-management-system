@@ -1,5 +1,5 @@
 import { useContext, useState, useEffect } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, Outlet } from 'react-router-dom'
 import { Header } from './header'
 import { Main } from './main'
 import { Sidebar } from './sidebar'
@@ -83,7 +83,7 @@ export const Index = () => {
         <div className={ wrapperClass } id="cmg-wrapper">
             <Header />
             <div className="cmg-body" id="cmg-body">
-                <Main />
+                <Outlet />
                 <Sidebar />
             </div>
         </div>

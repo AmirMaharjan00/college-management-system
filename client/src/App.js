@@ -9,6 +9,9 @@ import { Registration } from './components/forms/registration.js'
 import { ForgotPassword } from './components/forms/forgot-password.js'
 import { ErrorPage } from './components/404.js'
 import { ourFetch } from './components/functions.js'
+import { Main } from './components/main.js'
+import { StudentFees } from './components/student/fees.js'
+import { Profile } from './components/profile.js'
 
 export const GLOBALCONTEXT = createContext()
 
@@ -58,12 +61,12 @@ function App() {
 const Links = () => {
   return (
     <Routes>
-      {/* <Route exact path='/swt-user' element={ Subscriber }>
-        <Route exact path='/swt-user' element={ SubscriberDashboard }/>
-        <Route exact path='/swt-user/setting' element={ SubscriberSetting }/>
-        <Route exact path='/swt-user/report' element={ SubscriberReport }/>
+      <Route exact path='/dashboard' element={ <Index/> }>
+        <Route exact path='/dashboard' element={ <Main /> }/>
+        <Route exact path='/dashboard/fees' element={ <StudentFees /> }/>
+        <Route exact path='/dashboard/profile' element={ <Profile /> }/>
       </Route>
-      <Route exact path='/swt-admin' element={ Admin }>
+      {/* <Route exact path='/swt-admin' element={ Admin }>
         <Route exact path='/swt-admin' element={ Dashboard }/>
         <Route exact path='/swt-admin/pages' element={ <Pages /> }/>
         <Route exact path='/swt-admin/media' element={ Media }/>
@@ -76,7 +79,7 @@ const Links = () => {
       <Route exact path='/registration' element={ <Registration /> }/>
       <Route exact path='/forgot-password' element={ <ForgotPassword/> }/>
       {/* <Route exact path='/swt-admin/swt-registration' element={ AdminRegistration }/> */}
-      <Route exact path='/dashboard' element={ <Index/> }/>
+      {/* <Route exact path='/dashboard' element={ <Index/> }/> */}
       <Route path='*' element={ <ErrorPage/> } />
     </Routes>
   );

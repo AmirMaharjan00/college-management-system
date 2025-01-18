@@ -8,6 +8,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faArrowsRotate, faChevronDown, faChevronRight, faCheckDouble, faXmark, faCircleExclamation, faIcons, faCoins, faSackDollar, faCalendarDays, faMoneyBillTrendUp } from '@fortawesome/free-solid-svg-icons';
 import { faFlag } from '@fortawesome/free-regular-svg-icons';
 import { ourFetch } from '../functions'
+import { Link } from 'react-router-dom'
 
 /**
  * MARK: Student Dashboard
@@ -29,7 +30,7 @@ export const StudentDashboard = () => {
                 </ul>
             </div>
             <div className="dashboard-actions">
-                <button className="button-action fees">Fees Details</button>
+                <Link className="button-action fees" to="/dashboard/fees">{ 'Fees Details' }</Link>
             </div>
         </div>{/* .dashboard-head */}
         <div className="dashboard-welcome">

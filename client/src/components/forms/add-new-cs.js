@@ -17,12 +17,14 @@ export const AddNewCourseSubject = ( args ) => {
     const [ duration, setDuration ] = useState( 4 )
     const [ semester, setSemester ] = useState( 1 )
     const [ course, setCourse ] = useState( 1 )
+    const [ cost, setCost ] = useState( 0 )
     const [ courses, setCourses ] = useState([])
     const [ nameErrorMsg, setNameErrorMsg ] = useState( '*' )
     const [ abbreviationErrorMsg, setAbbreviationErrorMsg ] = useState( '*' )
     const [ semesterErrorMsg, setSemesterErrorMsg ] = useState( '*' )
     const [ durationErrorMsg, setDurationErrorMsg ] = useState( '*' )
     const [ courseErrorMsg, setCourseErrorMessage ] = useState( '*' )
+    const [ costErrorMsg, setCostErrorMessage ] = useState( '*' )
     const [ registrationSuccess, setRegistrationSuccess ] = useState( false )
     const [ registrationFailed, setRegistrationFailed ] = useState( false )
     const [ isSubmitted, setIsSubmitted ] = useState( false )
@@ -83,6 +85,9 @@ export const AddNewCourseSubject = ( args ) => {
         }
         if( nameAttribute === 'course' ) {
             setCourse( value )
+        }
+        if( nameAttribute === 'cost' ) {
+            setCost( value )
         }
     }
 
@@ -168,6 +173,21 @@ export const AddNewCourseSubject = ( args ) => {
             return true
         }
     }
+    
+    /* 
+    * Validate Cost
+    * MARK: Cost
+    */
+    const validateCost = () => {
+        const numberRegex = /[0-9]/;
+        let isValidDuration = numberRegex.test( cost );
+        if( ! isValidDuration ) {
+            setCostErrorMessage( 'Cost is not Valid' )
+            return false
+        } else {
+            return true
+        }
+    }
 
     /* 
     * MARK: Form Submit
@@ -179,12 +199,13 @@ export const AddNewCourseSubject = ( args ) => {
         let isValidDuration = validateDuration()
         let isValidSemester = validateSemester()
         let isValidCourse = validateCourse()
-        if( isValidName && isValidAbbreviation && isValidDuration && type === 'course' ) {
+        let isValidCost = validateCost()
+        if( isValidName && isValidAbbreviation && isValidDuration && type === 'course' && isValidCost && isValidSemester ) {
             setIsSubmitted( true )
             ourFetch({
                 api: '/insert-course',
                 callback: coursesCallback,
-                body: JSON.stringify({ name, abbreviation, duration })
+                body: JSON.stringify({ name, abbreviation, duration, cost, semester })
             })
         }
         if( isValidName && isValidSemester && isValidDuration && type === 'subject' && isValidCourse ) {
@@ -247,20 +268,27 @@ export const AddNewCourseSubject = ( args ) => {
                     </div>
                     <input type="text" name="abbreviation" placeholder="BCA" value={ abbreviation } onChange={ handleInputChange } required />
                 </div> }
-                { type === 'subject' && <div className='form-field'>
-                    <div className='form-field-label-wrapper'>
-                        <label className='form-label'>{ 'Semester' }</label>
-                        <span className='form-error'>{ semesterErrorMsg }</span>
-                    </div>
-                    <input type="number" name="semester" value={ semester } onChange={ handleInputChange } required />
-                </div> }
                 <div className='form-field'>
                     <div className='form-field-label-wrapper'>
                         <label className='form-label'>{ type === 'course' ? 'Course Duration (in years)' : 'Year' }</label>
                         <span className='form-error'>{ durationErrorMsg }</span>
                     </div>
-                    <input type="number" name="duration" value={ duration } onChange={ handleInputChange } required />
+                    <input type="number" min="0" name="duration" value={ duration } onChange={ handleInputChange } required />
                 </div>
+                <div className='form-field'>
+                    <div className='form-field-label-wrapper'>
+                        <label className='form-label'>{ 'Semester' }</label>
+                        <span className='form-error'>{ semesterErrorMsg }</span>
+                    </div>
+                    <input type="number" min="0" name="semester" value={ semester } onChange={ handleInputChange } required />
+                </div>
+                { type === 'course' && <div className='form-field'>
+                    <div className='form-field-label-wrapper'>
+                        <label className='form-label'>{ 'Course Fees' }</label>
+                        <span className='form-error'>{ costErrorMsg }</span>
+                    </div>
+                    <input type="number" min="0" name="cost" value={ cost } onChange={ handleInputChange } required />
+                </div> }
                 { type === 'subject' && <div className='form-field'>
                     <div className='form-field-label-wrapper'>
                         <label className='form-label'>{ 'Course' }</label>

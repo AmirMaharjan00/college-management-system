@@ -22,6 +22,7 @@ export const Header = () => {
     const Global = useContext( GLOBALCONTEXT )
     const { newRegister, isNotificationShown, notificationId, chatId, showChat } = Global
     const [ registerNew, setRegisterNew ] = useState( 'student' )
+    // console.log( Global, 'Global' )
 
     const contextObject = {
         registerNew, setRegisterNew
@@ -210,12 +211,20 @@ const Notification = () =>{
             api: '/notification',
             callback: notificationCallback
         })
-    }, [])
+    }, [ loggedInUser ])
 
     /* Notification Callback */
     const notificationCallback = ( data ) => {
         let { success, result } = data
-        if( success ) setNotifications( result )
+        if( success ) {
+            let test = result.filter(( notification ) => {
+                let { sender, receiver } = notification
+                if( ( sender !== id ) && ( receiver === role || receiver === 'all' ) ) {
+                    return true
+                }
+            })
+            setNotifications( test )
+        }
     }
 
     /* Handle Click */
@@ -244,7 +253,7 @@ const Notification = () =>{
                 <h2 className='title'>{ 'Notifications' }</h2>
             </div>
             {
-                notifications.map(( notification, index ) => {
+                notifications.length > 0 ? notifications.map(( notification, index ) => {
                     let { id: notificationId, title, registered_date: date, receiver, sender } = notification 
                     if( ( receiver !== role && receiver !== 'all' ) || ( sender === id ) ) return
                     if( ! loadAll ) {
@@ -257,9 +266,10 @@ const Notification = () =>{
                             <span className='date'>{ date }</span>
                         </div>
                     </div>
-                })
+                }) : 
+                <div className='cmg-list-item no-item'>{ 'No notifications as of yet!' }</div>
             }
-            { ! loadAll && <button className='notification-button' onClick={ handleShowAllNotification }>{ 'Show all notification' }</button> }
+            { ! loadAll && notifications.length > 0 && <button className='notification-button' onClick={ handleShowAllNotification }>{ 'Show all notification' }</button> }
         </ul>}
     </div>
 }
@@ -387,6 +397,12 @@ const User = () => {
         })
     }
 
+    /* Handle Item click */
+    const handleItemClick = () => {
+        setIsUserLogoutDropdownActive( false )
+        setOverlay( false )
+    }
+
     return <div className="action user-wrapper" id='cmg-head-user-wrapper'>
         <span className="cmg-active-dropdown-item" onClick={ handleClick }><FontAwesomeIcon icon={ faUser } /></span>
         { isUserLogoutDropdownActive && <ul className='user-dropdown'>
@@ -396,8 +412,8 @@ const User = () => {
                 <span className='head role'>{ role.slice( 0, 1 ).toUpperCase() + role.slice( 1 ) }</span>
             </li>
             <li className='seperator'></li>
-            <li className='body cmg-list-item'><Link to="/dashboard" className='inner-item'>{ 'Dashboard' }</Link></li>
-            <li className='body cmg-list-item'><Link className='inner-item'>{ 'Profile' }</Link></li>
+            <li className='body cmg-list-item' onClick={ handleItemClick }><Link to="/dashboard" className='inner-item'>{ 'Dashboard' }</Link></li>
+            <li className='body cmg-list-item' onClick={ handleItemClick }><Link to="/dashboard/profile" className='inner-item'>{ 'Profile' }</Link></li>
             <li className='seperator'></li>
             <li className='body cmg-list-item'><Link className='inner-item'>{ 'Grades' }</Link></li>
             <li className='body cmg-list-item'><Link className='inner-item'>{ 'Calender' }</Link></li>
@@ -478,7 +494,7 @@ const Chat = ( props ) => {
 
     /* Chat Callback */
     const chatCallback = ( data ) => {
-        console.log( data )
+        // console.log( data )
         let { result, success } = data
         if( success ) {
             setChat( result )
