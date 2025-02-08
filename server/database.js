@@ -51,7 +51,7 @@ con.connect(function(err) {
           coursesQuery += "semester INT(11) NOT NULL DEFAULT 4, "
           coursesQuery += "cost INT(11) NOT NULL, "
           coursesQuery += "monthlyCost INT GENERATED ALWAYS AS( cost / ( duration * 12 ) ) STORED, "
-          coursesQuery += "semesterCost INT GENERATED ALWAYS AS( cost / semester ) STORED, "
+          coursesQuery += "semesterCost INT GENERATED ALWAYS AS( cost / NULLIF( semester, 0 ) ) STORED, "
           coursesQuery += "registered_date DATETIME DEFAULT CURRENT_TIMESTAMP "
           coursesQuery += ");"
         con.query( coursesQuery, function (err, result) {

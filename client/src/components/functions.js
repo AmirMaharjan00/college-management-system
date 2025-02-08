@@ -1,7 +1,7 @@
 /**
  * MARK: FETCH
  */
-export const ourFetch = ( info ) => {
+export const ourFetch = async ( info ) => {
     let { api, body, callback } = info
     let url = 'http://localhost:5000' + api
     let fetchObject = {
@@ -13,11 +13,16 @@ export const ourFetch = ( info ) => {
     }
     if( body ) fetchObject = { ...fetchObject, body }
     /* Fetch API */
-    fetch( url, fetchObject )
-    .then(( result ) => result.json())
-    .then(( data ) => {
-        callback( data )
-    })
+    try {
+        const response = await fetch( url, fetchObject )
+        if( ! response.ok ) {
+            throw new Error( 'Failed to fetch data => functions.js' )
+        }
+        const result = await response.json()
+        callback( result )
+    } catch( error ) {
+        callback( error )
+    }
 }
 
 /**
@@ -25,4 +30,18 @@ export const ourFetch = ( info ) => {
  */
 export const getImage = ( image ) => {
     return './assets/images/' + image
+}
+
+export const getOrdinals = ( number ) => {
+    if( ! number ) return
+    switch( number ) {
+        case 1: 
+            return `${ number }st`
+        case 2: 
+            return `${ number }nd`
+        case 3: 
+            return `${ number }rd`
+        default: 
+            return `${ number }th`
+    }
 }

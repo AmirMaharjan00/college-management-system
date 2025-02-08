@@ -24,7 +24,7 @@ export const Index = () => {
         setIsNotificationDropdownActive,
         setIsNotificationShown,
         setNotificationId,
-        setIsMessageDropdownActive
+        setIsMessageDropdownActive,
     } = global
 
     useEffect(() => {
@@ -62,9 +62,39 @@ export const Index = () => {
     let wrapperClass = 'cmg-wrapper';
     wrapperClass += ` ${isDarkMode}`;
 
-    /**
-     * MARK: OVERLAY CLICK
-     */
+    return <>
+        { overlay && <Overlay /> }
+        <div className={ wrapperClass } id="cmg-wrapper">
+            <Header />
+            <div className="cmg-body" id="cmg-body">
+                <Outlet />
+                <Sidebar />
+            </div>
+        </div>
+    </>
+}
+
+/**
+ * Overlay
+ * 
+ * MARK: OVERLAY
+ */
+export const Overlay = () => {
+    const global = useContext( GLOBALCONTEXT )
+    const {
+        setOverlay,
+        setIsUserLogoutDropdownActive,
+        setIsUserAddNewActive,
+        setIsAcademicYearActive,
+        setIsLanguageActive,
+        setNewRegister,
+        setIsNotificationDropdownActive,
+        setIsNotificationShown,
+        setNotificationId,
+        setIsMessageDropdownActive,
+        setHeaderOverlay
+    } = global
+
     const handleOverlay = () => {
         setOverlay( false )
         setIsUserLogoutDropdownActive( false )
@@ -76,16 +106,8 @@ export const Index = () => {
         setIsNotificationShown( false )
         setNotificationId( 0 )
         setIsMessageDropdownActive( false )
+        setHeaderOverlay( false )
     }
 
-    return <>
-        { overlay && <div className='cmg-overlay' id="cmg-overlay" onClick={ handleOverlay }></div> }
-        <div className={ wrapperClass } id="cmg-wrapper">
-            <Header />
-            <div className="cmg-body" id="cmg-body">
-                <Outlet />
-                <Sidebar />
-            </div>
-        </div>
-    </>
+    return <div className='cmg-overlay' id="cmg-overlay" onClick={ handleOverlay }></div>
 }

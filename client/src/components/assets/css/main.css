@@ -82,10 +82,26 @@ MARK: Global
         top: 50px;
         width: 200px;
         left: 50%;
-        box-shadow: 0px 0px 5px 1px #00000017;
+        box-shadow: var(--boxShadow);
+        border-radius: 3px;
         transform: translate(-50%);
         z-index: 9;
-        background: var(--white);
+        background: var(--background);
+    }
+
+    #root .cmg-dropdown .cmg-list-item {
+        padding: 10px;
+        color: var(--color);
+    }
+
+    #root .cmg-dropdown .cmg-list-item.active,
+    #root .cmg-dropdown .cmg-list-item:hover {
+        background: var(--default);
+        color: var(--white);
+    }
+
+    #root .cmg-dropdown .cmg-list-item:not( :last-child ) {
+        border-bottom: 1px solid var(--actionBorder);
     }
 
     #root .cmg-active-dropdown-item:hover ~ .cmg-dropdown {
@@ -949,13 +965,22 @@ MARK: Admin Dashboard
 
     #dashboard-foot .dashboard-foot-item .head .dropdown {
         position: relative;
+        height: 100%;
+        display: flex
+    ;
+    }
+    #dashboard-foot .dashboard-foot-item .head .dropdown:hover .cmg-dropdown {
+        display: block;
+    }
+
+    #dashboard-foot .dashboard-foot-item .head .dropdown .cmg-active-dropdown-item {
+        align-self: center;
     }
 
     #dashboard-foot .dashboard-foot-item .head .dropdown .cmg-dropdown {
         right: -20px;
         left: unset;
         transform: none;
-        top: 30px;
     }
 
     #dashboard-foot .dashboard-foot-item .foot {
@@ -966,6 +991,13 @@ MARK: Admin Dashboard
     #dashboard-foot .subject-completion .foot .subject-lists {
         border: 1px solid var(--actionBorder);
         border-radius: 5px;
+    }
+
+    #dashboard-foot .subject-completion .dropdowns-wrapper {
+        display: flex;
+        justify-content: space-between;
+        gap: 20px;
+        height: 100%;
     }
 
     #dashboard-foot .subject-completion .foot .subject {
@@ -982,7 +1014,7 @@ MARK: Admin Dashboard
     }
 
     #dashboard-foot .subject-completion .foot .subject .subject-label {
-        width: 150px;
+        width: 200px;
         font-size: 14px;
     }
 

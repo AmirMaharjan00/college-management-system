@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState } from 'react'
+import { useContext, useEffect, useState, useMemo } from 'react'
 import { GLOBALCONTEXT } from '../../App'
 import student from '../assets/images/student.png'
 import teacher from '../assets/images/teacher.png'
@@ -7,7 +7,7 @@ import staff from '../assets/images/staff.png'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faArrowsRotate, faChevronDown, faChevronRight, faCheckDouble, faXmark, faCircleExclamation, faIcons, faCoins, faSackDollar, faCalendarDays, faMoneyBillTrendUp } from '@fortawesome/free-solid-svg-icons';
 import { faFlag } from '@fortawesome/free-regular-svg-icons';
-import { ourFetch } from '../functions'
+import { ourFetch, getOrdinals } from '../functions'
 
 /**
  * MARK: Admin Dashboard
@@ -309,59 +309,7 @@ export const AdminDashboard = () => {
             </div>
         </div>{/* #dashboard-earnings */}
         <div id="dashboard-foot" className="dashboard-foot">
-            <div className="dashboard-foot-item subject-completion">
-                <div className="head">
-                    <span className="label">Subject Completion</span>
-                    <div className="dropdown courses-wrapper">
-                        <span className="cmg-active-dropdown-item">
-                            <span className="label">BCA</span>
-                            <span className="icon"><FontAwesomeIcon icon={ faChevronDown } /></span>
-                        </span>
-                        <ul className="cmg-dropdown">
-                            <li className="cmg-list-item active">BCA</li>
-                            <li className="cmg-list-item">BBS</li>
-                            <li className="cmg-list-item">BSW</li>
-                            <li className="cmg-list-item">BBA</li>
-                            <li className="cmg-list-item">Class 12</li>
-                            <li className="cmg-list-item">Class 11</li>
-                        </ul>
-                    </div>
-                </div>
-                <div className="foot">
-                    <ul className="subject-lists">
-                        <li className="subject">
-                            <span className="subject-label">Cyber Law and Professional Ethics</span>
-                            <span className="completion">
-                                <div className="partial"></div>
-                            </span>
-                        </li>
-                        <li className="subject">
-                            <span className="subject-label">Cloud Computing</span>
-                            <span className="completion">
-                                <div className="partial"></div>
-                            </span>
-                        </li>
-                        <li className="subject">
-                            <span className="subject-label">Internship</span>
-                            <span className="completion">
-                                <div className="partial"></div>
-                            </span>
-                        </li>
-                        <li className="subject">
-                            <span className="subject-label">Artificial Intelligence</span>
-                            <span className="completion">
-                                <div className="partial"></div>
-                            </span>
-                        </li>
-                        <li className="subject">
-                            <span className="subject-label">Software Project Management</span>
-                            <span className="completion">
-                                <div className="partial"></div>
-                            </span>
-                        </li>
-                    </ul>
-                </div>
-            </div>
+            <SubjectCompletion />
             <div className="dashboard-foot-item student-activity">
                 <div className="head">
                     <span className="label">Student Activity</span>
@@ -574,5 +522,112 @@ const Highlights = () => {
                 </div>
             })
         }
+    </div>
+}
+
+/**
+ * Subject Completion
+ * 
+ * MARK: SUBJECT COMPLETION
+ */
+const SubjectCompletion = () => {
+    const [ courses, setCourses ] = useState({
+        result: [],
+        success: false
+    })
+    const [ subjects, setSubjects ] = useState({
+        result: [],
+        success: false
+    })
+    const { result: courseResults, success: courseSucess } = courses
+    const { result: subjectResults, success: subjectSucess } = subjects
+    const [ activeCourseIndex, setActiveCourseIndex ] = useState( 0 )
+    const [ activeSemester, setActiveSemester ] = useState( 1 )
+
+    const activeCourseId = courseResults.length > 0 ? courseResults[ activeCourseIndex ].id : 0
+    const activeCourseName = courseResults.length > 0 ? courseResults[ activeCourseIndex ].abbreviation : 'BCA'
+    const activeSemesterCount = courseResults.length > 0 ? courseResults[ activeCourseIndex ].semester : 4
+    const semesterArray = Array.from({ length: activeSemesterCount }, ( _, index ) => index + 1 ) 
+
+    useEffect(() => {
+        ourFetch({
+            api: '/select',
+            callback: setCourses,
+            body: JSON.stringify({ table: 'courses' })
+        })
+
+        ourFetch({
+            api: '/select',
+            callback: setSubjects,
+            body: JSON.stringify({ table: 'subjects' })
+        })
+    }, [])
+
+    const subjectList = useMemo(() => {
+        let newSubjectList = subjectSucess && subjectResults?.filter(( subject ) => {
+            let { course_id: courseId, semester } = subject
+            return ( ( courseId === activeCourseId ) && ( semester === activeSemester ) )
+        })
+        return newSubjectList
+    }, [ activeCourseId, subjectResults, activeSemester ])
+
+    const handleCourseClick = ( index ) => {
+        setActiveCourseIndex( index )
+    }
+
+    const handleSemesterClick = ( semester ) => {
+        setActiveSemester( semester )
+    }
+    
+    return <div className="dashboard-foot-item subject-completion">
+        <div className="head">
+            <span className="label">{ 'Subject Completion' }</span>
+            <div className='dropdowns-wrapper'>
+                <div className="dropdown courses-wrapper">
+                    <span className="cmg-active-dropdown-item">
+                        <span className="label">{ activeCourseName }</span>
+                        <span className="icon"><FontAwesomeIcon icon={ faChevronDown } /></span>
+                    </span>
+                    <ul className="cmg-dropdown">
+                        {
+                            courseSucess && courseResults?.map(( course, index ) => {
+                                let { abbreviation, id } = course
+                                let listClass = 'cmg-list-item'
+                                if( id === activeCourseId ) listClass += ' active'
+                                return <li className={ listClass } key={ index } onClick={() => handleCourseClick( index ) }>{ abbreviation }</li>
+                            })
+                        }
+                    </ul>
+                </div>
+                { activeSemesterCount !== 0 && <div className="dropdown semester-wrapper">
+                    <span className="cmg-active-dropdown-item">
+                        <span className="label">{ `${ getOrdinals( activeSemester ) } semester` }</span>
+                        <span className="icon"><FontAwesomeIcon icon={ faChevronDown } /></span>
+                    </span>
+                    <ul className="cmg-dropdown">
+                        {
+                            semesterArray?.map(( semester, index ) => {
+                                let listClass = 'cmg-list-item'
+                                if( activeSemester === semester ) listClass += ' active'
+                                return <li className={ listClass } key={ index } onClick={() => handleSemesterClick( semester ) }>{ `${ getOrdinals( semester ) } semester` }</li>
+                            })
+                        }
+                    </ul>
+                </div> }
+            </div>
+        </div>
+        <div className="foot">
+            <ul className="subject-lists">
+                {
+                    subjectList.length > 0 ? subjectList?.map(( subject, index ) => {
+                        let { name } = subject
+                        return <li className="subject" key={ index }>
+                            <span className="subject-label">{ name }</span>
+                            <progress id="myProgress" value="0" max="100" />
+                        </li>
+                    }) : <li className='subject'>{ 'No Subjects in this course.' }</li>
+                }
+            </ul>
+        </div>
     </div>
 }

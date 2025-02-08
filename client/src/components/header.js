@@ -11,6 +11,7 @@ import { ourFetch } from './functions';
 import { AddNewUser } from './forms/add-new-user'
 import { AddNewCourseSubject } from './forms/add-new-cs'
 import { AddNewNotification } from './forms/add-new-notification'
+import { Overlay } from './index'
 
 export const HeaderContext = createContext()
 /**
@@ -20,9 +21,8 @@ export const HeaderContext = createContext()
  */
 export const Header = () => {
     const Global = useContext( GLOBALCONTEXT )
-    const { newRegister, isNotificationShown, notificationId, chatId, showChat } = Global
+    const { newRegister, isNotificationShown, notificationId, chatId, showChat, headerOverlay } = Global
     const [ registerNew, setRegisterNew ] = useState( 'student' )
-    // console.log( Global, 'Global' )
 
     const contextObject = {
         registerNew, setRegisterNew
@@ -31,6 +31,7 @@ export const Header = () => {
     return <HeaderContext.Provider value={ contextObject }>
         { isNotificationShown && <div className='notification-overlay'></div> }
         <header className="cmg-header" id="cmg-header">
+            { headerOverlay && <Overlay /> }
             <div className="header">
                 <Link to="/dashboard" className="logo-wrapper">
                     <figure className="image-wrapper">
@@ -70,12 +71,13 @@ export const Header = () => {
  */
 const AcademicYear = () => {
     const Global = useContext( GLOBALCONTEXT )
-    const { isAcademicYearActive, setIsAcademicYearActive, setOverlay } = Global
+    const { isAcademicYearActive, setIsAcademicYearActive, setOverlay, setHeaderOverlay } = Global
 
     /* Handle Click */
     const handleClick = () => {
         setIsAcademicYearActive( ! isAcademicYearActive )
         setOverlay( true )
+        setHeaderOverlay( true )
     }
 
     return <div className="action academic-year-wrapper" id="academic-year-wrapper">
@@ -95,12 +97,13 @@ const AcademicYear = () => {
  */
 const Language = () => {
     const Global = useContext( GLOBALCONTEXT )
-    const { isLanguageActive, setIsLanguageActive, setOverlay } = Global
+    const { isLanguageActive, setIsLanguageActive, setOverlay, setHeaderOverlay } = Global
 
     /* Handle Click */
     const handleClick = () => {
         setIsLanguageActive( ! isLanguageActive )
         setOverlay( true )
+        setHeaderOverlay( true )
     }
 
     return <div className="action language-wrapper" id="language-wrapper">
@@ -119,14 +122,15 @@ const Language = () => {
  */
 const AddNew = () => {
     const Global = useContext( GLOBALCONTEXT )
-    const Header = useContext( HeaderContext )
-    const { isUserAddNewActive, setIsUserAddNewActive, setOverlay, setNewRegister } = Global
-    const { setRegisterNew } = Header
+    const headerGlobal = useContext( HeaderContext )
+    const { isUserAddNewActive, setIsUserAddNewActive, setOverlay, setNewRegister, setHeaderOverlay } = Global
+    const { setRegisterNew } = headerGlobal
 
     /* Handle Click */
     const handleClick = () => {
         setIsUserAddNewActive( ! isUserAddNewActive )
         setOverlay( true )
+        setHeaderOverlay( true )
     }
 
     /* Add New Array */
@@ -201,7 +205,7 @@ const DarkMode = () =>{
  */
 const Notification = () =>{
     const Global = useContext( GLOBALCONTEXT )
-    const { isNotificationDropdownActive, setIsNotificationDropdownActive, setOverlay, loggedInUser, setIsNotificationShown, setNotificationId } = Global
+    const { isNotificationDropdownActive, setIsNotificationDropdownActive, setOverlay, loggedInUser, setIsNotificationShown, setNotificationId, setHeaderOverlay } = Global
     const { role, id } = loggedInUser
     const [ notifications, setNotifications ] = useState([])
     const [ loadAll, setLoadAll ] = useState( false )
@@ -231,6 +235,7 @@ const Notification = () =>{
     const handleClick = () => {
         setIsNotificationDropdownActive( ! isNotificationDropdownActive )
         setOverlay( true )
+        setHeaderOverlay( true )
     }
 
     /* Handle show all notification */
@@ -244,6 +249,7 @@ const Notification = () =>{
         setIsNotificationShown( true )
         setIsNotificationDropdownActive( false )
         setOverlay( false )
+        setHeaderOverlay( false )
     }
 
     return <div className="action notification-wrapper" id="notification-wrapper">
@@ -281,7 +287,7 @@ const Notification = () =>{
  */
 const Message = () =>{
     const Global = useContext( GLOBALCONTEXT )
-    const { isMessageDropdownActive, setIsMessageDropdownActive, setOverlay, setChatId, setShowChat } = Global
+    const { isMessageDropdownActive, setIsMessageDropdownActive, setOverlay, setChatId, setShowChat, setHeaderOverlay } = Global
     const [ search, setSearch ] = useState( '' )
     const [ users, setUsers ] = useState( '' )
 
@@ -302,6 +308,7 @@ const Message = () =>{
     const handleClick = () => {
         setIsMessageDropdownActive( true )
         setOverlay( true )
+        setHeaderOverlay( true )
     }
 
     /* Handle Search */
@@ -323,6 +330,7 @@ const Message = () =>{
         setShowChat( true )
         setChatId( userId )
         setOverlay( false )
+        setHeaderOverlay( false )
     }
 
     return <div className="action message-wrapper" id="message-wrapper">
@@ -365,7 +373,8 @@ const User = () => {
         setLoggedInUser,
         setOverlay,
         isUserLogoutDropdownActive,
-        setIsUserLogoutDropdownActive
+        setIsUserLogoutDropdownActive,
+        setHeaderOverlay
     } = Global
     const { role, name, email } = loggedInUser
 
@@ -373,6 +382,7 @@ const User = () => {
     const handleClick = () => {
         setIsUserLogoutDropdownActive( true )
         setOverlay( true )
+        setHeaderOverlay( true )
     }
     
     /* Handle Logout */
@@ -391,6 +401,7 @@ const User = () => {
                 setLoggedInUser({})
                 setIsloggedIn( false )
                 setOverlay( false )
+                setHeaderOverlay( false )
                 setIsUserLogoutDropdownActive( false )
                 navigate( '/login' )
             }
@@ -401,6 +412,7 @@ const User = () => {
     const handleItemClick = () => {
         setIsUserLogoutDropdownActive( false )
         setOverlay( false )
+        setHeaderOverlay( false )
     }
 
     return <div className="action user-wrapper" id='cmg-head-user-wrapper'>

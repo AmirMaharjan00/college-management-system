@@ -40,7 +40,6 @@ app.listen(port, () => {
  * MARK: User Insert Query
  */
 app.post('/insert-user', (req, res) => {
-  console.log( req.body )
   const { name, email, password, contact, address, gender, role, profile } = req.body
   const insertQuery = 'INSERT INTO users (name, email, password, contact, address, gender, role, profile) VALUES (?, ?, ?, ?, ?, ?, ?, ?)'
   con.query( insertQuery, [ name, email, password, contact, address, gender, role, profile ], ( error, result ) => {
@@ -64,6 +63,8 @@ app.post('/insert-course', (req, res) => {
     }
     if( result.length <= 0 ) {
       con.query( insertQuery, [ name, abbreviation, duration, cost, semester ], ( error, result ) => {
+        console.log( error )
+        console.log( result )
         if ( error ) {
           return res.status( 500 ).json({ message: "Failed ! Please Try again.", success: false, isError: true });
         }
@@ -88,7 +89,6 @@ app.post('/insert-subject', (req, res) => {
     }
     if( result.length <= 0 ) {
       con.query( insertQuery, [ name, semester, duration, course ], ( error, result ) => {
-        console.log( error )
         if ( error ) {
           return res.status( 500 ).json({ message: "Failed ! Please Try again.", success: false, isError: true });
         }
@@ -135,20 +135,6 @@ app.post('/insert-images', (req, res) => {
       return res.status( 500 ).json({ message: "Failed ! Please Try again.", success: false, isError: true });
     }
     return res.status( 200 ).json({ message: "SuccessFully Added.", id: result.insertId, success: true });
-  })
-});
-
-/**
-* MARK: Select Query
-*/
-app.post('/select', (req, res) => {
-  const { username, password } = req.body
-  const selectQuery = `SELECT * FROM users WHERE email='${username}' AND password='${password}'`
-  con.query( selectQuery, ( error, result ) => {
-    if ( error ) {
-      return res.status( 500 ).json({ error: "Database selection failed" });
-    }
-    return res.status( 200 ).json({ result, success: true });
   })
 });
 
@@ -276,7 +262,6 @@ app.post( '/notification-by-id', ( request, res ) => {
   const { id } = request.body;
   const selectQuery = `SELECT * FROM notification WHERE id="${ id }"`
   con.query( selectQuery, ( error, result ) => {
-    console.log( result )
     if ( error ) {
       return res.status( 500 ).json({ error: "Database selection failed" });
     }
@@ -308,5 +293,19 @@ app.post( '/set-dark-mode', ( request, res ) => {
       return res.status( 500 ).json({ success: false, error: "Database selection failed" });
     }
     return res.status( 200 ).json({ success: true, view });
+  })
+});
+
+/**
+* MARK: Select Query
+*/
+app.post('/select', (req, res) => {
+  const { table } = req.body
+  const selectQuery = `SELECT * FROM ${ table }`
+  con.query( selectQuery, ( error, result ) => {
+    if ( error ) {
+      return res.status( 500 ).json({ error: "Database selection failed" });
+    }
+    return res.status( 200 ).json({ result, success: true });
   })
 });

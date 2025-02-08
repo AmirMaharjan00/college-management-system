@@ -31,6 +31,7 @@ function App() {
   const [ notificationId, setNotificationId ] = useState( 0 )
   const [ showChat, setShowChat ] = useState( false )
   const [ chatId, setChatId ] = useState( 0 )
+  const [ headerOverlay, setHeaderOverlay ] = useState( false )
 
   /* Global Context Object */
   let globalContextObject = {
@@ -48,7 +49,8 @@ function App() {
     isNotificationShown, setIsNotificationShown,
     notificationId, setNotificationId,
     showChat, setShowChat,
-    chatId, setChatId
+    chatId, setChatId,
+    headerOverlay, setHeaderOverlay
   }
 
   return <GLOBALCONTEXT.Provider value={ globalContextObject }>

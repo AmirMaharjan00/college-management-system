@@ -10,7 +10,7 @@ import { ourFetch } from '../functions'
  */
 export const AddNewCourseSubject = ( args ) => {
     const Global = useContext( GLOBALCONTEXT )
-    const { setOverlay, setNewRegister } = Global
+    const { setOverlay, setNewRegister, setHeaderOverlay } = Global
     const { type = 'course' } = args
     const [ name, setName ] = useState( '' )
     const [ abbreviation, setAbbreviation ] = useState( '' )
@@ -51,6 +51,7 @@ export const AddNewCourseSubject = ( args ) => {
             setTimeout(() => {
                 setNewRegister( false )
                 setOverlay( false )
+                setHeaderOverlay( false )
             }, 3000)
         }
     }, [ registrationSuccess ])
