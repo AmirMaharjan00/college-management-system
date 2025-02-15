@@ -572,6 +572,7 @@ const LeaveRequest = () => {
         success: false
     })
     const { result, success } = leaveRequests
+    const [ dateDuration, setDateDuration ] = useState( Date.now() )
 
     useEffect(() => {
         ourFetch({
@@ -581,6 +582,30 @@ const LeaveRequest = () => {
         })
     }, [])
 
+    useEffect(() => {
+        console.log( formatDate( dateDuration ) )
+    }, [ dateDuration ])
+
+    const handleDropdownClick = ( event ) => {
+        let { target } = event,
+            classList = target.classList,
+            currentDate = new Date();
+
+        if( classList.contains( 'active' ) ) return;
+        if( classList.contains( 'today' ) ) {
+            setDateDuration( currentDate )
+        } else if( classList.contains( 'this-week' ) ) {
+            setDateDuration( currentDate.getTime() )
+        } else if( classList.contains( 'last-week' ) ) {
+            let lastWeek = new Date( currentDate )
+            lastWeek.setDate( currentDate.getDate() - 1 )
+            setDateDuration( lastWeek.getTime() )
+        } else if( classList.contains( 'this-month' ) ) {
+            let firstDayOfMonth = new Date(new Date().getFullYear(), new Date().getMonth(), 1);
+            setDateDuration( firstDayOfMonth.getTime() )
+        }
+    }
+
     return <div className="leave-requests-wrapper element">
         <div className="head">
             <span className="label">{ 'Leave Requests' }</span>
@@ -589,17 +614,17 @@ const LeaveRequest = () => {
                     <span className="label">{ 'Today' }</span>
                     <span className="icon"><FontAwesomeIcon icon={ faChevronDown } /></span>
                 </span>
-                <ul className="cmg-dropdown">
-                    <li className="cmg-list-item active">{ 'This Week' }</li>
-                    <li className="cmg-list-item">{ 'Last Week' }</li>
-                    <li className="cmg-list-item">{ 'This Month' }</li>
+                <ul className="cmg-dropdown" onClick={ handleDropdownClick }>
+                    <li className="cmg-list-item today active">{ 'Today' }</li>
+                    <li className="cmg-list-item this-week">{ 'This Week' }</li>
+                    <li className="cmg-list-item last-week">{ 'Last Week' }</li>
+                    <li className="cmg-list-item this-month">{ 'This Month' }</li>
                 </ul>
             </div>
         </div>
         <div className="foot">
             {
                 success && result.map(( leave, index ) => {
-                    console.log( leave )
                     let { name, leaveType, role, start, end, appliedOn, profile } = leave
                     return <div className="leave-request" key={ index }>
                         <div className="leave-applicant">
