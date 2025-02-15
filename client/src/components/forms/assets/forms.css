@@ -381,3 +381,164 @@ MARK: FORGOT PASSWORD
         color: #ff0000;
         font-size: 12px;
     }
+
+/*
+========================
+MARK: REGISTRATION
+========================
+*/
+    #cmg-leave {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: 700px;
+        height: 550px;
+        display: flex;
+        box-shadow: 0px 0px 20px 5px #ffffff44;
+        border-radius: 30px;
+        z-index: 9;
+    }
+
+    #cmg-leave.new-register {
+        z-index: 99;
+    }
+
+    #cmg-leave .form-overlay {
+        z-index: 9;
+        position: absolute;
+        height: 100%;
+        width: 50%;
+        border-radius: 0px 30px 30px 0px;
+    }
+    #cmg-leave .form-overlay.success {
+        background: #008d00db;
+    }
+
+    #cmg-leave .form-overlay.error {
+        background: #8d0000db;
+    }
+
+    #cmg-leave .form-overlay .overlay-message {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        color: white;
+        text-align: center;
+    }
+
+    #cmg-leave .form-wrapper {
+        flex: 1;
+        background: var(--white);
+        border-radius: 0 30px 30px 0;
+    }
+
+    #cmg-leave #leave-form {
+        background: var(--white);
+        border-radius: 0 30px 30px 0;
+        height: 100%;
+    }
+
+    #cmg-leave #leave-form .form-field.is-flex {
+        display: flex;
+        gap: 5px;
+    }
+
+    #cmg-leave #leave-form .form-field-inner-wrapper.is-flex {
+        display: flex;
+        gap: 15px;
+    }
+
+    #cmg-leave #leave-form .form-field-inner {
+        display: flex;
+        align-items: center;
+    }
+
+    #cmg-leave .college-logo-wrapper {
+        flex: 1;
+        background-image: url('../../assets/images/gradient-logo.jpg' );
+        background-size: cover;
+        border-radius: 30px 0 0 30px;
+        background-color: rgba(0, 128, 0, 0.445);
+    }
+
+    #cmg-leave #leave-form .form-head {
+        text-align: center;
+        padding: 15px 0;
+    }
+
+    #cmg-leave #leave-form h2.form-title {
+        margin-bottom: 5px;
+    }
+
+    #cmg-leave #leave-form input:not(input[type="radio"]),
+    #cmg-leave #leave-form select,
+    #cmg-leave #leave-form textarea {
+        display: block;
+        width: 100%;
+        box-sizing: border-box;
+        margin-top: 5px;
+        border-radius: 5px;
+        border: 1px solid black;
+    }
+
+    #cmg-leave #leave-form textarea {
+        height: 150px;
+        padding: 10px;
+    }
+
+    #cmg-leave #leave-form input[type="radio"] {
+        margin-right: 5px;
+    }
+
+    #cmg-leave #leave-form .form-field {
+        padding: 0 50px;
+        margin-bottom: 10px;
+    }
+
+    #cmg-leave #leave-form .form-desc {
+        margin-top: 5px;
+        display: block;
+        color: #a755f7;
+    }
+
+    #cmg-leave #leave-form .form-excerpt,
+    #cmg-leave #leave-form .form-desc,
+    #cmg-leave #leave-form .form-label {
+        font-size: 14px;
+    }
+
+    #cmg-leave #leave-form .form-label {
+        font-weight: 600;
+    }
+
+    #cmg-leave #leave-form .form-submit {
+        text-align: center;
+        padding: 0 50px;
+    }
+
+    #cmg-leave #leave-form .form-submit button {
+        background-color: #a755f7;
+        padding: 8px 10px;
+        width: 100%;
+        border-radius: 5px;
+        color: #fff;
+    }
+
+    #cmg-leave .quote {
+        color: #fff;
+        display: block;
+        text-align: center;
+    }
+
+    #cmg-leave .form-field-label-wrapper {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    #cmg-leave .form-error {
+        color: #ff0000;
+        font-size: 12px;
+    }

@@ -7,7 +7,7 @@ import staff from '../assets/images/staff.png'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faArrowsRotate, faChevronDown, faChevronRight, faCheckDouble, faXmark, faCircleExclamation, faIcons, faCoins, faSackDollar, faCalendarDays, faMoneyBillTrendUp } from '@fortawesome/free-solid-svg-icons';
 import { faFlag } from '@fortawesome/free-regular-svg-icons';
-import { ourFetch, getOrdinals } from '../functions'
+import { ourFetch, getOrdinals, firstLetterCapitalize, formatDate } from '../functions'
 
 /**
  * MARK: Admin Dashboard
@@ -51,7 +51,7 @@ export const AdminDashboard = () => {
             <div className="fees-collection-wrapper element">
                 <div className="head">
                     <span className="label">Fees Collection</span>
-                    <div className="time-period-wrapper">
+                    <div className="dropdown time-period-wrapper">
                         <span className="cmg-active-dropdown-item">
                             <span className="label">Last 8 Quater</span>
                             <span className="icon"><FontAwesomeIcon icon={ faChevronDown } /></span>
@@ -68,76 +68,7 @@ export const AdminDashboard = () => {
 
                 </div>
             </div>
-            <div className="leave-requests-wrapper element">
-                <div className="head">
-                    <span className="label">Leave Requests</span>
-                    <div className="time-period-wrapper">
-                        <span className="cmg-active-dropdown-item">
-                            <span className="label">Today</span>
-                            <span className="icon"><FontAwesomeIcon icon={ faChevronDown } /></span>
-                        </span>
-                        <ul className="cmg-dropdown">
-                            <li className="cmg-list-item active">This Week</li>
-                            <li className="cmg-list-item">Last Week</li>
-                            <li className="cmg-list-item">This Month</li>
-                        </ul>
-                    </div>
-                </div>
-                <div className="foot">
-                    <div className="leave-request">
-                        <div className="leave-applicant">
-                            <figure className="applicant-thumb"><img src="#" alt="#" /></figure>
-                            <div className="applicant-info">
-                                <div className="name-type-wrapper">
-                                    <h2 className="applicant">Ramien</h2>
-                                    <span className="application-type">Casual</span>
-                                </div>
-                                <span className="applicant-post">Accountant</span>
-                            </div>
-                            <div className="applicant-request">
-                                <button className="request request-accept"><FontAwesomeIcon icon={ faCheckDouble } /></button>
-                                <button className="request request-reject"><FontAwesomeIcon icon={ faXmark } /></button>
-                            </div>
-                        </div>
-                        <div className="leave-date">
-                            <div className="action leave-wrapper">
-                                <span className="leave-label">Leave: </span>
-                                <span className="leave">12 - 13 May</span>
-                            </div>
-                            <div className="action apply-wrapper">
-                                <span className="apply-label">Apply on : </span>
-                                <span className="apply-date">12 May</span>
-                            </div>
-                        </div>
-                    </div>
-                    <div className="leave-request">
-                        <div className="leave-applicant">
-                            <figure className="applicant-thumb"><img src="#" alt="#" /></figure>
-                            <div className="applicant-info">
-                                <div className="name-type-wrapper">
-                                    <h2 className="applicant">James</h2>
-                                    <span className="application-type">Emergency</span>
-                                </div>
-                                <span className="applicant-post">Physics Teacher</span>
-                            </div>
-                            <div className="applicant-request">
-                                <button className="request request-accept"><FontAwesomeIcon icon={ faCheckDouble } /></button>
-                                <button className="request request-reject"><FontAwesomeIcon icon={ faXmark } /></button>
-                            </div>
-                        </div>
-                        <div className="leave-date">
-                            <div className="action leave-wrapper">
-                                <span className="leave-label">Leave: </span>
-                                <span className="leave">12 - 13 May</span>
-                            </div>
-                            <div className="action apply-wrapper">
-                                <span className="apply-label">Apply on : </span>
-                                <span className="apply-date">12 May</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
+            <LeaveRequest />
         </div>{/* #fees-leave-request-wrapper */}
         <div id="dashboard-links" className="dashboard-links">
             <div className="link">
@@ -628,6 +559,76 @@ const SubjectCompletion = () => {
                     }) : <li className='subject'>{ 'No Subjects in this course.' }</li>
                 }
             </ul>
+        </div>
+    </div>
+}
+
+/**
+ * MARK: LEAVE REQUEST
+ */
+const LeaveRequest = () => {
+    const [ leaveRequests, setLeaveRequests ] = useState({
+        result: [],
+        success: false
+    })
+    const { result, success } = leaveRequests
+
+    useEffect(() => {
+        ourFetch({
+            api: '/select-leave-via-date',
+            callback: setLeaveRequests,
+            body: JSON.stringify({ appliedOnDate: Date.now() })
+        })
+    }, [])
+
+    return <div className="leave-requests-wrapper element">
+        <div className="head">
+            <span className="label">{ 'Leave Requests' }</span>
+            <div className="dropdown time-period-wrapper">
+                <span className="cmg-active-dropdown-item">
+                    <span className="label">{ 'Today' }</span>
+                    <span className="icon"><FontAwesomeIcon icon={ faChevronDown } /></span>
+                </span>
+                <ul className="cmg-dropdown">
+                    <li className="cmg-list-item active">{ 'This Week' }</li>
+                    <li className="cmg-list-item">{ 'Last Week' }</li>
+                    <li className="cmg-list-item">{ 'This Month' }</li>
+                </ul>
+            </div>
+        </div>
+        <div className="foot">
+            {
+                success && result.map(( leave, index ) => {
+                    console.log( leave )
+                    let { name, leaveType, role, start, end, appliedOn, profile } = leave
+                    return <div className="leave-request" key={ index }>
+                        <div className="leave-applicant">
+                            <figure className="applicant-thumb"><img src={ profile } alt="#" /></figure>
+                            <div className="applicant-info">
+                                <div className="name-type-wrapper">
+                                    <h2 className="applicant">{ name }</h2>
+                                    <span className={ `application-type ${ leaveType }` }>{ firstLetterCapitalize( leaveType ) }</span>
+                                </div>
+                                <span className="applicant-post">{ firstLetterCapitalize( role ) }</span>
+                            </div>
+                            <div className="applicant-request">
+                                <button className="request request-accept"><FontAwesomeIcon icon={ faCheckDouble } /></button>
+                                <button className="request request-reject"><FontAwesomeIcon icon={ faXmark } /></button>
+                            </div>
+                        </div>
+                        <div className="leave-date">
+                            <div className="action leave-wrapper">
+                                <span className="leave-label">{ 'Leave: ' }</span>
+                                <span className="leave">{ `${ formatDate( start ) } - ${ formatDate( end ) }` }</span>
+                            </div>
+                            <div className="action apply-wrapper">
+                                <span className="apply-label">{ 'Apply on : ' }</span>
+                                <span className="apply-date">{ formatDate( appliedOn ) }</span>
+                            </div>
+                        </div>
+                    </div>
+                })
+            }
         </div>
     </div>
 }

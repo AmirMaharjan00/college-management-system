@@ -45,3 +45,22 @@ export const getOrdinals = ( number ) => {
             return `${ number }th`
     }
 }
+
+/**
+ * MARK: CAPITALIZE FIRST LETTER
+ */
+export const firstLetterCapitalize = ( text ) => {
+    return text.slice( 0, 1 ).toUpperCase() + text.slice( 1 )
+}
+
+/**
+ * MARK: FORMAT DATE
+ * 
+ */
+export const formatDate = ( date ) => {
+    let dateInstance = new Date( date ),
+        day = dateInstance.getDate(),
+        month = dateInstance.toLocaleString( 'en-GB', { month: 'short' } )
+    
+    return `${ day } ${ month }`
+}

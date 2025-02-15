@@ -8,6 +8,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faArrowsRotate, faChevronDown, faChevronRight, faCheckDouble, faXmark, faCircleExclamation, faIcons, faCoins, faSackDollar, faCalendarDays, faMoneyBillTrendUp } from '@fortawesome/free-solid-svg-icons';
 import { faFlag } from '@fortawesome/free-regular-svg-icons';
 import { ourFetch } from '../functions'
+import { LeaveRequest } from '../forms/leave-request'
 
 /**
  * Admin Dashboard
@@ -16,8 +17,15 @@ import { ourFetch } from '../functions'
  */
 export const TeacherDashboard = () => {
     const Global = useContext( GLOBALCONTEXT )
-    const { loggedInUser } = Global
+    const { loggedInUser, setOverlay, setHeaderOverlay, leaveModal, setLeaveModal } = Global
     const { role, name, gender } = loggedInUser
+
+    /* Handle Leave request click */
+    const handleLeaveRequestClick = () => {
+        setLeaveModal( true )
+        setOverlay( true )
+        setHeaderOverlay( true )
+    }
 
     return <>
         <div className="dashboard-head">
@@ -29,10 +37,7 @@ export const TeacherDashboard = () => {
                 </ul>
             </div>
             <div className="dashboard-actions">
-                <button className="button-action add-student">
-                    <span></span>
-                    <span>Add New Student</span>
-                </button>
+                <button className="button-action add-student" onClick={ handleLeaveRequestClick }>{ 'Request Leave' }</button>
                 <button className="button-action fees">Fees Details</button>
             </div>
         </div>{/* .dashboard-head */}
@@ -51,7 +56,7 @@ export const TeacherDashboard = () => {
             <div className="fees-collection-wrapper element">
                 <div className="head">
                     <span className="label">Fees Collection</span>
-                    <div className="time-period-wrapper">
+                    <div className="dropdown time-period-wrapper">
                         <span className="cmg-active-dropdown-item">
                             <span className="label">Last 8 Quater</span>
                             <span className="icon"><FontAwesomeIcon icon={ faChevronDown } /></span>
@@ -71,7 +76,7 @@ export const TeacherDashboard = () => {
             <div className="leave-requests-wrapper element">
                 <div className="head">
                     <span className="label">Leave Requests</span>
-                    <div className="time-period-wrapper">
+                    <div className="dropdown time-period-wrapper">
                         <span className="cmg-active-dropdown-item">
                             <span className="label">Today</span>
                             <span className="icon"><FontAwesomeIcon icon={ faChevronDown } /></span>
@@ -461,7 +466,7 @@ export const TeacherDashboard = () => {
                 </div>
             </div>
         </div>
-
+        { leaveModal && <LeaveRequest /> }
     </>
 }
 

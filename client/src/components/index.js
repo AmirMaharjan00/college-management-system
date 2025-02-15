@@ -1,7 +1,6 @@
-import { useContext, useState, useEffect } from 'react'
+import { useContext, useEffect } from 'react'
 import { useNavigate, Outlet } from 'react-router-dom'
 import { Header } from './header'
-import { Main } from './main'
 import { Sidebar } from './sidebar'
 import { GLOBALCONTEXT } from '../App'
 import { ourFetch } from './functions'
@@ -12,19 +11,9 @@ export const Index = () => {
     const { 
         setIsloggedIn,
         setLoggedInUser,
-        setOverlay,
         overlay,
-        setIsUserLogoutDropdownActive,
         setIsDarkMode,
         isDarkMode,
-        setIsUserAddNewActive,
-        setIsAcademicYearActive,
-        setIsLanguageActive,
-        setNewRegister,
-        setIsNotificationDropdownActive,
-        setIsNotificationShown,
-        setNotificationId,
-        setIsMessageDropdownActive,
     } = global
 
     useEffect(() => {
@@ -92,7 +81,8 @@ export const Overlay = () => {
         setIsNotificationShown,
         setNotificationId,
         setIsMessageDropdownActive,
-        setHeaderOverlay
+        setHeaderOverlay,
+        setLeaveModal
     } = global
 
     const handleOverlay = () => {
@@ -107,6 +97,7 @@ export const Overlay = () => {
         setNotificationId( 0 )
         setIsMessageDropdownActive( false )
         setHeaderOverlay( false )
+        setLeaveModal( false )
     }
 
     return <div className='cmg-overlay' id="cmg-overlay" onClick={ handleOverlay }></div>

@@ -104,8 +104,21 @@ MARK: Global
         border-bottom: 1px solid var(--actionBorder);
     }
 
-    #root .cmg-active-dropdown-item:hover ~ .cmg-dropdown {
+    #root .dropdown {
+        position: relative;
+        height: 100%;
+        display: flex;
+    }
+
+    #root .dropdown:hover .cmg-dropdown {
         display: block;
+        right: -20px;
+        left: unset;
+        transform: none;
+    }
+
+    #root .cmg-active-dropdown-item {
+        align-self: center;
     }
 
     #root .cmg-active-dropdown-item .label {
@@ -558,17 +571,6 @@ MARK: Admin Dashboard
         height: 250px;
     }
 
-    #fees-leave-request-wrapper .element .time-period-wrapper {
-        position: relative;
-    }
-
-    #fees-leave-request-wrapper .element .cmg-dropdown {
-        right: -20px;
-        left: unset;
-        transform: none;
-        top: 30px;
-    }
-
     #fees-leave-request-wrapper .leave-requests-wrapper .foot {
         padding: 20px;
     }
@@ -961,26 +963,6 @@ MARK: Admin Dashboard
 
     #dashboard-foot .dashboard-foot-item .head .label {
         font-weight: 600;
-    }
-
-    #dashboard-foot .dashboard-foot-item .head .dropdown {
-        position: relative;
-        height: 100%;
-        display: flex
-    ;
-    }
-    #dashboard-foot .dashboard-foot-item .head .dropdown:hover .cmg-dropdown {
-        display: block;
-    }
-
-    #dashboard-foot .dashboard-foot-item .head .dropdown .cmg-active-dropdown-item {
-        align-self: center;
-    }
-
-    #dashboard-foot .dashboard-foot-item .head .dropdown .cmg-dropdown {
-        right: -20px;
-        left: unset;
-        transform: none;
     }
 
     #dashboard-foot .dashboard-foot-item .foot {

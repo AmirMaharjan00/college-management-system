@@ -40,7 +40,7 @@ app.listen(port, () => {
  * MARK: User Insert Query
  */
 app.post('/insert-user', (req, res) => {
-  const { name, email, password, contact, address, gender, role, profile } = req.body
+  const { name, email, password, contact, address, gender, role, profile = null } = req.body
   const insertQuery = 'INSERT INTO users (name, email, password, contact, address, gender, role, profile) VALUES (?, ?, ?, ?, ?, ?, ?, ?)'
   con.query( insertQuery, [ name, email, password, contact, address, gender, role, profile ], ( error, result ) => {
     if ( error ) {
@@ -63,8 +63,6 @@ app.post('/insert-course', (req, res) => {
     }
     if( result.length <= 0 ) {
       con.query( insertQuery, [ name, abbreviation, duration, cost, semester ], ( error, result ) => {
-        console.log( error )
-        console.log( result )
         if ( error ) {
           return res.status( 500 ).json({ message: "Failed ! Please Try again.", success: false, isError: true });
         }
@@ -120,6 +118,34 @@ app.post('/insert-notification', (req, res) => {
       })
     } else {
       return res.status( 200 ).json({ message: "Notification already Exists.", success: false, isExists: true });
+    }
+  })
+});
+
+/**
+ * MARK: Leave Insert Query
+ */
+app.post('/insert-leave', ( request, res ) => {
+  const { from, to, description, type } = request.body
+  const { user } = request.session;
+  const { id: userId } = user
+  const selectQuery = `SELECT * FROM \`leave\` WHERE userId="${ userId }" AND start="${ from }" AND end="${ to }"`
+  const insertQuery = 'INSERT INTO \`leave\` (userId, start, end, leaveType, description) VALUES (?, ?, ?, ?, ?)'
+  con.query( selectQuery, ( error, result ) => {
+    if ( error ) {
+      console.log( error, 'select error' )
+      return res.status( 500 ).json({ isError: true, success: false, message: "Something went wrong. Please Try again." });
+    }
+    if( result.length <= 0 ) {
+      con.query( insertQuery, [ userId, from, to, type, description ], ( error, result ) => {
+        if ( error ) {
+          console.log( error, 'insert error' )
+          return res.status( 500 ).json({ message: "Failed ! Please Try again.", success: false, isError: true });
+        }
+        return res.status( 200 ).json({ message: "SuccessFully Added.", id: result.insertId, success: true });
+      })
+    } else {
+      return res.status( 200 ).json({ message: "Already applied for leave on these dates.", success: false, isExists: true });
     }
   })
 });
@@ -301,7 +327,22 @@ app.post( '/set-dark-mode', ( request, res ) => {
 */
 app.post('/select', (req, res) => {
   const { table } = req.body
-  const selectQuery = `SELECT * FROM ${ table }`
+  const selectQuery = `SELECT * FROM \`${ table }\``
+  con.query( selectQuery, ( error, result ) => {
+    if ( error ) {
+      return res.status( 500 ).json({ error: "Database selection failed" });
+    }
+    return res.status( 200 ).json({ result, success: true });
+  })
+});
+
+/**
+* MARK: Select leave via date
+*/
+app.post('/select-leave-via-date', (req, res) => {
+  const { appliedOnDate } = req.body
+  const selectQuery = `SELECT * FROM \`leave\` INNER JOIN \`users\` ON \`leave\`.userId=\`users\`.id WHERE DATE(appliedOn)=DATE(FROM_UNIXTIME(${ appliedOnDate / 1000 }))`
+  console.log( selectQuery )
   con.query( selectQuery, ( error, result ) => {
     if ( error ) {
       return res.status( 500 ).json({ error: "Database selection failed" });

@@ -225,21 +225,13 @@ export const Registration = () => {
         let isValidGender = validateGender()
         let isvalidateRole = validateRole()
         if( isValidName && isValidEmail && isValidPassword && isValidContact && isValidAddress && isValidGender && isvalidateRole ) {
-            const formData = new FormData()
-            // formData.append( 'name', name )
-            // formData.append( 'email', email )
-            // formData.append( 'password', password )
-            // formData.append( 'contact', contact )
-            // formData.append( 'address', address )
-            // formData.append( 'gender', gender )
-            // formData.append( 'role', role )
-            // formData.append( 'profile', name )
+            console.log( profile )
             fetch( 'http://localhost:5000/insert-user', {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
                 },
-                body: JSON.stringify({ name, email, password, contact, address, gender, role, profile })
+                body: JSON.stringify({ name, email, password, contact, address, gender, role, profile: null })
             })
             .then(( result ) => result.json())
             .then( ( data ) => {

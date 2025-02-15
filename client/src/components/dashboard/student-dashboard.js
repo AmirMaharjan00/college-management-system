@@ -48,7 +48,7 @@ export const StudentDashboard = () => {
             <div className="fees-collection-wrapper element">
                 <div className="head">
                     <span className="label">Fees Collection</span>
-                    <div className="time-period-wrapper">
+                    <div className="dropdown time-period-wrapper">
                         <span className="cmg-active-dropdown-item">
                             <span className="label">Last 8 Quater</span>
                             <span className="icon"><FontAwesomeIcon icon={ faChevronDown } /></span>
@@ -68,7 +68,7 @@ export const StudentDashboard = () => {
             <div className="leave-requests-wrapper element">
                 <div className="head">
                     <span className="label">Leave Requests</span>
-                    <div className="time-period-wrapper">
+                    <div className="dropdown time-period-wrapper">
                         <span className="cmg-active-dropdown-item">
                             <span className="label">Today</span>
                             <span className="icon"><FontAwesomeIcon icon={ faChevronDown } /></span>

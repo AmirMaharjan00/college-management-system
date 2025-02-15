@@ -127,6 +127,26 @@ con.connect(function(err) {
           if( err ) throw err
           console.log( 'Images Table created.' )
         });
+
+        /**
+         * Create Leave Table
+         * MARK: Leave
+         */
+        let leaveQuery = "CREATE TABLE IF NOT EXISTS `leave` ("
+          leaveQuery += "id INT(11) NOT NULL AUTO_INCREMENT PRIMARY KEY, "
+          leaveQuery += "userId INT(11) NOT NULL, "
+          leaveQuery += "appliedOn DATETIME DEFAULT CURRENT_TIMESTAMP, "
+          leaveQuery += "start DATETIME, "
+          leaveQuery += "end DATETIME, "
+          leaveQuery += "status VARCHAR(255) DEFAULT 'pending', "
+          leaveQuery += "leaveType VARCHAR(255) DEFAULT 'casual', "
+          leaveQuery += "description LONGTEXT NOT NULL, "
+          leaveQuery += "FOREIGN KEY(userId) REFERENCES users(id) "
+          leaveQuery += ");"
+        con.query( leaveQuery, function (err, result) {
+          if( err ) throw err
+          console.log( 'Leave Table created.' )
+        });
       }
     });
 });

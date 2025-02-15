@@ -1,5 +1,6 @@
 import { useState, useEffect, useContext } from 'react'
 import { GLOBALCONTEXT } from '../../App'
+import { ourFetch } from '../functions'
 
 /**
  * Registration Form
@@ -9,7 +10,7 @@ import { GLOBALCONTEXT } from '../../App'
  */
 export const AddNewUser = ( args ) => {
     const Global = useContext( GLOBALCONTEXT )
-    const { setOverlay, setNewRegister } = Global
+    const { setOverlay, setNewRegister, setHeaderOverlay } = Global
     const { role = 'student' } = args
     const [ name, setName ] = useState( '' )
     const [ email, setEmail ] = useState( '' )
@@ -23,12 +24,15 @@ export const AddNewUser = ( args ) => {
     const [ contactErrorMsg, setContactErrorMsg ] = useState( '*' )
     const [ addressErrorMsg, setAddressErrorMsg ] = useState( '*' )
     const [ registrationSuccess, setRegistrationSuccess ] = useState( false )
+    const [ isSubmitted, setIsSubmitted ] = useState( false )
+    const [ overlayMessage, setOverlayMessage ] = useState( '' )
 
     useEffect(() => {
         if( registrationSuccess ) {
             setTimeout(() => {
                 setNewRegister( false )
                 setOverlay( false )
+                setHeaderOverlay( false )
             }, 3000)
         }
     }, [ registrationSuccess ])
@@ -207,21 +211,23 @@ export const AddNewUser = ( args ) => {
         let isValidAddress = validateAddress()
         let isValidGender = validateGender()
         let isvalidateRole = validateRole()
+        setIsSubmitted( true )
         if( isValidName && isValidEmail && isValidPassword && isValidContact && isValidAddress && isValidGender && isvalidateRole ) {
-            fetch( 'http://localhost:5000/insert-user', {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
+            ourFetch({
+                api: '/insert-user',
+                callback: callback,
                 body: JSON.stringify({ name, email, password, contact, address, gender, role })
             })
-            .then(( result ) => result.json())
-            .then( ( data ) => {
-                if( data.success ) {
-                    setRegistrationSuccess( true )
-                }
-            })
         }
+    }
+
+    /* Callback */
+    const callback = ( data ) => {
+        const { message, success } = data
+        if( success ) {
+            setRegistrationSuccess( true )
+        }
+        setOverlayMessage( message )
     }
 
     /*
@@ -230,7 +236,9 @@ export const AddNewUser = ( args ) => {
     return <div className='cmg-registration new-register' id="cmg-registration">
         <div className="college-logo-wrapper"></div>
         <div className='form-wrapper'>
-            { registrationSuccess && <div className='form-overlay'></div> }
+            { isSubmitted && <div className={ `form-overlay ${ registrationSuccess && 'success' } ${ ! registrationSuccess && 'error' }` }>
+                <h2 className='overlay-message'>{ overlayMessage }</h2>
+            </div> }
             <form id="registration-form" method="POST">
                 <div className='form-head'>
                     <h2 className='form-title'>{ `Register ${ role.slice( 0, 1 ).toUpperCase() + role.slice( 1 ) }.` }</h2>
