@@ -572,38 +572,41 @@ const LeaveRequest = () => {
         success: false
     })
     const { result, success } = leaveRequests
-    const [ dateDuration, setDateDuration ] = useState( Date.now() )
+    const [ dateDuration, setDateDuration ] = useState( 'today' )
 
     useEffect(() => {
         ourFetch({
             api: '/select-leave-via-date',
             callback: setLeaveRequests,
-            body: JSON.stringify({ appliedOnDate: Date.now() })
+            body: JSON.stringify({ dateDuration })
         })
-    }, [])
-
-    useEffect(() => {
-        console.log( formatDate( dateDuration ) )
     }, [ dateDuration ])
 
+    /* Handle dropdown click */
     const handleDropdownClick = ( event ) => {
         let { target } = event,
-            classList = target.classList,
-            currentDate = new Date();
+            classList = target.classList;
 
         if( classList.contains( 'active' ) ) return;
         if( classList.contains( 'today' ) ) {
-            setDateDuration( currentDate )
+            setDateDuration( 'today' )
         } else if( classList.contains( 'this-week' ) ) {
-            setDateDuration( currentDate.getTime() )
+            setDateDuration( 'this-week' )
         } else if( classList.contains( 'last-week' ) ) {
-            let lastWeek = new Date( currentDate )
-            lastWeek.setDate( currentDate.getDate() - 1 )
-            setDateDuration( lastWeek.getTime() )
+            setDateDuration( 'last-week' )
         } else if( classList.contains( 'this-month' ) ) {
-            let firstDayOfMonth = new Date(new Date().getFullYear(), new Date().getMonth(), 1);
-            setDateDuration( firstDayOfMonth.getTime() )
+            setDateDuration( 'this-month' )
         }
+        console.log( result )
+    }
+
+    /* Handle button click */
+    const handleButtonClick = ( leaveId, status ) => {
+        ourFetch({
+            api: '/update-leave-status',
+            callback: setLeaveRequests,
+            body: JSON.stringify({ id: leaveId, status })
+        })
     }
 
     return <div className="leave-requests-wrapper element">
@@ -611,21 +614,21 @@ const LeaveRequest = () => {
             <span className="label">{ 'Leave Requests' }</span>
             <div className="dropdown time-period-wrapper">
                 <span className="cmg-active-dropdown-item">
-                    <span className="label">{ 'Today' }</span>
+                    <span className="label">{ dateDuration.replaceAll( '-', ' ' ) }</span>
                     <span className="icon"><FontAwesomeIcon icon={ faChevronDown } /></span>
                 </span>
                 <ul className="cmg-dropdown" onClick={ handleDropdownClick }>
-                    <li className="cmg-list-item today active">{ 'Today' }</li>
-                    <li className="cmg-list-item this-week">{ 'This Week' }</li>
-                    <li className="cmg-list-item last-week">{ 'Last Week' }</li>
-                    <li className="cmg-list-item this-month">{ 'This Month' }</li>
+                    <li className={ `cmg-list-item today${ dateDuration === 'today' ? ' active' : '' }` }>{ 'Today' }</li>
+                    <li className={ `cmg-list-item this-week${ dateDuration === 'this-week' ? ' active' : '' }` }>{ 'This Week' }</li>
+                    <li className={ `cmg-list-item last-week${ dateDuration === 'last-week' ? ' active' : '' }` }>{ 'Last Week' }</li>
+                    <li className={ `cmg-list-item this-month${ dateDuration === 'this-month' ? ' active' : '' }` }>{ 'This Month' }</li>
                 </ul>
             </div>
         </div>
         <div className="foot">
             {
                 success && result.map(( leave, index ) => {
-                    let { name, leaveType, role, start, end, appliedOn, profile } = leave
+                    let { name, leaveType, role, start, end, appliedOn, profile, id: leaveId, status } = leave
                     return <div className="leave-request" key={ index }>
                         <div className="leave-applicant">
                             <figure className="applicant-thumb"><img src={ profile } alt="#" /></figure>
@@ -636,10 +639,11 @@ const LeaveRequest = () => {
                                 </div>
                                 <span className="applicant-post">{ firstLetterCapitalize( role ) }</span>
                             </div>
-                            <div className="applicant-request">
-                                <button className="request request-accept"><FontAwesomeIcon icon={ faCheckDouble } /></button>
-                                <button className="request request-reject"><FontAwesomeIcon icon={ faXmark } /></button>
-                            </div>
+                            { status === 'pending' ? <div className="applicant-request">
+                                <button className="request request-accept" onClick={ () => handleButtonClick( leaveId, 'completed' ) }><FontAwesomeIcon icon={ faCheckDouble } /></button>
+                                <button className="request request-reject" onClick={ () => handleButtonClick( leaveId, 'cancelled' ) }><FontAwesomeIcon icon={ faXmark } /></button>
+                            </div> :
+                            <span className={`application-status ${ status }`}>{ status }</span> }
                         </div>
                         <div className="leave-date">
                             <div className="action leave-wrapper">
@@ -654,6 +658,7 @@ const LeaveRequest = () => {
                     </div>
                 })
             }
+            { result.length <= 0 && <div>{ 'No leave requests.' }</div> }
         </div>
     </div>
 }

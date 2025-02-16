@@ -123,6 +123,7 @@ MARK: Global
 
     #root .cmg-active-dropdown-item .label {
         margin-right: 5px;
+        text-transform: capitalize;
     }
 
     body::-webkit-scrollbar {
@@ -549,6 +550,7 @@ MARK: Admin Dashboard
 
     #fees-leave-request-wrapper .leave-requests-wrapper {
         width: 500px;
+        height: 375px;
     }
 
     #fees-leave-request-wrapper .fees-collection-wrapper {
@@ -573,15 +575,14 @@ MARK: Admin Dashboard
 
     #fees-leave-request-wrapper .leave-requests-wrapper .foot {
         padding: 20px;
+        height: 270px;
+        overflow-y: auto;
     }
 
     #fees-leave-request-wrapper .leave-requests-wrapper .foot .leave-request {
         border: 1px solid var(--actionBorder);
         padding: 16px;
         border-radius: 5px;
-    }
-
-    #fees-leave-request-wrapper .leave-requests-wrapper .foot .leave-request:first-child {
         margin-bottom: 10px;
     }
 
@@ -657,17 +658,32 @@ MARK: Admin Dashboard
     #fees-leave-request-wrapper .leave-requests-wrapper .request {
         border-radius: 5px;
         padding: 3px 5px;
+        color: var(--white);
     }
 
     #fees-leave-request-wrapper .leave-requests-wrapper .request-accept {
         background: green;
-        color: var(--color);
         margin-right: 10px;
     }
 
     #fees-leave-request-wrapper .leave-requests-wrapper .request-reject {
         background: red;
-        color: var(--color);
+    }
+
+    #fees-leave-request-wrapper .leave-requests-wrapper .application-status {
+        text-transform: capitalize;
+        font-size: 14px;
+        color: var(--white);
+        padding: 3px 5px;
+        border-radius: 5px;
+    }
+
+    #fees-leave-request-wrapper .leave-requests-wrapper .application-status.completed {
+        background: #1abe17;
+    }
+
+    #fees-leave-request-wrapper .leave-requests-wrapper .application-status.cancelled {
+        background: #e82646;
     }
 
     #dashboard-links {

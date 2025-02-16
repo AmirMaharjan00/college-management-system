@@ -340,13 +340,48 @@ app.post('/select', (req, res) => {
 * MARK: Select leave via date
 */
 app.post('/select-leave-via-date', (req, res) => {
-  const { appliedOnDate } = req.body
-  const selectQuery = `SELECT * FROM \`leave\` INNER JOIN \`users\` ON \`leave\`.userId=\`users\`.id WHERE DATE(appliedOn)=DATE(FROM_UNIXTIME(${ appliedOnDate / 1000 }))`
+  const { dateDuration } = req.body
+  let selectQuery = `SELECT \`leave\`.*, \`users\`.name, \`users\`.profile, \`users\`.role FROM \`leave\` INNER JOIN \`users\` ON \`leave\`.userId=\`users\`.id WHERE `
+  switch( dateDuration ){
+    case 'this-week':
+      selectQuery += `YEAR( appliedOn ) = YEAR( CURDATE() ) AND WEEK( appliedOn, 1 ) = WEEK( CURDATE(), 1 )`
+      break;
+    case 'last-week':
+      selectQuery += `YEAR( appliedOn ) = YEAR( CURDATE() ) AND WEEK( appliedOn, 1) = WEEK( CURDATE(), 1 ) - 1`
+      break;
+    case 'this-month':
+      selectQuery += `YEAR( appliedOn ) = YEAR( CURDATE() ) AND MONTH( appliedOn ) = MONTH( CURDATE() )`
+      break;
+    default: 
+      selectQuery += `DATE(appliedOn)=CURDATE()`
+      break;
+  }
   console.log( selectQuery )
   con.query( selectQuery, ( error, result ) => {
     if ( error ) {
       return res.status( 500 ).json({ error: "Database selection failed" });
     }
+    console.log( result, 'result' )
     return res.status( 200 ).json({ result, success: true });
+  })
+});
+
+/**
+* MARK: Update leave status
+*/
+app.post( '/update-leave-status', ( request, res ) => {
+  const { status, id } = request.body
+  const updateQuery = `UPDATE \`leave\` SET status="${ status }" WHERE id=${ id }`
+  con.query( updateQuery, ( error, result ) => {
+    if ( error ) {
+      return res.status( 500 ).json({ success: false, error: "Database Update failed" });
+    }
+    const selectQuery = `SELECT * FROM \`leave\``
+    con.query( selectQuery, ( error, result ) => {
+      if ( error ) {
+        return res.status( 500 ).json({ error: "Database selection failed" });
+      }
+      return res.status( 200 ).json({ result, success: true });
+    })
   })
 });
