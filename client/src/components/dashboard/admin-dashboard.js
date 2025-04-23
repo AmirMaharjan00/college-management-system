@@ -8,6 +8,17 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faArrowsRotate, faChevronDown, faChevronRight, faCheckDouble, faXmark, faCircleExclamation, faIcons, faCoins, faSackDollar, faCalendarDays, faMoneyBillTrendUp } from '@fortawesome/free-solid-svg-icons';
 import { faFlag } from '@fortawesome/free-regular-svg-icons';
 import { ourFetch, getOrdinals, firstLetterCapitalize, formatDate } from '../functions'
+import { Bar } from 'react-chartjs-2'
+import {
+    Chart as ChartJS,
+    CategoryScale,
+    LinearScale,
+    BarElement,
+    Title,
+    Tooltip,
+    Legend,
+  } from 'chart.js';
+  ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
 
 /**
  * MARK: Admin Dashboard
@@ -48,26 +59,7 @@ export const AdminDashboard = () => {
         </div>{/* .dashboard-welcome */}
         <Highlights />
         <div className="fees-leave-request-wrapper" id="fees-leave-request-wrapper">
-            <div className="fees-collection-wrapper element">
-                <div className="head">
-                    <span className="label">Fees Collection</span>
-                    <div className="dropdown time-period-wrapper">
-                        <span className="cmg-active-dropdown-item">
-                            <span className="label">Last 8 Quater</span>
-                            <span className="icon"><FontAwesomeIcon icon={ faChevronDown } /></span>
-                        </span>
-                        <ul className="cmg-dropdown">
-                            <li className="cmg-list-item active">This Month</li>
-                            <li className="cmg-list-item">This Year</li>
-                            <li className="cmg-list-item">Last 12 Quater</li>
-                            <li className="cmg-list-item">Last 16 Quater</li>
-                        </ul>
-                    </div>
-                </div>
-                <div className="body">
-
-                </div>
-            </div>
+            <FeesCollection />
             <LeaveRequest />
         </div>{/* #fees-leave-request-wrapper */}
         <div id="dashboard-links" className="dashboard-links">
@@ -661,4 +653,66 @@ const LeaveRequest = () => {
             { result.length <= 0 && <div>{ 'No leave requests.' }</div> }
         </div>
     </div>
+}
+
+/**
+ * MARK: Fees Collection
+ */
+const FeesCollection = () => {
+    return <div className="fees-collection-wrapper element">
+        <div className="head">
+            <span className="label">{ 'Fees Collection' }</span>
+            <div className="dropdown time-period-wrapper">
+                <span className="cmg-active-dropdown-item">
+                    <span className="label">{ 'Last 8 Quater' }</span>
+                    <span className="icon"><FontAwesomeIcon icon={ faChevronDown } /></span>
+                </span>
+                <ul className="cmg-dropdown">
+                    <li className="cmg-list-item active">{ 'This Month' }</li>
+                    <li className="cmg-list-item">This Year</li>
+                    <li className="cmg-list-item">Last 12 Quater</li>
+                    <li className="cmg-list-item">Last 16 Quater</li>
+                </ul>
+            </div>
+        </div>
+        <div className="body">
+            <BarChart />
+        </div>
+    </div>
+}
+
+const BarChart = () => {
+    // Data for the chart
+    const data = {
+      labels: ['January', 'February', 'March', 'April', 'May', 'June'], // X-axis labels
+      datasets: [
+        {
+          label: 'Sales (in USD)', // Label for the bars
+          data: [3000, 2000, 4000, 2500, 3500, 4500], // Data points
+          backgroundColor: 'rgba(75, 192, 192, 0.2)', // Bar color
+          borderColor: 'rgba(75, 192, 192, 1)', // Border color
+          borderWidth: 1,
+        },
+      ],
+    };
+  
+    // Chart options
+    const options = {
+      responsive: true,
+      plugins: {
+        legend: {
+          position: 'top',
+        },
+        tooltip: {
+          enabled: true,
+        },
+      },
+      scales: {
+        y: {
+          beginAtZero: true,
+        },
+      },
+    };
+
+    return <Bar data={data} options={options} />
 }

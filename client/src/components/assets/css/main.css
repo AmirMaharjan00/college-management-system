@@ -568,9 +568,19 @@ MARK: Admin Dashboard
         color: var(--color);
     }
 
-    #fees-leave-request-wrapper .leave-requests-wrapper .body,
-    #fees-leave-request-wrapper .fees-collection-wrapper .body {
+    #fees-leave-request-wrapper .leave-requests-wrapper .body {
         height: 250px;
+    }
+
+    #fees-leave-request-wrapper .fees-collection-wrapper .body {
+        position: relative;
+        width: 100%;
+        height: 320px;
+    }
+
+    #fees-leave-request-wrapper .fees-collection-wrapper .body canvas {
+        width: 100%;
+        height: 100%;
     }
 
     #fees-leave-request-wrapper .leave-requests-wrapper .foot {
