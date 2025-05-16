@@ -31,8 +31,8 @@ export const Registration = () => {
             try {
               const response = await fetch(defaultProfile);
               const blob = await response.blob();
-              console.log( blob )
-              setProfile( blob );
+            //   console.log( blob )
+            //   setProfile( blob );
             } catch ( error ) {
               console.error( 'Error converting image to Blob:', error );
             }

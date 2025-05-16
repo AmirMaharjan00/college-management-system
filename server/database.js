@@ -7,7 +7,8 @@ export const con = mysql.createConnection({
     host: "localhost",
     user: "root",
     password: "admin",
-    database: "college_management_system"
+    database: "college_management_system",
+    port: 3307
 });
   
 con.connect(function(err) {

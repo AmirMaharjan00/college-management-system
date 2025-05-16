@@ -356,12 +356,12 @@ app.post('/select-leave-via-date', (req, res) => {
       selectQuery += `DATE(appliedOn)=CURDATE()`
       break;
   }
-  console.log( selectQuery )
+  // console.log( selectQuery )
   con.query( selectQuery, ( error, result ) => {
     if ( error ) {
       return res.status( 500 ).json({ error: "Database selection failed" });
     }
-    console.log( result, 'result' )
+    // console.log( result, 'result' )
     return res.status( 200 ).json({ result, success: true });
   })
 });

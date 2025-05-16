@@ -71,8 +71,8 @@ export const Profile = () => {
 
     /* Handle Save */
     const handleSave = () => {
-        console.log( profilePreview, 'Image' )
-        console.log( value, 'Value' )
+        // console.log( profilePreview, 'Image' )
+        // console.log( value, 'Value' )
     }
 
     return <main className="cmg-main" id="cmg-main">
