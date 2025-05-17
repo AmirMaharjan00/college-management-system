@@ -6,9 +6,8 @@ import mysql from 'mysql2'
 export const con = mysql.createConnection({
     host: "localhost",
     user: "root",
-    password: "admin",
-    database: "college_management_system",
-    port: 3307
+    password: "",
+    database: "college_management_system"
 });
   
 con.connect(function(err) {
