@@ -19,11 +19,37 @@ export const useDate = () => {
     })
 
     const getDate = () => {
-        return `${ day }/${ month }/${ year }`
+        return `${ day }/${ month }/${ year } ${ getDay( dateInstance.getDay() ) }`
     }
 
     const getTime = () => {
         return `${ hours }: ${ minutes }: ${ seconds }`
+    }
+
+    const getDay = ( dayIndex ) => {
+        switch( dayIndex ) {
+            case 0 :
+                return 'Sunday'
+                break;
+            case 1 :
+                return 'Monday'
+                break;
+            case 2 :
+                return 'Tuesday'
+                break;
+            case 3 :
+                return 'Wednesday'
+                break;
+            case 4 :
+                return 'Thursday'
+                break;
+            case 5 :
+                return 'Friday'
+                break;
+            case 6 :
+                return 'Saturday'
+                break;
+        }
     }
 
     return {

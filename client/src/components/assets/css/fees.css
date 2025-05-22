@@ -70,3 +70,63 @@
     padding: 10px 15px;
     color: var(--white);
 }
+
+/**
+* MARK: Pay Fees
+*/
+    #student-fees-wrapper .pay-fees-wrapper {
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate( -50%, -50% );
+        padding: 10px;
+        background: var(--white);
+        z-index: 99;
+        width: 400px;
+        height: 450px;
+        box-shadow: 0px 0px 20px 5px #ffffff44;
+        border-radius: 30px;
+    }
+
+    #student-pay-fees .form-field {
+        padding: 0 50px;
+        margin-bottom: 20px;
+    }
+
+    #student-pay-fees .form-field-label-wrapper {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    #student-pay-fees .form-label {
+        font-weight: 600;
+        font-size: 14px;
+    }
+
+    #student-pay-fees .form-error {
+        color: #ff0000;
+        font-size: 12px;
+    }
+
+    #student-pay-fees input {
+        display: block;
+        width: 100%;
+        box-sizing: border-box;
+        margin-top: 5px;
+        border-radius: 5px;
+        border: 1px solid black;
+    }
+
+    #student-pay-fees .form-head {
+        text-align: center;
+        margin: 15px 0;
+    }
+
+    #student-pay-fees h2.form-title {
+        margin-bottom: 5px;
+    }
+
+    #student-pay-fees .form-excerpt, #student-pay-fees .form-desc, #student-pay-fees .form-label {
+        font-size: 14px;
+    }

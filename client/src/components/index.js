@@ -82,7 +82,8 @@ export const Overlay = () => {
         setNotificationId,
         setIsMessageDropdownActive,
         setHeaderOverlay,
-        setLeaveModal
+        setLeaveModal,
+        setShowPayFeesForm
     } = global
 
     const handleOverlay = () => {
@@ -98,6 +99,7 @@ export const Overlay = () => {
         setIsMessageDropdownActive( false )
         setHeaderOverlay( false )
         setLeaveModal( false )
+        setShowPayFeesForm( false )
     }
 
     return <div className='cmg-overlay' id="cmg-overlay" onClick={ handleOverlay }></div>
