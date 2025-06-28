@@ -4,7 +4,8 @@ import bodyParser from "body-parser"
 import cors from 'cors'
 import cookieParser from 'cookie-parser'
 import { con } from './database.js'
-// import api from './api.js'
+import http from 'http'
+import { Server } from 'socket.io'
 
 const app = express();
 const port = process.env.PORT || 5000;
@@ -17,6 +18,14 @@ app.use( cors({
   methods: [ 'POST', 'GET' ],
   credentials: true // Allow credentials (cookies)
 }) );
+
+const server = http.createServer();
+const io = new Server(server, {
+  cors: {
+    origin: 'http://localhost:3000',  // frontend origin
+    methods: ["GET", "POST"]
+  }
+});
 
 /**
  * MARK: Session
@@ -34,6 +43,24 @@ app.use((req, res, next) => {
 
 app.listen(port, () => {
   console.log(`Server is running on port ${port}`);
+});
+
+io.listen(4000);
+io.on('connection', (socket) => {
+  console.log(`User connected: ${ socket.id }`);
+
+  socket.on('join', ({ senderId, receiverId }) => {
+    socket.join( senderId )
+    socket.join( receiverId )
+  });
+
+  socket.on('sendMessage', ( data ) => {
+    socket.broadcast.emit( 'receiveMessage', data )
+  });
+
+  socket.on('disconnect', () => {
+    console.log('User disconnected:', socket.id);
+  });
 });
 
 /**
@@ -133,13 +160,11 @@ app.post('/insert-leave', ( request, res ) => {
   const insertQuery = 'INSERT INTO \`leave\` (userId, start, end, leaveType, description) VALUES (?, ?, ?, ?, ?)'
   con.query( selectQuery, ( error, result ) => {
     if ( error ) {
-      console.log( error, 'select error' )
       return res.status( 500 ).json({ isError: true, success: false, message: "Something went wrong. Please Try again." });
     }
     if( result.length <= 0 ) {
       con.query( insertQuery, [ userId, from, to, type, description ], ( error, result ) => {
         if ( error ) {
-          console.log( error, 'insert error' )
           return res.status( 500 ).json({ message: "Failed ! Please Try again.", success: false, isError: true });
         }
         return res.status( 200 ).json({ message: "SuccessFully Added.", id: result.insertId, success: true });
@@ -356,12 +381,10 @@ app.post('/select-leave-via-date', (req, res) => {
       selectQuery += `DATE(appliedOn)=CURDATE()`
       break;
   }
-  // console.log( selectQuery )
   con.query( selectQuery, ( error, result ) => {
     if ( error ) {
       return res.status( 500 ).json({ error: "Database selection failed" });
     }
-    // console.log( result, 'result' )
     return res.status( 200 ).json({ result, success: true });
   })
 });
@@ -383,5 +406,33 @@ app.post( '/update-leave-status', ( request, res ) => {
       }
       return res.status( 200 ).json({ result, success: true });
     })
+  })
+});
+
+/**
+* MARK: Insert Message
+*/
+app.post( '/message', ( request, res ) => {
+  const { sender, receiver, message, messageType = 'text' } = request.body
+  const insertQuery = 'INSERT INTO messages (sender, receiver, message, messageType) VALUES (?, ?, ?, ?)'
+  con.query( insertQuery, [ sender, receiver, message, messageType ], ( error, result ) => {
+    if ( error ) {
+      return res.status( 500 ).json({ message: "Failed ! Please Try again.", success: false, isError: true });
+    }
+    return res.status( 200 ).json({ message: "SuccessFully Added.", id: result.insertId, success: true });
+  })
+});
+
+/**
+* MARK: Get Message
+*/
+app.post( '/get-message', ( request, res ) => {
+  const { sender, receiver } = request.body
+  const selectQuery = `SELECT * FROM messages WHERE (sender="${ sender }" AND receiver="${ receiver }") OR ( sender="${ receiver }" AND receiver="${ sender }" ) ORDER BY sentOn ASC;`
+  con.query( selectQuery, ( error, result ) => {
+    if ( error ) {
+      return res.status( 500 ).json({ error: "Database selection failed" });
+    }
+    return res.status( 200 ).json({ result, success: true });
   })
 });

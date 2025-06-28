@@ -12,6 +12,10 @@ import { AddNewUser } from './forms/add-new-user'
 import { AddNewCourseSubject } from './forms/add-new-cs'
 import { AddNewNotification } from './forms/add-new-notification'
 import { Overlay } from './index'
+import { io } from 'socket.io-client'
+
+const socket = io( 'http://localhost:4000' ) // match backend url
+console.log( socket )
 
 export const HeaderContext = createContext()
 /**
@@ -491,31 +495,89 @@ const ShowNotification = ( props ) => {
  */
 const Chat = ( props ) => {
     const Global = useContext( GLOBALCONTEXT )
-    const { setShowChat } = Global
-    const { id } = props
+    const [ message, setMessage ] = useState( '' )
+    const [ history, setHistory ] = useState([])
+    const { setShowChat, loggedInUser } = Global
+    const { id: receiverId } = props
     const [ chat, setChat ] = useState({})
     const { name } = chat
+    const { id: senderId } = loggedInUser
+    const [ didChatChange, setDidChatChange ] = useState( 0 )
 
     useEffect(() => {
         ourFetch({
             api: '/user-by-id',
             callback: chatCallback,
-            body: JSON.stringify({ id })
+            body: JSON.stringify({ id: receiverId })
         })
     }, [])
 
+    useEffect(() => {
+        ourFetch({
+            api: '/get-message',
+            callback: getMessageCallback,
+            body: JSON.stringify({ sender: senderId, receiver: receiverId })
+        })
+    }, [ didChatChange ])
+
+    useEffect(() => {
+        socket.emit( 'join', { senderId, receiverId });
+
+        socket.on('receiveMessage', (data) => {
+            setHistory(prev => [...prev, data]);
+        });
+        return () => socket.off('receiveMessage');
+    }, [ senderId, receiverId ])
+
     /* Chat Callback */
     const chatCallback = ( data ) => {
-        // console.log( data )
         let { result, success } = data
-        if( success ) {
-            setChat( result )
-        }
+        if( success ) setChat( result )
+    }
+
+    /* Get Message Callback */
+    const getMessageCallback = ( data ) => {
+        let { result, success } = data
+        if( success ) setHistory( result )
     }
 
     /* Handle Close */
     const handleClose = () => {
         setShowChat( false )
+    }
+
+    /**
+     * Handle Message
+     */
+    const handleMessage = ( event ) => {
+        let newMessage = event.target.value
+        setMessage( newMessage )
+    }
+
+    /**
+     * Handle Message Submit
+     */
+    const handleMessageSubmit = ( event ) => {
+        event.preventDefault()
+        if( message === '' ) return
+
+        const msgData = { id: history.length, senderId, receiverId, message, messageType: 'text', sentOn: Date.now() };
+        socket.emit('sendMessage', msgData);
+        setMessage('');
+
+        ourFetch({
+            api: '/message',
+            callback: userCallback,
+            body: JSON.stringify({ sender: senderId, receiver: receiverId, message, messageType: 'text' })
+        })
+    }
+
+    /**
+     * Message Callback
+     */
+    const userCallback = ( data ) => {
+        let { success, id = 0 } = data
+        if( success ) setDidChatChange( id )
     }
 
     return <div className='cmg-chat' id="cmg-chat">
@@ -529,11 +591,18 @@ const Chat = ( props ) => {
             <FontAwesomeIcon className="close" icon={ faXmark } onClick={ handleClose } />
         </div>
         <div className='body'>
-            Say hi.
+            {
+                ( history.length ) > 0 ? history.map(( chatVal, index ) => {
+                    let { message: _message, sender } = chatVal
+                    return <div key={ index } className={ `chat-message-wrap ${ sender === senderId ? 'sent' : 'receive' }` }><span className="chat-message">{ _message }</span></div>
+                }) : 'Say hi.'
+            }
         </div>
         <div className='foot'>
-            <input type="text" placeholder='Aa' autoFocus/>
-            <FontAwesomeIcon className="send" icon={ faPaperPlane } />
+            <form onSubmit={ handleMessageSubmit }>
+                <input type="text" placeholder='Aa' autoFocus onChange={ handleMessage } value={ message }/>
+            </form>
+            <FontAwesomeIcon className="send" icon={ faPaperPlane } onClick={ handleMessageSubmit }/>
         </div>
     </div>
 }

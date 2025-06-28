@@ -147,6 +147,25 @@ con.connect(function(err) {
           if( err ) throw err
           console.log( 'Leave Table created.' )
         });
+
+        /**
+         * Create Messages Table
+         * MARK: Messages
+         */
+        let messageQuery = "CREATE TABLE IF NOT EXISTS `messages` ("
+          messageQuery += "id INT(11) NOT NULL AUTO_INCREMENT PRIMARY KEY, "
+          messageQuery += "sender INT(11) NOT NULL, "
+          messageQuery += "receiver INT(11) NOT NULL, "
+          messageQuery += "message LONGTEXT NOT NULL, "
+          messageQuery += "messageType VARCHAR(255) DEFAULT 'text', "
+          messageQuery += "sentOn DATETIME DEFAULT CURRENT_TIMESTAMP, "
+          messageQuery += "FOREIGN KEY(sender) REFERENCES users(id), "
+          messageQuery += "FOREIGN KEY(receiver) REFERENCES users(id) "
+          messageQuery += ");"
+        con.query( messageQuery, function (err, result) {
+          if( err ) throw err
+          console.log( 'Message Table created.' )
+        });
       }
     });
 });
