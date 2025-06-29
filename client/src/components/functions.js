@@ -2,7 +2,7 @@
  * MARK: FETCH
  */
 export const ourFetch = async ( info ) => {
-    let { api, body, callback } = info
+    let { api, body, callback, headers } = info
     let url = 'http://localhost:5000' + api
     let fetchObject = {
         method: "POST",
@@ -12,6 +12,7 @@ export const ourFetch = async ( info ) => {
         credentials: 'include'
     }
     if( body ) fetchObject = { ...fetchObject, body }
+    if( headers ) fetchObject = { ...fetchObject, headers }
     /* Fetch API */
     try {
         const response = await fetch( url, fetchObject )

@@ -3,6 +3,7 @@ import './assets/css/profile.css'
 import galaxy from './assets/images/galaxy.jpg'
 import profile from './assets/images/user.jpg'
 import { GLOBALCONTEXT } from '../App'
+import { ourFetch } from './functions'
 
 export const Profile = () => {
     const Global = useContext( GLOBALCONTEXT )
@@ -55,7 +56,7 @@ export const Profile = () => {
             let picture = files[0]
             let pictureUrl = URL.createObjectURL( picture )
             setHasProfileChanged( true )
-            setProfilePreview( pictureUrl )
+            setProfilePreview( picture )
         }
     }
 
@@ -73,6 +74,25 @@ export const Profile = () => {
     const handleSave = () => {
         // console.log( profilePreview, 'Image' )
         // console.log( value, 'Value' )
+
+        const formData = new FormData();
+        formData.append('image', profilePreview); // 'image' should match your backend field name
+
+        ourFetch({
+            api: '/upload',
+            callback: uploadCallback,
+            headers: {
+                'Content-Type': 'multipart/form-data',
+            },
+            body: JSON.stringify( formData )
+        })
+    }
+
+    /**
+     * Upload Callback
+     */
+    const uploadCallback = ( data ) => {
+        console.log( data )
     }
 
     return <main className="cmg-main" id="cmg-main">
@@ -96,7 +116,7 @@ export const Profile = () => {
                 </div>
             </div>
             <div className='profile-body'>
-                <form id="profile-form" method="POST">
+                <form id="profile-form" method="POST" encType="multipart/form-data">
                     <div className='form-field'>
                         <label className='first form-label'>{ 'Name: ' }</label>
                         <input className="second" name='name' disabled={ disabled } type="text" value={ name } ref={ nameRef } onChange={ handleChange } />

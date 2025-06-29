@@ -6,9 +6,26 @@ import cookieParser from 'cookie-parser'
 import { con } from './database.js'
 import http from 'http'
 import { Server } from 'socket.io'
+import multer from 'multer'
+import path from 'path'
 
 const app = express();
 const port = process.env.PORT || 5000;
+
+// Set up storage with multer
+const storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    cb(null, 'uploads/'); // Folder where files will be saved
+  },
+  filename: function (req, file, cb) {
+    cb(null, Date.now() + path.extname(file.originalname)); // Unique filename
+  }
+});
+
+const upload = multer({ storage: storage });
+
+// Serve static files (for accessing uploaded images)
+app.use( '/uploads', express.static( 'uploads' ) );
 
 app.use( express.json() );
 app.use( cookieParser() );
@@ -435,4 +452,16 @@ app.post( '/get-message', ( request, res ) => {
     }
     return res.status( 200 ).json({ result, success: true });
   })
+});
+
+/**
+ * MARK: Upload
+ */
+app.post('/upload', upload.single('image'), (req, res) => {
+  console.log( req.body )
+  if (!req.file) return res.status(400).send('No file uploaded.');
+  res.send({
+    message: 'Image uploaded successfully!',
+    imageUrl: `/uploads/${req.file.filename}`
+  });
 });
