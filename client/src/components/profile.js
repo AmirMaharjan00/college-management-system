@@ -116,7 +116,7 @@ export const Profile = () => {
                 </div>
             </div>
             <div className='profile-body'>
-                <form id="profile-form" method="POST" encType="multipart/form-data">
+                <form id="profile-form" method="POST" encType="multipart/form-data" action='/upload'>
                     <div className='form-field'>
                         <label className='first form-label'>{ 'Name: ' }</label>
                         <input className="second" name='name' disabled={ disabled } type="text" value={ name } ref={ nameRef } onChange={ handleChange } />
@@ -146,8 +146,8 @@ export const Profile = () => {
                             </div>
                         </div>
                     </div>
+                    { ! disabled && <button className='save-change' onClick={ handleSave }>{ 'Save Changes' }</button> }
                 </form>
-                { ! disabled && <button className='save-change' onClick={ handleSave }>{ 'Save Changes' }</button> }
             </div>
         </div>
     </main>

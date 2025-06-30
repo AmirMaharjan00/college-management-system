@@ -9,23 +9,11 @@ import { Server } from 'socket.io'
 import multer from 'multer'
 import path from 'path'
 
+const upload = multer({
+  dest: './uploads/', // Directory to save uploaded files
+});
 const app = express();
 const port = process.env.PORT || 5000;
-
-// Set up storage with multer
-const storage = multer.diskStorage({
-  destination: function (req, file, cb) {
-    cb(null, 'uploads/'); // Folder where files will be saved
-  },
-  filename: function (req, file, cb) {
-    cb(null, Date.now() + path.extname(file.originalname)); // Unique filename
-  }
-});
-
-const upload = multer({ storage: storage });
-
-// Serve static files (for accessing uploaded images)
-app.use( '/uploads', express.static( 'uploads' ) );
 
 app.use( express.json() );
 app.use( cookieParser() );
