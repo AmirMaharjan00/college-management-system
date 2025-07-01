@@ -71,9 +71,8 @@ export const Profile = () => {
     }
 
     /* Handle Save */
-    const handleSave = () => {
-        // console.log( profilePreview, 'Image' )
-        // console.log( value, 'Value' )
+    const handleSave = ( event ) => {
+        event.preventDefault()
 
         const formData = new FormData();
         formData.append('image', profilePreview); // 'image' should match your backend field name
@@ -81,10 +80,8 @@ export const Profile = () => {
         ourFetch({
             api: '/upload',
             callback: uploadCallback,
-            headers: {
-                'Content-Type': 'multipart/form-data',
-            },
-            body: JSON.stringify( formData )
+            headersMultipart: true,
+            body: formData
         })
     }
 
@@ -109,14 +106,14 @@ export const Profile = () => {
                     <span className='info email'>{ email }</span>
                     <div className='user-meta'>
                         <span className='info role'>{ role?.slice( 0, 1 ).toUpperCase() + role?.slice( 1 ) }</span>
-                        <input type="file" id="file-input" ref={ profilePicElement } onChange={ handleProfilePic }/>
+                        <input type="file" id="file-input" ref={ profilePicElement } onChange={ handleProfilePic } name="image"/>
                         { ! disabled && <button className='change-profile' onClick={ handleProfileChange }>{ 'Change Profile Picture' }</button> }
                         <button className={ `edit ${ disabled ? 'locked' : 'unlocked' }` } disabled={ ! disabled } onClick={ handleEditClick }>{ disabled ? 'Edit' : 'You can now Edit.' }</button>
                     </div>
                 </div>
             </div>
             <div className='profile-body'>
-                <form id="profile-form" method="POST" encType="multipart/form-data" action='/upload'>
+                <form id="profile-form" method="POST" encType="multipart/form-data" action="/upload">
                     <div className='form-field'>
                         <label className='first form-label'>{ 'Name: ' }</label>
                         <input className="second" name='name' disabled={ disabled } type="text" value={ name } ref={ nameRef } onChange={ handleChange } />

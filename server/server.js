@@ -9,11 +9,16 @@ import { Server } from 'socket.io'
 import multer from 'multer'
 import path from 'path'
 
-const upload = multer({
-  dest: './uploads/', // Directory to save uploaded files
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => cb(null, 'uploads/'),
+  filename: (req, file, cb) => cb(null, file.originalname),
 });
+
+const upload = multer({ storage }); // Directory to save uploaded files
 const app = express();
 const port = process.env.PORT || 5000;
+
+app.use('/uploads', express.static('uploads'));
 
 app.use( express.json() );
 app.use( cookieParser() );
@@ -446,10 +451,20 @@ app.post( '/get-message', ( request, res ) => {
  * MARK: Upload
  */
 app.post('/upload', upload.single('image'), (req, res) => {
-  console.log( req.body )
+  const { user } = req.session,
+    path = `/uploads/${req.file.originalname}`,
+    insertQuery = 'INSERT INTO images (userId, url, date) VALUES (?, ?, ?)';
+
   if (!req.file) return res.status(400).send('No file uploaded.');
   res.send({
     message: 'Image uploaded successfully!',
-    imageUrl: `/uploads/${req.file.filename}`
+    imageUrl: path
   });
+
+  con.query( insertQuery, [ user.id, path, Date.now() ], ( error, result ) => {
+    if ( error ) {
+      return res.status( 500 ).json({ message: "Failed ! Please Try again.", success: false, isError: true });
+    }
+    return res.status( 200 ).json({ message: "SuccessFully Registered.", id: result.insertId, success: true });
+  })
 });

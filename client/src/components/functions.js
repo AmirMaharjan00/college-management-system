@@ -6,13 +6,15 @@ export const ourFetch = async ( info ) => {
     let url = 'http://localhost:5000' + api
     let fetchObject = {
         method: "POST",
-        headers: {
-            "Content-Type": ( headersMultipart ? 'multipart/form-data' : "application/json" ),
-        },
         credentials: 'include'
     }
     if( body ) fetchObject = { ...fetchObject, body }
-    console.log( fetchObject )
+    if( ! headersMultipart ) fetchObject = {    // don't set headers if multipart
+        ...fetchObject,
+        headers: {
+            "Content-Type": "application/json"
+        }
+    }
     /* Fetch API */
     try {
         const response = await fetch( url, fetchObject )
