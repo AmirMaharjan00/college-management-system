@@ -347,9 +347,11 @@ const Message = () =>{
             <div className='inner-list'>
                 {
                     filteredUsers?.map(( user, index ) => {
-                        let { name, id: userId } = user
+                        let { name, id: userId, profile } = user
                         return <div className='cmg-list-item' onClick={() => getChat( userId ) } key={ index }>
-                            <figure className='thumb-wrapper'></figure>
+                            <figure className='thumb-wrapper'>
+                                <img src={ profile } alt="profile"/>
+                            </figure>
                             <div className='notification-content'>
                                 <span className='title'>{ name }</span>
                                 <span className='last-message'>{ 'Hello, This is my last message.' }</span>
@@ -500,7 +502,7 @@ const Chat = ( props ) => {
     const { setShowChat, loggedInUser } = Global
     const { id: receiverId } = props
     const [ chat, setChat ] = useState({})
-    const { name } = chat
+    const { name, profile } = chat
     const { id: senderId } = loggedInUser
     const [ didChatChange, setDidChatChange ] = useState( 0 )
 
@@ -584,7 +586,7 @@ const Chat = ( props ) => {
         <div className='head'>
             <div className='user'>
                 <figure className='thumb-wrapper'>
-                    <img src={ background } alt="Notification Image" />
+                    <img src={ profile } alt="Notification Image" />
                 </figure>
                 <h2 className='title'>{ name }</h2>
             </div>
