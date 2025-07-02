@@ -31,8 +31,6 @@ export const Registration = () => {
             try {
               const response = await fetch(defaultProfile);
               const blob = await response.blob();
-            //   console.log( blob )
-            //   setProfile( blob );
             } catch ( error ) {
               console.error( 'Error converting image to Blob:', error );
             }
@@ -225,13 +223,12 @@ export const Registration = () => {
         let isValidGender = validateGender()
         let isvalidateRole = validateRole()
         if( isValidName && isValidEmail && isValidPassword && isValidContact && isValidAddress && isValidGender && isvalidateRole ) {
-            console.log( profile )
             fetch( 'http://localhost:5000/insert-user', {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
                 },
-                body: JSON.stringify({ name, email, password, contact, address, gender, role, profile: null })
+                body: JSON.stringify({ name, email, password, contact, address, gender, role })
             })
             .then(( result ) => result.json())
             .then( ( data ) => {

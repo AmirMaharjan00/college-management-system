@@ -2,7 +2,7 @@
  * MARK: FETCH
  */
 export const ourFetch = async ( info ) => {
-    let { api, body, callback, headersMultipart = false } = info
+    let { api, body, callback = false, headersMultipart = false } = info
     let url = 'http://localhost:5000' + api
     let fetchObject = {
         method: "POST",
@@ -22,9 +22,9 @@ export const ourFetch = async ( info ) => {
             throw new Error( 'Failed to fetch data => functions.js' )
         }
         const result = await response.json()
-        callback( result )
+        if( callback ) callback( result )
     } catch( error ) {
-        callback( error )
+        if( callback ) callback( error )
     }
 }
 

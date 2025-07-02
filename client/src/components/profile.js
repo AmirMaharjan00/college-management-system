@@ -1,7 +1,6 @@
 import { useContext, useState, useRef, useEffect } from 'react'
 import './assets/css/profile.css'
 import galaxy from './assets/images/galaxy.jpg'
-import profile from './assets/images/user.jpg'
 import { GLOBALCONTEXT } from '../App'
 import { ourFetch } from './functions'
 
@@ -14,12 +13,12 @@ export const Profile = () => {
         role: loggedInUser.role,
         contact: loggedInUser.contact,
         address: loggedInUser.address,
-        gender: loggedInUser.gender 
+        gender: loggedInUser.gender,
+        profile: loggedInUser.profile
     })
-    const { name, email, role, contact, address, gender } = value
+    const { name, email, role, contact, address, gender, profile } = value
     const [ disabled, setDisabled ] = useState( true )
-    const [ profilePreview, setProfilePreview ] = useState( '' )
-    const [ hasProfileChanged, setHasProfileChanged ] = useState( false )
+    const [ imageObject, setImageObject ] = useState( '' )
     const profilePicElement = useRef( 0 )
     const nameRef = useRef( 0 )
 
@@ -30,7 +29,8 @@ export const Profile = () => {
             role: loggedInUser.role,
             contact: loggedInUser.contact,
             address: loggedInUser.address,
-            gender: loggedInUser.gender 
+            gender: loggedInUser.gender,
+            profile: loggedInUser.profile
         })
     }, [ loggedInUser ])
 
@@ -55,8 +55,11 @@ export const Profile = () => {
         if( files.length > 0 ) {
             let picture = files[0]
             let pictureUrl = URL.createObjectURL( picture )
-            setHasProfileChanged( true )
-            setProfilePreview( picture )
+            setValue({
+                ...value,
+                profile: pictureUrl
+            })
+            setImageObject( picture )
         }
     }
 
@@ -73,10 +76,8 @@ export const Profile = () => {
     /* Handle Save */
     const handleSave = ( event ) => {
         event.preventDefault()
-
         const formData = new FormData();
-        formData.append('image', profilePreview); // 'image' should match your backend field name
-
+        formData.append('image', imageObject); // 'image' should match your backend field name
         ourFetch({
             api: '/upload',
             callback: uploadCallback,
@@ -89,7 +90,11 @@ export const Profile = () => {
      * Upload Callback
      */
     const uploadCallback = ( data ) => {
-        console.log( data )
+        let newImage = `http://localhost:3000${ data.imageUrl }`
+        ourFetch({
+            api: '/update-profile',
+            body: JSON.stringify({ ...value, profile: newImage })
+        })
     }
 
     return <main className="cmg-main" id="cmg-main">
@@ -98,7 +103,7 @@ export const Profile = () => {
                 <figure className='banner-holder'>
                     <img src={ galaxy } alt="Galaxy Image" className='galaxy-image' />
                     <figure className='thumb-wrapper'>
-                        <img src={ hasProfileChanged ? profilePreview :profile } alt="User Profile" className='user-profile' />
+                        <img src={ profile } alt="User Profile" className='user-profile' />
                     </figure>
                 </figure>
                 <div className='user-info'>

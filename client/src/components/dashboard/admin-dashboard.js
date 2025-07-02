@@ -589,7 +589,6 @@ const LeaveRequest = () => {
         } else if( classList.contains( 'this-month' ) ) {
             setDateDuration( 'this-month' )
         }
-        // console.log( result )
     }
 
     /* Handle button click */

@@ -77,9 +77,9 @@ io.on('connection', (socket) => {
  * MARK: User Insert Query
  */
 app.post('/insert-user', (req, res) => {
-  const { name, email, password, contact, address, gender, role, profile = null } = req.body
-  const insertQuery = 'INSERT INTO users (name, email, password, contact, address, gender, role, profile) VALUES (?, ?, ?, ?, ?, ?, ?, ?)'
-  con.query( insertQuery, [ name, email, password, contact, address, gender, role, profile ], ( error, result ) => {
+  const { name, email, password, contact, address, gender, role } = req.body
+  const insertQuery = 'INSERT INTO users (name, email, password, contact, address, gender, role) VALUES (?, ?, ?, ?, ?, ?, ?)'
+  con.query( insertQuery, [ name, email, password, contact, address, gender, role ], ( error, result ) => {
     if ( error ) {
       return res.status( 500 ).json({ error: "Database insertion failed" });
     }
@@ -358,6 +358,22 @@ app.post( '/set-dark-mode', ( request, res ) => {
 });
 
 /**
+* MARK: Set Dark Mode API
+*/
+app.post( '/update-profile', ( request, res ) => {
+  const { name, email, contact, address, gender, role, profile } = request.body
+  const { user } = request.session;
+  request.session.user = { ...user, ...request.body }
+  const updateQuery = `UPDATE users SET name="${ name }", email="${ email }", contact="${ contact }", address="${ address }", gender="${ gender }", role="${ role }", profile="${ profile }" WHERE id=${ user.id }`
+  con.query( updateQuery, ( error, result ) => {
+    if ( error ) {
+      return res.status( 500 ).json({ success: false, error: "Database Update failed" });
+    }
+    return res.status( 200 ).json({ success: true, profile });
+  })
+});
+
+/**
 * MARK: Select Query
 */
 app.post('/select', (req, res) => {
@@ -461,10 +477,10 @@ app.post('/upload', upload.single('image'), (req, res) => {
     imageUrl: path
   });
 
-  con.query( insertQuery, [ user.id, path, Date.now() ], ( error, result ) => {
-    if ( error ) {
-      return res.status( 500 ).json({ message: "Failed ! Please Try again.", success: false, isError: true });
-    }
-    return res.status( 200 ).json({ message: "SuccessFully Registered.", id: result.insertId, success: true });
-  })
+  // con.query( insertQuery, [ user.id, path, Date.now() ], ( error, result ) => {
+  //   if ( error ) {
+  //     return res.status( 500 ).json({ message: "Failed ! Please Try again.", success: false, isError: true });
+  //   }
+  //   return res.status( 200 ).json({ message: "SuccessFully Registered.", id: result.insertId, success: true });
+  // })
 });
