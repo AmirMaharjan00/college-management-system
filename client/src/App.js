@@ -13,6 +13,9 @@ import { ourFetch } from './components/functions.js'
 import { Main } from './components/main.js'
 import { StudentFees } from './components/student/fees.js'
 import { Profile } from './components/profile.js'
+import { StudentsList } from './components/peoples/students.js'
+import { TeachersList } from './components/peoples/teachers.js'
+import { StaffsList } from './components/peoples/staffs.js'
 
 export const GLOBALCONTEXT = createContext()
 
@@ -72,21 +75,13 @@ const Links = () => {
         <Route exact path='/dashboard' element={ <Main /> }/>
         <Route exact path='/dashboard/fees' element={ <StudentFees /> }/>
         <Route exact path='/dashboard/profile' element={ <Profile /> }/>
+        <Route exact path='/dashboard/students' element={ <StudentsList /> }/>
+        <Route exact path='/dashboard/teachers' element={ <TeachersList /> }/>
+        <Route exact path='/dashboard/staffs' element={ <StaffsList /> }/>
       </Route>
-      {/* <Route exact path='/swt-admin' element={ Admin }>
-        <Route exact path='/swt-admin' element={ Dashboard }/>
-        <Route exact path='/swt-admin/pages' element={ <Pages /> }/>
-        <Route exact path='/swt-admin/media' element={ Media }/>
-        <Route exact path='/swt-admin/products' element={ <Products /> }/>
-        <Route exact path='/swt-admin/settings' element={ Settings }/>
-        <Route exact path='/swt-admin/report' element={ Report }/>
-        <Route exact path='/swt-admin/users' element={ <Users /> }/>
-      </Route> */}
       <Route exact path='/login' element={ <Login /> }/>
       <Route exact path='/registration' element={ <Registration /> }/>
       <Route exact path='/forgot-password' element={ <ForgotPassword/> }/>
-      {/* <Route exact path='/swt-admin/swt-registration' element={ AdminRegistration }/> */}
-      {/* <Route exact path='/dashboard' element={ <Index/> }/> */}
       <Route path='*' element={ <ErrorPage/> } />
     </Routes>
   );
