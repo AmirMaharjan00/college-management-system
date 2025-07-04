@@ -86,9 +86,10 @@
         height: 450px;
         box-shadow: 0px 0px 20px 5px #ffffff44;
         border-radius: 30px;
+        overflow-y: auto;
     }
 
-    #student-pay-fees .form-field {
+    /* #student-pay-fees .form-field {
         padding: 0 50px;
         margin-bottom: 20px;
     }
@@ -129,4 +130,4 @@
 
     #student-pay-fees .form-excerpt, #student-pay-fees .form-desc, #student-pay-fees .form-label {
         font-size: 14px;
-    }
+    } */

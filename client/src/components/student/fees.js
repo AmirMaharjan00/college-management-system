@@ -64,27 +64,94 @@ export const StudentFees = () => {
  * @since 1.0.0
  */
 const PayFees = () => {
-    return <div className='pay-fees-wrapper'>
-        <form id="student-pay-fees">
-            <div class="form-head">
-                <h2 class="form-title">Receipt</h2>
-                <span class="form-excerpt">Please pay your fees from here.</span>
-            </div>
-            <div class="form-field">
-                <div class="form-field-label-wrapper">
-                    <label class="form-label" for="price">Price</label>
-                    <span class="form-error">*</span>
-                </div>
-                <input required="" type="number" value="" id="price" name="price" />
-            </div>
-            <div class="form-field">
-                <div class="form-field-label-wrapper">
-                    <label class="form-label" for="priceInWords">Price in Words</label>
-                    <span class="form-error">*</span>
-                </div>
-                <input required="" type="text" value="" id="priceInWords" name="priceInWords" />
-                <h2>test</h2>
-            </div>
-        </form>
-    </div>
-}
+	const [formData, setFormData] = useState({
+		studentName: '',
+		studentId: '',
+		program: '',
+		semester: '',
+		feeType: '',
+		paymentMethod: '',
+		price: '',
+		priceInWords: '',
+		remarks: '',
+	});
+
+	const handleChange = (e) => {
+		setFormData({ ...formData, [e.target.name]: e.target.value });
+	};
+
+	const handleSubmit = (e) => {
+		e.preventDefault();
+		console.log('Submitting Fee Form:', formData);
+		// Call API or display confirmation
+	};
+
+	return (
+		<div className='pay-fees-wrapper'>
+			<form id="student-pay-fees" onSubmit={handleSubmit}>
+				<div className="form-head">
+					<h2 className="form-title">College Fee Payment</h2>
+					<span className="form-excerpt">Please fill in your fee details below.</span>
+				</div>
+
+				{/* Program */}
+				<div className="form-field">
+					<label className="form-label" htmlFor="program">Program / Course <span className="form-error">*</span></label>
+					<input required type="text" id="program" name="program" value={formData.program} onChange={handleChange} />
+				</div>
+
+				{/* Semester */}
+				<div className="form-field">
+					<label className="form-label" htmlFor="semester">Semester / Year <span className="form-error">*</span></label>
+					<input required type="text" id="semester" name="semester" value={formData.semester} onChange={handleChange} />
+				</div>
+
+				{/* Fee Type */}
+				<div className="form-field">
+					<label className="form-label" htmlFor="feeType">Fee Type <span className="form-error">*</span></label>
+					<select required id="feeType" name="feeType" value={formData.feeType} onChange={handleChange}>
+						<option value="">Select Type</option>
+						<option value="tuition">Tuition</option>
+						<option value="hostel">Hostel</option>
+						<option value="library">Library</option>
+						<option value="exam">Exam</option>
+					</select>
+				</div>
+
+				{/* Amount */}
+				<div className="form-field">
+					<label className="form-label" htmlFor="price">Price <span className="form-error">*</span></label>
+					<input required type="number" id="price" name="price" value={formData.price} onChange={handleChange} />
+				</div>
+
+				{/* Price in Words */}
+				<div className="form-field">
+					<label className="form-label" htmlFor="priceInWords">Price in Words <span className="form-error">*</span></label>
+					<input required type="text" id="priceInWords" name="priceInWords" value={formData.priceInWords} onChange={handleChange} />
+				</div>
+
+				{/* Remarks */}
+				<div className="form-field">
+					<label className="form-label" htmlFor="remarks">Remarks (Optional)</label>
+					<textarea id="remarks" name="remarks" value={formData.remarks} onChange={handleChange}></textarea>
+				</div>
+
+				{/* Payment Method */}
+				<div className="form-field">
+					<label className="form-label">Payment Method <span className="form-error">*</span></label>
+					<select name='paymentMethod' id='paymentMethod' value={formData.paymentMethod} onChange={handleChange} required>
+						<option value=''>Select</option>
+						<option value='esewa'>eSewa</option>
+						<option value='khalti'>Khalti</option>
+						<option value='bank'>Bank Transfer</option>
+					</select>
+				</div>
+
+				{/* Submit Button */}
+				<div className="form-field">
+					<button type="submit" className="submit-button">Pay Now</button>
+				</div>
+			</form>
+		</div>
+	);
+};

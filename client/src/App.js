@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import './App.css';
 import './components/assets/css/main.css';
 import './components/assets/css/fees.css';
+import './components/assets/scss/fees.scss';
 import './components/assets/externals/boxicons/css/boxicons.css'
 import { Index } from './components/index.js'
 import { Login } from './components/forms/login.js'
