@@ -83,6 +83,7 @@ const PayFees = () => {
                     <span class="form-error">*</span>
                 </div>
                 <input required="" type="text" value="" id="priceInWords" name="priceInWords" />
+                <h2>test</h2>
             </div>
         </form>
     </div>
