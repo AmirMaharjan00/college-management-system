@@ -77,9 +77,9 @@ io.on('connection', (socket) => {
  * MARK: User Insert Query
  */
 app.post('/insert-user', (req, res) => {
-  const { name, email, password, contact, address, gender, role } = req.body
-  const insertQuery = 'INSERT INTO users (name, email, password, contact, address, gender, role) VALUES (?, ?, ?, ?, ?, ?, ?)'
-  con.query( insertQuery, [ name, email, password, contact, address, gender, role ], ( error, result ) => {
+  const { name, email, password, contact, address, gender, role, profile = '' } = req.body
+  const insertQuery = 'INSERT INTO users (name, email, password, contact, address, gender, role, profile) VALUES (?, ?, ?, ?, ?, ?, ?, ?)'
+  con.query( insertQuery, [ name, email, password, contact, address, gender, role, profile ], ( error, result ) => {
     if ( error ) {
       return res.status( 500 ).json({ error: "Database insertion failed" });
     }
