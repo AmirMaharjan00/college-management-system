@@ -1,4 +1,5 @@
 import { useContext, useEffect, useState, useMemo } from 'react'
+import { Link } from 'react-router-dom'
 import { GLOBALCONTEXT } from '../../App'
 import student from '../assets/images/student.png'
 import teacher from '../assets/images/teacher.png'
@@ -35,7 +36,7 @@ export const AdminDashboard = () => {
             <div className="dashboard-intro">
                 <h2 className="user-name">Admin Dashboard</h2>
                 <ul className="cmg-breadcrumb" id="cmg-breadcrumb">
-                    <li className="breadcrumb-item">Dashboard</li>
+                    <li className="breadcrumb-item"><Link to="/dashboard">Dashboard</Link></li>
                     <li className="breadcrumb-item">Admin Dashboard</li>
                 </ul>
             </div>
