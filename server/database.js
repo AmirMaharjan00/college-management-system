@@ -10,7 +10,7 @@ const con = mysql.createConnection({
     database: "college_management_system"
 });
 
-// module.exports = { con };
+module.exports = { con };
   
 con.connect(function(err) {
     if( err ) throw err

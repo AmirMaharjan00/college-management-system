@@ -473,20 +473,11 @@ app.post( '/get-message', ( request, res ) => {
  * MARK: Upload
  */
 app.post('/upload', upload.single('image'), (req, res) => {
-  const { user } = req.session,
-    path = `/uploads/${req.file.originalname}`,
-    insertQuery = 'INSERT INTO images (userId, url, date) VALUES (?, ?, ?)';
+  const path = `/uploads/${req.file.originalname}`
 
   if (!req.file) return res.status(400).send('No file uploaded.');
   res.send({
     message: 'Image uploaded successfully!',
     imageUrl: path
   });
-
-  // con.query( insertQuery, [ user.id, path, Date.now() ], ( error, result ) => {
-  //   if ( error ) {
-  //     return res.status( 500 ).json({ message: "Failed ! Please Try again.", success: false, isError: true });
-  //   }
-  //   return res.status( 200 ).json({ message: "SuccessFully Registered.", id: result.insertId, success: true });
-  // })
 });
