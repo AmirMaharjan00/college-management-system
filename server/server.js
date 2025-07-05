@@ -1,14 +1,20 @@
-import express from 'express'
-import session from 'express-session'
-import bodyParser from "body-parser"
-import cors from 'cors'
-import cookieParser from 'cookie-parser'
-import { con } from './database.js'
-import http from 'http'
-import { Server } from 'socket.io'
-import multer from 'multer'
-import path from 'path'
+const express = require( 'express' ),
+  session = require( 'express-session' ),
+  bodyParser = require( 'body-parser' ),
+  cors = require( 'cors' ),
+  cookieParser = require( 'cookie-parser' ),
+  { con } = require( './database.js' ),
+  http = require( 'http' ),
+  { Server } = require( 'socket.io' ),
+  multer = require( 'multer' ),
+  path = require( 'path' ),
+  fs = require( 'fs' );
 
+const folderPath = path.join( __dirname, 'uploads' )
+fs.mkdir(folderPath, (err) => {
+  if (err) return console.error('Error creating folder:', err);
+  console.log('Folder created successfully!');
+});
 const storage = multer.diskStorage({
   destination: (req, file, cb) => cb(null, 'uploads/'),
   filename: (req, file, cb) => cb(null, file.originalname),
@@ -77,9 +83,9 @@ io.on('connection', (socket) => {
  * MARK: User Insert Query
  */
 app.post('/insert-user', (req, res) => {
-  const { name, email, password, contact, address, gender, role, profile = '' } = req.body
-  const insertQuery = 'INSERT INTO users (name, email, password, contact, address, gender, role, profile) VALUES (?, ?, ?, ?, ?, ?, ?, ?)'
-  con.query( insertQuery, [ name, email, password, contact, address, gender, role, profile ], ( error, result ) => {
+  const { name, email, password, contact, address, gender, role } = req.body
+  const insertQuery = 'INSERT INTO users (name, email, password, contact, address, gender, role) VALUES (?, ?, ?, ?, ?, ?, ?)'
+  con.query( insertQuery, [ name, email, password, contact, address, gender, role ], ( error, result ) => {
     if ( error ) {
       return res.status( 500 ).json({ error: "Database insertion failed" });
     }
