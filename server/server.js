@@ -25,6 +25,7 @@ const app = express();
 const port = process.env.PORT || 5000;
 
 app.use('/uploads', express.static('uploads'));
+app.use('/images', express.static('images'));
 
 app.use( express.json() );
 app.use( cookieParser() );

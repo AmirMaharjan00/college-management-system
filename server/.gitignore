@@ -3,8 +3,7 @@
 # dependencies
 /node_modules
 /.pnp
-uploads/*
-!uploads/user.jpg
+uploads/
 .pnp.js
 
 # testing
