@@ -482,3 +482,16 @@ app.post('/upload', upload.single('image'), (req, res) => {
     imageUrl: path
   });
 });
+
+/**
+ * MARK: Users via role
+ */
+app.post( '/all-students', ( request, res ) => { 
+  const selectQuery = `SELECT * FROM users WHERE role="student"`
+  con.query( selectQuery, ( error, result ) => {
+    if ( error ) {
+      return res.status( 500 ).json({ error: "Database selection failed" });
+    }
+    return res.status( 200 ).json({ result, success: true });
+  })
+});
