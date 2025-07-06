@@ -1,14 +1,16 @@
-import mysql from 'mysql2'
+const mysql = require( 'mysql2' );
 
 /**
  * MARK: Database
  */
-export const con = mysql.createConnection({
+const con = mysql.createConnection({
     host: "localhost",
     user: "root",
     password: "",
     database: "college_management_system"
 });
+
+module.exports = { con };
   
 con.connect(function(err) {
     if( err ) throw err
@@ -31,7 +33,7 @@ con.connect(function(err) {
           userQuery += "gender VARCHAR(255) DEFAULT 'male', "
           userQuery += "role VARCHAR(255) DEFAULT 'student', "
           userQuery += "view VARCHAR(255) DEFAULT 'light', "
-          userQuery += "profile LONGTEXT NOT NULL,"
+          userQuery += "profile VARCHAR(500) NOT NULL DEFAULT '/images/user.jpg',"
           userQuery += "registered_date DATETIME DEFAULT CURRENT_TIMESTAMP"
           userQuery += ");"
         con.query( userQuery, function (err, result) {
@@ -165,6 +167,20 @@ con.connect(function(err) {
         con.query( messageQuery, function (err, result) {
           if( err ) throw err
           console.log( 'Message Table created.' )
+        });
+
+        /**
+         * Create Options Table
+         * MARK: Options
+         */
+        let optionsQuery = "CREATE TABLE IF NOT EXISTS `options` ("
+          optionsQuery += "id INT(11) NOT NULL AUTO_INCREMENT PRIMARY KEY, "
+          optionsQuery += "metaKey INT(11) NOT NULL, "
+          optionsQuery += "metaValue INT(11) NOT NULL "
+          optionsQuery += ");"
+        con.query( optionsQuery, function (err, result) {
+          if( err ) throw err
+          console.log( 'Options Table created.' )
         });
       }
     });

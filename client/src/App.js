@@ -1,6 +1,7 @@
 import { createContext, useState, useEffect } from 'react'
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import './App.css';
+import './components/assets/sass/peoples.scss';
 import './components/assets/css/main.css';
 import './components/assets/css/fees.css';
 import './components/assets/scss/fees.scss';

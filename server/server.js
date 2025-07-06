@@ -1,14 +1,20 @@
-import express from 'express'
-import session from 'express-session'
-import bodyParser from "body-parser"
-import cors from 'cors'
-import cookieParser from 'cookie-parser'
-import { con } from './database.js'
-import http from 'http'
-import { Server } from 'socket.io'
-import multer from 'multer'
-import path from 'path'
+const express = require( 'express' ),
+  session = require( 'express-session' ),
+  bodyParser = require( 'body-parser' ),
+  cors = require( 'cors' ),
+  cookieParser = require( 'cookie-parser' ),
+  { con } = require( './database.js' ),
+  http = require( 'http' ),
+  { Server } = require( 'socket.io' ),
+  multer = require( 'multer' ),
+  path = require( 'path' ),
+  fs = require( 'fs' );
 
+const folderPath = path.join( __dirname, 'uploads' )
+fs.mkdir(folderPath, (err) => {
+  if (err) return console.error('Error creating folder:', err);
+  console.log('Folder created successfully!');
+});
 const storage = multer.diskStorage({
   destination: (req, file, cb) => cb(null, 'uploads/'),
   filename: (req, file, cb) => cb(null, file.originalname),
@@ -19,6 +25,7 @@ const app = express();
 const port = process.env.PORT || 5000;
 
 app.use('/uploads', express.static('uploads'));
+app.use('/images', express.static('images'));
 
 app.use( express.json() );
 app.use( cookieParser() );
@@ -77,9 +84,9 @@ io.on('connection', (socket) => {
  * MARK: User Insert Query
  */
 app.post('/insert-user', (req, res) => {
-  const { name, email, password, contact, address, gender, role, profile = '' } = req.body
-  const insertQuery = 'INSERT INTO users (name, email, password, contact, address, gender, role, profile) VALUES (?, ?, ?, ?, ?, ?, ?, ?)'
-  con.query( insertQuery, [ name, email, password, contact, address, gender, role, profile ], ( error, result ) => {
+  const { name, email, password, contact, address, gender, role } = req.body
+  const insertQuery = 'INSERT INTO users (name, email, password, contact, address, gender, role) VALUES (?, ?, ?, ?, ?, ?, ?)'
+  con.query( insertQuery, [ name, email, password, contact, address, gender, role ], ( error, result ) => {
     if ( error ) {
       return res.status( 500 ).json({ error: "Database insertion failed" });
     }
@@ -467,20 +474,11 @@ app.post( '/get-message', ( request, res ) => {
  * MARK: Upload
  */
 app.post('/upload', upload.single('image'), (req, res) => {
-  const { user } = req.session,
-    path = `/uploads/${req.file.originalname}`,
-    insertQuery = 'INSERT INTO images (userId, url, date) VALUES (?, ?, ?)';
+  const path = `/uploads/${req.file.originalname}`
 
   if (!req.file) return res.status(400).send('No file uploaded.');
   res.send({
     message: 'Image uploaded successfully!',
     imageUrl: path
   });
-
-  // con.query( insertQuery, [ user.id, path, Date.now() ], ( error, result ) => {
-  //   if ( error ) {
-  //     return res.status( 500 ).json({ message: "Failed ! Please Try again.", success: false, isError: true });
-  //   }
-  //   return res.status( 200 ).json({ message: "SuccessFully Registered.", id: result.insertId, success: true });
-  // })
 });
