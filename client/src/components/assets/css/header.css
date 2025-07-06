@@ -294,6 +294,34 @@ MARK: NOTIFICATION
         transform: scale(1.03);
     }
 
+    /* animation */
+    #cmg-header .action .animate {
+        width: 8px;
+        height: 8px;
+        position: absolute;
+        top: -6px;
+        right: 4px;
+        background: #ff0000;
+        border-radius: 100%;
+    }
+
+    #cmg-header .action .animate:before {
+        content: '';
+        animation: ping 1s cubic-bezier(0,0,.2,1) infinite;
+        border: 1px solid #ff0000;
+        position: absolute;
+        top: 3px;
+        right: 3px;
+        border-radius: 100%;
+    }
+
+    @keyframes ping {
+        75%, 100% {
+            opacity: 0;
+            transform: scale(14);
+        }
+    }
+
 /*
 =====================
 MARK: SHOW NOTIFICATION

@@ -3,6 +3,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faDownload } from '@fortawesome/free-solid-svg-icons';
 import { TodaysDate } from '../includes/components-hooks'
 import { GLOBALCONTEXT } from '../../App'
+import { toWords } from 'number-to-words';
 
 export const StudentFees = () => {
     const Global = useContext( GLOBALCONTEXT ),
@@ -86,12 +87,26 @@ const PayFees = () => {
 		// Call API or display confirmation
 	};
 
+	const handlePriceChange = (e) => {
+		const price = e.target.value;
+		setFormData((prev) => ({
+			...prev,
+			price,
+			priceInWords: toWords(price || 0).toUpperCase() + ' ONLY'
+		}));
+	};
+
 	return (
 		<div className='pay-fees-wrapper'>
 			<form id="student-pay-fees" onSubmit={handleSubmit}>
 				<div className="form-head">
 					<h2 className="form-title">College Fee Payment</h2>
 					<span className="form-excerpt">Please fill in your fee details below.</span>
+				</div>
+
+				<div className="form-field">
+					<label className="form-label" htmlFor="price">Price <span className="form-error">*</span></label>
+					<input required type="number" id="price" name="price" value={formData.price} onChange={handlePriceChange} />
 				</div>
 
 				{/* Program */}
@@ -121,13 +136,13 @@ const PayFees = () => {
 				{/* Amount */}
 				<div className="form-field">
 					<label className="form-label" htmlFor="price">Price <span className="form-error">*</span></label>
-					<input required type="number" id="price" name="price" value={formData.price} onChange={handleChange} />
+					<input required type="number" id="price" name="price" value={formData.price} onChange={handlePriceChange} />
 				</div>
 
 				{/* Price in Words */}
 				<div className="form-field">
 					<label className="form-label" htmlFor="priceInWords">Price in Words <span className="form-error">*</span></label>
-					<input required type="text" id="priceInWords" name="priceInWords" value={formData.priceInWords} onChange={handleChange} />
+					<input required type="text" id="priceInWords" name="priceInWords" value={formData.priceInWords} onChange={handleChange} readOnly />
 				</div>
 
 				{/* Remarks */}
@@ -155,3 +170,4 @@ const PayFees = () => {
 		</div>
 	);
 };
+

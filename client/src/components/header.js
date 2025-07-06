@@ -281,6 +281,7 @@ const Notification = () =>{
             }
             { ! loadAll && notifications.length > 0 && <button className='notification-button' onClick={ handleShowAllNotification }>{ 'Show all notification' }</button> }
         </ul>}
+        <div className="animate"></div>
     </div>
 }
 
