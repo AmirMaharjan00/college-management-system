@@ -25,32 +25,34 @@ export const StudentFees = () => {
                 <TodaysDate />
                 <button className='pay-fees' onClick={ handlePayFeesClick }>Pay Fees</button>
             </div>
-            <table className='table-wrapper'>
-                <thead>
-                    <tr>
-                        <th>Receipt No.</th>
-                        <th>Name</th>
-                        <th>Date</th>
-                        <th>Amount</th>
-                        <th>Issued By</th>
-                        <th>Download Receipt</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {
-                        test.map(() => {
-                            return <tr>
-                                <td>Receipt No.</td>
-                                <td>Name</td>
-                                <td>Date</td>
-                                <td>Amount</td>
-                                <td>Issued By</td>
-                                <td className='download-receipt'><FontAwesomeIcon icon={ faDownload } /></td>
-                            </tr>
-                        })
-                    }
-                </tbody>
-            </table>
+            <div className="table-section">
+				<table className='table-wrapper'>
+					<thead>
+						<tr>
+							<th>Receipt No.</th>
+							<th>Name</th>
+							<th>Date</th>
+							<th>Amount</th>
+							<th>Issued By</th>
+							<th>Download Receipt</th>
+						</tr>
+					</thead>
+					<tbody>
+						{
+							test.map(() => {
+								return <tr>
+									<td>Receipt No.</td>
+									<td>Name</td>
+									<td>Date</td>
+									<td>Amount</td>
+									<td>Issued By</td>
+									<td className='download-receipt'><FontAwesomeIcon icon={ faDownload } /></td>
+								</tr>
+							})
+						}
+					</tbody>
+				</table>
+			</div>
             <div className='fees-total-wrapper'>
                 This is total
             </div>
@@ -102,26 +104,18 @@ const PayFees = () => {
 				<div className="form-head">
 					<h2 className="form-title">College Fee Payment</h2>
 					<span className="form-excerpt">Please fill in your fee details below.</span>
-				</div>
+				</div> 
 
-				<div className="form-field">
-					<label className="form-label" htmlFor="price">Price <span className="form-error">*</span></label>
-					<input required type="number" id="price" name="price" value={formData.price} onChange={handlePriceChange} />
-				</div>
-
-				{/* Program */}
 				<div className="form-field">
 					<label className="form-label" htmlFor="program">Program / Course <span className="form-error">*</span></label>
 					<input required type="text" id="program" name="program" value={formData.program} onChange={handleChange} />
 				</div>
 
-				{/* Semester */}
 				<div className="form-field">
 					<label className="form-label" htmlFor="semester">Semester / Year <span className="form-error">*</span></label>
 					<input required type="text" id="semester" name="semester" value={formData.semester} onChange={handleChange} />
 				</div>
 
-				{/* Fee Type */}
 				<div className="form-field">
 					<label className="form-label" htmlFor="feeType">Fee Type <span className="form-error">*</span></label>
 					<select required id="feeType" name="feeType" value={formData.feeType} onChange={handleChange}>
@@ -133,25 +127,21 @@ const PayFees = () => {
 					</select>
 				</div>
 
-				{/* Amount */}
 				<div className="form-field">
 					<label className="form-label" htmlFor="price">Price <span className="form-error">*</span></label>
-					<input required type="number" id="price" name="price" value={formData.price} onChange={handlePriceChange} />
+					<input required type="number" id="price" name="price" min="0" value={formData.price} onChange={handlePriceChange} />
 				</div>
 
-				{/* Price in Words */}
 				<div className="form-field">
 					<label className="form-label" htmlFor="priceInWords">Price in Words <span className="form-error">*</span></label>
 					<input required type="text" id="priceInWords" name="priceInWords" value={formData.priceInWords} onChange={handleChange} readOnly />
 				</div>
 
-				{/* Remarks */}
 				<div className="form-field">
 					<label className="form-label" htmlFor="remarks">Remarks (Optional)</label>
 					<textarea id="remarks" name="remarks" value={formData.remarks} onChange={handleChange}></textarea>
 				</div>
 
-				{/* Payment Method */}
 				<div className="form-field">
 					<label className="form-label">Payment Method <span className="form-error">*</span></label>
 					<select name='paymentMethod' id='paymentMethod' value={formData.paymentMethod} onChange={handleChange} required>
@@ -162,7 +152,6 @@ const PayFees = () => {
 					</select>
 				</div>
 
-				{/* Submit Button */}
 				<div className="form-field">
 					<button type="submit" className="submit-button">Pay Now</button>
 				</div>
@@ -171,3 +160,6 @@ const PayFees = () => {
 	);
 };
 
+// const Invoice = () => {
+// 	return <div>Hello</div>
+// }

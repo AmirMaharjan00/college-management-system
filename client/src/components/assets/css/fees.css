@@ -1,6 +1,11 @@
+#student-fees-wrapper .table-section {
+    height: 530px;
+    overflow-y: scroll;
+    margin: 15px 0;
+}
+
 #student-fees-wrapper table {
     border-collapse: collapse;
-    margin: 15px 0;
     font-size: 0.9em;
     min-width: 400px;
     width: 100%;
