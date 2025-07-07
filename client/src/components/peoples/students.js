@@ -4,11 +4,25 @@ import { faDownload } from '@fortawesome/free-solid-svg-icons';
 import { TodaysDate } from '../includes/components-hooks'
 import { GLOBALCONTEXT } from '../../App'
 import { Link } from 'react-router-dom'
+import { ourFetch } from '../functions';
 
 export const StudentsList = () => {
     const Global = useContext( GLOBALCONTEXT ),
-        { setOverlay, showPayFeesForm, setShowPayFeesForm, setHeaderOverlay, } = Global;
-    let test = [ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20 ]
+        [ allStudents, setAllStudents ] = useState([])
+
+    useEffect(() => {
+        ourFetch({
+            api: '/all-students',
+            callback: userCallback
+        })
+    }, [])
+
+    const userCallback = ( data ) => {
+        let { result, success } = data
+        if( success ) {
+            setAllStudents( result )
+        }
+    }
 
     return <main className="cmg-main" id="cmg-main">
         <div className='page-header students-list'>
@@ -28,21 +42,19 @@ export const StudentsList = () => {
             </div>
         </div>
         <div className='list-head'>
-            <div className='filter-wrapper'>
+            <div className='list-head-item filter-wrapper'>
                 <h2>Students List</h2>
-                <div className='filters'>
-                    <div></div>
-                    <div className='layouts'>
-                        <button>List</button>
-                        <button>grid</button>
-                    </div>
-                    <select className='sort-by'>
-                        <option value="ascending">Ascending</option>
-                        <option value="descending">Descending</option>
-                    </select>
+                <div>hel</div>
+                <div className='layouts'>
+                    <button>List</button>
+                    <button>grid</button>
                 </div>
+                <select className='sort-by'>
+                    <option value="ascending">Ascending</option>
+                    <option value="descending">Descending</option>
+                </select>
             </div>
-            <div className='pagination-search-wrapper'>
+            <div className='list-head-item pagination-search-wrapper'>
                 <div className='pagination-wrapper'>
                     <span>Row Per Page</span>
                     <select>
@@ -74,17 +86,23 @@ export const StudentsList = () => {
                 </thead>
                 <tbody>
                     {
-                        test.map(() => {
+                        allStudents.map(( student, index ) => {
+                            let count = index + 1,
+                                { id, name, gender } = student,
+                                grade = 'bachekor',
+                                semester = 'first',
+                                status = 'offline',
+                                dateOfJoin = 'today'
                             return <tr>
-                                <td>S.No</td>
-                                <td>Student ID</td>
-                                <td>Name</td>
-                                <td>Class</td>
-                                <td>Semester</td>
-                                <td>Gender</td>
-                                <td>Status</td>
-                                <td>Date of Join</td>
-                                <td>Action</td>
+                                <td>{ count }</td>
+                                <td>{ id }</td>
+                                <td>{ name }</td>
+                                <td>{ grade }</td>
+                                <td>{ semester }</td>
+                                <td>{ gender.slice( 0, 1 ).toUpperCase() + gender.slice( 1 ) }</td>
+                                <td>{ status }</td>
+                                <td>{ dateOfJoin }</td>
+                                <td>{ 'action' }</td>
                             </tr>
                         })
                     }
