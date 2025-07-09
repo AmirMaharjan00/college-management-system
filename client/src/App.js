@@ -14,10 +14,12 @@ import { ErrorPage } from './components/404.js'
 import { ourFetch } from './components/functions.js'
 import { Main } from './components/main.js'
 import { StudentFees } from './components/student/fees.js'
+import Payment from './components/student/payment.js'
 import { Profile } from './components/profile.js'
 import { StudentsList } from './components/peoples/students.js'
 import { TeachersList } from './components/peoples/teachers.js'
 import { StaffsList } from './components/peoples/staffs.js'
+// import PaymentSucess from './components/student/paymentsucess.js'
 
 export const GLOBALCONTEXT = createContext()
 
@@ -80,11 +82,13 @@ const Links = () => {
         <Route exact path='/dashboard/students' element={ <StudentsList /> }/>
         <Route exact path='/dashboard/teachers' element={ <TeachersList /> }/>
         <Route exact path='/dashboard/staffs' element={ <StaffsList /> }/>
+        {/* <Route exact path='/dashboard/paymentSucess' element={ <PaymentSucess /> }/> */}
       </Route>
       <Route exact path='/login' element={ <Login /> }/>
       <Route exact path='/registration' element={ <Registration /> }/>
       <Route exact path='/forgot-password' element={ <ForgotPassword/> }/>
       <Route path='*' element={ <ErrorPage/> } />
+      <Route exact path='/dashboard/payment' element={ <Payment /> }/>
     </Routes>
   );
 }
