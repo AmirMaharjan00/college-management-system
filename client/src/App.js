@@ -18,7 +18,7 @@ import { Profile } from './components/profile.js'
 import { StudentsList } from './components/peoples/students.js'
 import { TeachersList } from './components/peoples/teachers.js'
 import { StaffsList } from './components/peoples/staffs.js'
-import { Payment, PaymentSuccess, PaymentFailure } from './components/student/payment.js'
+import { Payment, PaymentSuccess, PaymentFailure, Invoice } from './components/student/payment.js'
 
 export const GLOBALCONTEXT = createContext()
 
@@ -87,7 +87,8 @@ const Links = () => {
       </Route>
       <Route exact path='/login' element={ <Login /> }/>
       <Route exact path='/registration' element={ <Registration /> }/>
-      <Route exact path='/forgot-password' element={ <ForgotPassword/> }/>
+      <Route exact path='/forgot-password' element={ <ForgotPassword /> }/>
+      <Route exact path='/invoice' element={ <Invoice /> }/>
       <Route path='*' element={ <ErrorPage/> } />
     </Routes>
   );
