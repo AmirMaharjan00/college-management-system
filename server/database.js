@@ -33,13 +33,17 @@ con.connect(function(err) {
           userQuery += "gender VARCHAR(255) DEFAULT 'male', "
           userQuery += "role VARCHAR(255) DEFAULT 'student', "
           userQuery += "view VARCHAR(255) DEFAULT 'light', "
+          userQuery += "courseId INT(11) NOT NULL DEFAULT 0, "
+          userQuery += "semester INT(11) NOT NULL DEFAULT 0, "
+          userQuery += "status VARCHAR(255) NOT NULL DEFAULT 'offline', "
           userQuery += "profile VARCHAR(500) NOT NULL DEFAULT '/images/user.jpg',"
-          userQuery += "registered_date DATETIME DEFAULT CURRENT_TIMESTAMP"
+          userQuery += "registered_date DATETIME DEFAULT CURRENT_TIMESTAMP, "
+          userQuery += "FOREIGN KEY(courseId) REFERENCES courses(id) "
           userQuery += ");"
         con.query( userQuery, function (err, result) {
           if( err ) throw err
           console.log( 'Users Table created.' )
-        });
+        }); 
 
         /**
          * Create Courses Table

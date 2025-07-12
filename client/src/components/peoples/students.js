@@ -5,10 +5,12 @@ import { TodaysDate } from '../includes/components-hooks'
 import { GLOBALCONTEXT } from '../../App'
 import { Link } from 'react-router-dom'
 import { ourFetch } from '../functions';
+import { useDate } from '../includes/hooks'
 
 export const StudentsList = () => {
     const Global = useContext( GLOBALCONTEXT ),
-        [ allStudents, setAllStudents ] = useState([])
+        [ allStudents, setAllStudents ] = useState([]),
+        { convertedDate } = useDate()
 
     useEffect(() => {
         ourFetch({
@@ -88,10 +90,9 @@ export const StudentsList = () => {
                     {
                         allStudents.map(( student, index ) => {
                             let count = index + 1,
-                                { id, name, gender } = student,
+                                { id, name, gender, status, registered_date } = student,
                                 grade = 'bachekor',
                                 semester = 'first',
-                                status = 'offline',
                                 dateOfJoin = 'today'
                             return <tr>
                                 <td>{ count }</td>
@@ -100,8 +101,8 @@ export const StudentsList = () => {
                                 <td>{ grade }</td>
                                 <td>{ semester }</td>
                                 <td>{ gender.slice( 0, 1 ).toUpperCase() + gender.slice( 1 ) }</td>
-                                <td>{ status }</td>
-                                <td>{ dateOfJoin }</td>
+                                <td>{ status.slice( 0, 1 ).toUpperCase() + status.slice( 1 ) }</td>
+                                <td>{ convertedDate( registered_date ) }</td>
                                 <td>{ 'action' }</td>
                             </tr>
                         })

@@ -52,8 +52,20 @@ export const useDate = () => {
         }
     }
 
+    /**
+     * Convert into date from given timestamp
+     */
+    const convertedDate = ( timestamp ) => {
+        let newDate = new Date( timestamp ),
+            day = String( newDate.getDate() ).padStart( 2, '0' ),
+            month = new Intl.DateTimeFormat('en', { month: 'long' }).format(newDate);
+            year = newDate.getFullYear();
+        return `${ year } ${ month } ${ day }`
+    }
+
     return {
         getDate,
-        getTime
+        getTime,
+        convertedDate
     }
 }
