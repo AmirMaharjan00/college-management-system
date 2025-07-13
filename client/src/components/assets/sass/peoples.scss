@@ -1,11 +1,178 @@
-.cmg-main .students-list {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-}
+#cmg-main.peoples-student-wrapper {
+    .page-header.students-list {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 20px;
 
-.cmg-main .list-head-item {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
+        .user-name {
+            font-size: 23px;
+            margin-bottom: 5px;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 10px;
+
+            .action-btn {
+                padding: 10px;
+                background: var(--white);
+                border-radius: 5px;
+                box-shadow: 0px 0px 1px 0px #000000b6;
+
+                .label {
+                    margin-left: 4px;
+                }
+            }
+
+            .action-btn:hover {
+                background: var(--grey);
+            }
+
+            .action-btn.add {
+                background: var(--blue);
+                color: var(--white)
+            }
+        }
+    }
+
+    .list-head {
+        background: var(--white);
+        padding: 12px 15px;
+
+        .list-head-item.filter-wrapper {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-bottom: 15px;
+            border-bottom: 1px solid var(--actionBorder);
+
+            .label {
+                font-size: 18px;
+            }
+
+            .action-buttons {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                gap: 10px;
+
+                .action-btn {
+                    padding: 10px;
+                    background: var(--actionBorder);
+                    border-radius: 5px;
+                    box-shadow: 0px 0px 1px 0px #000000b6;
+
+                    .label {
+                        margin-left: 4px;
+                    }
+                }
+            }
+        }
+
+        .list-head-item.rows-per-page-search-wrapper {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-top: 15px;
+
+            .rows-per-page-wrapper {
+                font-size: 14px;
+
+                .suffix {
+                    margin-left: 5px;
+                }
+
+                .prefix {
+                    margin-right: 5px;
+                }
+
+                select {
+                    width: 50px;
+                    background-position: right 1px center;
+                }
+            }
+
+            input[type="search"] {
+                background-color: #fff;
+                border: 1px solid #ccc;
+                padding: 10px;
+                border-radius: 5px;
+                width: 300px;
+            }
+        }
+
+        select {
+            appearance: none;        /* Remove default arrow (some browsers) */
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            background-color: #fff;
+            border: 1px solid #ccc;
+            padding: 10px;
+            border-radius: 5px;
+            background-image: url('data:image/svg+xml;utf8,<svg fill="gray" height="20" viewBox="0 0 24 24" width="20" xmlns="http://www.w3.org/2000/svg"><path d="M7 10l5 5 5-5z"/></svg>');
+            background-repeat: no-repeat;
+            background-position: right 10px center;
+            background-size: 20px;
+            width: 200px;
+        }
+
+        select:focus {
+            outline: none;
+            border-color: #007BFF;
+            background-color: #fff;
+        }
+    }
+
+    .pagination-wrapper {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin-top: 20px;
+        font-size: 14px;
+        justify-content: center;
+
+        .pagination-button {
+            cursor: pointer;
+        }
+
+        .pages {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+
+            .page.active {
+                padding: 10px;
+                background: var(--default);
+                color: var(--white);
+                border-radius: 5px;
+                font-weight: 700;
+            }
+        }
+    }
+
+    #student-fees-wrapper {
+        .username-profile {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+
+            figure {
+                height: 30px;
+                width: 30px;
+                
+                img {
+                    height: 100%;
+                    width: 100%;
+                }
+            }
+        }
+
+        .action-buttons {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 10px;
+        }
+    }
 }
