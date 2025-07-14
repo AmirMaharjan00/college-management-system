@@ -66,7 +66,7 @@ export const StudentFees = () => {
  * 
  * @since 1.0.0
  */
-const PayFees = () => {
+export const PayFees = () => {
 	const [formData, setFormData] = useState({
 		studentName: '',
 		studentId: '',

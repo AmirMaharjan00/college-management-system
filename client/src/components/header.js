@@ -496,7 +496,7 @@ const ShowNotification = ( props ) => {
  * 
  * @since 1.0.0
  */
-const Chat = ( props ) => {
+export const Chat = ( props ) => {
     const Global = useContext( GLOBALCONTEXT )
     const [ message, setMessage ] = useState( '' )
     const [ history, setHistory ] = useState([])

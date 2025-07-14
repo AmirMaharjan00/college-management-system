@@ -7,10 +7,12 @@ import { ourFetch, getScript } from '../functions';
 import { useDate } from '../includes/hooks'
 import html2pdf from 'html2pdf.js';
 import { AddNewUser } from '../forms/add-new-user'
+import { Chat } from '../header'
+import { PayFees } from '../student/fees'
 
 export const StudentsList = () => {
     const Global = useContext( GLOBALCONTEXT ),
-        { newRegister, setNewRegister, setHeaderOverlay, setOverlay } = Global,
+        { newRegister, setNewRegister, setHeaderOverlay, setOverlay, showChat, setShowChat, chatId, setChatId, showPayFeesForm, setShowPayFeesForm } = Global,
         [ allStudents, setAllStudents ] = useState([]),
         [ searched, setSearched ] = useState( '' ),
         { convertedDate } = useDate(),
@@ -18,12 +20,33 @@ export const StudentsList = () => {
         [ activePage, setActivePage ] = useState( 1 ),
         [ layout, setLayout ] = useState( 'list' ),
         [ sortBy, setSortBy ] = useState( 'asc' ),
+        [ currentDropdownId, setCurrentDropdownId ] = useState( 0 ),
         totalPages = new Array( Math.ceil( allStudents.length / rowsPerPage ) ).fill( 0 ),
-        pdf = useRef();
+        pdf = useRef(),
+        actionButton = useRef();
 
     useEffect(() => {
         _fetch()
     }, [ sortBy, rowsPerPage ])
+
+    
+    useEffect(() => {
+        /**
+         * Handle outside click
+         */
+        const handleClickOutside = ( event ) => {
+            console.log( actionButton.current, 'first' )
+            console.log( ! actionButton.current.contains( event.target ), 'first' )
+            console.log( event.target, 'target' )
+            let notInActionButton = ( actionButton.current && ! actionButton.current.contains( event.target ) )
+            if ( notInActionButton ) setCurrentDropdownId( 0 );
+        };
+        document.addEventListener( 'mousedown', handleClickOutside );
+
+        return () => {
+            document.removeEventListener( 'mousedown', handleClickOutside );
+        };
+    }, []);
 
     /**
      * Fetch
@@ -116,6 +139,30 @@ export const StudentsList = () => {
         setNewRegister( true )
     }
 
+    /**
+     * Handle message click
+     */
+    const handleMessageClick = ( id ) => {
+        setShowChat( true )
+        setChatId( id )
+    }
+
+    /**
+     * Handle Fees
+     */
+    const handleFees = () => {
+        setShowPayFeesForm( true )
+        setHeaderOverlay( true )
+        setOverlay( true )
+    }
+
+    /**
+     * Handle Action button click
+     */
+    const handleActionButton = ( id ) => {
+        setCurrentDropdownId( id )
+    }
+
     return <main className="cmg-main peoples-student-wrapper" id="cmg-main">
         <div className='page-header students-list'>
             <div className="dashboard-intro">
@@ -200,9 +247,12 @@ export const StudentsList = () => {
                                 <td>{ status.slice( 0, 1 ).toUpperCase() + status.slice( 1 ) }</td>
                                 <td>{ convertedDate( registered_date ) }</td>
                                 <td className='action-buttons'>
-                                    <button><FontAwesomeIcon icon={ faMessage }/></button>
-                                    <button>Collect Fees</button>
-                                    <button className='more-button'><FontAwesomeIcon icon={ faEllipsisVertical }/></button>
+                                    <button onClick={() => handleMessageClick( id )}><FontAwesomeIcon icon={ faMessage }/></button>
+                                    <button onClick={() => handleFees()}>Collect Fees</button>
+                                    <div className='more-button-wrapper' ref={ actionButton }>
+                                        <button className='more-button' onClick={() => handleActionButton( id )}><FontAwesomeIcon icon={ faEllipsisVertical }/></button>
+                                        { currentDropdownId === id && <ActionButtonDropdown id={ id } /> }
+                                    </div>
                                 </td>
                             </tr>
                         })
@@ -218,7 +268,11 @@ export const StudentsList = () => {
                                 <span>{ id }</span>
                                 <div>
                                     <span>{ status.slice( 0, 1 ).toUpperCase() + status.slice( 1 ) }</span>
-                                    <button className='more-button'><FontAwesomeIcon icon={ faEllipsisVertical }/></button>
+                                    <div className='more-button-wrapper' ref={ actionButton }>
+                                        <button className='more-button' onClick={() => handleActionButton( id )}><FontAwesomeIcon icon={ faEllipsisVertical }/></button>
+                                        { currentDropdownId === id && <ActionButtonDropdown id={ id } /> }
+                                    </div>
+
                                 </div>
                             </div>
                             <div className='body'>
@@ -241,8 +295,8 @@ export const StudentsList = () => {
                                 </div>
                             </div>
                             <div className='foot'>
-                                <button><FontAwesomeIcon icon={ faMessage }/></button>
-                                <button>Collect Fees</button>
+                                <button onClick={() => handleMessageClick( id )}><FontAwesomeIcon icon={ faMessage }/></button>
+                                <button onClick={() => handleFees()}>Collect Fees</button>
                             </div>
                         </div>
                     })
@@ -256,6 +310,8 @@ export const StudentsList = () => {
             handlePagination = { handlePagination }
         /> : <div className='no-data'>No data found</div>}
         { newRegister && <AddNewUser role={ 'student' }/> }
+        { showChat && <Chat id={ chatId }/> }
+        { showPayFeesForm && <PayFees /> }
     </main>
 }
 
@@ -276,5 +332,17 @@ export const Pagination = ( props ) => {
             }
         </div>
         <button className='pagination-button next' onClick={() => props.handlePagination( 'next' )}>Next</button>
+    </div>
+}
+
+/**
+ * Action Button Dropdown
+ */
+const ActionButtonDropdown = ( props ) => {
+    const { id } = props
+    return <div className='action-button-dropdown'>
+        <button>View Student</button>
+        <button>Edit</button>
+        <button>Delete</button>
     </div>
 }
