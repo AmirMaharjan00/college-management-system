@@ -110,8 +110,8 @@ export const PaymentFailure = () =>  {
     </main>
 }
 
-export const Invoice = () => {
-    return <main className="cmg-main" id="cmg-main">
-        <h1>hello</h1>
-    </main>
-}
+// export const Invoice = () => {
+//     return <main className="cmg-main" id="cmg-main">
+//         <h1>hello</h1>
+//     </main>
+// }

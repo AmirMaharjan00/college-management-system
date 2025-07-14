@@ -18,7 +18,8 @@ import { Profile } from './components/profile.js'
 import { StudentsList } from './components/peoples/students.js'
 import { TeachersList } from './components/peoples/teachers.js'
 import { StaffsList } from './components/peoples/staffs.js'
-import { Payment, PaymentSuccess, PaymentFailure, Invoice } from './components/student/payment.js'
+import { Payment, PaymentSuccess, PaymentFailure } from './components/student/payment.js'
+import { Invoice } from './components/student/invoice.js'
 
 export const GLOBALCONTEXT = createContext()
 
