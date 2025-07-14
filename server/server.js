@@ -486,8 +486,10 @@ app.post('/upload', upload.single('image'), (req, res) => {
 /**
  * MARK: Users via role
  */
-app.post( '/all-students', ( request, res ) => { 
-  const selectQuery = `SELECT users.*, courses.abbreviation FROM users JOIN courses ON users.courseId = courses.id WHERE role="student"`
+app.post( '/all-users-via-role', ( request, res ) => { 
+  let { sortBy = 'asc', role = 'student' } = request.body
+  const selectQuery = `SELECT users.*, courses.abbreviation FROM users JOIN courses ON users.courseId = courses.id WHERE role="${ role }" ORDER BY users.id ${ sortBy };`
+  console.log( selectQuery )
   con.query( selectQuery, ( error, result ) => {
     if ( error ) {
       return res.status( 500 ).json({ error: "Database selection failed" });

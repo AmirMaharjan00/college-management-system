@@ -1,26 +1,40 @@
-import { useState, useEffect, useContext, useMemo } from 'react'
+import { useState, useEffect, useContext, useMemo, useRef } from 'react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faRotate, faPrint, faFileExport, faUserPlus, faList, faGrip, faMessage, faEllipsisVertical } from '@fortawesome/free-solid-svg-icons';
 import { GLOBALCONTEXT } from '../../App'
 import { Link } from 'react-router-dom'
 import { ourFetch, getScript } from '../functions';
 import { useDate } from '../includes/hooks'
+import html2pdf from 'html2pdf.js';
+import { AddNewUser } from '../forms/add-new-user'
 
 export const StudentsList = () => {
     const Global = useContext( GLOBALCONTEXT ),
+        { newRegister, setNewRegister, setHeaderOverlay, setOverlay } = Global,
         [ allStudents, setAllStudents ] = useState([]),
         [ searched, setSearched ] = useState( '' ),
         { convertedDate } = useDate(),
         [ rowsPerPage, setRowsPerPage ] = useState( 10 ),
         [ activePage, setActivePage ] = useState( 1 ),
-        totalPages = new Array( Math.ceil( allStudents.length / rowsPerPage ) ).fill( 0 )
+        [ layout, setLayout ] = useState( 'list' ),
+        [ sortBy, setSortBy ] = useState( 'asc' ),
+        totalPages = new Array( Math.ceil( allStudents.length / rowsPerPage ) ).fill( 0 ),
+        pdf = useRef();
 
     useEffect(() => {
+        _fetch()
+    }, [ sortBy, rowsPerPage ])
+
+    /**
+     * Fetch
+     */
+    const _fetch = () => {
         ourFetch({
-            api: '/all-students',
-            callback: userCallback
+            api: '/all-users-via-role',
+            callback: userCallback,
+            body: JSON.stringify({ sortBy, role: 'student' })
         })
-    }, [])
+    }
 
     const userCallback = ( data ) => {
         let { result, success } = data
@@ -71,6 +85,37 @@ export const StudentsList = () => {
         }
     }
 
+    /**
+     * Handle Sort
+     */
+    const handleSort = ( event ) => {
+        setSortBy( event.target.value )
+    }
+
+    /**
+     * Handle print
+     */
+    const handlePrint = () => {
+        window.print();
+    }
+
+    /**
+     * Handle export to pdf
+     */
+    const handleExportPDF = () => {
+        let element = pdf.current
+        html2pdf().from( element ).save( 'students.pdf' )
+    }
+
+    /**
+     * Handle export to pdf
+     */
+    const handleNewStudentAdd = () => {
+        setHeaderOverlay( true )
+        setOverlay( true )
+        setNewRegister( true )
+    }
+
     return <main className="cmg-main peoples-student-wrapper" id="cmg-main">
         <div className='page-header students-list'>
             <div className="dashboard-intro">
@@ -82,13 +127,13 @@ export const StudentsList = () => {
                 </ul>
             </div>
             <div className='action-buttons'>
-                <button className='action-btn refresh'><FontAwesomeIcon icon={ faRotate }/></button>
-                <button className='action-btn print'><FontAwesomeIcon icon={ faPrint }/></button>
-                <button className='action-btn export'>
+                <button className='action-btn refresh' onClick={ _fetch }><FontAwesomeIcon icon={ faRotate }/></button>
+                <button className='action-btn print' onClick={ handlePrint }><FontAwesomeIcon icon={ faPrint }/></button>
+                <button className='action-btn export' onClick={ handleExportPDF }>
                     <FontAwesomeIcon icon={ faFileExport }/>
                     <span className='label'>Export as PDF</span>
                 </button>
-                <button className='action-btn add'>
+                <button className='action-btn add' onClick={ handleNewStudentAdd }>
                     <FontAwesomeIcon icon={ faUserPlus }/>
                     <span className='label'>Add Student</span>
                 </button>
@@ -99,11 +144,11 @@ export const StudentsList = () => {
                 <h2 className="label">Students List</h2>
                 <div className='action-buttons'>
                     {/* <div>hel</div> */}
-                    <button className='action-btn'><FontAwesomeIcon icon={ faList }/></button>
-                    <button className='action-btn'><FontAwesomeIcon icon={ faGrip }/></button>
-                    <select className='sort-by'>
-                        <option value="ascending">Ascending</option>
-                        <option value="descending">Descending</option>
+                    <button className='action-btn' onClick={() => setLayout( 'list' )}><FontAwesomeIcon icon={ faList }/></button>
+                    <button className='action-btn' onClick={() => setLayout( 'grid' )}><FontAwesomeIcon icon={ faGrip }/></button>
+                    <select className='sort-by' value={ sortBy } onChange={ handleSort }>
+                        <option value="asc">Ascending</option>
+                        <option value="desc">Descending</option>
                     </select>
                 </div>
             </div>
@@ -123,7 +168,7 @@ export const StudentsList = () => {
             </div>
         </div>
         <div className='student-fees-wrapper' id="student-fees-wrapper">
-            <table className='table-wrapper'>
+            { ( layout === 'list' ) ? <table className='table-wrapper' ref={ pdf }>
                 <thead>
                     <tr>
                         <th>S.No</th>
@@ -157,27 +202,67 @@ export const StudentsList = () => {
                                 <td className='action-buttons'>
                                     <button><FontAwesomeIcon icon={ faMessage }/></button>
                                     <button>Collect Fees</button>
-                                    <button><FontAwesomeIcon icon={ faEllipsisVertical }/></button>
+                                    <button className='more-button'><FontAwesomeIcon icon={ faEllipsisVertical }/></button>
                                 </td>
                             </tr>
                         })
                     }
                 </tbody>
-            </table>
+            </table> : <div className='grid-wrapper' ref={ pdf }>
+                {
+                    filteredStudents.map(( student, index ) => {
+                        let count = index + 1,
+                            { id, name, gender, status, registered_date, semester, abbreviation, profile } = student
+                        return <div key={ index } className='grid'>
+                            <div className='head'>
+                                <span>{ id }</span>
+                                <div>
+                                    <span>{ status.slice( 0, 1 ).toUpperCase() + status.slice( 1 ) }</span>
+                                    <button className='more-button'><FontAwesomeIcon icon={ faEllipsisVertical }/></button>
+                                </div>
+                            </div>
+                            <div className='body'>
+                                <div className='top'>
+                                    <figure><img src={ profile } alt={ name }/></figure>
+                                    <div className='user'>
+                                        <span className='name'>{ name }</span>
+                                        <span className='semester'>{ `${ abbreviation } ${ getScript( semester ) }` }</span>
+                                    </div>
+                                </div>
+                                <div className='bottom'>
+                                    <div>
+                                        <span className='prefix'>Gender</span>
+                                        <span className='value'>{ gender.slice( 0, 1 ).toUpperCase() + gender.slice( 1 ) }</span>
+                                    </div>
+                                    <div>
+                                        <span className='prefix'>Date of Join</span>
+                                        <span className='value'>{ convertedDate( registered_date ) }</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div className='foot'>
+                                <button><FontAwesomeIcon icon={ faMessage }/></button>
+                                <button>Collect Fees</button>
+                            </div>
+                        </div>
+                    })
+                }
+            </div>}
         </div>
-        <Pagination
+        { filteredStudents.length ? <Pagination
             totalPages = { totalPages }
             activePage = { activePage }
             setActivePage = { setActivePage }
             handlePagination = { handlePagination }
-        />
+        /> : <div className='no-data'>No data found</div>}
+        { newRegister && <AddNewUser role={ 'student' }/> }
     </main>
 }
 
 /**
  * Pagination Component
  */
-const Pagination = ( props ) => {
+export const Pagination = ( props ) => {
     let { totalPages, activePage } = props
 
     return <div className='pagination-wrapper'>

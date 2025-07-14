@@ -39,6 +39,7 @@
     .list-head {
         background: var(--white);
         padding: 12px 15px;
+        border-radius: 5px;
 
         .list-head-item.filter-wrapper {
             display: flex;
@@ -174,5 +175,105 @@
             justify-content: space-between;
             gap: 10px;
         }
+
+        .grid-wrapper {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            margin-top: 20px;
+            gap: 20px;
+
+            .grid {
+                background: var(--white);
+                border-radius: 5px;
+                transition: all .4s;
+                border-bottom: 1px solid var(--actionBorder);
+
+                .head {
+                    display: flex;
+                    justify-content: space-between;
+                    align-items: center;
+                    border-bottom: 1px solid var(--actionBorder);
+                    padding: 20px;
+
+                    .more-button {
+                        margin-left: 10px;
+                    }
+                }
+
+                .body {
+                    padding: 20px;
+                    border-bottom: 1px solid var(--actionBorder);
+
+                    .top {
+                        display: flex;
+                        gap: 10px;
+                        align-items: center;
+                        margin-bottom: 20px;
+                        background: #f3f3f9;
+                        padding: 10px;
+                        
+                        figure {
+                            height: 60px;
+                            width: 60px;
+                            
+                            img {
+                                height: 100%;
+                                width: 100%;
+                            }
+                        }
+
+                        .user {
+                            .name {
+                                display: block;
+                                margin-bottom: 5px;
+                                font-size: 18px;
+                                font-weight: 700;
+                            }
+
+                            .semester {
+                                font-size: 14px;
+                                color: var(--lightgrey);
+                            }
+                        }
+                    }
+
+                    .bottom {
+                        display: flex;
+                        justify-content: space-between;
+                        align-items: center;
+                        font-size: 14px;
+
+                        .prefix {
+                            display: block;
+                            margin-bottom: 5px;
+                        }
+
+                        .value {
+                            font-size: 14px;
+                            font-weight: 600;
+                            color: var(--darkGrey);
+                        }
+                    }
+
+                }
+
+                .foot {
+                    padding: 20px;
+                    display: flex;
+                    justify-content: space-between;
+                    align-items: center;
+                }
+            }
+
+            .grid:hover {
+                transform: var(--card-animate);
+                box-shadow: var(--boxShadow-hover);
+            }
+        }
+    }
+
+    .no-data {
+        text-align: center;
+        margin-top: 20px;
     }
 }
