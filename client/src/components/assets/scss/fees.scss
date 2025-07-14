@@ -110,3 +110,182 @@ $font-stack: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     }
   }
 }
+
+
+
+// For Invoice
+// .invoice-section {
+// 	.invoice-wrapepr {
+// 		position: absolute;
+// 		top: 50%;
+// 		left: 50%;
+// 		transform: translate(-50%, -50%);
+// 		display: flex;
+// 		align-items: center;
+// 	}
+
+
+
+// 	.college-logo {
+// 		width: 70px
+// 	}
+// }
+
+.invoice-section {
+	display: flex;
+	border: 1px solid #000;
+	max-width: 1000px;
+	margin: 2rem auto;
+
+	.invoice-wrapepr {
+		display: flex;
+		width: 100%;
+	}
+
+	.invoice-sidebar {
+		writing-mode: vertical-rl;
+		text-orientation: mixed;
+		transform: rotate(180deg);
+		padding: 32px 16px;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		border-left: 1px solid #000;
+
+		h2.invoice-title {
+			font-weight: 900;
+			font-size: 40px;
+			text-transform: uppercase;
+			letter-spacing: 2.3px;
+		}
+	}
+
+	.invoice-main-wrap {
+		width: 100%;
+
+		.invoice-heading {
+			display: grid;
+			grid-template-columns: repeat(2, 1fr);
+			align-items: center;
+			border-bottom: 1px solid #000;
+
+			.invoice-logo-title-wrap {
+				display: flex;
+				gap: 27px;
+				align-items: center;
+				padding: 18px 22px;
+				border-right: 1px solid #000;
+
+				.logo {
+					.college-logo {
+						height: 70px;
+						width: auto;
+					}
+				}
+
+				.invoice-college-info {
+					text-align: center;
+				}
+
+				.invoice-college-info {
+					h2 {
+						font-size: 22px;
+						font-weight: bold;
+						margin: 0;
+					}
+
+					p {
+						margin: 2px 0;
+						font-size: 14px;
+						color: #000;
+					}
+				}
+			}
+
+			.invoice-info {
+				padding: 18px 22px;
+			}
+		}
+
+		h2 {
+			margin: 0;
+			font-size: 24px;
+			font-weight: bold;
+		}
+
+		p {
+			margin: 2px 0;
+			font-size: 14px;
+		}
+
+		table {
+			width: 100%;
+			border-collapse: collapse;
+			margin-top: 1rem;
+			margin-bottom: 1rem;
+
+			thead {
+				background: #f0f0f0;
+				th {
+					padding: 8px;
+					border: 1px solid #000;
+					font-weight: bold;
+					text-align: center;
+				}
+			}
+
+			td {
+				text-align: center;
+				padding: 10px;
+				border: 1px solid #000;
+			}
+		}
+
+		.info-grid {
+			display: flex;
+			flex-wrap: wrap;
+			margin-top: 1rem;
+
+			p {
+				width: 50%;
+			}
+		}
+
+		.footer-info {
+			margin-top: 1rem;
+
+			p {
+				font-weight: bold;
+				font-size: 14px;
+			}
+		}
+
+		.sign {
+			text-align: right;
+			margin-top: 2rem;
+			font-weight: bold;
+			font-size: 14px;
+		}
+
+		.invoice-std-info {
+			position: relative;
+			padding: 18px 22px;
+
+			.std-info-wrap {
+				display: grid;
+				grid-template-columns: repeat(2, 1fr);
+				gap: 4px;
+			}
+
+			.signature-label {
+				position: absolute;
+				bottom: 18px;
+				right: 22px;
+				border-top: 1px solid;
+				padding-top: 5px;
+				text-transform: uppercase;
+				font-size: 15px;
+			}
+		}
+	}
+}

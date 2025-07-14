@@ -603,7 +603,7 @@ const Chat = ( props ) => {
         </div>
         <div className='foot'>
             <form onSubmit={ handleMessageSubmit }>
-                <input type="text" placeholder='Aa' autoFocus onChange={ handleMessage } value={ message }/>
+                <input type="text" placeholder='Message' autoFocus onChange={ handleMessage } value={ message }/>
             </form>
             <FontAwesomeIcon className="send" icon={ faPaperPlane } onClick={ handleMessageSubmit }/>
         </div>

@@ -528,28 +528,37 @@ MARK: CHAT
 
     #cmg-chat .foot {
         display: flex;
-        gap: 10px;
-        justify-content: center;
         align-items: center;
         padding: 10px;
-        background: var(--default);
-        border-radius: 0 0 3px 3px;
+        position: relative;
     }
 
     #cmg-chat .foot input {
-        flex: 90%;
         border-radius: 30px;
         border: 1px solid var(--actionBorder);
         background: var(--background);
         color: var(--color);
         box-sizing: border-box;
         width: 100%;
+        padding: 10px 50px 10px 14px;
     }
 
+    /* #cmg-chat .foot input:active {
+        border: none;
+        outline: none;
+    } */
+
     #cmg-chat .foot .send {
-        font-size: 20px;
-        color: var(--blue);
-    }
+        position: absolute;
+        top: 50%;
+        right: 15px;
+        transform: translateY(-50%);
+        font-size: 13px;
+        background: #717171;
+        color: #fff;
+        padding: 8px 14px;
+        border-radius: 50px;
+}
 
     #cmg-chat .foot form {
         width: 100%;
@@ -568,12 +577,17 @@ MARK: CHAT
     #cmg-chat .chat-message {
         display: inline-block;
         border-radius: 50px;
+        max-width: 75%;
         padding: 8px 12px;
         color: var(--white);
+        border-top-left-radius: 18px;
+        border-top-right-radius: 18px;
+        border-bottom-left-radius: 18px;
+        border-bottom-right-radius: 4px;
     }
 
     #cmg-chat .sent .chat-message {
-        background: var(--default);
+        background: linear-gradient(45deg, #5d3582, #ab18d4);
     }
 
     #cmg-chat .receive .chat-message {
