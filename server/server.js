@@ -271,7 +271,7 @@ app.post( '/Users', ( request, res ) => {
 });
 
 /**
-* MARK: Users By API
+* MARK: Users By id
 */
 app.post( '/user-by-id', ( request, res ) => { 
   const { id } = request.body;

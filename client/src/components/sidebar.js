@@ -86,6 +86,7 @@ export const Sidebar = () => {
                             <span>Library</span>
                         </h2>
                         <ul className="cmg-submenu">
+                            <li className="cmg-list-item"><a href="#">Manage Library</a></li>
                             <li className="cmg-list-item"><a href="#">Issued</a></li>
                             <li className="cmg-list-item"><a href="#">Books</a></li>
                             <li className="cmg-list-item"><a href="#">Fines</a></li>

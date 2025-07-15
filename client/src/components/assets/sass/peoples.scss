@@ -328,4 +328,26 @@
             color: var(--white);
         }
     }
+    
+}
+
+/**
+* Student Details
+*/
+#cmg-main.student-details {
+    .page-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+
+        .today-date {
+            .date {
+                margin-right: 10px;
+            }
+
+            svg {
+                margin-right: 5px;
+            }
+        }
+    }
 }

@@ -20,6 +20,7 @@ import { TeachersList } from './components/peoples/teachers.js'
 import { StaffsList } from './components/peoples/staffs.js'
 import { Payment, PaymentSuccess, PaymentFailure } from './components/student/payment.js'
 import { Invoice } from './components/student/invoice.js'
+import { StudentDetails } from './components/student/student-details.js'
 
 export const GLOBALCONTEXT = createContext()
 
@@ -85,6 +86,7 @@ const Links = () => {
         <Route exact path='/dashboard/payment' element={ <Payment /> }/>
         <Route exact path='/dashboard/payment-success' element={ <PaymentSuccess /> }/>
         <Route exact path='/dashboard/payment-failure' element={ <PaymentFailure /> }/>
+        <Route exact path='/dashboard/user-details' element={ <StudentDetails /> }/>
       </Route>
       <Route exact path='/login' element={ <Login /> }/>
       <Route exact path='/registration' element={ <Registration /> }/>

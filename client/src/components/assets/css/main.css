@@ -1038,8 +1038,11 @@ MARK: Admin Dashboard
     }
 
     #dashboard-foot .subject-completion .foot .subject .subject-label {
-        width: 200px;
         font-size: 14px;
+    }
+
+    #dashboard-foot .subject-completion .foot .subject .subject-progress {
+        width: 100%;
     }
 
     #dashboard-foot .subject-completion .foot .subject .completion {

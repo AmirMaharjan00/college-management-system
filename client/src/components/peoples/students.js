@@ -29,25 +29,6 @@ export const StudentsList = () => {
         _fetch()
     }, [ sortBy, rowsPerPage ])
 
-    
-    useEffect(() => {
-        /**
-         * Handle outside click
-         */
-        const handleClickOutside = ( event ) => {
-            console.log( actionButton.current, 'first' )
-            console.log( ! actionButton.current.contains( event.target ), 'first' )
-            console.log( event.target, 'target' )
-            let notInActionButton = ( actionButton.current && ! actionButton.current.contains( event.target ) )
-            if ( notInActionButton ) setCurrentDropdownId( 0 );
-        };
-        document.addEventListener( 'mousedown', handleClickOutside );
-
-        return () => {
-            document.removeEventListener( 'mousedown', handleClickOutside );
-        };
-    }, []);
-
     /**
      * Fetch
      */
@@ -160,7 +141,11 @@ export const StudentsList = () => {
      * Handle Action button click
      */
     const handleActionButton = ( id ) => {
-        setCurrentDropdownId( id )
+        if( currentDropdownId === id ) {
+            setCurrentDropdownId( 0 )
+        } else {
+            setCurrentDropdownId( id )
+        }
     }
 
     return <main className="cmg-main peoples-student-wrapper" id="cmg-main">
@@ -240,7 +225,7 @@ export const StudentsList = () => {
                                     <figure>
                                         <img src={ profile } alt={ name }/>
                                     </figure>
-                                    { name }
+                                    <span className='name'><Link to="/dashboard/user-details" state={{ user: student }}>{ name }</Link></span>
                                 </td>
                                 <td>{ `${ abbreviation } ${ getScript( semester ) }` }</td>
                                 <td>{ gender.slice( 0, 1 ).toUpperCase() + gender.slice( 1 ) }</td>
@@ -279,7 +264,7 @@ export const StudentsList = () => {
                                 <div className='top'>
                                     <figure><img src={ profile } alt={ name }/></figure>
                                     <div className='user'>
-                                        <span className='name'>{ name }</span>
+                                        <span className='name'><Link to="/dashboard/user-details" state={{ user: student }}>{ name }</Link></span>
                                         <span className='semester'>{ `${ abbreviation } ${ getScript( semester ) }` }</span>
                                     </div>
                                 </div>

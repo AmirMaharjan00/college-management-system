@@ -110,7 +110,7 @@ export const AdminDashboard = () => {
             </div>
             <div className="notice-board">
                 <div className="head">
-                    <h2 className="label">Leave Requests</h2>
+                    <h2 className="label">Notice board</h2>
                     <button className="view-all">
                         <span className="button-label">View All</span>
                         <span className="button-icon"><FontAwesomeIcon icon={ faChevronRight} /></span>
@@ -284,7 +284,7 @@ export const AdminDashboard = () => {
             </div>
             <div className="dashboard-foot-item to-do-list">
                 <div className="head">
-                    <span className="label">Subject Completion</span>
+                    <span className="label">Todo</span>
                     <div className="dropdown time-period-wrapper">
                         <span className="cmg-active-dropdown-item">
                             <span className="label">Today</span>
@@ -547,7 +547,7 @@ const SubjectCompletion = () => {
                         let { name } = subject
                         return <li className="subject" key={ index }>
                             <span className="subject-label">{ name }</span>
-                            <progress id="myProgress" value="0" max="100" />
+                            <progress className="subject-progress" value="50" max="100" />
                         </li>
                     }) : <li className='subject'>{ 'No Subjects in this course.' }</li>
                 }
@@ -698,20 +698,20 @@ const BarChart = () => {
   
     // Chart options
     const options = {
-      responsive: true,
-      plugins: {
-        legend: {
-          position: 'top',
+        responsive: true,
+        plugins: {
+            legend: {
+                position: 'top',
+            },
+            tooltip: {
+                enabled: true,
+            },
         },
-        tooltip: {
-          enabled: true,
+        scales: {
+            y: {
+                beginAtZero: true,
+            },
         },
-      },
-      scales: {
-        y: {
-          beginAtZero: true,
-        },
-      },
     };
 
     return <Bar data={data} options={options} />
