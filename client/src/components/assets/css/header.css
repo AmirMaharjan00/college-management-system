@@ -444,9 +444,20 @@ MARK: MESSAGE
         font-size: 13px;
     }
 
+    #message-wrapper .message-head .chat-heading {
+        position: relative;
+    }
+
+    #message-wrapper .message-head svg.fa-xmark {
+        position: absolute;
+        top: 6px;
+        right: 0;
+        font-size: 18px;
+        cursor: pointer;
+    }
+
     #message-wrapper .message-head .title {
         display: block;
-        text-align: center;
         margin-bottom: 10px;
         color: var(--color);
     }
@@ -475,11 +486,12 @@ MARK: CHAT
         height: 400px;
         z-index: 9;
         background: var(--background);
-        border-radius: 5px;
+        border-radius: 5px 5px 0 0;
         display: flex;
         flex-direction: column;
         color: var(--color);
         box-shadow: var(--boxShadow);
+        overflow: hidden;
     }
 
     #cmg-chat .head,
@@ -492,8 +504,10 @@ MARK: CHAT
 
     #cmg-chat .head {
         padding: 10px;
-        background: var(--default);
+        background: #fff;
         border-radius: 5px 5px 0 0;
+        border-bottom: 1px solid #efefef;
+        box-shadow: 0 1px 2px #0000001a;
     }
 
     #cmg-chat .head .title {
@@ -503,6 +517,8 @@ MARK: CHAT
     #cmg-chat .head .thumb-wrapper {
         height: 35px;
         width: 35px;
+        border-radius: 100%;
+        overflow: hidden;
     }
 
     #cmg-chat .head .thumb-wrapper img {
@@ -510,10 +526,11 @@ MARK: CHAT
         width: 100%;
         object-fit: cover;
         border-radius: 100%;
+        background: #000;
     }
 
     #cmg-chat .close {
-        font-size: 25px;
+        font-size: 22px;
         color: var(--blue);
         cursor: pointer;
     }
@@ -524,6 +541,10 @@ MARK: CHAT
         text-align: center;
         padding: 5px 10px;
         overflow-y: scroll;
+    }
+
+    #cmg-chat .body::-webkit-scrollbar {
+        width: 0;
     }
 
     #cmg-chat .foot {

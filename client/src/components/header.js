@@ -3,7 +3,7 @@ import { useNavigate, Link } from 'react-router-dom';
 import logo from './assets/images/sscollege-logo.jpg'
 import background from './assets/images/background.jpg'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faBars, faGraduationCap, faCircleXmark, faXmark, faPaperPlane, faUserGroup, faUsers, faBook, faMoon, faBell, faMessage, faUser } from '@fortawesome/free-solid-svg-icons';
+import { faClose, faBars, faGraduationCap, faCircleXmark, faXmark, faPaperPlane, faUserGroup, faUsers, faBook, faMoon, faBell, faMessage, faUser } from '@fortawesome/free-solid-svg-icons';
 import { faSquarePlus} from '@fortawesome/free-regular-svg-icons';
 import { GLOBALCONTEXT } from '../App';
 import './assets/css/header.css'
@@ -342,7 +342,9 @@ const Message = () =>{
         <span className="cmg-active-dropdown-item" onClick={ handleClick }><FontAwesomeIcon icon={ faMessage } /></span>
         { isMessageDropdownActive && <ul className='message-dropdown'>
             <div className='message-head'>
-                <h2 className='title'>{ 'Chats' }</h2>
+                <div className="chat-heading">
+                    <h2 className='title'>{ 'Chats' }</h2><FontAwesomeIcon icon={ faClose }/>
+                </div>
                 <input type="text" placeholder='Search...' value={ search } onChange={ handleSearch } autoFocus/>
             </div>
             <div className='inner-list'>
@@ -587,7 +589,7 @@ export const Chat = ( props ) => {
         <div className='head'>
             <div className='user'>
                 <figure className='thumb-wrapper'>
-                    <img src={ profile } alt="Notification Image" />
+                    <img src={ profile } alt="Image" />
                 </figure>
                 <h2 className='title'>{ name }</h2>
             </div>

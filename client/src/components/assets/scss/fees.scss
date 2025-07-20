@@ -8,13 +8,6 @@ $border-radius: 8px;
 $font-stack: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 
 #student-pay-fees {
-  max-width: 600px;
-  margin: 2rem auto;
-  padding: 2rem;
-  background: $bg-color;
-  border-radius: $border-radius;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
-  font-family: $font-stack;
   color: $primary-color;
 
   .form-head {
@@ -57,6 +50,7 @@ $font-stack: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
       border-radius: $border-radius;
       background-color: $input-bg;
       transition: all 0.3s ease;
+	  box-sizing: border-box;
 
       &:focus {
         outline: none;

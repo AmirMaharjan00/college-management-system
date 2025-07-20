@@ -106,7 +106,7 @@ export const PayFees = () => {
 					<span className="form-excerpt">Please fill in your fee details below.</span>
 				</div> 
 
-				<div className="form-field">
+				{/* <div className="form-field">
 					<label className="form-label" htmlFor="program">Program / Course <span className="form-error">*</span></label>
 					<input required type="text" id="program" name="program" value={formData.program} onChange={handleChange} />
 				</div>
@@ -114,7 +114,7 @@ export const PayFees = () => {
 				<div className="form-field">
 					<label className="form-label" htmlFor="semester">Semester / Year <span className="form-error">*</span></label>
 					<input required type="text" id="semester" name="semester" value={formData.semester} onChange={handleChange} />
-				</div>
+				</div> */}
 
 				<div className="form-field">
 					<label className="form-label" htmlFor="feeType">Fee Type <span className="form-error">*</span></label>
