@@ -497,3 +497,24 @@ app.post( '/all-users-via-role', ( request, res ) => {
     return res.status( 200 ).json({ result, success: true });
   })
 });
+
+/**
+ * MARK: Users via role
+ */
+app.post( '/payment-gateway', async ( request, res ) => { 
+  try {
+    const response = await fetch('https://dev.khalti.com/api/v2/epayment/initiate/', {
+      method: 'POST',
+      headers: {
+        'Authorization': 'Key YOUR_KHALTI_SECRET_KEY',
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(req.body)
+    });
+
+    const data = await response.json();
+    res.json(data);
+  } catch (error) {
+    res.status(500).json({ error: 'Khalti request failed' });
+  }
+});

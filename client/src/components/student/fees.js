@@ -4,10 +4,15 @@ import { faDownload } from '@fortawesome/free-solid-svg-icons';
 import { TodaysDate } from '../includes/components-hooks'
 import { GLOBALCONTEXT } from '../../App'
 import { toWords } from 'number-to-words';
+import CryptoJS from 'crypto-js';
+import { ourFetch } from '../functions'
+
+const SECRET_KEY = 'college-management-system-secret-key'
 
 export const StudentFees = () => {
     const Global = useContext( GLOBALCONTEXT ),
         { setOverlay, showPayFeesForm, setShowPayFeesForm, setHeaderOverlay, } = Global;
+		
     let test = [ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20 ]
 
     /**
@@ -39,8 +44,8 @@ export const StudentFees = () => {
 					</thead>
 					<tbody>
 						{
-							test.map(() => {
-								return <tr>
+							test.map(( key ) => {
+								return <tr key={ key }>
 									<td>Receipt No.</td>
 									<td>Name</td>
 									<td>Date</td>
@@ -77,17 +82,71 @@ export const PayFees = () => {
 		price: '',
 		priceInWords: '',
 		remarks: '',
-	});
+		successUrl: 'https://developer.esewa.com.np/success',
+		failureUrl: 'https://developer.esewa.com.np/failure',
+		signature: ''
+	}),
+	{ studentName, studentId, program, semester, feeType, paymentMethod, price, priceInWords, remarks, successUrl, failureUrl, signature } = formData
+
+	function generateRandomString() {
+		const strings = "jdkfjakfjdkjj34kj23i42i4u23i4u23i423u4i";
+		let code = "";
+		let length = 25;
+		for (let i = 0; i < length; i++) {
+			code += strings[Math.floor(Math.random() * strings.length)];
+		}
+		return code;
+	}
 
 	const handleChange = (e) => {
 		setFormData({ ...formData, [e.target.name]: e.target.value });
 	};
 
 	const handleSubmit = (e) => {
-		e.preventDefault();
-		console.log('Submitting Fee Form:', formData);
-		// Call API or display confirmation
+		let bodyParams = {}
+		if( paymentMethod === 'esewa' ) {
+			let transactionUUid = generateRandomString(),
+				signaturePayload = `total_amount=110,transaction_uuid=${ transactionUUid },product_code=EPAYTEST`,
+				rawSignature = CryptoJS.HmacSHA256( signaturePayload, SECRET_KEY ),
+				signature = CryptoJS.enc.Base64.stringify( rawSignature );
+	
+			bodyParams = {
+				amount: "100",
+				failure_url: "https://developer.esewa.com.np/failure",
+				product_delivery_charge: "0",
+				product_service_charge: "0",
+				product_code: "EPAYTEST",
+				signature,
+				signed_field_names: "total_amount,transaction_uuid,product_code",
+				success_url: "https://developer.esewa.com.np/success",
+				tax_amount: "10",
+				total_amount: "110",
+				transaction_uuid: "241028"
+			}
+		} else {
+			bodyParams = {
+				"return_url": "http://example.com/",
+				"website_url": "https://example.com/",
+				"amount": "1000",
+				"purchase_order_id": "Order01",
+				"purchase_order_name": "test",
+				"customer_info": {
+					"name": "Ram Bahadur",
+					"email": "test@khalti.com",
+					"phone": "9800000001"
+				}
+			}
+		}
+		ourFetch({
+			api: '/payment-gateway',
+			callback: testCallback,
+			body: JSON.stringify( bodyParams )
+		})
 	};
+
+	const testCallback = ( data ) => {
+		console.log( data )
+	}
 
 	const handlePriceChange = (e) => {
 		const price = e.target.value;
@@ -100,21 +159,11 @@ export const PayFees = () => {
 
 	return (
 		<div className='pay-fees-wrapper'>
-			<form id="student-pay-fees" onSubmit={handleSubmit}>
+			<form id="student-pay-fees" onSubmit={ handleSubmit }>
 				<div className="form-head">
 					<h2 className="form-title">College Fee Payment</h2>
 					<span className="form-excerpt">Please fill in your fee details below.</span>
-				</div> 
-
-				{/* <div className="form-field">
-					<label className="form-label" htmlFor="program">Program / Course <span className="form-error">*</span></label>
-					<input required type="text" id="program" name="program" value={formData.program} onChange={handleChange} />
 				</div>
-
-				<div className="form-field">
-					<label className="form-label" htmlFor="semester">Semester / Year <span className="form-error">*</span></label>
-					<input required type="text" id="semester" name="semester" value={formData.semester} onChange={handleChange} />
-				</div> */}
 
 				<div className="form-field">
 					<label className="form-label" htmlFor="feeType">Fee Type <span className="form-error">*</span></label>
@@ -153,13 +202,9 @@ export const PayFees = () => {
 				</div>
 
 				<div className="form-field">
-					<button type="submit" className="submit-button">Pay Now</button>
+					<input value="Pay Now" className="submit-button" type="submit"/>
 				</div>
 			</form>
 		</div>
 	);
 };
-
-// const Invoice = () => {
-// 	return <div>Hello</div>
-// }
