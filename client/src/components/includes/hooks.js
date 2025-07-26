@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react'
+import { getScript } from '../functions'
 
 /**
  * MARK: Get Full date
@@ -60,7 +61,7 @@ export const useDate = () => {
             day = String( newDate.getDate() ).padStart( 2, '0' ),
             month = new Intl.DateTimeFormat('en', { month: 'long' }).format(newDate);
             year = newDate.getFullYear();
-        return `${ year } ${ month } ${ day }`
+        return `${ year } ${ month } ${ getScript( day ) }`
     }
 
     return {

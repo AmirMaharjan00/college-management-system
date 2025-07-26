@@ -175,7 +175,6 @@ export const StudentsList = () => {
             <div className='list-head-item filter-wrapper'>
                 <h2 className="label">Students List</h2>
                 <div className='action-buttons'>
-                    {/* <div>hel</div> */}
                     <button className='action-btn' onClick={() => setLayout( 'list' )}><FontAwesomeIcon icon={ faList }/></button>
                     <button className='action-btn' onClick={() => setLayout( 'grid' )}><FontAwesomeIcon icon={ faGrip }/></button>
                     <select className='sort-by' value={ sortBy } onChange={ handleSort }>
@@ -234,7 +233,7 @@ export const StudentsList = () => {
                                 <td className='action-buttons'>
                                     <button onClick={() => handleMessageClick( id )}><FontAwesomeIcon icon={ faMessage }/></button>
                                     <button onClick={() => handleFees()}>Collect Fees</button>
-                                    <div className='more-button-wrapper' ref={ actionButton }>
+                                    <div className={ `more-button-wrapper${ currentDropdownId === id ? ' active' : '' }` } ref={ actionButton }>
                                         <button className='more-button' onClick={() => handleActionButton( id )}><FontAwesomeIcon icon={ faEllipsisVertical }/></button>
                                         { currentDropdownId === id && <ActionButtonDropdown id={ id } /> }
                                     </div>
@@ -253,7 +252,7 @@ export const StudentsList = () => {
                                 <span>{ id }</span>
                                 <div>
                                     <span>{ status.slice( 0, 1 ).toUpperCase() + status.slice( 1 ) }</span>
-                                    <div className='more-button-wrapper' ref={ actionButton }>
+                                    <div className={ `more-button-wrapper${ currentDropdownId === id ? ' active' : '' }` } ref={ actionButton }>
                                         <button className='more-button' onClick={() => handleActionButton( id )}><FontAwesomeIcon icon={ faEllipsisVertical }/></button>
                                         { currentDropdownId === id && <ActionButtonDropdown id={ id } /> }
                                     </div>

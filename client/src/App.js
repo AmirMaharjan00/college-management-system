@@ -30,24 +30,25 @@ import { LibraryBooks } from './components/library/books.js'
 export const GLOBALCONTEXT = createContext()
 
 function App() {
-  const [ isLoggedIn, setIsloggedIn ] = useState( false )
-  const [ loggedInUser, setLoggedInUser ] = useState({})
-  const [ overlay, setOverlay ] = useState( false )
-  const [ isDarkMode, setIsDarkMode ] = useState( 'light' )
-  const [ isUserLogoutDropdownActive, setIsUserLogoutDropdownActive ] = useState( false )
-  const [ isUserAddNewActive, setIsUserAddNewActive ] = useState( false )
-  const [ isAcademicYearActive, setIsAcademicYearActive ] = useState( false )
-  const [ isLanguageActive, setIsLanguageActive ] = useState( false )
-  const [ newRegister, setNewRegister ] = useState( false )
-  const [ isNotificationDropdownActive, setIsNotificationDropdownActive ] = useState( false )
-  const [ isMessageDropdownActive, setIsMessageDropdownActive ] = useState( false )
-  const [ isNotificationShown, setIsNotificationShown ] = useState( false )
-  const [ notificationId, setNotificationId ] = useState( 0 )
-  const [ showChat, setShowChat ] = useState( false )
-  const [ chatId, setChatId ] = useState( 0 )
-  const [ headerOverlay, setHeaderOverlay ] = useState( false )
-  const [ leaveModal, setLeaveModal ] = useState( false )
-  const [ showPayFeesForm, setShowPayFeesForm ] = useState( false )
+  const [ isLoggedIn, setIsloggedIn ] = useState( false ),
+    [ loggedInUser, setLoggedInUser ] = useState({}),
+    [ overlay, setOverlay ] = useState( false ),
+    [ isDarkMode, setIsDarkMode ] = useState( 'light' ),
+    [ isUserLogoutDropdownActive, setIsUserLogoutDropdownActive ] = useState( false ),
+    [ isUserAddNewActive, setIsUserAddNewActive ] = useState( false ),
+    [ isAcademicYearActive, setIsAcademicYearActive ] = useState( false ),
+    [ isLanguageActive, setIsLanguageActive ] = useState( false ),
+    [ newRegister, setNewRegister ] = useState( false ),
+    [ isNotificationDropdownActive, setIsNotificationDropdownActive ] = useState( false ),
+    [ isMessageDropdownActive, setIsMessageDropdownActive ] = useState( false ),
+    [ isNotificationShown, setIsNotificationShown ] = useState( false ),
+    [ notificationId, setNotificationId ] = useState( 0 ),
+    [ showChat, setShowChat ] = useState( false ),
+    [ chatId, setChatId ] = useState( 0 ),
+    [ headerOverlay, setHeaderOverlay ] = useState( false ),
+    [ leaveModal, setLeaveModal ] = useState( false ),
+    [ showPayFeesForm, setShowPayFeesForm ] = useState( false ),
+    [ formVisibility, setFormVisibility ] = useState( false )
 
   /* Global Context Object */
   let globalContextObject = {
@@ -68,7 +69,8 @@ function App() {
     chatId, setChatId,
     headerOverlay, setHeaderOverlay,
     leaveModal, setLeaveModal,
-    showPayFeesForm, setShowPayFeesForm
+    showPayFeesForm, setShowPayFeesForm,
+    formVisibility, setFormVisibility,  // For adding new book
   }
 
   return <GLOBALCONTEXT.Provider value={ globalContextObject }>
