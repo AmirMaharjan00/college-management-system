@@ -518,3 +518,68 @@ app.post( '/payment-gateway', async ( request, res ) => {
     res.status(500).json({ error: 'Khalti request failed' });
   }
 });
+
+/**
+ * MARK: Books
+ */
+app.post( '/all-books', ( request, res ) => { 
+  const selectQuery = `SELECT * from books`
+  con.query( selectQuery, ( error, result ) => {
+    if ( error ) {
+      return res.status( 500 ).json({ error: "Database selection failed" });
+    }
+    return res.status( 200 ).json({ result, success: true });
+  })
+});
+
+/**
+ * MARK: Books Issued
+ */
+app.post( '/all-books-issued', ( request, res ) => { 
+  const selectQuery = `SELECT booksIssued.*, users.name FROM booksIssued JOIN users ON booksIssued.issuedBy = users.id WHERE booksIssued.status="issued";`
+  con.query( selectQuery, ( error, result ) => {
+    if ( error ) {
+      return res.status( 500 ).json({ error: "Database selection failed" });
+    }
+    return res.status( 200 ).json({ result, success: true });
+  })
+});
+
+/**
+ * MARK: Books Returned
+ */
+app.post( '/books-returned', ( request, res ) => { 
+  const selectQuery = `SELECT booksIssued.*, users.name FROM booksIssued JOIN users ON booksIssued.userId = users.id WHERE booksIssued.status="returned";`
+  con.query( selectQuery, ( error, result ) => {
+    if ( error ) {
+      return res.status( 500 ).json({ error: "Database selection failed" });
+    }
+    return res.status( 200 ).json({ result, success: true });
+  })
+});
+
+/**
+ * MARK: Books Fined
+ */
+app.post( '/books-fined', ( request, res ) => { 
+  const selectQuery = `SELECT * from booksIssued WHERE status="overdue"`
+  con.query( selectQuery, ( error, result ) => {
+    if ( error ) {
+      return res.status( 500 ).json({ error: "Database selection failed" });
+    }
+    return res.status( 200 ).json({ result, success: true });
+  })
+});
+
+/**
+ * MARK: Books Fined
+ */
+app.post( '/library-fines-monthwise', ( request, res ) => { 
+  const selectQuery = `SELECT MONTHNAME(dueDate) AS month, SUM(fineAmount) AS totalFines FROM booksIssued WHERE status="overdue" GROUP BY MONTH(dueDate) ORDER BY MONTH(dueDate);`
+  con.query( selectQuery, ( error, result ) => {
+    if ( error ) {
+      return res.status( 500 ).json({ error: "Database selection failed" });
+    }
+    return res.status( 200 ).json({ result, success: true });
+  })
+});

@@ -64,26 +64,26 @@ export const AdminDashboard = () => {
             <LeaveRequest />
         </div>{/* #fees-leave-request-wrapper */}
         <div id="dashboard-links" className="dashboard-links">
-            <div className="link">
+            <Link to="/dashboard/library" className='link card'>
                 <span className="link-icon"><FontAwesomeIcon icon={ faCalendarDays } /></span>
-                <span className="link-label">View Attendence</span>
+                <span className="link-label">Library</span>
                 <span className="link-view-more"><FontAwesomeIcon icon={ faChevronRight } /></span>
-            </div>
-            <div className="link">
+            </Link>
+            <div className="link card">
                 <span className="link-icon"><FontAwesomeIcon icon={ faIcons } /></span>
                 <span className="link-label">New Events</span>
                 <span className="link-view-more"><FontAwesomeIcon icon={ faChevronRight } /></span>
             </div>
-            <div className="link">
+            <div className="link card">
                 <span className="link-icon"><FontAwesomeIcon icon={ faCircleExclamation} /></span>
                 <span className="link-label">Complaints</span>
                 <span className="link-view-more"><FontAwesomeIcon icon={ faChevronRight } /></span>
             </div>
-            <div className="link">
+            <Link to="/dashboard/account" className='link card'>
                 <span className="link-icon"><FontAwesomeIcon icon={ faCoins} /></span>
                 <span className="link-label">Finance & Accounts</span>
                 <span className="link-view-more"><FontAwesomeIcon icon={ faChevronRight } /></span>
-            </div>
+            </Link>
         </div>{/* #dashboard-links */}
         <div className="dashboard-earnings" id="dashboard-earnings">
             <div className="finance-wrapper">

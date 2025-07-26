@@ -39,6 +39,23 @@ con.connect(function(err) {
           console.log( 'Courses Table created.' )
         });
 
+         /**
+         * Create Books Table
+         * MARK: Books
+         */
+        let booksQuery = "CREATE TABLE IF NOT EXISTS `books` ("
+          booksQuery += "id INT(11) NOT NULL AUTO_INCREMENT PRIMARY KEY, "
+          booksQuery += "name VARCHAR(255) NOT NULL, "
+          booksQuery += "author VARCHAR(255) NOT NULL, "
+          booksQuery += "publication VARCHAR(255) NOT NULL, "
+          booksQuery += "publisedYear DATETIME, "
+          booksQuery += "languae VARCHAR(255) NOT NULL "
+          booksQuery += ");"
+        con.query( booksQuery, function (err, result) {
+          if( err ) throw err
+          console.log( 'Books Table created.' )
+        });
+
         /**
          * Create Users Table
          * MARK: users
@@ -174,17 +191,26 @@ con.connect(function(err) {
         });
 
         /**
-         * Create Options Table
-         * MARK: Options
+         * Create Books Issued Table
+         * MARK: Books Issued
          */
-        let optionsQuery = "CREATE TABLE IF NOT EXISTS `options` ("
-          optionsQuery += "id INT(11) NOT NULL AUTO_INCREMENT PRIMARY KEY, "
-          optionsQuery += "metaKey INT(11) NOT NULL, "
-          optionsQuery += "metaValue INT(11) NOT NULL "
-          optionsQuery += ");"
-        con.query( optionsQuery, function (err, result) {
+        let booksIssuedQuery = "CREATE TABLE IF NOT EXISTS `booksIssued` ("
+          booksIssuedQuery += "id INT(11) NOT NULL AUTO_INCREMENT PRIMARY KEY, "
+          booksIssuedQuery += "bookId INT(11) NOT NULL, "
+          booksIssuedQuery += "userId INT(11) NOT NULL, "
+          booksIssuedQuery += "issuedDate DATETIME DEFAULT CURRENT_TIMESTAMP, "
+          booksIssuedQuery += "dueDate DATETIME, "
+          booksIssuedQuery += "returnDate DATETIME, "
+          booksIssuedQuery += "status VARCHAR(255) NOT NULL DEFAULT 'issued', "
+          booksIssuedQuery += "fineAmount INT(11) NOT NULL DEFAULT 0, "
+          booksIssuedQuery += "issuedBy INT(11) NOT NULL, "
+          booksIssuedQuery += "FOREIGN KEY(bookId) REFERENCES books(id), "
+          booksIssuedQuery += "FOREIGN KEY(userId) REFERENCES users(id), "
+          booksIssuedQuery += "FOREIGN KEY(issuedBy) REFERENCES users(id) "
+          booksIssuedQuery += ");"
+        con.query( booksIssuedQuery, function (err, result) {
           if( err ) throw err
-          console.log( 'Options Table created.' )
+          console.log( 'Books Issued Table created.' )
         });
       }
     });

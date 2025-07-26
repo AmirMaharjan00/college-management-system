@@ -1,4 +1,4 @@
-import { createContext, useState, useEffect } from 'react'
+import { createContext, useState } from 'react'
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import './App.css';
 import './components/assets/sass/peoples.scss';
@@ -11,7 +11,6 @@ import { Login } from './components/forms/login.js'
 import { Registration } from './components/forms/registration.js'
 import { ForgotPassword } from './components/forms/forgot-password.js'
 import { ErrorPage } from './components/404.js'
-import { ourFetch } from './components/functions.js'
 import { Main } from './components/main.js'
 import { StudentFees } from './components/student/fees.js'
 import { Profile } from './components/profile.js'
@@ -21,6 +20,12 @@ import { StaffsList } from './components/peoples/staffs.js'
 import { Payment, PaymentSuccess, PaymentFailure } from './components/student/payment.js'
 import { Invoice } from './components/student/invoice.js'
 import { StudentDetails } from './components/student/student-details.js'
+import { Library } from './components/library/library.js'
+import { Account } from './components/account/account.js'
+import { LibraryFines } from './components/library/fines.js'
+import { LibraryReturned } from './components/library/returned.js'
+import { LibraryIssued } from './components/library/issued.js'
+import { LibraryBooks } from './components/library/books.js'
 
 export const GLOBALCONTEXT = createContext()
 
@@ -78,15 +83,26 @@ const Links = () => {
     <Routes>
       <Route exact path='/dashboard' element={ <Index/> }>
         <Route exact path='/dashboard' element={ <Main /> }/>
-        <Route exact path='/dashboard/fees' element={ <StudentFees /> }/>
         <Route exact path='/dashboard/profile' element={ <Profile /> }/>
+        {/* Peoples */}
         <Route exact path='/dashboard/students' element={ <StudentsList /> }/>
         <Route exact path='/dashboard/teachers' element={ <TeachersList /> }/>
         <Route exact path='/dashboard/staffs' element={ <StaffsList /> }/>
+         {/* Payment */}
+        <Route exact path='/dashboard/fees' element={ <StudentFees /> }/>
         <Route exact path='/dashboard/payment' element={ <Payment /> }/>
         <Route exact path='/dashboard/payment-success' element={ <PaymentSuccess /> }/>
         <Route exact path='/dashboard/payment-failure' element={ <PaymentFailure /> }/>
+        {/* User Details */}
         <Route exact path='/dashboard/user-details' element={ <StudentDetails /> }/>
+        {/* Library */}
+        <Route exact path='/dashboard/library' element={ <Library /> } />
+        <Route exact path='/dashboard/library/books' element={ <LibraryBooks /> }/>
+        <Route exact path='/dashboard/library/fines' element={ <LibraryFines /> }/>
+        <Route exact path='/dashboard/library/returned' element={ <LibraryReturned /> }/>
+        <Route exact path='/dashboard/library/issued' element={ <LibraryIssued /> }/>
+        {/* Account */}
+        <Route exact path='/dashboard/account' element={ <Account /> }/>
       </Route>
       <Route exact path='/login' element={ <Login /> }/>
       <Route exact path='/registration' element={ <Registration /> }/>
@@ -96,6 +112,5 @@ const Links = () => {
     </Routes>
   );
 }
-
 
 export default App;

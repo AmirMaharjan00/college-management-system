@@ -1,9 +1,9 @@
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faTableList, faGraduationCap, faUserTie, faUsers } from '@fortawesome/free-solid-svg-icons';
-import { useContext } from 'react'
+import { faTableList, faGraduationCap, faUserTie, faUsers, faBookAtlas, faBookOpen, faCoins, faSackDollar, faRotateLeft, faLinesLeaning, faTimeline, faReceipt } from '@fortawesome/free-solid-svg-icons';
+import { useState, useContext, useCallback } from 'react'
 import { GLOBALCONTEXT } from '../App'
-import { Link } from 'react-router-dom'
-
+import { Link, useLocation } from 'react-router-dom'
+import './assets/scss/sidebar.scss'
 
 /**
  * Sidebar
@@ -12,7 +12,11 @@ import { Link } from 'react-router-dom'
  */
 export const Sidebar = () => {
     const global = useContext( GLOBALCONTEXT ),
-        { role } = global.loggedInUser;
+        { role } = global.loggedInUser,
+        location = useLocation(),
+        getClass = useCallback(( id ) => {
+            return `cmg-list-item ${( id === location.pathname ? ' active' : '' )}`
+        }, [ location ])
 
     return <aside className="cmg-sidebar" id="cmg-sidebar">
         <div className="cmg-menu">
@@ -21,13 +25,13 @@ export const Sidebar = () => {
                     <span>Main</span>
                 </h2>
                 <ul className="cmg-submenu">
-                    <li className="cmg-list-item active">
-                        <a href="#" className="cmg-icon-wrapper">
+                    <li className={ getClass( '/dashboard' ) }>
+                        <Link to="/dashboard" className='cmg-icon-wrapper'>
                             <span className="cmg-icon"><i className='bx bxs-dashboard'></i></span>
                             <span className="cmg-icon-label">Dashboard</span>
-                        </a>
+                        </Link>
                     </li>
-                    <li className="cmg-list-item">
+                    <li className={ getClass( '/application' ) }>
                         <a href="#" className="cmg-icon-wrapper">
                             <span className="cmg-icon"><FontAwesomeIcon icon={ faTableList } /></span>
                             <span className="cmg-icon-label">Application</span>
@@ -41,20 +45,20 @@ export const Sidebar = () => {
                         <span>Peoples</span>
                     </h2>
                     <ul className="cmg-submenu">
-                        <li className="cmg-list-item">
-                            <Link to="/dashboard/students">
+                        <li className={ getClass( '/dashboard/students' ) }>
+                            <Link to="/dashboard/students" className='cmg-icon-wrapper'>
                                 <span className='cmg-icon'><FontAwesomeIcon icon={ faGraduationCap } /></span>
                                 <span className='cmg-icon-label'>Students</span>
                             </Link>
                         </li>
-                        <li className="cmg-list-item">
-                            <Link to="/dashboard/teachers">
+                        <li className={ getClass( '/dashboard/teachers' ) }>
+                            <Link to="/dashboard/teachers" className='cmg-icon-wrapper'>
                                 <span className='cmg-icon'><FontAwesomeIcon icon={ faUserTie } /></span>
                                 <span className='cmg-icon-label'>Teachers</span>
                             </Link>
                         </li>
-                        <li className="cmg-list-item">
-                            <Link to="/dashboard/staffs">
+                        <li className={ getClass( '/dashboard/staffs' ) }>
+                            <Link to="/dashboard/staffs" className='cmg-icon-wrapper'>
                                 <span className='cmg-icon'><FontAwesomeIcon icon={ faUsers } /></span>
                                 <span className='cmg-icon-label'>Staff</span>
                             </Link>
@@ -67,17 +71,17 @@ export const Sidebar = () => {
                     <span>Academic</span>
                 </h2>
                 <ul className="cmg-submenu">
-                    <li className="cmg-list-item"><a href="#">Classes</a></li>
-                    <li className="cmg-list-item"><a href="#">Class Room</a></li>
-                    <li className="cmg-list-item"><a href="#">Class Routines</a></li>
-                    <li className="cmg-list-item"><a href="#">Section</a></li>
-                    <li className="cmg-list-item"><a href="#">Subject</a></li>
-                    <li className="cmg-list-item"><a href="#">Syllabus</a></li>
-                    <li className="cmg-list-item"><a href="#">Time Table</a></li>
-                    <li className="cmg-list-item"><a href="#">Home Work</a></li>
-                    <li className="cmg-list-item"><a href="#">Examinations</a></li>
-                    <li className="cmg-list-item"><a href="#">Reasons</a></li>
-                </ul>
+                    <li className={ getClass( 'classes' ) }><a href="#">Classes</a></li>
+                    <li className={ getClass( 'classroom' ) }><a href="#">Class Room</a></li >
+                    <li className={ getClass( 'class-routines' ) }><a href="#">Class Routines</a></li >
+                    <li className={ getClass( 'section' ) }><a href="#">Section</a></li >
+                    <li className={ getClass( 'subject' ) }><a href="#">Subject</a></li >
+                    <li className={ getClass( 'syllabus' ) }><a href="#">Syllabus</a></li >
+                    <li className={ getClass( 'time-table' ) }><a href="#">Time Table</a></li >
+                    <li className={ getClass( 'homework' ) }><a href="#">Home Work</a></li >
+                    <li className={ getClass( 'examinations' ) }><a href="#">Examinations</a></li >
+                    <li className={ getClass( 'complaints' ) }><a href="#">Complaints</a></li >
+                </ul >
             </div>
             {
                 ( role === 'admin' ) && <>
@@ -86,10 +90,36 @@ export const Sidebar = () => {
                             <span>Library</span>
                         </h2>
                         <ul className="cmg-submenu">
-                            <li className="cmg-list-item"><a href="#">Manage Library</a></li>
-                            <li className="cmg-list-item"><a href="#">Issued</a></li>
-                            <li className="cmg-list-item"><a href="#">Books</a></li>
-                            <li className="cmg-list-item"><a href="#">Fines</a></li>
+                            <li className={ getClass( '/dashboard/library' ) }>
+                                <Link to="/dashboard/library" className='cmg-icon-wrapper'>
+                                    <span className='cmg-icon'><FontAwesomeIcon icon={ faLinesLeaning } /></span>
+                                    <span className='cmg-icon-label'>Manage Library</span>
+                                </Link>
+                            </li>
+                            <li className={ getClass( '/dashboard/library/books' ) }>
+                                <Link to="/dashboard/library/books" className='cmg-icon-wrapper'>
+                                    <span className='cmg-icon'><FontAwesomeIcon icon={ faBookAtlas } /></span>
+                                    <span className='cmg-icon-label'>All Books</span>
+                                </Link>
+                            </li>
+                            <li className={ getClass( '/dashboard/library/issued' ) }>
+                                <Link to="/dashboard/library/issued" className='cmg-icon-wrapper'>
+                                    <span className='cmg-icon'><FontAwesomeIcon icon={ faBookOpen } /></span>
+                                    <span className='cmg-icon-label'>Issued Books</span>
+                                </Link>
+                            </li>
+                            <li className={ getClass( '/dashboard/library/returned' ) }>
+                                <Link to="/dashboard/library/returned" className='cmg-icon-wrapper'>
+                                    <span className='cmg-icon'><FontAwesomeIcon icon={ faRotateLeft } /></span>
+                                    <span className='cmg-icon-label'>Returned Books</span>
+                                </Link>
+                            </li>
+                            <li className={ getClass( '/dashboard/library/fines' ) }>
+                                <Link to="/dashboard/library/fines" className='cmg-icon-wrapper'>
+                                    <span className='cmg-icon'><FontAwesomeIcon icon={ faCoins } /></span>
+                                    <span className='cmg-icon-label'>Fines</span>
+                                </Link>
+                            </li>
                         </ul>
                     </div>
                     <div className="cmg-menu-item">
@@ -97,9 +127,24 @@ export const Sidebar = () => {
                             <span>Account</span>
                         </h2>
                         <ul className="cmg-submenu">
-                            <li className="cmg-list-item"><a href="#">Issued</a></li>
-                            <li className="cmg-list-item"><a href="#">Books</a></li>
-                            <li className="cmg-list-item"><a href="#">Fines</a></li>
+                            <li className={ getClass( '/dashboard/account' ) }>
+                                <Link to="/dashboard/account" className='cmg-icon-wrapper'>
+                                    <span className='cmg-icon'><FontAwesomeIcon icon={ faSackDollar } /></span>
+                                    <span className='cmg-icon-label'>Manage Accounts</span>
+                                </Link>
+                            </li>
+                            <li className={ getClass( '/dashboard/account/history' ) }>
+                                <Link to="/dashboard/account/history" className='cmg-icon-wrapper'>
+                                    <span className='cmg-icon'><FontAwesomeIcon icon={ faTimeline } /></span>
+                                    <span className='cmg-icon-label'>History</span>
+                                </Link>
+                            </li>
+                            <li className={ getClass( '/dashboard/account/pay-fees' ) }>
+                                <Link to="/dashboard/account/pay-fees" className='cmg-icon-wrapper'>
+                                    <span className='cmg-icon'><FontAwesomeIcon icon={ faReceipt } /></span>
+                                    <span className='cmg-icon-label'>Pay Fees</span>
+                                </Link>
+                            </li>
                         </ul>
                     </div>
                 </>
