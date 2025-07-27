@@ -23,7 +23,6 @@ import { StudentDetails } from './components/student/student-details.js'
 import { Library } from './components/library/library.js'
 import { Account } from './components/account/account.js'
 import { LibraryFines } from './components/library/fines.js'
-import { LibraryReturned } from './components/library/returned.js'
 import { LibraryIssued } from './components/library/issued.js'
 import { LibraryBooks } from './components/library/books.js'
 
@@ -105,7 +104,6 @@ const Links = () => {
         <Route exact path='/dashboard/library' element={ <Library /> } />
         <Route exact path='/dashboard/library/books' element={ <LibraryBooks /> }/>
         <Route exact path='/dashboard/library/fines' element={ <LibraryFines /> }/>
-        <Route exact path='/dashboard/library/returned' element={ <LibraryReturned /> }/>
         <Route exact path='/dashboard/library/issued' element={ <LibraryIssued /> }/>
         {/* Account */}
         <Route exact path='/dashboard/account' element={ <Account /> }/>

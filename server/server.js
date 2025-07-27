@@ -489,7 +489,6 @@ app.post('/upload', upload.single('image'), (req, res) => {
 app.post( '/all-users-via-role', ( request, res ) => { 
   let { sortBy = 'asc', role = 'student' } = request.body
   const selectQuery = `SELECT users.*, courses.abbreviation FROM users JOIN courses ON users.courseId = courses.id WHERE role="${ role }" ORDER BY users.id ${ sortBy };`
-  console.log( selectQuery )
   con.query( selectQuery, ( error, result ) => {
     if ( error ) {
       return res.status( 500 ).json({ error: "Database selection failed" });
@@ -536,7 +535,7 @@ app.post( '/all-books', ( request, res ) => {
  * MARK: Books Issued
  */
 app.post( '/all-books-issued', ( request, res ) => { 
-  const selectQuery = `SELECT booksIssued.*, users.name FROM booksIssued JOIN users ON booksIssued.issuedBy = users.id WHERE booksIssued.status="issued";`
+  const selectQuery = `SELECT booksIssued.*, issuer.name AS issuerName, issuer.profile AS issuerProfile, borrower.name AS borrowerName, borrower.profile AS borrowerProfile, books.name AS bookName FROM booksIssued JOIN users AS issuer ON booksIssued.issuedBy = issuer.id JOIN users AS borrower ON booksIssued.userId = borrower.id JOIN books ON booksIssued.bookId = books.id;`
   con.query( selectQuery, ( error, result ) => {
     if ( error ) {
       return res.status( 500 ).json({ error: "Database selection failed" });
@@ -589,8 +588,8 @@ app.post( '/library-fines-monthwise', ( request, res ) => {
  */
 app.post( '/delete-book', ( request, res ) => { 
   const { id } = request.body
-    selectQuery = `DELETE FROM books WHERE id="${ id }"`
-  con.query( selectQuery, ( error, result ) => {
+    deleteQuery = `DELETE FROM books WHERE id="${ id }"`
+  con.query( deleteQuery, ( error, result ) => {
     if ( error ) {
       return res.status( 500 ).json({ success: false, error: "Database selection failed" });
     }
@@ -602,7 +601,6 @@ app.post( '/delete-book', ( request, res ) => {
  * MARK: Book Insert Query
  */
 app.post('/add-book', (req, res) => {
-  console.log( req.body, 'add-book' )
   const { name, author, publication, publishedYear, language } = req.body
   const insertQuery = 'INSERT INTO books (name, author, publication, publishedYear, language) VALUES (?, ?, ?, ?, ?)'
   con.query( insertQuery, [ name, author, publication, publishedYear, language ], ( error, result ) => {
@@ -625,5 +623,53 @@ app.post( '/edit-book', ( request, res ) => {
       return res.status( 500 ).json({ success: false, error: "Database Update failed" });
     }
     return res.status( 200 ).json({ success: true, result });
+  })
+});
+
+/**
+ * MARK: Issue new book
+ */
+app.post('/issue-new-book', (req, res) => {
+  const { bookId, userId, dueDate } = req.body,
+    { user } = req.session,
+    { id: currentUserId } = user,
+    insertQuery = 'INSERT INTO booksIssued (bookId, userId, dueDate, issuedBy) VALUES (?, ?, ?, ?)'
+  con.query( insertQuery, [ bookId, userId, dueDate, currentUserId ], ( error, result ) => {
+    if ( error ) {
+      return res.status( 500 ).json({ error: "Database insertion failed" });
+    }
+    return res.status( 200 ).json({ message: "Data inserted successfully!", id: result.insertId, success: true });
+  })
+});
+
+
+/**
+* MARK: edit issued book
+*/
+app.post( '/edit-issued-book', ( request, res ) => {
+  const { id, bookId, userId, dueDate } = request.body,
+    { user } = request.session,
+    { id: currentUserId } = user,
+    updateQuery = `UPDATE booksIssued SET bookId="${ bookId }", userId="${ userId }", dueDate="${ dueDate }", issuedBy="${ currentUserId }" WHERE id=${ id };`
+  con.query( updateQuery, ( error, result ) => {
+    if ( error ) {
+      return res.status( 500 ).json({ success: false, error: "Database Update failed" });
+    }
+    return res.status( 200 ).json({ success: true, result });
+  })
+});
+
+
+/**
+ * MARK: Delete issued Book
+ */
+app.post( '/delete-issued-book', ( request, res ) => { 
+  const { id } = request.body
+    deleteQuery = `DELETE FROM booksissued WHERE id="${ id }"`
+  con.query( deleteQuery, ( error, result ) => {
+    if ( error ) {
+      return res.status( 500 ).json({ success: false, error: "Database selection failed" });
+    }
+    return res.status( 200 ).json({ result: true, success: true });
   })
 });

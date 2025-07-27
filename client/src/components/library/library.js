@@ -10,6 +10,8 @@ import { Line } from 'react-chartjs-2';
 import { useDate } from '../includes/hooks'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCirclePlus, faChevronRight, faBookOpen, faBook, faRotateLeft, faSackDollar, } from '@fortawesome/free-solid-svg-icons';
+import { GLOBALCONTEXT } from '../../App'
+import { NewBookForm, BooksContext } from './books'
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -38,9 +40,12 @@ const LibraryContext = createContext();
  * Library
  */
 export const Library = () => {
-    const [ books, setBooks ] = useState([]),
+    const globalObject = useContext( GLOBALCONTEXT ),
+        { formVisibility, currentBookId, setCurrentBookId, setFormVisibility, setDeleteBookVisibility, setOverlay, setHeaderOverlay } = globalObject,
+        [ books, setBooks ] = useState([]),
         [ booksIssued, setBooksIssued ] = useState([]),
         [ booksReturned, setBooksReturned ] = useState([]),
+        [ submitSuccess, setSubmitSuccess ] = useState( false ),
         [ fines, setFines ] = useState([]),
         libraryObject = {
             books,
@@ -114,6 +119,16 @@ export const Library = () => {
             count: fines.length
         }
     }
+
+    /**
+     * Handle New Book click
+     */
+    const handleNewBook = () => {
+        setFormVisibility( true )
+        setOverlay( true )
+        setHeaderOverlay( true )
+    }
+
     return <main className="cmg-main cmg-library" id="cmg-main">
         <LibraryContext.Provider value={ libraryObject }>
             <div className="dashboard-head">
@@ -125,11 +140,10 @@ export const Library = () => {
                     </ul>
                 </div>
                 <div className="dashboard-actions">
-                    <button className="button-action add-student">
+                    <button className="button-action add-student" onClick={ handleNewBook }>
                         <FontAwesomeIcon icon={ faCirclePlus } className='icon' />
-                        <span>Add New Student</span>
+                        <span>Add New Book</span>
                     </button>
-                    <button className="button-action fees">Fees Details</button>
                 </div>
             </div>{/* .dashboard-head */}
             <div className="dashboard-highlights">
@@ -163,6 +177,10 @@ export const Library = () => {
                 <LibrayPreview />
             </div>
             <QuickLinks />
+            <NewBookForm
+                formMode = 'new'
+                setSubmitSuccess = { setSubmitSuccess }
+            />
         </LibraryContext.Provider>
     </main>
 }

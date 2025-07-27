@@ -1,5 +1,5 @@
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faTableList, faGraduationCap, faUserTie, faUsers, faBookAtlas, faBookOpen, faCoins, faSackDollar, faRotateLeft, faLinesLeaning, faTimeline, faReceipt } from '@fortawesome/free-solid-svg-icons';
+import { faTableList, faGraduationCap, faUserTie, faUsers, faBookAtlas, faBookOpen, faCoins, faSackDollar, faLinesLeaning, faTimeline, faReceipt } from '@fortawesome/free-solid-svg-icons';
 import { useState, useContext, useCallback } from 'react'
 import { GLOBALCONTEXT } from '../App'
 import { Link, useLocation } from 'react-router-dom'
@@ -106,12 +106,6 @@ export const Sidebar = () => {
                                 <Link to="/dashboard/library/issued" className='cmg-icon-wrapper'>
                                     <span className='cmg-icon'><FontAwesomeIcon icon={ faBookOpen } /></span>
                                     <span className='cmg-icon-label'>Issued Books</span>
-                                </Link>
-                            </li>
-                            <li className={ getClass( '/dashboard/library/returned' ) }>
-                                <Link to="/dashboard/library/returned" className='cmg-icon-wrapper'>
-                                    <span className='cmg-icon'><FontAwesomeIcon icon={ faRotateLeft } /></span>
-                                    <span className='cmg-icon-label'>Returned Books</span>
                                 </Link>
                             </li>
                             <li className={ getClass( '/dashboard/library/fines' ) }>

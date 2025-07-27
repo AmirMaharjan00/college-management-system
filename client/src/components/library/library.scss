@@ -308,7 +308,7 @@
     /**
     * MARK: TABLE
     **/
-    #books-table-wrapper {
+    .books-table-wrapper {
         .table-section {
             height: 530px;
             overflow-y: scroll;
@@ -337,34 +337,33 @@
             }
 
             tr {
-                th:nth-child(1),
-                th:nth-child(2) {
-                    width: 50px;
-                }
+                .issuer-profile,
+                .borrower-profile,
+                .username-profile {
+                    display: flex;
+                    align-items: center;
+                    gap: 10px;
 
-                th:nth-child(3) {
-                    width: 300px;
-                }
-                th:nth-child(4) {
-                    width: 200px;
-                }
-                th:nth-child(5) {
-                    width: 200px;
-                }
-                th:nth-child(6) {
-                    width: 200px;
-                }
-                th:nth-child(7) {
-                    width: 100px;
-                }
-                th:nth-child(8),
-                td:nth-child(8) {
-                    width: 30px;
-                    text-align: center;
-                }
+                    figure {
+                        height: 30px;
+                        width: 30px;
+                        object-fit: cover;
+                        
+                        img {
+                            height: 100%;
+                            width: 100%;
+                            border-radius: 50%;
+                        }
+                    }
 
-                td:nth-child(3) {
-                    font-weight: 600;
+                    .name a {
+                        text-decoration: none;
+                        color: var(--color);
+                    }
+
+                    .name:hover a {
+                        color: var(--blue);
+                    }
                 }
 
                 .more-button-wrapper {
@@ -412,6 +411,27 @@
     
             tbody tr td {
                 padding: 12px 15px;
+
+                .status {
+                    padding: 5px;
+                    border-radius: 5px;
+                    color: var(--color);
+                }
+
+                .status.returned {
+                    border: 2px solid #1abe17;
+                    background: #1abe1765;
+                }
+
+                .status.issued {
+                    border: 2px solid #6fccd8;
+                    background: #6fccd867;
+                }
+
+                .status.overdue {
+                    border: 2px solid var(--default);
+                    background: rgba(255, 0, 51, 0.394);
+                }
             }
     
             tbody tr:nth-child(even) {
@@ -481,6 +501,80 @@
         .pay-fees-wrapper .student-pay-fees {
             height: 450px;
             overflow-y: auto;
+        }
+    }
+
+    .books-table-wrapper.books-page {
+        table {
+            th:nth-child(1),
+            th:nth-child(2) {
+                width: 50px;
+            }
+
+            th:nth-child(3) {
+                width: 300px;
+            }
+            th:nth-child(4) {
+                width: 200px;
+            }
+            th:nth-child(5) {
+                width: 200px;
+            }
+            th:nth-child(6) {
+                width: 200px;
+            }
+            th:nth-child(7) {
+                width: 100px;
+            }
+            th:nth-child(8),
+            td:nth-child(8) {
+                width: 30px;
+                text-align: center;
+            }
+
+            td:nth-child(3) {
+                font-weight: 600;
+            }
+        }
+    }
+
+    .books-table-wrapper.issue-page {
+        table {
+            th:nth-child(1),
+            th:nth-child(2) {
+                width: 50px;
+            }
+
+            th:nth-child(3) {
+                width: 300px;
+            }
+            th:nth-child(4),
+            th:nth-child(5){
+                width: 200px;
+            }
+
+            th:nth-child(6) {
+                width: 150px;
+            }
+            th:nth-child(7),
+            th:nth-child(9),
+            th:nth-child(8) {
+                width: 100px;
+            }
+            th:nth-child(10),
+            td:nth-child(10) {
+                width: 40px;
+                text-align: center;
+            }
+
+            td:nth-child(3),
+            td:nth-child(5) {
+                font-weight: 600;
+            }
+
+            td:nth-child(9) {
+                text-align: center;
+            }
         }
     }
 

@@ -2,7 +2,7 @@ import { useState, useEffect, createContext, useContext, useRef, useMemo } from 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCirclePlus, faEllipsisVertical, faXmark } from '@fortawesome/free-solid-svg-icons';
 import { Link } from 'react-router-dom'
-import { ourFetch } from '../functions'
+import { ourFetch, adjustDate } from '../functions'
 import { useDate } from '../includes/hooks';
 import { GLOBALCONTEXT } from '../../App'
 import '../assets/scss/form.scss'
@@ -13,9 +13,7 @@ const BooksContext = createContext()
  * MARK: Library Books
  */
 export const LibraryBooks = () => {
-    const Global = useContext( GLOBALCONTEXT ) ,
-        { formVisibility, setFormVisibility, setOverlay, setHeaderOverlay, deleteBookVisibility, setDeleteBookVisibility, currentBookId, setCurrentBookId } = Global,
-        [ books, setBooks ] = useState([]),
+    const [ books, setBooks ] = useState([]),
         [ layout, setLayout ] = useState( 'list' ),
         [ sortBy, setSortBy ] = useState( 'asc' ),
         [ searched, setSearched ] = useState( '' ),
@@ -74,14 +72,10 @@ export const LibraryBooks = () => {
         currentDropdownId, setCurrentDropdownId,
         activePage, setActivePage,
         searched, setSearched,
-        formVisibility, setFormVisibility,
         books: filteredBooks,
         actionButton,
         totalPages,
         handlePagination,
-        setOverlay, setHeaderOverlay,
-        deleteBookVisibility, setDeleteBookVisibility,
-        currentBookId, setCurrentBookId,
         deleteSuccess, setDeleteSuccess,
         formMode, setFormMode,
         submitSuccess, setSubmitSuccess
@@ -90,29 +84,64 @@ export const LibraryBooks = () => {
     return <main className="cmg-main cmg-library" id="cmg-main">
         
         <BooksContext.Provider value={ booksObject }>
+
             <div className='page-header'>
+
                 <Breadcrumb />
-                <ActionButtons />
+
+                <ActionButtons
+                    setFormMode = { setFormMode }
+                />
+
             </div>
-            <RowAndSearch />
-            <Table />
-            <Pagination />
-            <NewBookForm />
-            <DeleteBook />
+
+            <RowAndSearch 
+                rowsPerPage = { rowsPerPage }
+                setRowsPerPage = { setRowsPerPage }
+                setSearched = { setSearched }
+            />
+
+            <Table
+                layout = { layout }
+                items = { filteredBooks }
+                actionButton = { actionButton }
+                currentDropdownId = { currentDropdownId }
+                setCurrentDropdownId = { setCurrentDropdownId }
+            />
+
+            <Pagination
+                books = { filteredBooks }
+                totalPages = { totalPages }
+                activePage = { activePage }
+                setActivePage = { setActivePage }
+                handlePagination = { handlePagination }
+            />
+            
+            <NewBookForm 
+                formMode = 'new'
+                setSubmitSuccess = { setSubmitSuccess }
+            />
+
+            <DeleteBook
+                setDeleteSuccess = { setDeleteSuccess }
+            />
+
         </BooksContext.Provider>
+
     </main>
 }
 
 /**
  * MARK: BREADCRUMB
  */
-const Breadcrumb = () => {
+export const Breadcrumb = ( props ) => {
+    const { headLabel = 'Books', currentPageLabel = 'All Books' } = props
     return <div className="breadcrumb-wrapper">
-        <h2 className="user-name">Books</h2>
+        <h2 className="user-name">{ headLabel }</h2>
         <ul className="cmg-breadcrumb" id="cmg-breadcrumb">
             <li className="breadcrumb-item"><Link to="/dashboard">Dashboard</Link></li>
             <li className="breadcrumb-item"><Link to="/dashboard/library">Library</Link></li>
-            <li className="breadcrumb-item">All Books</li>
+            <li className="breadcrumb-item">{ currentPageLabel }</li>
         </ul>
     </div>
 }
@@ -120,9 +149,10 @@ const Breadcrumb = () => {
 /**
  * MARK: ACTION BUTTONS
  */
-const ActionButtons = () => {
-    const booksObject = useContext( BooksContext ),
-        { formVisibility, setFormVisibility, setOverlay, setHeaderOverlay, setFormMode } = booksObject
+export const ActionButtons = ( props ) => {
+    const Global = useContext( GLOBALCONTEXT ),
+        { formVisibility, setFormVisibility, setOverlay, setHeaderOverlay } = Global,
+        { setFormMode, label = 'New Book' } = props
 
     /**
      * Handle add new book
@@ -137,7 +167,7 @@ const ActionButtons = () => {
     return <div className='action-buttons'>
         <button className='action-btn add' onClick={ handleNewBook }>
             <FontAwesomeIcon icon={ faCirclePlus }/>
-            <span className='label'>Add Book</span>
+            <span className='label'>{ label }</span>
         </button>
     </div>
 }
@@ -145,9 +175,8 @@ const ActionButtons = () => {
 /**
  * MARK: ROW & SEARCH
  */
-const RowAndSearch = () => {
-    const booksObject = useContext( BooksContext ),
-        { rowsPerPage, setRowsPerPage, setSearched } = booksObject
+export const RowAndSearch = ( props ) => {
+    const { rowsPerPage, setRowsPerPage, setSearched } = props
 
     /**
      * Handle rows per page
@@ -182,10 +211,11 @@ const RowAndSearch = () => {
 /**
  * MARK: TABLE
  */
-const Table = () => {
-    const booksObject = useContext( BooksContext ),
-        { layout, books, actionButton, currentDropdownId, setCurrentDropdownId, currentBookId, setCurrentBookId } = booksObject,
-        { convertedDate, getDate } = useDate()
+export const Table = ( props ) => {
+    const Global = useContext( GLOBALCONTEXT ),
+        { setCurrentBookId } = Global, 
+        { layout, items, actionButton, currentDropdownId, setCurrentDropdownId, setFormMode } = props,
+        { convertedDate } = useDate()
 
     /**
      * Handle action button click
@@ -195,7 +225,7 @@ const Table = () => {
         setCurrentBookId( id )
     }
 
-    return <div className='books-table-wrapper' id="books-table-wrapper">
+    return <div className='books-table-wrapper books-page'>
         { ( layout === 'list' ) ? <table className='table-wrapper'>
             <thead>
                 <tr>
@@ -211,7 +241,7 @@ const Table = () => {
             </thead>
             <tbody>
                 {
-                    books.map(( books, index ) => {
+                    items.map(( books, index ) => {
                         let count = index + 1,
                             { id, name, author, publication, publishedYear, language } = books
 
@@ -226,7 +256,7 @@ const Table = () => {
                             <td className='action-buttons'>
                                 <div className={ `more-button-wrapper${ currentDropdownId === id ? ' active' : '' }` } ref={ actionButton } onClick={() => handleActionButton( id )}>
                                     <button className='more-button'><FontAwesomeIcon icon={ faEllipsisVertical }/></button>
-                                    { currentDropdownId === id && <ActionButtonDropdown /> }
+                                    { currentDropdownId === id && <ActionButtonDropdown setFormMode = { setFormMode }  /> }
                                 </div>
                             </td>
                         </tr>
@@ -235,16 +265,16 @@ const Table = () => {
             </tbody>
         </table> : <div className='grid-wrapper'>
             {
-                books.map(( book, index ) => {
+                items.map(( book, index ) => {
                     let count = index + 1,
-                        { id, name, author, publication, publishedYear, language } = books
+                        { id, name, author, publication, publishedYear, language } = book
                     return <div key={ index } className='grid'>
                         <div className='head'>
                             <span>{ id }</span>
                             <div>
                                 <div className={ `more-button-wrapper${ currentDropdownId === id ? ' active' : '' }` } ref={ actionButton }>
                                     <button className='more-button' onClick={() => handleActionButton( id )}><FontAwesomeIcon icon={ faEllipsisVertical }/></button>
-                                    { currentDropdownId === id && <ActionButtonDropdown /> }
+                                    { currentDropdownId === id && <ActionButtonDropdown setFormMode = { setFormMode }  /> }
                                 </div>
 
                             </div>
@@ -276,9 +306,10 @@ const Table = () => {
 /**
  * MARK: Action Button Dropdown
  */
-const ActionButtonDropdown = () => {
-    const booksObject = useContext( BooksContext ),
-        { setFormVisibility, setOverlay, setHeaderOverlay, setDeleteBookVisibility, setFormMode} = booksObject
+export const ActionButtonDropdown = ( props ) => {
+    const Global = useContext( GLOBALCONTEXT ),
+        { setFormVisibility, setOverlay, setHeaderOverlay, setDeleteBookVisibility } = Global,
+        { setFormMode } = props
 
     /**
      * Handle Edit click
@@ -308,9 +339,8 @@ const ActionButtonDropdown = () => {
 /**
  * MARK: Pagination
  */
-export const Pagination = () => {
-    const booksObject = useContext( BooksContext ),
-        { books, totalPages, activePage, setActivePage, handlePagination } = booksObject
+export const Pagination = ( props ) => {
+    const { books, totalPages, activePage, setActivePage, handlePagination } = props
 
     return books.length ? <div className='pagination-wrapper'>
         <button className='pagination-button previous' onClick={() => handlePagination( 'previous' ) }>Prev</button>
@@ -329,9 +359,11 @@ export const Pagination = () => {
 /**
  * MARK: NEW BOOK
  */
-export const NewBookForm = () => {
-    const booksObject = useContext( BooksContext ),
-        { formVisibility, currentBookId, books, formMode = 'new', setFormVisibility, setSubmitSuccess, setDeleteBookVisibility, setOverlay, setHeaderOverlay, setCurrentBookId } = booksObject,
+export const NewBookForm = ( props ) => {
+    const globalObject = useContext( GLOBALCONTEXT ),
+        booksObject = useContext( BooksContext ),
+        { formVisibility, currentBookId, setCurrentBookId, setFormVisibility, setDeleteBookVisibility, setOverlay, setHeaderOverlay } = globalObject,
+        { formMode = 'new', setSubmitSuccess } = props,
         [ formValues, setFormValues ] = useState({
             name: '',
             author: '',
@@ -341,9 +373,10 @@ export const NewBookForm = () => {
         }),
         { name, author, publication, publishedYear, language } = formValues;
 
+
     useEffect(() => {
         if( formMode === 'edit' ) {
-            let newFormValues = books.reduce(( value, book ) => {
+            let newFormValues = booksObject.books.reduce(( value, book ) => {
                 let { id } = book
                 if( id === currentBookId ) value = { ...book, publishedYear: adjustDate( book.publishedYear ) }
                 return value
@@ -351,15 +384,6 @@ export const NewBookForm = () => {
             setFormValues( newFormValues )
         }
     }, [ formMode, currentBookId ])
-
-    /**
-     * Adjust date
-     */
-    const adjustDate = ( date ) => {
-        if( date === '' ) return ''
-        let newDate = new Date( date )
-        return newDate.toISOString().split('T')[0];
-    }
 
     /**
      * Handle Form change
@@ -460,18 +484,19 @@ export const NewBookForm = () => {
 }
 
 /**
- * Delete Popup
+ * MARK: Delete Popup
  */
-const DeleteBook = () => {
-    const booksObject = useContext( BooksContext ),
-        { deleteBookVisibility, setDeleteBookVisibility, setOverlay, setHeaderOverlay, currentBookId, setCurrentBookId, setDeleteSuccess } = booksObject
+export const DeleteBook = ( props ) => {
+    const Global = useContext( GLOBALCONTEXT ),
+        { setOverlay, setHeaderOverlay, deleteBookVisibility, setDeleteBookVisibility, currentBookId, setCurrentBookId } = Global,
+        { setDeleteSuccess, api = '/delete-book' } = props
 
     /**
      * Handle yes click
      */
     const handleYesClick = () => {
         ourFetch({
-            api: '/delete-book',
+            api,
             callback: handleDeleteBookCallback,
             body: JSON.stringify({ id: currentBookId })
         })

@@ -87,3 +87,13 @@ export const getScript = ( number ) => {
             return `${ number }th`
     }
 }
+
+
+/**
+ * Adjust date
+ */
+export const adjustDate = ( date ) => {
+    if( ! date ) return ''
+    let newDate = new Date( date )
+    return newDate.toISOString().split('T')[0];
+}
