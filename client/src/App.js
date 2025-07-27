@@ -48,7 +48,9 @@ function App() {
     [ headerOverlay, setHeaderOverlay ] = useState( false ),
     [ leaveModal, setLeaveModal ] = useState( false ),
     [ showPayFeesForm, setShowPayFeesForm ] = useState( false ),
-    [ formVisibility, setFormVisibility ] = useState( false )
+    [ formVisibility, setFormVisibility ] = useState( false ),
+    [ deleteBookVisibility, setDeleteBookVisibility ] = useState( false ),
+    [ currentBookId, setCurrentBookId ] = useState( 0 )
 
   /* Global Context Object */
   let globalContextObject = {
@@ -71,6 +73,8 @@ function App() {
     leaveModal, setLeaveModal,
     showPayFeesForm, setShowPayFeesForm,
     formVisibility, setFormVisibility,  // For adding new book
+    deleteBookVisibility, setDeleteBookVisibility,  // For showing delete popup
+    currentBookId, setCurrentBookId,  // holds the clicked book id
   }
 
   return <GLOBALCONTEXT.Provider value={ globalContextObject }>

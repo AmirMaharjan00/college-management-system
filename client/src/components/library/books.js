@@ -1,6 +1,6 @@
 import { useState, useEffect, createContext, useContext, useRef, useMemo } from 'react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faCirclePlus, faList, faGrip, faEllipsisVertical } from '@fortawesome/free-solid-svg-icons';
+import { faCirclePlus, faEllipsisVertical, faXmark } from '@fortawesome/free-solid-svg-icons';
 import { Link } from 'react-router-dom'
 import { ourFetch } from '../functions'
 import { useDate } from '../includes/hooks';
@@ -14,7 +14,7 @@ const BooksContext = createContext()
  */
 export const LibraryBooks = () => {
     const Global = useContext( GLOBALCONTEXT ) ,
-        { formVisibility, setFormVisibility, setOverlay, setHeaderOverlay } = Global,
+        { formVisibility, setFormVisibility, setOverlay, setHeaderOverlay, deleteBookVisibility, setDeleteBookVisibility, currentBookId, setCurrentBookId } = Global,
         [ books, setBooks ] = useState([]),
         [ layout, setLayout ] = useState( 'list' ),
         [ sortBy, setSortBy ] = useState( 'asc' ),
@@ -22,6 +22,9 @@ export const LibraryBooks = () => {
         [ rowsPerPage, setRowsPerPage ] = useState( 10 ),
         [ activePage, setActivePage ] = useState( 1 ),
         [ currentDropdownId, setCurrentDropdownId ] = useState( null ),
+        [ deleteSuccess, setDeleteSuccess ] = useState( false ),
+        [ submitSuccess, setSubmitSuccess ] = useState( false ),
+        [ formMode, setFormMode ] = useState( 'new' ),
         actionButton = useRef(),
         totalPages = new Array( Math.ceil( books.length / rowsPerPage ) ).fill( 0 ),
         filteredBooks = useMemo(() => {
@@ -41,7 +44,9 @@ export const LibraryBooks = () => {
             api: '/all-books',
             callback: booksCallback
         })
-    }, [])
+        setDeleteSuccess( false )
+        setSubmitSuccess( false )
+    }, [ deleteSuccess, submitSuccess, books ])
 
     // Books Callback
     const booksCallback = ( data ) => {
@@ -74,7 +79,12 @@ export const LibraryBooks = () => {
         actionButton,
         totalPages,
         handlePagination,
-        setOverlay, setHeaderOverlay
+        setOverlay, setHeaderOverlay,
+        deleteBookVisibility, setDeleteBookVisibility,
+        currentBookId, setCurrentBookId,
+        deleteSuccess, setDeleteSuccess,
+        formMode, setFormMode,
+        submitSuccess, setSubmitSuccess
     }
 
     return <main className="cmg-main cmg-library" id="cmg-main">
@@ -88,6 +98,7 @@ export const LibraryBooks = () => {
             <Table />
             <Pagination />
             <NewBookForm />
+            <DeleteBook />
         </BooksContext.Provider>
     </main>
 }
@@ -111,7 +122,7 @@ const Breadcrumb = () => {
  */
 const ActionButtons = () => {
     const booksObject = useContext( BooksContext ),
-        { formVisibility, setFormVisibility, setOverlay, setHeaderOverlay } = booksObject
+        { formVisibility, setFormVisibility, setOverlay, setHeaderOverlay, setFormMode } = booksObject
 
     /**
      * Handle add new book
@@ -120,6 +131,7 @@ const ActionButtons = () => {
         setFormVisibility( ! formVisibility )
         setOverlay( true )
         setHeaderOverlay( true )
+        setFormMode( 'new' )
     }
 
     return <div className='action-buttons'>
@@ -172,14 +184,15 @@ const RowAndSearch = () => {
  */
 const Table = () => {
     const booksObject = useContext( BooksContext ),
-        { layout, books, actionButton, currentDropdownId, setCurrentDropdownId } = booksObject,
-        { convertedDate } = useDate()
+        { layout, books, actionButton, currentDropdownId, setCurrentDropdownId, currentBookId, setCurrentBookId } = booksObject,
+        { convertedDate, getDate } = useDate()
 
     /**
      * Handle action button click
      */
     const handleActionButton = ( id ) => {
         setCurrentDropdownId( id === currentDropdownId ? null : id )
+        setCurrentBookId( id )
     }
 
     return <div className='books-table-wrapper' id="books-table-wrapper">
@@ -200,7 +213,7 @@ const Table = () => {
                 {
                     books.map(( books, index ) => {
                         let count = index + 1,
-                            { id, name, author, publication, publisedYear, languae } = books
+                            { id, name, author, publication, publishedYear, language } = books
 
                         return <tr key={ index }>
                             <td>{ `${ count }.` }</td>
@@ -208,8 +221,8 @@ const Table = () => {
                             <td className='username-profile'>{ name }</td>
                             <td>{ author }</td>
                             <td>{ publication }</td>
-                            <td>{ convertedDate( publisedYear ) }</td>
-                            <td>{ languae }</td>
+                            <td>{ convertedDate( publishedYear ) }</td>
+                            <td>{ language }</td>
                             <td className='action-buttons'>
                                 <div className={ `more-button-wrapper${ currentDropdownId === id ? ' active' : '' }` } ref={ actionButton } onClick={() => handleActionButton( id )}>
                                     <button className='more-button'><FontAwesomeIcon icon={ faEllipsisVertical }/></button>
@@ -224,7 +237,7 @@ const Table = () => {
             {
                 books.map(( book, index ) => {
                     let count = index + 1,
-                        { id, name, author, publication, publisedYear, languae } = books
+                        { id, name, author, publication, publishedYear, language } = books
                     return <div key={ index } className='grid'>
                         <div className='head'>
                             <span>{ id }</span>
@@ -249,7 +262,7 @@ const Table = () => {
                                 </div>
                                 <div>
                                     <span className='prefix'>Published Year</span>
-                                    <span className='value'>{ convertedDate( publisedYear ) }</span>
+                                    <span className='value'>{ convertedDate( publishedYear ) }</span>
                                 </div>
                             </div>
                         </div>
@@ -265,7 +278,7 @@ const Table = () => {
  */
 const ActionButtonDropdown = () => {
     const booksObject = useContext( BooksContext ),
-        { setFormVisibility, setOverlay, setHeaderOverlay } = booksObject
+        { setFormVisibility, setOverlay, setHeaderOverlay, setDeleteBookVisibility, setFormMode} = booksObject
 
     /**
      * Handle Edit click
@@ -274,13 +287,16 @@ const ActionButtonDropdown = () => {
         setFormVisibility( true )
         setOverlay( true )
         setHeaderOverlay( true )
+        setFormMode( 'edit' )
     }
 
     /**
      * Handle delete click
      */
     const handleDeleteClick = () => {
-        
+        setDeleteBookVisibility( true )
+        setOverlay( true )
+        setHeaderOverlay( true )
     }
 
     return <div className='action-button-dropdown'>
@@ -315,12 +331,87 @@ export const Pagination = () => {
  */
 export const NewBookForm = () => {
     const booksObject = useContext( BooksContext ),
-        { formVisibility } = booksObject
+        { formVisibility, currentBookId, books, formMode = 'new', setFormVisibility, setSubmitSuccess, setDeleteBookVisibility, setOverlay, setHeaderOverlay, setCurrentBookId } = booksObject,
+        [ formValues, setFormValues ] = useState({
+            name: '',
+            author: '',
+            publication: '',
+            publishedYear: '',
+            language: ''
+        }),
+        { name, author, publication, publishedYear, language } = formValues;
+
+    useEffect(() => {
+        if( formMode === 'edit' ) {
+            let newFormValues = books.reduce(( value, book ) => {
+                let { id } = book
+                if( id === currentBookId ) value = { ...book, publishedYear: adjustDate( book.publishedYear ) }
+                return value
+            }, {})
+            setFormValues( newFormValues )
+        }
+    }, [ formMode, currentBookId ])
+
+    /**
+     * Adjust date
+     */
+    const adjustDate = ( date ) => {
+        if( date === '' ) return ''
+        let newDate = new Date( date )
+        return newDate.toISOString().split('T')[0];
+    }
+
+    /**
+     * Handle Form change
+     */
+    const handleFormChange = ( event ) => {
+        let name = event.target.name,
+            value = event.target.value
+        
+        if( name === 'publishedYear' ) {
+            let newDate = new Date( value )
+            value = newDate.toISOString().slice(0, 19).replace('T', ' ');
+        }
+        setFormValues({
+            ...formValues,
+            [ name ]: value
+        })
+    }
+
+    /**
+     * Handle Form submit
+     */
+    const handleFormSubmit = ( event ) => {
+        event.preventDefault()
+        ourFetch({
+            api: ( formMode === 'new' ) ? '/add-book' : '/edit-book',
+            callback: formSubmitCallback,
+            body: JSON.stringify({
+                ...formValues,
+                publishedYear: new Date( formValues.publishedYear ).toISOString().slice(0, 19).replace('T', ' ')
+            })
+        })
+    }
+
+    /**
+     * Callback
+     */
+    const formSubmitCallback = ( data ) => {
+        let { result, success } = data
+        if( success ) {
+            setSubmitSuccess( true )
+            setDeleteBookVisibility( false )
+            setOverlay( false )
+            setHeaderOverlay( false )
+            setCurrentBookId( 0 )
+            setFormVisibility( false )
+        }
+    }
 
     return formVisibility && <div className='cmg-form-wrapper' id='cmg-form-wrapper'>
-        <form className="new-book-form" method="POST" action="/add-book">
+        <form className="new-book-form" onSubmit={ handleFormSubmit }>
             <div className='form-head'>
-                <h2 className='form-title'>Add New Book</h2>
+                <h2 className='form-title'>{ `${( formMode === 'new' ? 'Add New' : 'Edit' )} Book` }</h2>
                 <p className='form-excerpt'>Please fill in your book details below.</p>
             </div>
             <div className='form-field'>
@@ -328,7 +419,7 @@ export const NewBookForm = () => {
                     Book Title
                     <span className="form-error">*</span>
                 </label>
-                <input type="text" name="name" required />
+                <input type="text" name="name" value={ name } onChange={ handleFormChange } required />
             </div>
 
             <div className='form-field'>
@@ -336,7 +427,7 @@ export const NewBookForm = () => {
                     Author
                     <span className="form-error">*</span>
                 </label>
-                <input type="text" name="author" required />
+                <input type="text" name="author" value={ author } onChange={ handleFormChange } required />
             </div>
 
             <div className='form-field'>
@@ -344,7 +435,7 @@ export const NewBookForm = () => {
                     Publication
                     <span className="form-error">*</span>
                 </label>
-                <input type="text" name="publication" required />
+                <input type="text" name="publication" value={ publication } onChange={ handleFormChange } required />
             </div>
 
             <div className='form-field'>
@@ -352,7 +443,7 @@ export const NewBookForm = () => {
                     Published Year
                     <span className="form-error">*</span>
                 </label>
-                <input type="date" name="publishedYear" required onFocus={(e) => e.target.showPicker && e.target.showPicker()} />
+                <input type="date" name="publishedYear" value={ adjustDate( publishedYear ) } onChange={ handleFormChange } required onFocus={(e) => e.target.showPicker && e.target.showPicker()} />
             </div>
 
             <div className='form-field'>
@@ -360,11 +451,61 @@ export const NewBookForm = () => {
                     Language
                     <span className="form-error">*</span>
                 </label>
-                <input type="text" name="language" required />
+                <input type="text" name="language" value={ language } onChange={ handleFormChange } required />
             </div>
-
 
             <input type="submit" value="Add Book" />
         </form>
+    </div>
+}
+
+/**
+ * Delete Popup
+ */
+const DeleteBook = () => {
+    const booksObject = useContext( BooksContext ),
+        { deleteBookVisibility, setDeleteBookVisibility, setOverlay, setHeaderOverlay, currentBookId, setCurrentBookId, setDeleteSuccess } = booksObject
+
+    /**
+     * Handle yes click
+     */
+    const handleYesClick = () => {
+        ourFetch({
+            api: '/delete-book',
+            callback: handleDeleteBookCallback,
+            body: JSON.stringify({ id: currentBookId })
+        })
+    }
+
+    /**
+     * Delete Book Callback
+     */
+    const handleDeleteBookCallback = ( data ) => {
+        let { success } = data
+        if( success ) {
+            setDeleteBookVisibility( false )
+            setOverlay( false )
+            setHeaderOverlay( false )
+            setCurrentBookId( 0 )
+            setDeleteSuccess( true )
+        }
+    }
+
+    /**
+     * Handle no click
+     */
+    const handleNoClick = () => {
+        setDeleteBookVisibility( false )
+        setOverlay( false )
+        setHeaderOverlay( false )
+    }
+
+    return deleteBookVisibility && <div className='delete-book-wrapper'>
+        <h2 className='title'>Are you sure you want to delete this book ?</h2>
+        <div className='choices'>
+            <button className='choice yes' onClick={ handleYesClick }>Yes</button>
+            <button className='choice no' onClick={ handleNoClick }>No</button>
+        </div>
+        <FontAwesomeIcon icon={ faXmark } className='cancel' onClick={ handleNoClick }/>
     </div>
 }

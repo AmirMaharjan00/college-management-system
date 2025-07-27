@@ -84,7 +84,9 @@ export const Overlay = () => {
         setHeaderOverlay,
         setLeaveModal,
         setShowPayFeesForm,
-        setFormVisibility
+        setFormVisibility,
+        setDeleteBookVisibility,
+        setCurrentBookId
     } = global
 
     const handleOverlay = () => {
@@ -102,6 +104,8 @@ export const Overlay = () => {
         setLeaveModal( false )
         setShowPayFeesForm( false )
         setFormVisibility( false )
+        setDeleteBookVisibility( false )
+        setCurrentBookId( 0 )
     }
 
     return <div className='cmg-overlay' id="cmg-overlay" onClick={ handleOverlay }></div>

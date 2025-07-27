@@ -583,3 +583,47 @@ app.post( '/library-fines-monthwise', ( request, res ) => {
     return res.status( 200 ).json({ result, success: true });
   })
 });
+
+/**
+ * MARK: Delete Books
+ */
+app.post( '/delete-book', ( request, res ) => { 
+  const { id } = request.body
+    selectQuery = `DELETE FROM books WHERE id="${ id }"`
+  con.query( selectQuery, ( error, result ) => {
+    if ( error ) {
+      return res.status( 500 ).json({ success: false, error: "Database selection failed" });
+    }
+    return res.status( 200 ).json({ result: true, success: true });
+  })
+});
+
+/**
+ * MARK: Book Insert Query
+ */
+app.post('/add-book', (req, res) => {
+  console.log( req.body, 'add-book' )
+  const { name, author, publication, publishedYear, language } = req.body
+  const insertQuery = 'INSERT INTO books (name, author, publication, publishedYear, language) VALUES (?, ?, ?, ?, ?)'
+  con.query( insertQuery, [ name, author, publication, publishedYear, language ], ( error, result ) => {
+    if ( error ) {
+      return res.status( 500 ).json({ error: "Database insertion failed" });
+    }
+    return res.status( 200 ).json({ message: "Data inserted successfully!", id: result.insertId, success: true });
+  })
+});
+
+
+/**
+* MARK: update book
+*/
+app.post( '/edit-book', ( request, res ) => {
+  const { id, name, author, publication, publishedYear, language } = request.body,
+    updateQuery = `UPDATE books SET name="${ name }", author="${ author }", publication="${ publication }", publishedYear="${ publishedYear }", language="${ language }" WHERE id=${ id };`
+  con.query( updateQuery, ( error, result ) => {
+    if ( error ) {
+      return res.status( 500 ).json({ success: false, error: "Database Update failed" });
+    }
+    return res.status( 200 ).json({ success: true, result });
+  })
+});

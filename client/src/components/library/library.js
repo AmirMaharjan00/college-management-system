@@ -252,11 +252,11 @@ const LibrayPreview = () => {
         switch( currentTab ) {
             case 'books':
                 listArray = books.reduce(( value, book ) => {
-                    let { name, publication, publisedYear } = book
+                    let { name, publication, publishedYear } = book
                     value = [ ...value, {
                         name,
                         detail: publication,
-                        date: publisedYear
+                        date: publishedYear
                     }]
                     return value
                 }, [])

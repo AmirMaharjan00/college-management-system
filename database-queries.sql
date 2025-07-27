@@ -41,7 +41,7 @@ INSERT INTO `subjects` (`id`, `name`, `course_id`, `semester`, `year`, `register
 
 -- Add Books
 -- MARK: BOOKS
-INSERT INTO `books` (`id`, `name`, `author`, `publication`, `publisedYear`, `languae`) VALUES
+INSERT INTO `books` (`id`, `name`, `author`, `publication`, `publishedYear`, `language`) VALUES
 (NULL, 'Computer Fundamentals & Applications', 'Amir Maharjan', 'Kirtipur Publication', '2025-07-01', 'English'),
 (NULL, 'Introduction to Algorithms', 'Thomas H. Cormen', 'MIT Press', '2020-06-15', 'English'),
 (NULL, 'Data Structures in C', 'Reema Thareja', 'Oxford University Press', '2019-01-10', 'English'),

@@ -48,8 +48,8 @@ con.connect(function(err) {
           booksQuery += "name VARCHAR(255) NOT NULL, "
           booksQuery += "author VARCHAR(255) NOT NULL, "
           booksQuery += "publication VARCHAR(255) NOT NULL, "
-          booksQuery += "publisedYear DATETIME, "
-          booksQuery += "languae VARCHAR(255) NOT NULL "
+          booksQuery += "publishedYear DATETIME, "
+          booksQuery += "language VARCHAR(255) NOT NULL "
           booksQuery += ");"
         con.query( booksQuery, function (err, result) {
           if( err ) throw err
