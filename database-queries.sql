@@ -1,7 +1,7 @@
 -- Add Users
 -- MARK: USERS
 INSERT INTO `users` (`id`, `name`, `email`, `password`, `contact`, `address`, `gender`, `role`, `view`, `courseId`, `semester`, `status`, `profile`, `registered_date`) VALUES 
-(NULL, 'Shahid Smarak College', 'shahidsmarak@gmail.com', 'Shahid@123', '9876543210', 'Nepal', 'male', 'admin', 'light', 0, '0', 'offline', '/images/user.jpg', current_timestamp()),
+(NULL, 'Shahid Smarak College', 'shahidsmarak@gmail.com', 'Shahid@123', '9876543210', 'Nepal', 'male', 'admin', 'light', null, '0', 'offline', '/images/user.jpg', current_timestamp()),
 (NULL, 'Amir Maharjan', 'mhrznamir.am@gmail.com', 'Amir@123', '9808362724', 'Nepal', 'male', 'student', 'light', 5, '8', 'offline', '/images/user.jpg', current_timestamp()),
 (NULL, 'Saroj Maharjan', 'sarojmhzn28@gmail.com', 'Saroj@123', '9876543210', 'Nepal', 'male', 'student', 'light', 5, '8', 'offline', '/images/user.jpg', current_timestamp()),
 (NULL, 'Shrijal Maharjan', 'shrijalmaharjan@gmail.com', 'Shrijal@123', '8765432109', 'Nepal', 'male', 'student', 'light', 5, '8', 'offline', '/images/user.jpg', current_timestamp()),
@@ -78,11 +78,11 @@ INSERT INTO `booksissued` (`id`, `bookId`, `userId`, `issuedDate`, `dueDate`, `r
 (NULL, '10', '12', CURRENT_TIMESTAMP(), '2025-07-18 00:00:00', NULL, 'issued', '0', '1'),
 (NULL, '11', '13', CURRENT_TIMESTAMP(), '2025-07-19 00:00:00', NULL, 'issued', '0', '2'),
 (NULL, '12', '14', CURRENT_TIMESTAMP(), '2025-07-20 00:00:00', NULL, 'returned', '0', '3'),
-(NULL, '13', '15', CURRENT_TIMESTAMP(), '2025-07-21 00:00:00', NULL, 'returned', '0', '1'),
-(NULL, '14', '16', CURRENT_TIMESTAMP(), '2025-07-22 00:00:00', NULL, 'returned', '0', '2'),
-(NULL, '15', '17', CURRENT_TIMESTAMP(), '2025-07-23 00:00:00', NULL, 'issued', '0', '3'),
-(NULL, '16', '18', CURRENT_TIMESTAMP(), '2025-07-24 00:00:00', NULL, 'issued', '0', '1'),
-(NULL, '17', '19', CURRENT_TIMESTAMP(), '2025-07-25 00:00:00', NULL, 'overdue', '50', '2'),
-(NULL, '18', '20', CURRENT_TIMESTAMP(), '2025-07-26 00:00:00', NULL, 'overdue', '50', '3'),
-(NULL, '19', '21', CURRENT_TIMESTAMP(), '2025-07-27 00:00:00', NULL, 'overdue', '50', '1'),
-(NULL, '20', '22', CURRENT_TIMESTAMP(), '2025-07-28 00:00:00', NULL, 'issued', '0', '2');
+(NULL, '13', '5', CURRENT_TIMESTAMP(), '2025-07-21 00:00:00', NULL, 'returned', '0', '1'),
+(NULL, '14', '6', CURRENT_TIMESTAMP(), '2025-07-22 00:00:00', NULL, 'returned', '0', '2'),
+(NULL, '15', '7', CURRENT_TIMESTAMP(), '2025-07-23 00:00:00', NULL, 'issued', '0', '3'),
+(NULL, '16', '8', CURRENT_TIMESTAMP(), '2025-07-24 00:00:00', NULL, 'issued', '0', '1'),
+(NULL, '17', '9', CURRENT_TIMESTAMP(), '2025-07-25 00:00:00', NULL, 'overdue', '50', '2'),
+(NULL, '18', '2', CURRENT_TIMESTAMP(), '2025-07-26 00:00:00', NULL, 'overdue', '50', '3'),
+(NULL, '19', '1', CURRENT_TIMESTAMP(), '2025-07-27 00:00:00', NULL, 'overdue', '50', '1'),
+(NULL, '20', '2', CURRENT_TIMESTAMP(), '2025-07-28 00:00:00', NULL, 'issued', '0', '2');
