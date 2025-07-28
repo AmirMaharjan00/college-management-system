@@ -11,7 +11,7 @@ import { useDate } from '../includes/hooks'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCirclePlus, faChevronRight, faBookOpen, faBook, faRotateLeft, faSackDollar, } from '@fortawesome/free-solid-svg-icons';
 import { GLOBALCONTEXT } from '../../App'
-import { NewBookForm, BooksContext } from './books'
+import { NewBookForm } from './books'
 import {
   Chart as ChartJS,
   CategoryScale,

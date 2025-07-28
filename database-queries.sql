@@ -1,21 +1,3 @@
--- Add Users
--- MARK: USERS
-INSERT INTO `users` (`id`, `name`, `email`, `password`, `contact`, `address`, `gender`, `role`, `view`, `courseId`, `semester`, `status`, `profile`, `registered_date`) VALUES 
-(NULL, 'Shahid Smarak College', 'shahidsmarak@gmail.com', 'Shahid@123', '9876543210', 'Nepal', 'male', 'admin', 'light', null, '0', 'offline', '/images/user.jpg', current_timestamp()),
-(NULL, 'Amir Maharjan', 'mhrznamir.am@gmail.com', 'Amir@123', '9808362724', 'Nepal', 'male', 'student', 'light', 5, '8', 'offline', '/images/user.jpg', current_timestamp()),
-(NULL, 'Saroj Maharjan', 'sarojmhzn28@gmail.com', 'Saroj@123', '9876543210', 'Nepal', 'male', 'student', 'light', 5, '8', 'offline', '/images/user.jpg', current_timestamp()),
-(NULL, 'Shrijal Maharjan', 'shrijalmaharjan@gmail.com', 'Shrijal@123', '8765432109', 'Nepal', 'male', 'student', 'light', 5, '8', 'offline', '/images/user.jpg', current_timestamp()),
-(NULL, 'Swaraj Maharjan', 'swarajmaharjan@gmail.com', 'Swaraj@123', '8765432109', 'Nepal', 'male', 'student', 'light', 5, '8', 'offline', '/images/user.jpg', current_timestamp()),
-(NULL, 'Ajesh Maharjan', 'ajeshmaharjan@gmail.com', 'Ajesh@123', '8765432109', 'Nepal', 'male', 'student', 'light', 5, '8', 'offline', '/images/user.jpg', current_timestamp()),
-(NULL, 'Pracess Maharjan', 'pracessmaharjan@gmail.com', 'Pracess@123', '8765432109', 'Nepal', 'male', 'student', 'light', 5, '8', 'offline', '/images/user.jpg', current_timestamp()),
-(NULL, 'Om Kapali', 'pracessmaharjan@gmail.com', 'Omkapali@123', '8765432109', 'Nepal', 'male', 'student', 'light', 5, '8', 'offline', '/images/user.jpg', current_timestamp()),
-(NULL, 'Nishan Thapa', 'nishanthapa@gmail.com', 'Nishan@123', '8765432109', 'Nepal', 'male', 'student', 'light', 5, '8', 'offline', '/images/user.jpg', current_timestamp()),
-(NULL, 'Suren Bohora', 'surenbohora@gmail.com', 'Suren@123', '8765432109', 'Nepal', 'male', 'student', 'light', 5, '8', 'offline', '/images/user.jpg', current_timestamp()),
-(NULL, 'Nishant Man Singh', 'nishantmansingh@gmail.com', 'Nishant@123', '8765432109', 'Nepal', 'male', 'student', 'light', 5, '8', 'offline', '/images/user.jpg', current_timestamp()),
-(NULL, 'Biswas Oli', 'biswasoli@gmail.com', 'Biswas@123', '8765432109', 'Nepal', 'male', 'student', 'light', 5, '8', 'offline', '/images/user.jpg', current_timestamp()),
-(NULL, 'Ayush Manandhar', 'ayushmanandhar@gmail.com', 'Ayush@123', '8765432109', 'Nepal', 'male', 'student', 'light', 5, '8', 'offline', '/images/user.jpg', current_timestamp()),
-(NULL, 'Bisesh Adhikari', 'biseshadhikari@gmail.com', 'Bisesh@123', '9808362724', 'Nepal', 'male', 'student', 'light', 5, '8', 'offline', '/images/user.jpg', current_timestamp());
-
 -- Add courses
 -- MARK: COURSES
 INSERT INTO `courses` (`id`, `name`, `abbreviation`, `duration`, `semester`, `cost`, `registered_date`) VALUES 
@@ -63,26 +45,44 @@ INSERT INTO `books` (`id`, `name`, `author`, `publication`, `publishedYear`, `la
 (NULL, 'Introduction to Machine Learning', 'Ethem Alpaydin', 'MIT Press', '2022-10-10', 'English'),
 (NULL, 'Computer Architecture', 'John L. Hennessy', 'Morgan Kaufmann', '2023-02-28', 'English');
 
+-- Add Users
+-- MARK: USERS
+INSERT INTO `users` (`id`, `name`, `email`, `password`, `contact`, `address`, `gender`, `role`, `view`, `courseId`, `semester`, `status`, `profile`, `registered_date`) VALUES 
+(NULL, 'Shahid Smarak College', 'shahidsmarak@gmail.com', 'Shahid@123', '9876543210', 'Nepal', 'male', 'admin', 'light', null, '0', 'offline', '/images/user.jpg', current_timestamp()),
+(NULL, 'Amir Maharjan', 'mhrznamir.am@gmail.com', 'Amir@123', '9808362724', 'Nepal', 'male', 'student', 'light', 5, '8', 'offline', '/images/user.jpg', current_timestamp()),
+(NULL, 'Saroj Maharjan', 'sarojmhzn28@gmail.com', 'Saroj@123', '9876543210', 'Nepal', 'male', 'student', 'light', 5, '8', 'offline', '/images/user.jpg', current_timestamp()),
+(NULL, 'Shrijal Maharjan', 'shrijalmaharjan@gmail.com', 'Shrijal@123', '8765432109', 'Nepal', 'male', 'student', 'light', 5, '8', 'offline', '/images/user.jpg', current_timestamp()),
+(NULL, 'Swaraj Maharjan', 'swarajmaharjan@gmail.com', 'Swaraj@123', '8765432109', 'Nepal', 'male', 'student', 'light', 5, '8', 'offline', '/images/user.jpg', current_timestamp()),
+(NULL, 'Ajesh Maharjan', 'ajeshmaharjan@gmail.com', 'Ajesh@123', '8765432109', 'Nepal', 'male', 'student', 'light', 5, '8', 'offline', '/images/user.jpg', current_timestamp()),
+(NULL, 'Pracess Maharjan', 'pracessmaharjan@gmail.com', 'Pracess@123', '8765432109', 'Nepal', 'male', 'student', 'light', 5, '8', 'offline', '/images/user.jpg', current_timestamp()),
+(NULL, 'Om Kapali', 'pracessmaharjan@gmail.com', 'Omkapali@123', '8765432109', 'Nepal', 'male', 'student', 'light', 5, '8', 'offline', '/images/user.jpg', current_timestamp()),
+(NULL, 'Nishan Thapa', 'nishanthapa@gmail.com', 'Nishan@123', '8765432109', 'Nepal', 'male', 'student', 'light', 5, '8', 'offline', '/images/user.jpg', current_timestamp()),
+(NULL, 'Suren Bohora', 'surenbohora@gmail.com', 'Suren@123', '8765432109', 'Nepal', 'male', 'student', 'light', 5, '8', 'offline', '/images/user.jpg', current_timestamp()),
+(NULL, 'Nishant Man Singh', 'nishantmansingh@gmail.com', 'Nishant@123', '8765432109', 'Nepal', 'male', 'student', 'light', 5, '8', 'offline', '/images/user.jpg', current_timestamp()),
+(NULL, 'Biswas Oli', 'biswasoli@gmail.com', 'Biswas@123', '8765432109', 'Nepal', 'male', 'student', 'light', 5, '8', 'offline', '/images/user.jpg', current_timestamp()),
+(NULL, 'Ayush Manandhar', 'ayushmanandhar@gmail.com', 'Ayush@123', '8765432109', 'Nepal', 'male', 'student', 'light', 5, '8', 'offline', '/images/user.jpg', current_timestamp()),
+(NULL, 'Bisesh Adhikari', 'biseshadhikari@gmail.com', 'Bisesh@123', '9808362724', 'Nepal', 'male', 'student', 'light', 5, '8', 'offline', '/images/user.jpg', current_timestamp());
+
 -- Add Books Issued
 -- MARK: BOOKS ISSUED
-INSERT INTO `booksissued` (`id`, `bookId`, `userId`, `issuedDate`, `dueDate`, `returnDate`, `status`, `fineAmount`, `issuedBy`) VALUES
-(NULL, '1', '3', CURRENT_TIMESTAMP(), '2025-07-09 00:00:00', NULL, 'returned', '0', '1'),
-(NULL, '2', '4', CURRENT_TIMESTAMP(), '2025-07-10 00:00:00', NULL, 'overdue', '50', '2'),
-(NULL, '3', '5', CURRENT_TIMESTAMP(), '2025-07-11 00:00:00', NULL, 'issued', '0', '3'),
-(NULL, '4', '6', CURRENT_TIMESTAMP(), '2025-07-12 00:00:00', NULL, 'issued', '0', '1'),
-(NULL, '5', '7', CURRENT_TIMESTAMP(), '2025-07-13 00:00:00', NULL, 'issued', '0', '2'),
-(NULL, '6', '8', CURRENT_TIMESTAMP(), '2025-07-14 00:00:00', NULL, 'returned', '0', '3'),
-(NULL, '7', '9', CURRENT_TIMESTAMP(), '2025-07-15 00:00:00', NULL, 'issued', '0', '1'),
-(NULL, '8', '10', CURRENT_TIMESTAMP(), '2025-07-16 00:00:00', NULL, 'issued', '0', '2'),
-(NULL, '9', '11', CURRENT_TIMESTAMP(), '2025-07-17 00:00:00', NULL, 'overdue', '50', '3'),
-(NULL, '10', '12', CURRENT_TIMESTAMP(), '2025-07-18 00:00:00', NULL, 'issued', '0', '1'),
-(NULL, '11', '13', CURRENT_TIMESTAMP(), '2025-07-19 00:00:00', NULL, 'issued', '0', '2'),
-(NULL, '12', '14', CURRENT_TIMESTAMP(), '2025-07-20 00:00:00', NULL, 'returned', '0', '3'),
-(NULL, '13', '5', CURRENT_TIMESTAMP(), '2025-07-21 00:00:00', NULL, 'returned', '0', '1'),
-(NULL, '14', '6', CURRENT_TIMESTAMP(), '2025-07-22 00:00:00', NULL, 'returned', '0', '2'),
-(NULL, '15', '7', CURRENT_TIMESTAMP(), '2025-07-23 00:00:00', NULL, 'issued', '0', '3'),
-(NULL, '16', '8', CURRENT_TIMESTAMP(), '2025-07-24 00:00:00', NULL, 'issued', '0', '1'),
-(NULL, '17', '9', CURRENT_TIMESTAMP(), '2025-07-25 00:00:00', NULL, 'overdue', '50', '2'),
-(NULL, '18', '2', CURRENT_TIMESTAMP(), '2025-07-26 00:00:00', NULL, 'overdue', '50', '3'),
-(NULL, '19', '1', CURRENT_TIMESTAMP(), '2025-07-27 00:00:00', NULL, 'overdue', '50', '1'),
-(NULL, '20', '2', CURRENT_TIMESTAMP(), '2025-07-28 00:00:00', NULL, 'issued', '0', '2');
+INSERT INTO `booksissued` (`id`, `bookId`, `userId`, `issuedDate`, `dueDate`, `returnDate`, `status`, `fineAmount`, `issuedBy`, `fineStatus`) VALUES
+(NULL, '1', '3', CURRENT_TIMESTAMP(), '2025-07-09 00:00:00', NULL, 'returned', '0', '1', 'N/A'),
+(NULL, '2', '4', CURRENT_TIMESTAMP(), '2025-07-10 00:00:00', NULL, 'overdue', '50', '2', 'unpaid'),
+(NULL, '3', '5', CURRENT_TIMESTAMP(), '2025-07-11 00:00:00', NULL, 'issued', '0', '3', 'N/A'),
+(NULL, '4', '6', CURRENT_TIMESTAMP(), '2025-07-12 00:00:00', NULL, 'issued', '0', '1', 'N/A'),
+(NULL, '5', '7', CURRENT_TIMESTAMP(), '2025-07-13 00:00:00', NULL, 'issued', '0', '2', 'N/A'),
+(NULL, '6', '8', CURRENT_TIMESTAMP(), '2025-07-14 00:00:00', NULL, 'returned', '0', '3', 'N/A'),
+(NULL, '7', '9', CURRENT_TIMESTAMP(), '2025-07-15 00:00:00', NULL, 'issued', '0', '1', 'N/A'),
+(NULL, '8', '10', CURRENT_TIMESTAMP(), '2025-07-16 00:00:00', NULL, 'issued', '0', '2', 'N/A'),
+(NULL, '9', '11', CURRENT_TIMESTAMP(), '2025-07-17 00:00:00', NULL, 'overdue', '50', '3', 'unpaid'),
+(NULL, '10', '12', CURRENT_TIMESTAMP(), '2025-07-18 00:00:00', NULL, 'issued', '0', '1', 'N/A'),
+(NULL, '11', '13', CURRENT_TIMESTAMP(), '2025-07-19 00:00:00', NULL, 'issued', '0', '2', 'N/A'),
+(NULL, '12', '14', CURRENT_TIMESTAMP(), '2025-07-20 00:00:00', NULL, 'returned', '0', '3', 'N/A'),
+(NULL, '13', '5', CURRENT_TIMESTAMP(), '2025-07-21 00:00:00', NULL, 'returned', '0', '1', 'N/A'),
+(NULL, '14', '6', CURRENT_TIMESTAMP(), '2025-07-22 00:00:00', NULL, 'returned', '0', '2', 'N/A'),
+(NULL, '15', '7', CURRENT_TIMESTAMP(), '2025-07-23 00:00:00', NULL, 'issued', '0', '3', 'N/A'),
+(NULL, '16', '8', CURRENT_TIMESTAMP(), '2025-07-24 00:00:00', NULL, 'issued', '0', '1', 'N/A'),
+(NULL, '17', '9', CURRENT_TIMESTAMP(), '2025-07-25 00:00:00', NULL, 'overdue', '50', '2', 'unpaid'),
+(NULL, '18', '2', CURRENT_TIMESTAMP(), '2025-07-26 00:00:00', NULL, 'overdue', '50', '3', 'unpaid'),
+(NULL, '19', '1', CURRENT_TIMESTAMP(), '2025-07-27 00:00:00', NULL, 'overdue', '50', '1', 'unpaid'),
+(NULL, '20', '2', CURRENT_TIMESTAMP(), '2025-07-28 00:00:00', NULL, 'issued', '0', '2', 'N/A');
