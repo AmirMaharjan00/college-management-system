@@ -204,6 +204,7 @@ con.connect(function(err) {
           booksIssuedQuery += "status VARCHAR(255) NOT NULL DEFAULT 'issued', "
           booksIssuedQuery += "fineAmount INT(11) NOT NULL DEFAULT 0, "
           booksIssuedQuery += "issuedBy INT(11), "
+          booksIssuedQuery += "fineStatus VARCHAR(255) NOT NULL DEFAULT 'N/A', "
           booksIssuedQuery += "FOREIGN KEY(bookId) REFERENCES books(id), "
           booksIssuedQuery += "FOREIGN KEY(userId) REFERENCES users(id), "
           booksIssuedQuery += "FOREIGN KEY(issuedBy) REFERENCES users(id) "

@@ -659,7 +659,6 @@ app.post( '/edit-issued-book', ( request, res ) => {
   })
 });
 
-
 /**
  * MARK: Delete issued Book
  */
@@ -671,5 +670,31 @@ app.post( '/delete-issued-book', ( request, res ) => {
       return res.status( 500 ).json({ success: false, error: "Database selection failed" });
     }
     return res.status( 200 ).json({ result: true, success: true });
+  })
+});
+
+/**
+ * MARK: Collect fine
+ */
+app.post( '/overdue-and-unpaid', ( request, res ) => { 
+  const selectQuery = `SELECT booksIssued.*, users.name FROM booksIssued JOIN users ON booksIssued.userId = users.id WHERE booksIssued.status="overdue" AND booksIssued.fineStatus="unpaid"`
+  con.query( selectQuery, ( error, result ) => {
+    if ( error ) {
+      return res.status( 500 ).json({ success: false, error: "Database selection failed" });
+    }
+    return res.status( 200 ).json({ result, success: true });
+  })
+});
+
+/**
+ * MARK: paid fines
+ */
+app.post( '/paid-fines', ( request, res ) => { 
+  const selectQuery = `SELECT booksIssued.*, users.name, users.profile, books.name AS bookName from booksIssued JOIN users ON booksIssued.userId = users.id JOIN books ON booksIssued.bookId = books.id WHERE fineStatus="paid";`
+  con.query( selectQuery, ( error, result ) => {
+    if ( error ) {
+      return res.status( 500 ).json({ success: false, error: "Database selection failed" });
+    }
+    return res.status( 200 ).json({ result, success: true });
   })
 });
