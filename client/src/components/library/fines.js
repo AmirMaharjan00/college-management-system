@@ -1,22 +1,71 @@
-import { useState } from 'react'
-import { Breadcrumb, ActionButtons, RowAndSearch } from "./books"
+import { useState, useMemo, useEffect, useContext } from 'react'
+import { Breadcrumb, ActionButtons, RowAndSearch, Pagination } from "./books"
+import { ourFetch } from '../functions'
+import { GLOBALCONTEXT } from '../../App'
+import { useDate } from '../includes/hooks'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faCirclePlus, faEllipsisVertical, faXmark } from '@fortawesome/free-solid-svg-icons';
+import Select from 'react-select'
+import '../assets/scss/form.scss'
+import { Link } from 'react-router-dom'
+
 /**
  * MARK: Library Fines
  */
 export const LibraryFines = () => {
-    const [ formMode, setFormMode ] = useState( 'new' ),
+    const [ paidFines, setPaidFines ] = useState([]),
+        [ formMode, setFormMode ] = useState( 'new' ),
         [ searched, setSearched ] = useState( '' ),
-        [ rowsPerPage, setRowsPerPage ] = useState( 10 )
+        [ rowsPerPage, setRowsPerPage ] = useState( 10 ),
+        [ activePage, setActivePage ] = useState( 1 ),
+        totalPages = new Array( Math.ceil( paidFines.length / rowsPerPage ) ).fill( 0 ),
+        filteredFines = useMemo(() => {
+            if( searched === '' ) return paidFines.slice( ( activePage - 1 ) * rowsPerPage, ( activePage * rowsPerPage ) );
+            let newList = paidFines.reduce(( val, row ) => {
+                let { bookName, name } = row
+                if( name.toLowerCase().includes( searched ) || bookName.toLowerCase().includes( searched ) ) {
+                    val = [ ...val, row ]
+                }
+                return val
+            }, [])
+            return newList.slice( 0, 10 );
+        }, [ searched, activePage, rowsPerPage ])
+        
+    useEffect(() => {
+        ourFetch({
+            api: '/paid-fines',
+            callback: paidFinesCallback
+        })
+    }, [])
+
+    /**
+     * Fined Users Callback
+     */
+    const paidFinesCallback = ( data ) => {
+        let { result, success } = data
+        if( success ) setPaidFines( result )
+    }
+
+    // Handle Pagination
+    const handlePagination = ( type ) => {
+        if( type === 'next' ) {
+            if( activePage >= totalPages.length ) return
+            setActivePage( activePage + 1 )
+        } else {
+            if( activePage <= 1 ) return
+            setActivePage( activePage - 1 )
+        }
+    }
 
     return <main className="cmg-main cmg-library" id="cmg-main">
         <div className='page-header'>
             <Breadcrumb
-                headLabel = 'Fines'
+                headLabel = 'Collected Fines'
                 currentPageLabel = 'All Fines'
             />
             <ActionButtons 
                 setFormMode = { setFormMode }
-                label = { 'Pay Fine' }
+                label = { 'Collect Fine' }
             />
         </div>
         <RowAndSearch 
@@ -24,5 +73,195 @@ export const LibraryFines = () => {
             setRowsPerPage = { setRowsPerPage }
             setSearched = { setSearched }
         />
+
+        <CollectFine />
+
+        <Table 
+            paidFines = { paidFines }
+        />
+
+        <Pagination
+            books = { filteredFines }
+            totalPages = { totalPages }
+            activePage = { activePage }
+            setActivePage = { setActivePage }
+            handlePagination = { handlePagination }
+        />
+
     </main>
+}
+
+/**
+ * MARK: TABLE
+ */
+const Table = ( props ) => {
+    const  { convertedDate } = useDate(),
+        { paidFines } = props
+
+    return <div className='books-table-wrapper issue-page'>
+        <table className='table-wrapper'>
+            <thead>
+                <tr>
+                    <th>S.No</th>
+                    <th>Book ID</th>
+                    <th>Book Name</th>
+                    <th>Collected From</th>
+                    <th>Fine Amount</th>
+                    <th>Return Date</th>
+                </tr>
+            </thead>
+            <tbody>
+                {
+                    paidFines.map(( book, index ) => {
+                        let count = index + 1,
+                            { id, name, profile, returnDate, bookName, fineAmount } = book
+
+                        return <tr key={ index }>
+                            <td>{ `${ count }.` }</td>
+                            <td>{ id }</td>
+                            <td>{ bookName }</td>
+                            <td>
+                                <div className='issuer-profile'>
+                                    <figure>
+                                        <img src={ profile } alt={ name }/>
+                                    </figure>
+                                    <span className='name'><Link to="/dashboard/user-details" state={{ user: book }}>{ name }</Link></span>
+                                </div>
+                            </td>
+                            <td>{ `Rs. ${ fineAmount }` }</td>
+                            <td>{ convertedDate( returnDate ) }</td>
+                        </tr>
+                    })
+                }
+            </tbody>
+        </table>
+    </div>
+}
+
+/**
+ * MARK: Issue new Books
+ */
+const CollectFine = ( props ) => {
+    const globalObject = useContext( GLOBALCONTEXT ),
+        { formVisibility, setCurrentBookId, setFormVisibility, setDeleteBookVisibility, setOverlay, setHeaderOverlay } = globalObject,
+        { setSubmitSuccess } = props,
+        [ fines, setFines ] = useState([]),
+        [ formValues, setFormValues ] = useState({
+            bookId: '',
+            userId: '',
+            dueDate: ''
+        }),
+        { bookId, dueDate } = formValues,
+        finedUsersOptions = useMemo(() => {
+            return fines.reduce(( val, user ) => {
+                let { id, name, userId } = user
+                val = [ ...val, { value: id, label: `${ name } (${ userId })` }]
+                return val
+            }, [])
+        }, [ fines ])
+
+    useEffect(() => {
+        ourFetch({
+            api: '/overdue-and-unpaid',
+            callback: finedUsersCallback
+        })
+    }, [])
+
+    /**
+     * Fined Users Callback
+     */
+    const finedUsersCallback = ( data ) => {
+        let { result, success } = data
+        if( success ) setFines( result )
+    }
+
+    /**
+     * Handle React select
+     */
+    const handleReactSelectChange = ( option, name ) => {
+        setFormValues({
+            ...formValues,
+            [ name ]: option.value
+        })
+    }
+
+    /**
+     * Handle Form Submit
+     */
+    const handleFormSubmit = ( event ) => {
+        event.preventDefault()
+        let fetchObject = {
+            ...formValues,
+            dueDate: new Date( dueDate ).toISOString().slice(0, 19).replace('T', ' ')
+        }
+        ourFetch({
+            api: '',
+            callback: formSubmitCallback,
+            body: JSON.stringify( fetchObject )
+        })
+    }
+
+    /**
+     * form submit callback
+     */
+    const formSubmitCallback = ( data ) => {
+         let { result, success } = data
+        if( success ) {
+            setSubmitSuccess( true )
+            setDeleteBookVisibility( false )
+            setOverlay( false )
+            setHeaderOverlay( false )
+            setCurrentBookId( 0 )
+            setFormVisibility( false )
+            setFormValues({
+                bookId: '',
+                userId: '',
+                dueDate: ''
+            })
+        }
+    }
+
+    /**
+     * Get current select value
+     */
+    const getCurrentSelectValue = ( arr, val ) => {
+        if( typeof val === 'object' ) return val
+        return arr.reduce(( _thisValue, item ) => {
+            let { value } = item
+            if( value === val ) _thisValue = item
+            return _thisValue
+        }, {})
+    }
+
+    return formVisibility && <div className='cmg-form-wrapper'>
+        <form className="new-book-form" onSubmit={ handleFormSubmit }>
+            <div className='form-head'>
+                <h2 className='form-title'>Collect Fine</h2>
+                <p className='form-excerpt'>Please fill in your book details below.</p>
+            </div>
+            <div className='form-field'>
+                <label className="form-label">
+                    Collect Fine From
+                    <span className="form-error">*</span>
+                </label>
+                <Select
+                    options = { finedUsersOptions }
+                    className = 'react-select'
+                    name = 'bookId'
+                    value = { getCurrentSelectValue( finedUsersOptions, bookId ) }
+                    onChange = {( value ) => handleReactSelectChange( value, 'bookId' ) }
+                />
+            </div>
+
+            <div className='form-field'>
+                <label className='form-label'>
+                    Total Fine Amount
+                    <span className="form-error">*</span>
+                </label>
+                <input type="number" value={ 50 } required disabled />
+            </div>
+
+            <input type="submit" value="Collect Fine" />
+        </form>
+    </div>
 }
