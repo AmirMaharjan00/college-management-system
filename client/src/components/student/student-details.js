@@ -16,10 +16,15 @@ export const StudentDetails = () => {
         { user } = location.state,
         { role } = user,
         { getDate, getTime } = useDate(),
+        [ tab, setTab ] = useState( 'details' ),
         capitalizeRole = role.slice( 0, 1 ).toUpperCase() + role.slice( 1 )
-        // getClass = useCallback(( id ) => {
-        //     return `student-main__tab-item ${( id === location.pathname ? ' active' : '' )}`
-        // }, [ location ])
+
+    /**
+     * Handle Tab click
+     */
+    const handleTabClick = ( current ) => {
+        setTab( current )
+    }
 
     return <main className="cmg-main student-details" id="cmg-main">
         <div className='page-header'>
@@ -116,75 +121,134 @@ export const StudentDetails = () => {
             <div className="student-main">
                 <div className="student-main__tabs">
                     <ul className="student-main__tab-list">
-                        <li className="student-main__tab-item">Student Details</li>
-                        <li className="student-main__tab-item">Time Table</li>
-                        <li className="student-main__tab-item">Leave & Attendance</li>
-                        <li className="student-main__tab-item">Fees</li>
-                        <li className="student-main__tab-item">Exam & Results</li>
-                        <li className="student-main__tab-item">Library</li>
+                        <li className={ `student-main__tab-item ${( tab === 'details' ? 'active' : '' )}` } onClick={() => handleTabClick( 'details' )}>Student Details</li>
+                        <li className={ `student-main__tab-item ${( tab === 'time-table' ? 'active' : '' )}` } onClick={() => handleTabClick( 'time-table' )}>Time Table</li>
+                        <li className={ `student-main__tab-item ${( tab === 'leave' ? 'active' : '' )}` } onClick={() => handleTabClick( 'leave' )}>Leave & Attendance</li>
+                        <li className={ `student-main__tab-item ${( tab === 'fees' ? 'active' : '' )}` } onClick={() => handleTabClick( 'fees' )}>Fees</li>
+                        <li className={ `student-main__tab-item ${( tab === 'exam' ? 'active' : '' )}` } onClick={() => handleTabClick( 'exam' )}>Exam & Results</li>
+                        <li className={ `student-main__tab-item ${( tab === 'library' ? 'active' : '' )}` } onClick={() => handleTabClick( 'library' )}>Library</li>
                     </ul>
                 </div>
-                <div className="student-main__section personal-info">
-                    <h3 className="personal-info__title">Parents Information</h3>
-                    <div className="personal-info__list">
-                        <div className="parent-card">
-                            <div className="parent-card__profile">
-                                <figure className="parent-card__avatar"></figure>
-                                <div className="parent-card__details">
-                                    <h3 className="parent-card__name">Jerald Vicinius</h3>
-                                    <span className="parent-card__role">Father</span>
-                                </div>
-                            </div>
-                            <div className="parent-card__contact">
-                                <p className="parent-card__label">Phone</p>
-                                <span className="parent-card__value">+1 45545 46464</span>
-                            </div>
-                            <div className="parent-card__contact">
-                                <p className="parent-card__label">Email</p>
-                                <span className="parent-card__value">jera@example.com</span>
-                            </div>
-                            <button className="parent-card__reset-pass"></button>
-                        </div>
+                { ( tab === 'details' ) && <Details /> }
+                { ( tab === 'time-table' ) && <TimeTable /> }
+                { ( tab === 'leave' ) && <Leave /> }
+                { ( tab === 'fees' ) && <Fees /> }
+                { ( tab === 'exam' ) && <Exam /> }
+                { ( tab === 'library' ) && <Library /> }
+            </div>
+        </div>
+    </main>
+}
 
-                        <div className="parent-card">
-                            <div className="parent-card__profile">
-                                <figure className="parent-card__avatar"></figure>
-                                <div className="parent-card__details">
-                                    <h3 className="parent-card__name">Jerald Vicinius</h3>
-                                    <span className="parent-card__role">Father</span>
-                                </div>
-                            </div>
-                            <div className="parent-card__contact">
-                                <p className="parent-card__label">Phone</p>
-                                <span className="parent-card__value">+1 45545 46464</span>
-                            </div>
-                            <div className="parent-card__contact">
-                                <p className="parent-card__label">Email</p>
-                                <span className="parent-card__value">jera@example.com</span>
-                            </div>
-                            <button className="parent-card__reset-pass"></button>
+/**
+ * MARK: Student Details
+ */
+const Details = () => {
+    return <>
+        <div className="student-main__section personal-info">
+            <h3 className="personal-info__title">Parents Information</h3>
+            <div className="personal-info__list">
+                <div className="parent-card">
+                    <div className="parent-card__profile">
+                        <figure className="parent-card__avatar"></figure>
+                        <div className="parent-card__details">
+                            <h3 className="parent-card__name">Jerald Vicinius</h3>
+                            <span className="parent-card__role">Father</span>
                         </div>
                     </div>
+                    <div className="parent-card__contact">
+                        <p className="parent-card__label">Phone</p>
+                        <span className="parent-card__value">+1 45545 46464</span>
+                    </div>
+                    <div className="parent-card__contact">
+                        <p className="parent-card__label">Email</p>
+                        <span className="parent-card__value">jera@example.com</span>
+                    </div>
+                    <button className="parent-card__reset-pass"></button>
                 </div>
 
-                <div className="student-main__section info-section">
-                    <div className="info-section__documents">
-                        <h3 className="info-section__title">Documents</h3>
+                <div className="parent-card">
+                    <div className="parent-card__profile">
+                        <figure className="parent-card__avatar"></figure>
+                        <div className="parent-card__details">
+                            <h3 className="parent-card__name">Jerald Vicinius</h3>
+                            <span className="parent-card__role">Father</span>
+                        </div>
                     </div>
-                    <div className="info-section__address">
-                        <h3 className="info-section__title">Address</h3>
-                        <div className="info-section__address-list">
-                            <div className="info-section__address-item">
-                                <span className="info-section__icon icon"></span>
-                                <div className="info-section__address-details">
-                                    <p className="info-section__label">Current Address</p>
-                                    <span className="info-section__value">3495 Red Hawk Road, Buffalo Lake, MN 55314</span>
-                                </div>
-                            </div>
+                    <div className="parent-card__contact">
+                        <p className="parent-card__label">Phone</p>
+                        <span className="parent-card__value">+1 45545 46464</span>
+                    </div>
+                    <div className="parent-card__contact">
+                        <p className="parent-card__label">Email</p>
+                        <span className="parent-card__value">jera@example.com</span>
+                    </div>
+                    <button className="parent-card__reset-pass"></button>
+                </div>
+            </div>
+        </div>
+
+        <div className="student-main__section info-section">
+            <div className="info-section__documents">
+                <h3 className="info-section__title">Documents</h3>
+            </div>
+            <div className="info-section__address">
+                <h3 className="info-section__title">Address</h3>
+                <div className="info-section__address-list">
+                    <div className="info-section__address-item">
+                        <span className="info-section__icon icon"></span>
+                        <div className="info-section__address-details">
+                            <p className="info-section__label">Current Address</p>
+                            <span className="info-section__value">3495 Red Hawk Road, Buffalo Lake, MN 55314</span>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-    </main>
+    </>
+}
+
+/**
+ * MARK: Time Table
+ */
+const TimeTable = () => {
+    return <div>
+        Time table
+    </div>
+}
+
+/**
+ * MARK: leave
+ */
+const Leave = () => {
+    return <div>
+        Leave
+    </div>
+}
+
+/**
+ * MARK: fees
+ */
+const Fees = () => {
+    return <div>
+        Fees
+    </div>
+}
+
+/**
+ * MARK: Exam & Results
+ */
+const Exam = () => {
+    return <div>
+        Exam
+    </div>
+}
+
+/**
+ * MARK: Library
+ */
+const Library = () => {
+    return <div>
+        Library
+    </div>
 }
