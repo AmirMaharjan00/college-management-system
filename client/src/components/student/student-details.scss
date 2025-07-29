@@ -1,169 +1,373 @@
-.personal-info-wrapper {
-  display: flex;
-  gap: 2rem;
-  padding: 2rem;
-  background: #fff;
-
-  .left-panel, .right-panel {
-    background: #f9f9f9;
-    padding: 1.5rem;
-    border-radius: 8px;
-  }
-
-  .left-panel {
-    width: 300px;
-    text-align: center;
-
-    .profile-section {
-      margin-top: 1rem;
-
-      .profile-img {
-        width: 120px;
-        height: 120px;
-        border-radius: 50%;
-        object-fit: cover;
-      }
-
-      .upload-placeholder {
-        border: 2px dashed #ccc;
-        padding: 2rem;
-        cursor: pointer;
-        small {
-          display: block;
-          margin-top: 0.5rem;
-          font-size: 12px;
-          color: #666;
-        }
-      }
-
-      .image-actions {
-        margin-top: 1rem;
-        display: flex;
-        justify-content: center;
-        gap: 1rem;
-
-        .update-btn {
-          cursor: pointer;
-          color: #4f46e5;
-        }
-      }
-    }
-  }
-
-  .right-panel {
-    flex: 1;
-
-    .header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-
-      .edit-btn {
-        background: #4f46e5;
-        color: white;
-        border: none;
-        padding: 0.4rem 1rem;
-        border-radius: 5px;
-        cursor: pointer;
-      }
-    }
-
-    .form-fields {
-      margin-top: 1rem;
-
-      .row {
-        display: flex;
-        gap: 1rem;
-        margin-bottom: 1rem;
-      }
-
-      input {
-        flex: 1;
-        padding: 0.8rem;
-        border: 1px solid #ccc;
-        border-radius: 5px;
-        font-size: 14px;
-        width: 100%;
-      }
-    }
-  }
+.student-body {
+	display: flex;
+	gap: 25px;
+	margin-top: 25px;
 }
 
+.student-sidebar {
+	flex: 0 1 24%;
 
-// address & pass
+	& .student-sidebar-card {
+		padding: 1.5rem;
+		background: #ffffff;
+		border-radius: 12px;
+		box-shadow: 0 1px 4px rgba(0, 0, 0, 0.05);
+	}
 
-.address-info-wrapper {
-  display: flex;
-  flex-direction: column;
-  gap: 2rem;
-  margin-top: 2rem;
+	.student-profile {
+		&__header {
+			display: flex;
+			align-items: center;
+			gap: 1rem;
+		}
 
-  .card {
-    background: #fff;
-    padding: 1.5rem;
-    border-radius: 8px;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+		&__avatar {
+			width: 60px;
+			height: 60px;
+			background-color: #ddd;
+			border-radius: 50%;
+		}
 
-    .card-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
+		&__info {
+			display: flex;
+			flex-direction: column;
+			justify-content: center;
+		}
 
-      h3 {
-        margin: 0;
-        font-size: 18px;
-        color: #111827;
-      }
+		&__status {
+			font-size: 12px;
+			font-weight: 600;
+			padding: 2px 8px;
+			border-radius: 6px;
+			display: inline-block;
+			width: fit-content;
 
-      .edit-btn, .change-btn {
-        background-color: #4f46e5;
-        color: white;
-        border: none;
-        padding: 0.4rem 1rem;
-        border-radius: 6px;
-        cursor: pointer;
-        font-size: 14px;
-      }
-    }
+			&--active {
+				background-color: #d1fae5;
+				color: #065f46;
+			}
 
-    .form-fields {
-      margin-top: 1rem;
+			&--inactive {
+				background-color: #fee2e2;
+				color: #991b1b;
+			}
+		}
 
-      input {
-        width: 100%;
-        padding: 0.75rem;
-        border: 1px solid #d1d5db;
-        border-radius: 6px;
-        margin-bottom: 1rem;
-        font-size: 14px;
-      }
+		&__name {
+			font-size: 16px;
+			font-weight: 600;
+			margin: 4px 0 2px 0;
+		}
 
-      .row {
-        display: flex;
-        gap: 1rem;
+		&__id {
+			font-size: 13px;
+			color: #6b7280;
+		}
 
-        input {
-          flex: 1;
-        }
-      }
+		&__section {
+			margin-top: 1.5rem;
+		}
 
-      .password-input {
-        position: relative;
+		&__section-title {
+			font-size: 15px;
+			font-weight: 600;
+			margin-bottom: 1rem;
+		}
 
-        input {
-          width: 100%;
-          padding-right: 2.5rem;
-        }
+		&__details {
+			display: flex;
+			flex-direction: column;
+			gap: 0.75rem;
+		}
 
-        .toggle-icon {
-          position: absolute;
-          right: 10px;
-          top: 50%;
-          transform: translateY(-50%);
-          cursor: pointer;
-          font-size: 18px;
-        }
-      }
-    }
-  }
+		&__detail {
+			display: flex;
+			justify-content: space-between;
+			font-size: 14px;
+			color: #374151;
+		}
+
+		&__label {
+			color: #111827;
+			font-weight: 500;
+		}
+
+		&__value {
+			color: #6b7280;
+			font-weight: 500;
+		}
+
+		&__button {
+			margin-top: 1.25rem;
+			background-color: #4f46e5;
+			color: white;
+			border: none;
+			padding: 0.6rem 1rem;
+			border-radius: 3px;
+			cursor: pointer;
+			font-size: 12px;
+			width: 100%;
+			text-transform: uppercase;
+
+			&:hover {
+				background-color: #4338ca;
+			}
+		}
+
+		&__contact-info {
+			.student-profile__contact {
+				display: flex;
+				align-items: center;
+				gap: 0.75rem;
+				margin-bottom: 1rem;
+
+				.student-profile__icon {
+					width: 24px;
+					height: 24px;
+					background-color: #cbd5e1;
+					border-radius: 50%;
+				}
+
+				.student-profile__label {
+					font-size: 14px;
+					color: #111827;
+					margin: 0;
+				}
+
+				.student-profile__value {
+					font-size: 13px;
+					font-weight: 500;
+					color: #6b7280;
+				}
+			}
+		}
+	}
+
+	.sibling-info {
+		margin-top: 1.5rem;
+
+		&__card {
+			display: flex;
+			align-items: center;
+			background: #f9fafb;
+			padding: 0.75rem;
+			border-radius: 8px;
+			margin-bottom: 0.75rem;
+			gap: 0.75rem;
+		}
+
+		&__thumb {
+			.sibling-info__avatar {
+				width: 40px;
+				height: 40px;
+				border-radius: 50%;
+				background-color: #d1d5db;
+			}
+		}
+
+		&__details {
+			.sibling-info__name {
+				font-weight: 500;
+				font-size: 14px;
+				margin-bottom: 2px;
+				color: #111827;
+			}
+
+			.sibling-info__class {
+				font-size: 13px;
+				color: #6b7280;
+			}
+		}
+	}
+}
+
+// MARK: MAIN CONTENT
+.student-main {
+	flex: 1;
+
+	&__tabs {
+		margin-bottom: 1.4rem;
+
+		.student-main__tab-list {
+			display: flex;
+			gap: 1.5rem;
+			list-style: none;
+			padding: 0;
+			margin: 0;
+
+			.student-main__tab-item {
+				font-weight: 500;
+				cursor: pointer;
+				padding-bottom: 0.5rem;
+				border-bottom: 2px solid transparent;
+				color: #4b5563;
+				transition: 0.2s ease-in;
+
+				&:hover {
+					color: #4f46e5;
+					border-color: #4f46e5;
+				}
+			}
+		}
+	}
+
+	&__section.personal-info {
+		background-color: #ffffff;
+		padding: 1.5rem;
+		border-radius: 10px;
+		margin-bottom: 25px;
+		box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+	}
+}
+
+// =====================
+// Personal Info Section
+// =====================
+.personal-info {
+	&__title {
+		font-size: 18px;
+		font-weight: 600;
+		margin-bottom: 1rem;
+	}
+
+	&__list {
+		display: flex;
+		flex-direction: column;
+		gap: 1rem;
+	}
+}
+
+.parent-card {
+	display: flex;
+	align-items: flex-start;
+	gap: 1.5rem;
+	padding: 1rem;
+	background-color: #f9fafb;
+	border-radius: 8px;
+	flex-wrap: wrap;
+	position: relative;
+
+	&__profile {
+		display: flex;
+		align-items: center;
+		gap: 1rem;
+		min-width: 200px;
+
+		.parent-card__avatar {
+			width: 50px;
+			height: 50px;
+			background-color: #d1d5db;
+			border-radius: 50%;
+		}
+
+		.parent-card__details {
+			display: flex;
+			flex-direction: column;
+
+			.parent-card__name {
+				font-size: 16px;
+				font-weight: 600;
+				margin: 0;
+			}
+
+			.parent-card__role {
+				font-size: 13px;
+				color: #6b7280;
+			}
+		}
+	}
+
+	&__contact {
+		display: flex;
+		flex-direction: column;
+		justify-content: center;
+		margin-top: 0.5rem;
+
+		.parent-card__label {
+			font-size: 15px;
+			color: #000000;
+			margin-bottom: 2px;
+		}
+
+		.parent-card__value {
+			font-size: 14px;
+			font-weight: 500;
+			color: #6b7280;
+		}
+	}
+
+	&__reset-pass {
+		position: absolute;
+		top: 1rem;
+		right: 1rem;
+		width: 32px;
+		height: 32px;
+		// background: #1f2937 url('/icons/lock.svg') no-repeat center;
+		background-size: 18px;
+		border: none;
+		border-radius: 6px;
+		cursor: pointer;
+
+		&:hover {
+			background-color: #374151;
+		}
+	}
+}
+
+// =====================
+// Info Section (Docs & Address)
+// =====================
+.info-section {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 25px;
+
+	&__documents,
+	&__address {
+		flex: 1;
+		background: #ffffff;
+		padding: 1.5rem;
+		border-radius: 10px;
+		box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+	}
+
+	&__title {
+		font-size: 18px;
+		font-weight: 600;
+		margin-bottom: 1rem;
+	}
+
+	&__address-list {
+		display: flex;
+		flex-direction: column;
+		gap: 1rem;
+	}
+
+	&__address-item {
+		display: flex;
+		align-items: flex-start;
+		gap: 0.75rem;
+
+		.info-section__icon {
+			width: 20px;
+			height: 20px;
+			background-color: #cbd5e1;
+			border-radius: 50%;
+			margin-top: 4px;
+		}
+
+		.info-section__address-details {
+			p {
+				font-size: 14px;
+				font-weight: 500;
+				color: #374151;
+				margin-bottom: 4px;
+			}
+
+			span {
+				font-size: 14px;
+				color: #4b5563;
+			}
+		}
+	}
 }
