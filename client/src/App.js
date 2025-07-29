@@ -49,7 +49,8 @@ function App() {
     [ showPayFeesForm, setShowPayFeesForm ] = useState( false ),
     [ formVisibility, setFormVisibility ] = useState( false ),
     [ deleteBookVisibility, setDeleteBookVisibility ] = useState( false ),
-    [ currentBookId, setCurrentBookId ] = useState( 0 )
+    [ currentBookId, setCurrentBookId ] = useState( 0 ),
+    [ returnBookVisibility, setReturnBookVisibility ] = useState( 0 )
 
   /* Global Context Object */
   let globalContextObject = {
@@ -74,6 +75,7 @@ function App() {
     formVisibility, setFormVisibility,  // For adding new book
     deleteBookVisibility, setDeleteBookVisibility,  // For showing delete popup
     currentBookId, setCurrentBookId,  // holds the clicked book id
+    returnBookVisibility, setReturnBookVisibility,  // Show return book form
   }
 
   return <GLOBALCONTEXT.Provider value={ globalContextObject }>

@@ -642,7 +642,6 @@ app.post('/issue-new-book', (req, res) => {
   })
 });
 
-
 /**
 * MARK: edit issued book
 */
@@ -696,5 +695,33 @@ app.post( '/paid-fines', ( request, res ) => {
       return res.status( 500 ).json({ success: false, error: "Database selection failed" });
     }
     return res.status( 200 ).json({ result, success: true });
+  })
+});
+
+/**
+* MARK: update fine
+*/
+app.post( '/update-fine', ( request, res ) => {
+  const { id } = request.body,
+    updateQuery = `UPDATE booksIssued SET fineStatus="paid" WHERE id=${ id };`
+  con.query( updateQuery, ( error, result ) => {
+    if ( error ) {
+      return res.status( 500 ).json({ success: false, error: "Database Update failed" });
+    }
+    return res.status( 200 ).json({ success: true, result });
+  })
+});
+
+/**
+* MARK: update book return
+*/
+app.post( '/update-book-return', ( request, res ) => {
+  const { id, returnDate } = request.body,
+    updateQuery = `UPDATE booksIssued SET returnDate="${ returnDate }", status="returned" WHERE id="${ id }";`
+  con.query( updateQuery, ( error, result ) => {
+    if ( error ) {
+      return res.status( 500 ).json({ success: false, error: "Database Update failed" });
+    }
+    return res.status( 200 ).json({ success: true, result });
   })
 });

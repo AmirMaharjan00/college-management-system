@@ -291,8 +291,25 @@
             }
 
             select {
+                appearance: none;        /* Remove default arrow (some browsers) */
+                -webkit-appearance: none;
+                -moz-appearance: none;
+                background-color: #fff;
+                border: 1px solid #ccc;
+                padding: 10px;
+                border-radius: 5px;
+                background-image: url('data:image/svg+xml;utf8,<svg fill="gray" height="20" viewBox="0 0 24 24" width="20" xmlns="http://www.w3.org/2000/svg"><path d="M7 10l5 5 5-5z"/></svg>');
+                background-repeat: no-repeat;
+                background-position: right 10px center;
+                background-size: 20px;
                 width: 60px;
                 background-position: right 1px center;
+            }
+
+            select:focus {
+                outline: none;
+                border-color: #007BFF;
+                background-color: #fff;
             }
         }
 
@@ -606,27 +623,6 @@
                 font-weight: 700;
             }
         }
-    }
-
-    select {
-        appearance: none;        /* Remove default arrow (some browsers) */
-        -webkit-appearance: none;
-        -moz-appearance: none;
-        background-color: #fff;
-        border: 1px solid #ccc;
-        padding: 10px;
-        border-radius: 5px;
-        background-image: url('data:image/svg+xml;utf8,<svg fill="gray" height="20" viewBox="0 0 24 24" width="20" xmlns="http://www.w3.org/2000/svg"><path d="M7 10l5 5 5-5z"/></svg>');
-        background-repeat: no-repeat;
-        background-position: right 10px center;
-        background-size: 20px;
-        width: 200px;
-    }
-
-    select:focus {
-        outline: none;
-        border-color: #007BFF;
-        background-color: #fff;
     }
 
     /*

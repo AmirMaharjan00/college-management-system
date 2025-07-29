@@ -1,5 +1,5 @@
 import { useState, useMemo, useEffect, useContext } from 'react'
-import { Breadcrumb, ActionButtons, RowAndSearch, Pagination } from "./books"
+import { Breadcrumb, ActionButton, RowAndSearch, Pagination } from "./books"
 import { ourFetch } from '../functions'
 import { GLOBALCONTEXT } from '../../App'
 import { useDate } from '../includes/hooks'
@@ -18,6 +18,7 @@ export const LibraryFines = () => {
         [ searched, setSearched ] = useState( '' ),
         [ rowsPerPage, setRowsPerPage ] = useState( 10 ),
         [ activePage, setActivePage ] = useState( 1 ),
+        [ submitSuccess, setSubmitSuccess ] = useState( false ),
         totalPages = new Array( Math.ceil( paidFines.length / rowsPerPage ) ).fill( 0 ),
         filteredFines = useMemo(() => {
             if( searched === '' ) return paidFines.slice( ( activePage - 1 ) * rowsPerPage, ( activePage * rowsPerPage ) );
@@ -29,14 +30,14 @@ export const LibraryFines = () => {
                 return val
             }, [])
             return newList.slice( 0, 10 );
-        }, [ searched, activePage, rowsPerPage ])
+        }, [ searched, activePage, rowsPerPage, paidFines ])
         
     useEffect(() => {
         ourFetch({
             api: '/paid-fines',
             callback: paidFinesCallback
         })
-    }, [])
+    }, [ submitSuccess ])
 
     /**
      * Fined Users Callback
@@ -58,26 +59,37 @@ export const LibraryFines = () => {
     }
 
     return <main className="cmg-main cmg-library" id="cmg-main">
+
         <div className='page-header'>
+
             <Breadcrumb
                 headLabel = 'Collected Fines'
                 currentPageLabel = 'All Fines'
             />
-            <ActionButtons 
-                setFormMode = { setFormMode }
-                label = { 'Collect Fine' }
-            />
+
+            <div className='action-buttons'>
+
+                <ActionButton 
+                    setFormMode = { setFormMode }
+                    label = { 'Collect Fine' }
+                />
+
+            </div>
+            
         </div>
+
         <RowAndSearch 
             rowsPerPage = { rowsPerPage }
             setRowsPerPage = { setRowsPerPage }
             setSearched = { setSearched }
         />
 
-        <CollectFine />
+        <CollectFine
+            setSubmitSuccess = { setSubmitSuccess }
+        />
 
         <Table 
-            paidFines = { paidFines }
+            paidFines = { filteredFines }
         />
 
         <Pagination
@@ -114,7 +126,7 @@ const Table = ( props ) => {
                 {
                     paidFines.map(( book, index ) => {
                         let count = index + 1,
-                            { id, name, profile, returnDate, bookName, fineAmount } = book
+                            { id, name, profile, returnDate, bookName, fineAmount, userId } = book
 
                         return <tr key={ index }>
                             <td>{ `${ count }.` }</td>
@@ -125,7 +137,7 @@ const Table = ( props ) => {
                                     <figure>
                                         <img src={ profile } alt={ name }/>
                                     </figure>
-                                    <span className='name'><Link to="/dashboard/user-details" state={{ user: book }}>{ name }</Link></span>
+                                    <span className='name'><Link to="/dashboard/user-details" state={{ user: book }}>{ `${ name } ( ${ userId } )` }</Link></span>
                                 </div>
                             </td>
                             <td>{ `Rs. ${ fineAmount }` }</td>
@@ -146,15 +158,10 @@ const CollectFine = ( props ) => {
         { formVisibility, setCurrentBookId, setFormVisibility, setDeleteBookVisibility, setOverlay, setHeaderOverlay } = globalObject,
         { setSubmitSuccess } = props,
         [ fines, setFines ] = useState([]),
-        [ formValues, setFormValues ] = useState({
-            bookId: '',
-            userId: '',
-            dueDate: ''
-        }),
-        { bookId, dueDate } = formValues,
+        [ fineId, setFineId ] = useState( ''),
         finedUsersOptions = useMemo(() => {
-            return fines.reduce(( val, user ) => {
-                let { id, name, userId } = user
+            return fines.reduce(( val, fine ) => {
+                let { id, name, userId } = fine
                 val = [ ...val, { value: id, label: `${ name } (${ userId })` }]
                 return val
             }, [])
@@ -178,11 +185,8 @@ const CollectFine = ( props ) => {
     /**
      * Handle React select
      */
-    const handleReactSelectChange = ( option, name ) => {
-        setFormValues({
-            ...formValues,
-            [ name ]: option.value
-        })
+    const handleReactSelectChange = ( option ) => {
+        setFineId( option.value )
     }
 
     /**
@@ -190,14 +194,10 @@ const CollectFine = ( props ) => {
      */
     const handleFormSubmit = ( event ) => {
         event.preventDefault()
-        let fetchObject = {
-            ...formValues,
-            dueDate: new Date( dueDate ).toISOString().slice(0, 19).replace('T', ' ')
-        }
         ourFetch({
-            api: '',
+            api: '/update-fine',
             callback: formSubmitCallback,
-            body: JSON.stringify( fetchObject )
+            body: JSON.stringify({ id: fineId })
         })
     }
 
@@ -213,11 +213,6 @@ const CollectFine = ( props ) => {
             setHeaderOverlay( false )
             setCurrentBookId( 0 )
             setFormVisibility( false )
-            setFormValues({
-                bookId: '',
-                userId: '',
-                dueDate: ''
-            })
         }
     }
 
@@ -248,8 +243,8 @@ const CollectFine = ( props ) => {
                     options = { finedUsersOptions }
                     className = 'react-select'
                     name = 'bookId'
-                    value = { getCurrentSelectValue( finedUsersOptions, bookId ) }
-                    onChange = {( value ) => handleReactSelectChange( value, 'bookId' ) }
+                    value = { getCurrentSelectValue( finedUsersOptions, fineId ) }
+                    onChange = { handleReactSelectChange }
                 />
             </div>
 

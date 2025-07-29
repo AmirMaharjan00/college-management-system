@@ -1,5 +1,5 @@
 import { useState, useRef, useMemo, useEffect, useContext } from 'react'
-import { Breadcrumb, ActionButtons, RowAndSearch, ActionButtonDropdown, Pagination, DeleteBook } from "./books"
+import { Breadcrumb, ActionButton, RowAndSearch, ActionButtonDropdown, Pagination, DeleteBook } from "./books"
 import { ourFetch, adjustDate } from '../functions'
 import { GLOBALCONTEXT } from '../../App'
 import { useDate } from '../includes/hooks'
@@ -49,10 +49,7 @@ export const LibraryIssued = () => {
     // Books Callback
     const booksCallback = ( data ) => {
         let { result, success = false } = data
-        if( success ) {
-            console.log( result )
-            setBooks( result )
-        }
+        if( success ) setBooks( result )
     }
 
     // Handle Pagination
@@ -75,10 +72,14 @@ export const LibraryIssued = () => {
                     currentPageLabel = 'All Issued Books'
                 />
 
-                <ActionButtons 
-                    setFormMode = { setFormMode }
-                    label = { 'Issue New Book' }
-                />
+                <div className='action-buttons'>
+
+                    <ActionButton 
+                        setFormMode = { setFormMode }
+                        label = { 'Issue New Book' }
+                    />
+
+                </div>
 
             </div>
 
@@ -108,7 +109,12 @@ export const LibraryIssued = () => {
             <NewIssueBooks 
                 formMode = { formMode }
                 setSubmitSuccess = { setSubmitSuccess }
-                currentDropdownId = { currentDropdownId }
+                items = { filteredBooks }
+            />
+
+            <ReturnBook 
+                formMode = { formMode }
+                setSubmitSuccess = { setSubmitSuccess }
                 items = { filteredBooks }
             />
             
@@ -124,7 +130,7 @@ export const LibraryIssued = () => {
  */
 const Table = ( props ) => {
     const Global = useContext( GLOBALCONTEXT ),
-        { setCurrentBookId } = Global, 
+        { setCurrentBookId, setReturnBookVisibility, setOverlay, setHeaderOverlay } = Global, 
         { layout = 'list', items, actionButton, currentDropdownId, setCurrentDropdownId, setFormMode } = props,
         { convertedDate } = useDate()
 
@@ -133,6 +139,16 @@ const Table = ( props ) => {
      */
     const handleActionButton = ( id ) => {
         setCurrentDropdownId( id === currentDropdownId ? null : id )
+        setCurrentBookId( id )
+    }
+
+    /**
+     * Handle Return Book
+     */
+    const handleReturnBook = ( id ) => {
+        setReturnBookVisibility( true )
+        setOverlay( true )
+        setHeaderOverlay( true )
         setCurrentBookId( id )
     }
 
@@ -156,7 +172,7 @@ const Table = ( props ) => {
                 {
                     items.map(( book, index ) => {
                         let count = index + 1,
-                            { id, bookName, borrowerName, issuerName, issuedDate, dueDate, status, returnDate, issuerProfile, borrowerProfile } = book
+                            { id, userId, bookName, borrowerName, issuerName, issuedDate, dueDate, status, returnDate, issuerProfile, borrowerProfile } = book
 
                         return <tr key={ index }>
                             <td>{ `${ count }.` }</td>
@@ -175,19 +191,21 @@ const Table = ( props ) => {
                                     <figure>
                                         <img src={ borrowerProfile } alt={ borrowerName }/>
                                     </figure>
-                                    <span className='name'><Link to="/dashboard/user-details" state={{ user: book }}>{ borrowerName }</Link></span>
+                                    <span className='name'><Link to="/dashboard/user-details" state={{ user: book }}>{ `${ borrowerName } ( ${ userId } )` }</Link></span>
                                 </div>
                             </td>
                             <td>{ convertedDate( issuedDate ) }</td>
                             <td>
-                                <span class={ `status ${ status }` }>{ status.slice( 0, 1 ).toUpperCase() + status.slice( 1 ) }</span>
+                                <span className={ `status ${ status }` }>{ status.slice( 0, 1 ).toUpperCase() + status.slice( 1 ) }</span>
                             </td>
                             <td>{ convertedDate( dueDate ) }</td>
                             <td>{ ! returnDate ? '-' : convertedDate( returnDate ) }</td>
                             <td className='action-buttons'>
                                 <div className={ `more-button-wrapper${ currentDropdownId === id ? ' active' : '' }` } ref={ actionButton } onClick={() => handleActionButton( id )}>
                                     <button className='more-button'><FontAwesomeIcon icon={ faEllipsisVertical }/></button>
-                                    { currentDropdownId === id && <ActionButtonDropdown setFormMode = { setFormMode } /> }
+                                    { currentDropdownId === id && <ActionButtonDropdown setFormMode = { setFormMode }>
+                                        <button onClick={() => handleReturnBook( id )}>Return Book</button>
+                                    </ActionButtonDropdown> }
                                 </div>
                             </td>
                         </tr>
@@ -205,7 +223,9 @@ const Table = ( props ) => {
                             <div>
                                 <div className={ `more-button-wrapper${ currentDropdownId === id ? ' active' : '' }` } ref={ actionButton }>
                                     <button className='more-button' onClick={() => handleActionButton( id )}><FontAwesomeIcon icon={ faEllipsisVertical }/></button>
-                                    { currentDropdownId === id && <ActionButtonDropdown setFormMode = { setFormMode } /> }
+                                    { currentDropdownId === id && <ActionButtonDropdown setFormMode = { setFormMode }>
+                                        <button onClick={() => handleReturnBook( id )}>Return Book</button>
+                                    </ActionButtonDropdown> }
                                 </div>
 
                             </div>
@@ -240,7 +260,7 @@ const Table = ( props ) => {
 const NewIssueBooks = ( props ) => {
     const globalObject = useContext( GLOBALCONTEXT ),
         { formVisibility, currentBookId, setCurrentBookId, setFormVisibility, setDeleteBookVisibility, setOverlay, setHeaderOverlay } = globalObject,
-        { formMode = 'new', setSubmitSuccess, currentDropdownId, items } = props,
+        { formMode = 'new', setSubmitSuccess, items } = props,
         [ books, setBooks ] = useState([]),
         [ users, setUsers ] = useState([]),
         [ formValues, setFormValues ] = useState({
@@ -421,6 +441,86 @@ const NewIssueBooks = ( props ) => {
             </div>
 
             <input type="submit" value="Issue Book" />
+        </form>
+    </div>
+}
+
+/**
+ * MARK: RETURN BOOK
+ */
+const ReturnBook = ( props ) => {
+    const Global = useContext( GLOBALCONTEXT ),
+        { returnBookVisibility, currentBookId, setOverlay, setHeaderOverlay, setCurrentBookId, setFormVisibility, setReturnBookVisibility } = Global,
+        { items, setSubmitSuccess } = props,
+        [ currentValue, setCurrentValue ] = useState({}),
+        { bookName = '', borrowerName = '', bookId, userId, id } = currentValue
+
+    useEffect(() => {
+        let val = items.reduce(( value, item ) => {
+            let { id } = item
+            if( id === currentBookId ) value = item
+            return value
+        }, {})
+        setCurrentValue( val )
+    }, [ items, currentBookId ])
+
+    /**
+     * Handle submit
+     */
+    const handleSubmit = ( event ) => {
+        event.preventDefault()
+        ourFetch({
+            api: '/update-book-return',
+            callback: returnBookCallback,
+            body: JSON.stringify({
+                id,
+                returnDate: new Date().toISOString().slice( 0, 19 ).replace( 'T', ' ' )
+            })
+        })
+    }
+
+    /**
+     * Return book callback
+     */
+    const returnBookCallback = ( data ) => {
+        let { result, success } = data
+        if( success ) {
+            setSubmitSuccess( true )
+            setOverlay( false )
+            setHeaderOverlay( false )
+            setCurrentBookId( 0 )
+            setFormVisibility( false )
+            setReturnBookVisibility( false )
+        }
+    }
+    
+    return returnBookVisibility && <div className='cmg-form-wrapper'>
+        <form className='return-book-form' onSubmit={ handleSubmit }>
+            <div className='form-head'>
+                <h2 className='form-title'>Return Book</h2>
+                <p className='form-excerpt'>Please fill in your book details below.</p>
+            </div>
+            <div className='form-field'>
+                <label className="form-label">
+                    Book Name
+                    <span className="form-error">*</span>
+                </label>
+                <select value={ bookId }>
+                    <option value={ bookId }>{ bookName }</option>
+                </select>
+            </div>
+
+            <div className='form-field'>
+                <label className='form-label'>
+                    Issued To
+                    <span className="form-error">*</span>
+                </label>
+                <select value={ userId }>
+                    <option value={ userId }>{ borrowerName }</option>
+                </select>
+            </div>
+
+            <input type="submit" value="Return Book" />
         </form>
     </div>
 }

@@ -36,6 +36,10 @@ export const LibraryBooks = () => {
             }, [])
             return newStudentsList.slice( 0, 10 );
         }, [ searched, books, activePage, rowsPerPage ])
+
+    // useEffect(() => {
+    //     console.log( formMode )
+    // }, [ formMode ])
     
     useEffect(() => {
         ourFetch({
@@ -89,9 +93,13 @@ export const LibraryBooks = () => {
 
                 <Breadcrumb />
 
-                <ActionButtons
-                    setFormMode = { setFormMode }
-                />
+                <div className='action-buttons'>
+
+                    <ActionButton
+                        setFormMode = { setFormMode }
+                    />
+
+                </div>
 
             </div>
 
@@ -107,6 +115,7 @@ export const LibraryBooks = () => {
                 actionButton = { actionButton }
                 currentDropdownId = { currentDropdownId }
                 setCurrentDropdownId = { setCurrentDropdownId }
+                setFormMode = { setFormMode }
             />
 
             <Pagination
@@ -149,7 +158,7 @@ export const Breadcrumb = ( props ) => {
 /**
  * MARK: ACTION BUTTONS
  */
-export const ActionButtons = ( props ) => {
+export const ActionButton = ( props ) => {
     const Global = useContext( GLOBALCONTEXT ),
         { formVisibility, setFormVisibility, setOverlay, setHeaderOverlay } = Global,
         { setFormMode, label = 'New Book' } = props
@@ -164,12 +173,10 @@ export const ActionButtons = ( props ) => {
         setFormMode( 'new' )
     }
 
-    return <div className='action-buttons'>
-        <button className='action-btn add' onClick={ handleNewBook }>
+    return <button className='action-btn add' onClick={ handleNewBook }>
             <FontAwesomeIcon icon={ faCirclePlus }/>
             <span className='label'>{ label }</span>
         </button>
-    </div>
 }
 
 /**
@@ -213,8 +220,10 @@ export const RowAndSearch = ( props ) => {
  */
 export const Table = ( props ) => {
     const Global = useContext( GLOBALCONTEXT ),
+        booksObject = useContext( BooksContext ),
         { setCurrentBookId } = Global, 
-        { layout, items, actionButton, currentDropdownId, setCurrentDropdownId, setFormMode } = props,
+        { layout, items, actionButton, currentDropdownId, setCurrentDropdownId } = props,
+        { setFormMode } = booksObject,
         { convertedDate } = useDate()
 
     /**
@@ -256,7 +265,7 @@ export const Table = ( props ) => {
                             <td className='action-buttons'>
                                 <div className={ `more-button-wrapper${ currentDropdownId === id ? ' active' : '' }` } ref={ actionButton } onClick={() => handleActionButton( id )}>
                                     <button className='more-button'><FontAwesomeIcon icon={ faEllipsisVertical }/></button>
-                                    { currentDropdownId === id && <ActionButtonDropdown setFormMode = { setFormMode }  /> }
+                                    { currentDropdownId === id && <ActionButtonDropdown setFormMode = { setFormMode } /> }
                                 </div>
                             </td>
                         </tr>
@@ -274,7 +283,7 @@ export const Table = ( props ) => {
                             <div>
                                 <div className={ `more-button-wrapper${ currentDropdownId === id ? ' active' : '' }` } ref={ actionButton }>
                                     <button className='more-button' onClick={() => handleActionButton( id )}><FontAwesomeIcon icon={ faEllipsisVertical }/></button>
-                                    { currentDropdownId === id && <ActionButtonDropdown setFormMode = { setFormMode }  /> }
+                                    { currentDropdownId === id && <ActionButtonDropdown setFormMode = { setFormMode } /> }
                                 </div>
 
                             </div>
@@ -309,7 +318,7 @@ export const Table = ( props ) => {
 export const ActionButtonDropdown = ( props ) => {
     const Global = useContext( GLOBALCONTEXT ),
         { setFormVisibility, setOverlay, setHeaderOverlay, setDeleteBookVisibility } = Global,
-        { setFormMode } = props
+        { setFormMode, children } = props
 
     /**
      * Handle Edit click
@@ -333,6 +342,7 @@ export const ActionButtonDropdown = ( props ) => {
     return <div className='action-button-dropdown'>
         <button onClick={ handleEditClick }>Edit</button>
         <button onClick={ handleDeleteClick }>Delete</button>
+        { children }
     </div>
 }
 
@@ -342,7 +352,7 @@ export const ActionButtonDropdown = ( props ) => {
 export const Pagination = ( props ) => {
     const { books, totalPages, activePage, setActivePage, handlePagination } = props
 
-    return books.length ? <div className='pagination-wrapper'>
+    return books.length > 9 ? <div className='pagination-wrapper'>
         <button className='pagination-button previous' onClick={() => handlePagination( 'previous' ) }>Prev</button>
         <div className='pages'>
             {
@@ -353,7 +363,7 @@ export const Pagination = ( props ) => {
             }
         </div>
         <button className='pagination-button next' onClick={() => handlePagination( 'next' )}>Next</button>
-    </div> : <div className='no-data'>No data found</div>
+    </div> : ''
 }
 
 /**
@@ -363,7 +373,7 @@ export const NewBookForm = ( props ) => {
     const globalObject = useContext( GLOBALCONTEXT ),
         booksObject = useContext( BooksContext ),
         { formVisibility, currentBookId, setCurrentBookId, setFormVisibility, setDeleteBookVisibility, setOverlay, setHeaderOverlay } = globalObject,
-        { formMode = 'new', setSubmitSuccess } = props,
+        { formMode, setSubmitSuccess } = props,
         [ formValues, setFormValues ] = useState({
             name: '',
             author: '',
@@ -375,7 +385,7 @@ export const NewBookForm = ( props ) => {
 
 
     useEffect(() => {
-        if( formMode === 'edit' ) {
+        if( currentBookId ) {
             let newFormValues = booksObject.books.reduce(( value, book ) => {
                 let { id } = book
                 if( id === currentBookId ) value = { ...book, publishedYear: adjustDate( book.publishedYear ) }

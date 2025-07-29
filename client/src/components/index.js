@@ -86,7 +86,8 @@ export const Overlay = () => {
         setShowPayFeesForm,
         setFormVisibility,
         setDeleteBookVisibility,
-        setCurrentBookId
+        setCurrentBookId,
+        setReturnBookVisibility
     } = global
 
     const handleOverlay = () => {
@@ -105,6 +106,7 @@ export const Overlay = () => {
         setShowPayFeesForm( false )
         setFormVisibility( false )
         setDeleteBookVisibility( false )
+        setReturnBookVisibility( false )
         setCurrentBookId( 0 )
     }
 
