@@ -385,7 +385,7 @@ const User = () => {
         setIsUserLogoutDropdownActive,
         setHeaderOverlay
     } = Global
-    const { role, name, email } = loggedInUser
+    const { role, name, email, profile } = loggedInUser
 
     /* Handle Click */
     const handleClick = () => {
@@ -425,7 +425,9 @@ const User = () => {
     }
 
     return <div className="action user-wrapper" id='cmg-head-user-wrapper'>
-        <span className="cmg-active-dropdown-item" onClick={ handleClick }><FontAwesomeIcon icon={ faUser } /></span>
+        <figure className="cmg-active-dropdown-item profile" onClick={ handleClick }>
+            <img src={ profile }/>
+        </figure>
         { isUserLogoutDropdownActive && <ul className='user-dropdown'>
             <li className='head-wrapper cmg-list-item'>
                 <h2 className='head name'>{ name }</h2>

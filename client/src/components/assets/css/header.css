@@ -24,6 +24,18 @@ MARK: USER
     position: relative;
 }
 
+#cmg-head-user-wrapper .cmg-active-dropdown-item.profile {
+    height: 40px;
+    width: 40px;
+    padding: 0;
+}
+
+#cmg-head-user-wrapper .cmg-active-dropdown-item.profile img {
+    height: 100%;
+    width: 100%;
+    object-fit: cover;
+}
+
 #cmg-head-user-wrapper .user-dropdown {
     position: absolute;
     top: 55px;
