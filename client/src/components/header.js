@@ -25,11 +25,16 @@ export const HeaderContext = createContext()
  */
 export const Header = () => {
     const Global = useContext( GLOBALCONTEXT )
-    const { newRegister, isNotificationShown, notificationId, chatId, showChat, headerOverlay } = Global
+    const { newRegister, isNotificationShown, notificationId, chatId, showChat, headerOverlay, setCanvasOpen, canvasOpen } = Global
     const [ registerNew, setRegisterNew ] = useState( 'student' )
 
     const contextObject = {
         registerNew, setRegisterNew
+    }
+
+    // Handle Canvas click
+    const handleCanvasClick = () => {
+        setCanvasOpen( ! canvasOpen )
     }
 
     return <HeaderContext.Provider value={ contextObject }>
@@ -43,7 +48,7 @@ export const Header = () => {
                     </figure>
                     <h2 className="header-title">Shahid Smarak College</h2>
                 </Link>
-                <button className="canvas-icon"><FontAwesomeIcon icon={ faBars } /></button>
+                <button className="canvas-icon" onClick={ handleCanvasClick }><FontAwesomeIcon icon={ faBars } /></button>
             </div>
             <div className="cmg-search-actions-wrapper">
                 <form action="#" id="header-search">

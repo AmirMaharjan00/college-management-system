@@ -1,4 +1,4 @@
-import { useContext, useEffect } from 'react'
+import { useContext, useEffect, useMemo } from 'react'
 import { useNavigate, Outlet } from 'react-router-dom'
 import { Header } from './header'
 import { Sidebar } from './sidebar'
@@ -8,13 +8,10 @@ import { ourFetch } from './functions'
 export const Index = () => {
     const global = useContext( GLOBALCONTEXT )
     const navigate = useNavigate()
-    const { 
-        setIsloggedIn,
-        setLoggedInUser,
-        overlay,
-        setIsDarkMode,
-        isDarkMode,
-    } = global
+    const { setIsloggedIn, setLoggedInUser, overlay, setIsDarkMode, isDarkMode, canvasOpen } = global,
+    bodyClass = useMemo(() => {
+        return `cmg-body${( canvasOpen ? ' open' : '' )}`
+    }, [ canvasOpen ])
 
     useEffect(() => {
         ourFetch({
@@ -55,7 +52,7 @@ export const Index = () => {
         { overlay && <Overlay /> }
         <div className={ wrapperClass } id="cmg-wrapper">
             <Header />
-            <div className="cmg-body" id="cmg-body">
+            <div className={ bodyClass } id="cmg-body">
                 <Outlet />
                 <Sidebar />
             </div>

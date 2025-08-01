@@ -75,3 +75,33 @@
     color: var(--default);
     transform: scale(1.1);
 }
+
+#cmg-body.open {
+    #cmg-sidebar {
+        width: 50px;
+    
+        .cmg-menu-item {
+            .submenu-heading {
+                display: none;
+            }
+    
+            .cmg-submenu {
+                border-bottom: 1px solid black;
+                
+    
+                .cmg-list-item {
+    
+                    .cmg-icon-wrapper {
+                        .cmg-icon {
+    
+                        }
+    
+                        .cmg-icon-label {
+                            display: none;
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

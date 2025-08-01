@@ -1,8 +1,9 @@
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faTableList, faGraduationCap, faUserTie, faUsers, faBookAtlas, faBookOpen, faCoins, faSackDollar, faLinesLeaning, faTimeline, faReceipt } from '@fortawesome/free-solid-svg-icons';
-import { useState, useContext, useCallback } from 'react'
+import { faTableList, faGraduationCap, faUserTie, faUsers, faBookAtlas, faBookOpen, faCoins, faSackDollar, faLinesLeaning, faTimeline, faReceipt, faTable, faClipboardList, faListCheck, faFilePen, faCircleExclamation } from '@fortawesome/free-solid-svg-icons';
+import { useState, useContext, useCallback, useMemo } from 'react'
 import { GLOBALCONTEXT } from '../App'
 import { Link, useLocation } from 'react-router-dom'
+import './assets/scss/sidebar.scss'
 import './assets/scss/sidebar.scss'
 
 /**
@@ -12,10 +13,11 @@ import './assets/scss/sidebar.scss'
  */
 export const Sidebar = () => {
     const global = useContext( GLOBALCONTEXT ),
-        { role } = global.loggedInUser,
+        { loggedInUser, canvasOpen } = global,
+        { role } = loggedInUser,
         location = useLocation(),
         getClass = useCallback(( id ) => {
-            return `cmg-list-item ${( id === location.pathname ? ' active' : '' )}`
+            return `cmg-list-item${( id === location.pathname ? ' active' : '' )}`
         }, [ location ])
 
     return <aside className="cmg-sidebar" id="cmg-sidebar">
@@ -71,16 +73,42 @@ export const Sidebar = () => {
                     <span>Academic</span>
                 </h2>
                 <ul className="cmg-submenu">
-                    <li className={ getClass( 'classes' ) }><a href="#">Classes</a></li>
-                    <li className={ getClass( 'classroom' ) }><a href="#">Class Room</a></li >
-                    <li className={ getClass( 'class-routines' ) }><a href="#">Class Routines</a></li >
-                    <li className={ getClass( 'section' ) }><a href="#">Section</a></li >
-                    <li className={ getClass( 'subject' ) }><a href="#">Subject</a></li >
-                    <li className={ getClass( 'syllabus' ) }><a href="#">Syllabus</a></li >
-                    <li className={ getClass( 'time-table' ) }><a href="#">Time Table</a></li >
-                    <li className={ getClass( 'homework' ) }><a href="#">Home Work</a></li >
-                    <li className={ getClass( 'examinations' ) }><a href="#">Examinations</a></li >
-                    <li className={ getClass( 'complaints' ) }><a href="#">Complaints</a></li >
+                    <li className={ getClass( 'routines' ) }>
+                        <Link to="/dashboard/academic/routines" className='cmg-icon-wrapper'>
+                            <span className='cmg-icon'><FontAwesomeIcon icon={ faTable }/></span>
+                            <span className='cmg-icon-label'>Class Routines</span>
+                        </Link>
+                    </li >
+                    <li className={ getClass( 'subjects' ) }>
+                        <Link to="/dashboard/academic/subjects" className='cmg-icon-wrapper'>
+                            <span className='cmg-icon'><FontAwesomeIcon icon={ faBookOpen }/></span>
+                            <span className='cmg-icon-label'>Subject</span>
+                        </Link>
+                    </li >
+                    <li className={ getClass( 'syllabus' ) }>
+                        <Link to="/dashboard/academic/syllabus" className='cmg-icon-wrapper'>
+                            <span className='cmg-icon'><FontAwesomeIcon icon={ faClipboardList }/></span>
+                            <span className='cmg-icon-label'>Syllabus</span>
+                        </Link>
+                    </li >
+                    <li className={ getClass( 'home-work' ) }>
+                        <Link to="/dashboard/academic/home-work" className='cmg-icon-wrapper'>
+                            <span className='cmg-icon'><FontAwesomeIcon icon={ faListCheck }/></span>
+                            <span className='cmg-icon-label'>Home Work</span>
+                        </Link>
+                    </li >
+                    <li className={ getClass( 'examinations' ) }>
+                        <Link to="/dashboard/academic/examinations" className='cmg-icon-wrapper'>
+                            <span className='cmg-icon'><FontAwesomeIcon icon={ faFilePen }/></span>
+                            <span className='cmg-icon-label'>Examinations</span>
+                        </Link>
+                    </li >
+                    <li className={ getClass( 'complaints' ) }>
+                        <Link to="/dashboard/academic/complaints" className='cmg-icon-wrapper'>
+                            <span className='cmg-icon'><FontAwesomeIcon icon={ faCircleExclamation }/></span>
+                            <span className='cmg-icon-label'>Complaints</span>
+                        </Link>
+                    </li >
                 </ul >
             </div>
             {

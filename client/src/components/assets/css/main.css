@@ -317,7 +317,9 @@ MARK: Admin Dashboard
         padding: 24px;
         width: 100%;
         margin-top: 60px;
-        /* height: calc(100vh - 148px); */
+    }
+    #cmg-body.open #cmg-main {
+        margin-left: 50px
     }
 
     #cmg-main .dashboard-head {
