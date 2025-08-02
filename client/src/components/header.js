@@ -191,10 +191,17 @@ const DarkMode = () =>{
         let currentDarkMode = ( isDarkMode === 'dark' ? 'light' : 'dark' )
         ourFetch({
             api: '/set-dark-mode',
-            callback: fetchCallback,
-            setter: setIsDarkMode,
+            callback: darkModeCallback,
             body: JSON.stringify({ view: currentDarkMode, id })
         })
+    }
+
+    /**
+     * Callback
+     */
+    const darkModeCallback = ( data ) => {
+        let { view, success } = data
+        if( success ) setIsDarkMode( view )
     }
 
     return <div className="action dark-mode-wrapper">

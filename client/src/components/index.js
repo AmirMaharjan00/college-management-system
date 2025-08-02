@@ -11,7 +11,11 @@ export const Index = () => {
     const { setIsloggedIn, setLoggedInUser, overlay, setIsDarkMode, isDarkMode, canvasOpen } = global,
     bodyClass = useMemo(() => {
         return `cmg-body${( canvasOpen ? ' open' : '' )}`
-    }, [ canvasOpen ])
+    }, [ canvasOpen ]),
+    wrapperClass = useMemo(() => {
+        console.log( 'dark' )
+        return `cmg-wrapper ${ isDarkMode }`
+    }, [ isDarkMode ])
 
     useEffect(() => {
         ourFetch({
@@ -39,9 +43,6 @@ export const Index = () => {
             navigate( '/login' )
         }
     }
-
-    let wrapperClass = 'cmg-wrapper';
-    wrapperClass += ` ${isDarkMode}`;
 
     return <>
         { overlay && <Overlay /> }
