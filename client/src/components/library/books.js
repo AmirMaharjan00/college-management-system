@@ -36,10 +36,6 @@ export const LibraryBooks = () => {
             }, [])
             return newStudentsList.slice( 0, 10 );
         }, [ searched, books, activePage, rowsPerPage ])
-
-    // useEffect(() => {
-    //     console.log( formMode )
-    // }, [ formMode ])
     
     useEffect(() => {
         ourFetch({

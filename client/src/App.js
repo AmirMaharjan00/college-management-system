@@ -20,13 +20,19 @@ import { StaffsList } from './components/peoples/staffs.js'
 import { Payment, PaymentSuccess, PaymentFailure } from './components/student/payment.js'
 import { Invoice } from './components/student/invoice.js'
 import { StudentDetails } from './components/student/student-details.js'
+// Library
 import { Library } from './components/library/library.js'
-import { Account } from './components/account/account.js'
-import { History } from './components/account/history.js'
-import { PayFees } from './components/account/pay-fees.js'
 import { LibraryFines } from './components/library/fines.js'
 import { LibraryIssued } from './components/library/issued.js'
 import { LibraryBooks } from './components/library/books.js'
+// Account
+import { Account } from './components/account/account.js'
+import { History } from './components/account/history.js'
+import { PayFees } from './components/account/pay-fees.js'
+import { Expenses } from './components/account/expenses.js'
+import { Income } from './components/account/income.js'
+import { Payroll } from './components/account/payroll.js'
+// Academic
 import { Complaints } from './components/academic/complaints.js'
 import { Examinations } from './components/academic/examinations.js'
 import { HomeWork } from './components/academic/home-work.js'
@@ -123,6 +129,9 @@ const Links = () => {
         <Route exact path='/dashboard/account' element={ <Account /> }/>
         <Route exact path='/dashboard/account/history' element={ <History /> }/>
         <Route exact path='/dashboard/account/pay-fees' element={ <PayFees /> }/>
+        <Route exact path='/dashboard/account/expense-tracking' element={ <Expenses /> }/>
+        <Route exact path='/dashboard/account/manage-income' element={ <Income /> }/>
+        <Route exact path='/dashboard/account/payroll' element={ <Payroll /> }/>
         {/* Academic */}
         <Route exact path='/dashboard/academic/complaints' element={ <Complaints /> }/>
         <Route exact path='/dashboard/academic/examinations' element={ <Examinations /> }/>

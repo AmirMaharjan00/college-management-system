@@ -884,3 +884,14 @@ app.post( '/today-income', ( request, res ) => {
     return res.status( 200 ).json({ result: result[ 0 ], success: true });
   })
 });
+
+/**
+* MARK: ALL ACCOUNTS
+*/
+app.post( '/accounts', ( request, res ) => { 
+  const selectQuery = `SELECT account.*, users.name from account JOIN users ON account.userId = users.id ORDER BY account.date DESC;`
+  con.query( selectQuery, ( error, result ) => {
+    if ( error ) return res.status( 500 ).json({ error: "Database selection failed" });
+    return res.status( 200 ).json({ result, success: true });
+  })
+});
