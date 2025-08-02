@@ -171,8 +171,8 @@ export const Library = () => {
 const LineChart = () => {
     const [ monthlyFines, setMonthlyFines ] = useState([]),
         months = monthlyFines.reduce(( value, fine ) => {
-            let { month, totalFines } = fine
-            value = { ...value, [ month ]: totalFines }
+            let { month, total } = fine
+            value = { ...value, [ month ]: total }
             return value;
         }, {}),
         labels = [ 'January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December' ];

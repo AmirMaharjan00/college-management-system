@@ -1,6 +1,7 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useMemo, useContext } from 'react'
 import { ourFetch, fetchCallback } from './functions';
 import { Line, Doughnut } from 'react-chartjs-2';
+import { GLOBALCONTEXT } from '../App';
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -29,15 +30,17 @@ ChartJS.register(
  * MARK: Line Chart
  */
 export const LineChart = ( props ) => {
-    const { api, label, title } = props,
+    const Global = useContext( GLOBALCONTEXT ),
+        { formSuccess } = Global,
+        { api, label, title } = props,
         [ monthlyFines, setMonthlyFines ] = useState([]),
         months = monthlyFines.reduce(( value, fine ) => {
-            let { month, totalFines } = fine
-            value = { ...value, [ month ]: totalFines }
+            let { month, total } = fine
+            value = { ...value, [ month ]: total }
             return value;
         }, {}),
-        // labels = [ 'January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December' ];
-        labels = [ 'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec' ];
+        labels = [ 'January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December' ];
+        // labels = [ 'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec' ];
 
     useEffect(() => {
         ourFetch({
@@ -45,7 +48,7 @@ export const LineChart = ( props ) => {
             callback: fetchCallback,
             setter: setMonthlyFines
         })
-    }, [])
+    }, [ formSuccess ])
 
     const data = {
         labels,
@@ -93,14 +96,29 @@ export const LineChart = ( props ) => {
  * MARK: PIE CHART
  */
 export const DoughnutChart = ( props ) => {
-    const { api, label, title } = props
+    const Global = useContext( GLOBALCONTEXT ),
+        { formSuccess } = Global,
+        { api, label, title } = props,
+        [ students, setStudents ] = useState([]),
+        studentsData = useMemo(() => {
+            return Object.values( students ).map( item => item )
+        }, [ students ])
+
+    useEffect(() => {
+        ourFetch({
+            api,
+            callback: fetchCallback,
+            setter: setStudents
+        })
+    }, [ formSuccess ])
+
     const data = {
-        labels: ['Red', 'Blue', 'Yellow'],
+        labels: [ 'paidFull', 'unpaid' ],
         datasets: [
             {
-                label: 'Votes',
-                data: [12, 19, 7],
-                backgroundColor: ['#ff6384', '#36a2eb', '#ffce56'],
+                label: 'Students',
+                data: studentsData,
+                backgroundColor: [ '#36a2eb', '#ffce56' ],
                 borderWidth: 1,
             },
         ],
@@ -117,6 +135,7 @@ export const DoughnutChart = ( props ) => {
             },
         },
     };
+
 
     return <div className="cmg-doughnut-chart cmg-chart card">
         <Doughnut data={data} options={options} />

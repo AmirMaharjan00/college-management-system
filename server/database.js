@@ -119,21 +119,24 @@ con.connect(function(err) {
         });
 
         /**
-         * Create Fees Table
-         * MARK: Fees
+         * Create Account Table
+         * MARK: Account
          */
-        let feesQuery = "CREATE TABLE IF NOT EXISTS fees ("
-          feesQuery += "id INT(11) NOT NULL AUTO_INCREMENT PRIMARY KEY, "
-          feesQuery += "userId INT(11), "
-          feesQuery += "amount INT(11) NOT NULL, "
-          feesQuery += "message LONGTEXT NOT NULL, "
-          feesQuery += "type VARCHAR(255) NOT NULL DEFAULT 'expenses', "
-          feesQuery += "date DATETIME DEFAULT CURRENT_TIMESTAMP, "
-          feesQuery += "FOREIGN KEY(userId) REFERENCES users(id) "
-          feesQuery += ");"
-        con.query( feesQuery, function (err, result) {
+        let accountQuery = "CREATE TABLE IF NOT EXISTS account ("
+          accountQuery += "id INT(11) NOT NULL AUTO_INCREMENT PRIMARY KEY, "
+          accountQuery += "userId INT(11), "
+          accountQuery += "amount INT(11) NOT NULL, "
+          accountQuery += "message LONGTEXT NOT NULL, "
+          accountQuery += "type VARCHAR(255) NOT NULL DEFAULT 'expenses', "
+          accountQuery += "purpose VARCHAR(255) NOT NULL DEFAULT 'payroll', "
+          accountQuery += "date DATETIME DEFAULT CURRENT_TIMESTAMP, "
+          accountQuery += "year INT GENERATED ALWAYS AS (YEAR(date)) STORED, "
+          accountQuery += "month INT GENERATED ALWAYS AS (MONTH(date)) STORED, "
+          accountQuery += "FOREIGN KEY(userId) REFERENCES users(id) "
+          accountQuery += ");"
+        con.query( accountQuery, function (err, result) {
           if( err ) throw err
-          console.log( 'Fees Table created.' )
+          console.log( 'Account Table created.' )
         });
 
         /**

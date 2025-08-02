@@ -59,7 +59,8 @@ function App() {
     [ deleteBookVisibility, setDeleteBookVisibility ] = useState( false ),
     [ currentBookId, setCurrentBookId ] = useState( 0 ),
     [ returnBookVisibility, setReturnBookVisibility ] = useState( 0 ),
-    [ canvasOpen, setCanvasOpen ] = useState( false )
+    [ canvasOpen, setCanvasOpen ] = useState( false ),
+    [ formSuccess, setFormSuccess ] = useState( false )
 
   /* Global Context Object */
   let globalContextObject = {
@@ -86,6 +87,7 @@ function App() {
     currentBookId, setCurrentBookId,  // holds the clicked book id
     returnBookVisibility, setReturnBookVisibility,  // Show return book form
     canvasOpen, setCanvasOpen,
+    formSuccess, setFormSuccess
   }
 
   return <GLOBALCONTEXT.Provider value={ globalContextObject }>
