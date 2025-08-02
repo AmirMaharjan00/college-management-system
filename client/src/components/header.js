@@ -7,7 +7,7 @@ import { faClose, faBars, faGraduationCap, faCircleXmark, faXmark, faPaperPlane,
 import { faSquarePlus} from '@fortawesome/free-regular-svg-icons';
 import { GLOBALCONTEXT } from '../App';
 import './assets/css/header.css'
-import { ourFetch } from './functions';
+import { ourFetch, fetchCallback } from './functions';
 import { AddNewUser } from './forms/add-new-user'
 import { AddNewCourseSubject } from './forms/add-new-cs'
 import { AddNewNotification } from './forms/add-new-notification'
@@ -191,15 +191,10 @@ const DarkMode = () =>{
         let currentDarkMode = ( isDarkMode === 'dark' ? 'light' : 'dark' )
         ourFetch({
             api: '/set-dark-mode',
-            callback: setDarkModeCallback,
+            callback: fetchCallback,
+            setter: setIsDarkMode,
             body: JSON.stringify({ view: currentDarkMode, id })
         })
-    }
-
-    /* Callback */
-    const setDarkModeCallback = ( data ) => {
-        let { success, view } = data
-        if( success ) setIsDarkMode( view )
     }
 
     return <div className="action dark-mode-wrapper">
@@ -304,15 +299,10 @@ const Message = () =>{
     useEffect(() => {
         ourFetch({
             api: '/users',
-            callback: usersCallback
+            callback: fetchCallback,
+            setter: setUsers
         })
     }, [])
-
-    /* Users Callback */
-    const usersCallback = ( data ) => {
-        let { success, result } = data
-        if( success ) setUsers( result )
-    }
 
     /* Handle Click */
     const handleClick = () => {
@@ -471,18 +461,11 @@ const ShowNotification = ( props ) => {
     useEffect(() => {
         ourFetch({
             api: '/notification-by-id',
-            callback: notificationCallback,
+            callback: fetchCallback,
+            setter: setNotification,
             body: JSON.stringify({ id })
         })
     }, [])
-
-    /* Notification Callback */
-    const notificationCallback = ( data ) => {
-        let { result, success } = data
-        if( success ) {
-            setNotification( result )
-        }
-    }
 
     /* Handle Close */
     const handleClose = () => {
@@ -519,7 +502,8 @@ export const Chat = ( props ) => {
     useEffect(() => {
         ourFetch({
             api: '/user-by-id',
-            callback: chatCallback,
+            callback: fetchCallback,
+            setter: setChat,
             body: JSON.stringify({ id: receiverId })
         })
     }, [])
@@ -527,7 +511,8 @@ export const Chat = ( props ) => {
     useEffect(() => {
         ourFetch({
             api: '/get-message',
-            callback: getMessageCallback,
+            callback: fetchCallback,
+            setter: setHistory,
             body: JSON.stringify({ sender: senderId, receiver: receiverId })
         })
     }, [ didChatChange ])
@@ -540,18 +525,6 @@ export const Chat = ( props ) => {
         });
         return () => socket.off('receiveMessage');
     }, [ senderId, receiverId ])
-
-    /* Chat Callback */
-    const chatCallback = ( data ) => {
-        let { result, success } = data
-        if( success ) setChat( result )
-    }
-
-    /* Get Message Callback */
-    const getMessageCallback = ( data ) => {
-        let { result, success } = data
-        if( success ) setHistory( result )
-    }
 
     /* Handle Close */
     const handleClose = () => {
@@ -579,17 +552,10 @@ export const Chat = ( props ) => {
 
         ourFetch({
             api: '/message',
-            callback: userCallback,
+            callback: fetchCallback,
+            setter: setDidChatChange,
             body: JSON.stringify({ sender: senderId, receiver: receiverId, message, messageType: 'text' })
         })
-    }
-
-    /**
-     * Message Callback
-     */
-    const userCallback = ( data ) => {
-        let { success, id = 0 } = data
-        if( success ) setDidChatChange( id )
     }
 
     return <div className='cmg-chat' id="cmg-chat">

@@ -1,6 +1,6 @@
 import { useState, useRef, useMemo, useEffect, useContext } from 'react'
 import { Breadcrumb, ActionButton, RowAndSearch, ActionButtonDropdown, Pagination, DeleteBook } from "./books"
-import { ourFetch, adjustDate } from '../functions'
+import { ourFetch, adjustDate, fetchCallback } from '../functions'
 import { GLOBALCONTEXT } from '../../App'
 import { useDate } from '../includes/hooks'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -40,17 +40,12 @@ export const LibraryIssued = () => {
     useEffect(() => {
         ourFetch({
             api: '/all-books-issued',
-            callback: booksCallback
+            callback: fetchCallback,
+            setter: setBooks
         })
         setDeleteSuccess( false )
         setSubmitSuccess( false )
     }, [ deleteSuccess, submitSuccess ])
-
-    // Books Callback
-    const booksCallback = ( data ) => {
-        let { result, success = false } = data
-        if( success ) setBooks( result )
-    }
 
     // Handle Pagination
     const handlePagination = ( type ) => {
@@ -287,11 +282,13 @@ const NewIssueBooks = ( props ) => {
     useEffect(() => {
         ourFetch({
             api: '/all-books',
-            callback: allBooksCallback
+            callback: fetchCallback,
+            setter: setBooks
         })
         ourFetch({
             api: '/users',
-            callback: allUsersCallback
+            callback: fetchCallback,
+            setter: setUsers
         })
     }, [])
 
@@ -305,22 +302,6 @@ const NewIssueBooks = ( props ) => {
             setFormValues( newFormValues )
         }
     }, [ formMode, currentBookId ])
-
-    /**
-     * All Books callback
-     */
-    const allBooksCallback = ( data ) => {
-        let { result, success } = data
-        if( success ) setBooks( result )
-    }
-
-    /**
-     * All student and teachers callback
-     */
-    const allUsersCallback = ( data ) => {
-        let { result, success } = data
-        if( success ) setUsers( result )
-    }
 
     /**
      * Handle form change

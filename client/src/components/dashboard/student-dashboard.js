@@ -7,7 +7,7 @@ import staff from '../assets/images/staff.png'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faArrowsRotate, faChevronDown, faChevronRight, faCheckDouble, faXmark, faCircleExclamation, faIcons, faCoins, faSackDollar, faCalendarDays, faMoneyBillTrendUp } from '@fortawesome/free-solid-svg-icons';
 import { faFlag } from '@fortawesome/free-regular-svg-icons';
-import { ourFetch } from '../functions'
+import { ourFetch, fetchCallback } from '../functions'
 import { Link } from 'react-router-dom'
 
 /**

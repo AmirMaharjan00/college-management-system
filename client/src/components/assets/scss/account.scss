@@ -1,0 +1,123 @@
+#cmg-main.cmg-account {
+    .action-buttons {
+        .action-btn.add {
+            background: var(--blue);
+            margin-right: 10px;
+            color: #fff;
+            padding: 10px;
+            border-radius: 5px;
+            transition: all .4s;
+
+            .label {
+                margin-left: 5px;
+            }
+        }
+
+        .action-btn.add:hover {
+            transform: scale(1.03);
+            box-shadow: var(--boxShadow);
+        }
+    }
+
+    .charts-wrapper {
+        display: flex;
+        gap: 10px;
+        justify-content: space-between;
+        margin-bottom: 20px;
+
+        .cmg-line-chart {
+            width: 35%;
+        }
+
+    }
+
+    .card {
+        box-shadow: var(--boxShadow);
+        background-color: var(--card-bg);
+        border-radius: 5px;
+        padding: 20px;
+        transition: all .4s;
+
+        &:hover {
+            transform: var(--card-animate);
+            box-shadow: var(--boxShadow-hover);
+        }
+    }
+
+    .preview-wrap {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 20px;
+
+        .preview {
+            flex: 1;
+            padding: 0;
+
+            .head {
+                border-bottom: 1px solid var(--actionBorder);
+                padding: 0 20px;
+                height: 50px;
+                line-height: 50px;
+
+                .title {
+                    font-size: 16px;
+                }
+            }
+
+            .body {
+                height: 200px;
+                padding: 20px;
+                overflow-y: scroll;
+
+                .item {
+                    display: flex;
+                    justify-content: space-between;
+                    align-items: center;
+                    border: 1px solid var(--actionBorder);
+                    padding: 10px;
+                    border-radius: 5px;
+                    margin-bottom: 10px;
+                    
+                    &:last-of-type {
+                        margin-bottom: 0;
+                    }
+
+                    .count {
+                        width: 50px;
+                        font-weight: 600;
+                        text-align: center;
+                    }
+
+                    .info {
+                        flex: 1;
+
+                        .title {
+                            margin-bottom: 5px;
+                            font-size: 16px;
+
+                        }
+                    }
+
+                    .price {
+                        width: 200px;
+                        text-align: right;
+                    }
+                }
+            }
+
+            .foot {
+                height: 50px;
+                line-height: 50px;
+                padding: 0 20px;
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                background: var(--default);
+                border-radius: 0 0 5px 5px;
+                color: var(--white);
+                font-weight: 600;
+            }
+        }
+    }
+}

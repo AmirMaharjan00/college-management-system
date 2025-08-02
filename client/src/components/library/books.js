@@ -2,7 +2,7 @@ import { useState, useEffect, createContext, useContext, useRef, useMemo } from 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCirclePlus, faEllipsisVertical, faXmark } from '@fortawesome/free-solid-svg-icons';
 import { Link } from 'react-router-dom'
-import { ourFetch, adjustDate } from '../functions'
+import { ourFetch, adjustDate, fetchCallback } from '../functions'
 import { useDate } from '../includes/hooks';
 import { GLOBALCONTEXT } from '../../App'
 import '../assets/scss/form.scss'
@@ -44,17 +44,12 @@ export const LibraryBooks = () => {
     useEffect(() => {
         ourFetch({
             api: '/all-books',
-            callback: booksCallback
+            callback: fetchCallback,
+            setter: setBooks
         })
         setDeleteSuccess( false )
         setSubmitSuccess( false )
     }, [ deleteSuccess, submitSuccess, books ])
-
-    // Books Callback
-    const booksCallback = ( data ) => {
-        let { result, success = false } = data
-        if( success ) setBooks( result )
-    }
 
      /**
      * Handle next & previous
@@ -161,22 +156,23 @@ export const Breadcrumb = ( props ) => {
 export const ActionButton = ( props ) => {
     const Global = useContext( GLOBALCONTEXT ),
         { formVisibility, setFormVisibility, setOverlay, setHeaderOverlay } = Global,
-        { setFormMode, label = 'New Book' } = props
+        { setFormMode, label = 'New Book', extendFunction } = props
 
     /**
      * Handle add new book
      */
-    const handleNewBook = () => {
+    const handleClick = () => {
         setFormVisibility( ! formVisibility )
         setOverlay( true )
         setHeaderOverlay( true )
         setFormMode( 'new' )
+        if( extendFunction ) extendFunction()
     }
 
-    return <button className='action-btn add' onClick={ handleNewBook }>
-            <FontAwesomeIcon icon={ faCirclePlus }/>
-            <span className='label'>{ label }</span>
-        </button>
+    return <button className='action-btn add' onClick={ handleClick }>
+        <FontAwesomeIcon icon={ faCirclePlus }/>
+        <span className='label'>{ label }</span>
+    </button>
 }
 
 /**

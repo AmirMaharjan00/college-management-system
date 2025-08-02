@@ -193,20 +193,6 @@ app.post('/insert-leave', ( request, res ) => {
 });
 
 /**
- * MARK: Images Insert Query
- */
-app.post('/insert-images', (req, res) => {
-  const { userId, url } = req.body
-  const insertQuery = 'INSERT INTO images (userId, url) VALUES (?, ?)'
-  con.query( insertQuery, [ userId, url ], ( error, result ) => {
-    if ( error ) {
-      return res.status( 500 ).json({ message: "Failed ! Please Try again.", success: false, isError: true });
-    }
-    return res.status( 200 ).json({ message: "SuccessFully Added.", id: result.insertId, success: true });
-  })
-});
-
-/**
 * MARK: Login
 */
 app.post( '/login', ( request, res ) => {
@@ -248,7 +234,7 @@ app.post( '/isLoggedIn', ( request, res ) => {
 * MARK: Users Student and Teacher API
 */
 app.post( '/users-student-teacher', ( request, res ) => { 
-  const selectQuery = `SELECT role, COUNT(id) AS total FROM users WHERE role IN ('student', 'teacher') GROUP BY role;`
+  const selectQuery = `SELECT role, COUNT(id) AS total FROM users WHERE role IN ('student', 'teacher', 'staff') GROUP BY role;`
   con.query( selectQuery, ( error, result ) => {
     if ( error ) {
       return res.status( 500 ).json({ error: "Database selection failed" });
@@ -723,5 +709,44 @@ app.post( '/update-book-return', ( request, res ) => {
       return res.status( 500 ).json({ success: false, error: "Database Update failed" });
     }
     return res.status( 200 ).json({ success: true, result });
+  })
+});
+
+/**
+ * MARK: STUDENTS ONLY
+ */
+app.post( '/students-only', ( request, res ) => { 
+  const selectQuery = `SELECT * FROM users WHERE role="student"`
+  con.query( selectQuery, ( error, result ) => {
+    if ( error ) {
+      return res.status( 500 ).json({ error: "Database selection failed" });
+    }
+    return res.status( 200 ).json({ result, success: true });
+  })
+});
+
+/**
+ * MARK: TEACHERS ONLY
+ */
+app.post( '/teachers-only', ( request, res ) => { 
+  const selectQuery = `SELECT * FROM users WHERE role="teacher"`
+  con.query( selectQuery, ( error, result ) => {
+    if ( error ) {
+      return res.status( 500 ).json({ error: "Database selection failed" });
+    }
+    return res.status( 200 ).json({ result, success: true });
+  })
+});
+
+/**
+ * MARK: STAFF ONLY
+ */
+app.post( '/staffs-only', ( request, res ) => { 
+  const selectQuery = `SELECT * FROM users WHERE role="staff"`
+  con.query( selectQuery, ( error, result ) => {
+    if ( error ) {
+      return res.status( 500 ).json({ error: "Database selection failed" });
+    }
+    return res.status( 200 ).json({ result, success: true });
   })
 });

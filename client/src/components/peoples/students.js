@@ -3,7 +3,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faRotate, faPrint, faFileExport, faUserPlus, faList, faGrip, faMessage, faEllipsisVertical } from '@fortawesome/free-solid-svg-icons';
 import { GLOBALCONTEXT } from '../../App'
 import { Link } from 'react-router-dom'
-import { ourFetch, getScript } from '../functions';
+import { ourFetch, getScript, fetchCallback } from '../functions';
 import { useDate } from '../includes/hooks'
 import html2pdf from 'html2pdf.js';
 import { AddNewUser } from '../forms/add-new-user'
@@ -35,16 +35,10 @@ export const StudentsList = () => {
     const _fetch = () => {
         ourFetch({
             api: '/all-users-via-role',
-            callback: userCallback,
+            callback: fetchCallback,
+            setter: setAllStudents,
             body: JSON.stringify({ sortBy, role: 'student' })
         })
-    }
-
-    const userCallback = ( data ) => {
-        let { result, success } = data
-        if( success ) {
-            setAllStudents( result )
-        }
     }
 
     /**

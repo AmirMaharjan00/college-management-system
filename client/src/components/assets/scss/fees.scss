@@ -65,7 +65,7 @@ $font-stack: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     }
 
     // Radio buttons for payment method
-    > div {
+    > div:not(.react-select) {
       display: flex;
       gap: 1rem;
       flex-wrap: wrap;

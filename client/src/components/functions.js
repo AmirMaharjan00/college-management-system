@@ -2,7 +2,7 @@
  * MARK: FETCH
  */
 export const ourFetch = async ( info ) => {
-    let { api, body, callback = false, headersMultipart = false } = info
+    let { api, body, callback = false, headersMultipart = false, setter } = info
     let url = 'http://localhost:5000' + api
     let fetchObject = {
         method: "POST",
@@ -22,7 +22,13 @@ export const ourFetch = async ( info ) => {
             throw new Error( 'Failed to fetch data => functions.js' )
         }
         const result = await response.json()
-        if( callback ) callback( result )
+        if( callback ) {
+            if( setter ) {
+                callback( result, setter )
+            } else {
+                callback( result)
+            }
+        }
     } catch( error ) {
         if( callback ) callback( error )
     }
@@ -88,7 +94,6 @@ export const getScript = ( number ) => {
     }
 }
 
-
 /**
  * Adjust date
  */
@@ -96,4 +101,24 @@ export const adjustDate = ( date ) => {
     if( ! date ) return ''
     let newDate = new Date( date )
     return newDate.toISOString().split('T')[0];
+}
+
+/**
+ * Get current select value
+ */
+export const getCurrentSelectValue = ( arr, val ) => {
+    if( typeof val === 'object' ) return val
+    return arr.reduce(( _thisValue, item ) => {
+        let { value } = item
+        if( value === val ) _thisValue = item
+        return _thisValue
+    }, {})
+}
+
+/**
+ * MARK: FETCH CALLBACK
+ */
+export const fetchCallback = ( data, setter ) => {
+    let { result, success } = data
+    if( success ) setter( result )
 }

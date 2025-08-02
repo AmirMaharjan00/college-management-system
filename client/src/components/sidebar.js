@@ -1,5 +1,5 @@
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faTableList, faGraduationCap, faUserTie, faUsers, faBookAtlas, faBookOpen, faCoins, faSackDollar, faLinesLeaning, faTimeline, faReceipt, faTable, faClipboardList, faListCheck, faFilePen, faCircleExclamation } from '@fortawesome/free-solid-svg-icons';
+import { faTableList, faGraduationCap, faUserTie, faUsers, faBookAtlas, faBookOpen, faCoins, faSackDollar, faLinesLeaning, faTimeline, faReceipt, faTable, faClipboardList, faListCheck, faFilePen, faCircleExclamation, faMoneyCheckDollar, faBasketShopping, faMoneyBill } from '@fortawesome/free-solid-svg-icons';
 import { useState, useContext, useCallback, useMemo } from 'react'
 import { GLOBALCONTEXT } from '../App'
 import { Link, useLocation } from 'react-router-dom'
@@ -163,8 +163,26 @@ export const Sidebar = () => {
                             </li>
                             <li className={ getClass( '/dashboard/account/pay-fees' ) }>
                                 <Link to="/dashboard/account/pay-fees" className='cmg-icon-wrapper'>
+                                    <span className='cmg-icon'><FontAwesomeIcon icon={ faMoneyCheckDollar } /></span>
+                                    <span className='cmg-icon-label'>Payroll</span>
+                                </Link>
+                            </li>
+                            <li className={ getClass( '/dashboard/account/pay-fees' ) }>
+                                <Link to="/dashboard/account/pay-fees" className='cmg-icon-wrapper'>
+                                    <span className='cmg-icon'><FontAwesomeIcon icon={ faBasketShopping } /></span>
+                                    <span className='cmg-icon-label'>Expense Tracking</span>
+                                </Link>
+                            </li>
+                            <li className={ getClass( '/dashboard/account/pay-fees' ) }>
+                                <Link to="/dashboard/account/pay-fees" className='cmg-icon-wrapper'>
                                     <span className='cmg-icon'><FontAwesomeIcon icon={ faReceipt } /></span>
                                     <span className='cmg-icon-label'>Pay Fees</span>
+                                </Link>
+                            </li>
+                            <li className={ getClass( '/dashboard/account/pay-fees' ) }>
+                                <Link to="/dashboard/account/pay-fees" className='cmg-icon-wrapper'>
+                                    <span className='cmg-icon'><FontAwesomeIcon icon={ faMoneyBill } /></span>
+                                    <span className='cmg-icon-label'>Manage Income</span>
                                 </Link>
                             </li>
                         </ul>

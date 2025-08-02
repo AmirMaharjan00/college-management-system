@@ -41,6 +41,21 @@
             color: #e74c3c;
             margin-left: 4px;
         }
+
+        .react-select {
+            width: 100%;
+            padding: 4px;
+            font-size: 1rem;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            background-color: #ffffff;
+            transition: all 0.3s ease;
+            box-sizing: border-box;
+
+            .css-13cymwt-control {
+                border: none;
+            }
+        }
     }
 
     input[type="text"],

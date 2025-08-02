@@ -127,28 +127,13 @@ con.connect(function(err) {
           feesQuery += "userId INT(11), "
           feesQuery += "amount INT(11) NOT NULL, "
           feesQuery += "message LONGTEXT NOT NULL, "
+          feesQuery += "type VARCHAR(255) NOT NULL DEFAULT 'expenses', "
           feesQuery += "date DATETIME DEFAULT CURRENT_TIMESTAMP, "
           feesQuery += "FOREIGN KEY(userId) REFERENCES users(id) "
           feesQuery += ");"
         con.query( feesQuery, function (err, result) {
           if( err ) throw err
           console.log( 'Fees Table created.' )
-        });
-
-        /**
-         * Create Images Table
-         * MARK: Images
-         */
-        let imageQuery = "CREATE TABLE IF NOT EXISTS images ("
-          imageQuery += "id INT(11) NOT NULL AUTO_INCREMENT PRIMARY KEY, "
-          imageQuery += "userId INT(11), "
-          imageQuery += "url BLOB, "
-          imageQuery += "date DATETIME DEFAULT CURRENT_TIMESTAMP, "
-          imageQuery += "FOREIGN KEY(userId) REFERENCES users(id) "
-          imageQuery += ");"
-        con.query( imageQuery, function (err, result) {
-          if( err ) throw err
-          console.log( 'Images Table created.' )
         });
 
         /**
