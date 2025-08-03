@@ -178,7 +178,7 @@ const Table = ( props ) => {
                                     <figure>
                                         <img src={ issuerProfile } alt={ issuerName }/>
                                     </figure>
-                                    <span className='name'><Link to="/dashboard/user-details" state={{ user: book }}>{ issuerName }</Link></span>
+                                    <span className='name'><Link to="/dashboard/user-details" state={{ user: userId }}>{ issuerName }</Link></span>
                                 </div>
                             </td>
                             <td>
@@ -186,7 +186,7 @@ const Table = ( props ) => {
                                     <figure>
                                         <img src={ borrowerProfile } alt={ borrowerName }/>
                                     </figure>
-                                    <span className='name'><Link to="/dashboard/user-details" state={{ user: book }}>{ `${ borrowerName } ( ${ userId } )` }</Link></span>
+                                    <span className='name'><Link to="/dashboard/user-details" state={{ user: userId }}>{ `${ borrowerName } ( ${ userId } )` }</Link></span>
                                 </div>
                             </td>
                             <td>{ convertedDate( issuedDate ) }</td>

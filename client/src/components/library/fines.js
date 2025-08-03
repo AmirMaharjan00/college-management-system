@@ -130,7 +130,7 @@ const Table = ( props ) => {
                                     <figure>
                                         <img src={ profile } alt={ name }/>
                                     </figure>
-                                    <span className='name'><Link to="/dashboard/user-details" state={{ user: book }}>{ `${ name } ( ${ userId } )` }</Link></span>
+                                    <span className='name'><Link to="/dashboard/user-details" state={{ user: userId }}>{ `${ name } ( ${ userId } )` }</Link></span>
                                 </div>
                             </td>
                             <td>{ `Rs. ${ fineAmount }` }</td>

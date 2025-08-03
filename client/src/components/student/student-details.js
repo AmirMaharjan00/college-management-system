@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useMemo } from 'react'
 import { useLocation } from 'react-router'
 import { ourFetch, fetchCallback } from '../functions'
 import { Link } from 'react-router-dom'
@@ -13,11 +13,23 @@ import { useCallback } from 'react'
  */
 export const StudentDetails = () => {
     const location = useLocation(),
-        { user } = location.state,
-        { role } = user,
-        { getDate, getTime } = useDate(),
+        { user: userId } = location.state,
+        [ userDetails, setUserDetails ] = useState({}),
+        { getDate, getTime, convertedDate } = useDate(),
         [ tab, setTab ] = useState( 'details' ),
-        capitalizeRole = role.slice( 0, 1 ).toUpperCase() + role.slice( 1 )
+        capitalizeRole = useMemo(() => {
+            let { role } = userDetails
+            if( role ) return role.slice( 0, 1 ).toUpperCase() + role.slice( 1 )
+        }, [ userDetails ])
+
+    useEffect(() => {
+        ourFetch({
+            api: '/user-by-id',
+            callback: fetchCallback,
+            setter: setUserDetails,
+            body: JSON.stringify({ id: userId })
+        })   
+    }, [ userId ])
 
     /**
      * Handle Tab click
@@ -32,7 +44,7 @@ export const StudentDetails = () => {
                 <h2 className="user-name">{ `${ capitalizeRole }s Details` }</h2>
                 <ul className="cmg-breadcrumb" id="cmg-breadcrumb">
                     <li className="breadcrumb-item"><Link to="/dashboard">Dashboard</Link></li>
-                    <li className="breadcrumb-item"><Link to={ `/dashboard/${ role }s` }>{ `${ capitalizeRole }s` }</Link></li>
+                    <li className="breadcrumb-item"><Link to={ `/dashboard/${ userDetails?.role }s` }>{ `${ capitalizeRole }s` }</Link></li>
                     <li className="breadcrumb-item">{ `${ capitalizeRole } Details` }</li>
                 </ul>
             </div>
@@ -46,7 +58,7 @@ export const StudentDetails = () => {
                         <figure className="student-profile__avatar"></figure>
                         <div className="student-profile__info">
                             <span className="student-profile__status student-profile__status--active">Active</span>
-                            <h2 className="student-profile__name">Janet Daniel</h2>
+                            <h2 className="student-profile__name">{ userDetails?.name }</h2>
                             <p className="student-profile__id">AD123456</p>
                         </div>
                     </div>
@@ -59,7 +71,7 @@ export const StudentDetails = () => {
                             </p>
                             <p className="student-profile__detail">
                                 <span className="student-profile__label">Gender</span>
-                                <span className="student-profile__value">Female</span>
+                                <span className="student-profile__value">{ userDetails?.gender?.slice( 0, 1 ).toUpperCase() + userDetails?.gender?.slice( 1 ) }</span>
                             </p>
                             <p className="student-profile__detail">
                                 <span className="student-profile__label">Date Of Birth</span>

@@ -218,7 +218,7 @@ export const StudentsList = () => {
                                     <figure>
                                         <img src={ profile } alt={ name }/>
                                     </figure>
-                                    <span className='name'><Link to="/dashboard/user-details" state={{ user: student }}>{ name }</Link></span>
+                                    <span className='name'><Link to="/dashboard/user-details" state={{ user: id }}>{ name }</Link></span>
                                 </td>
                                 <td>{ `${ abbreviation } ${ getScript( semester ) }` }</td>
                                 <td>{ gender.slice( 0, 1 ).toUpperCase() + gender.slice( 1 ) }</td>
