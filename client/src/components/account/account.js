@@ -251,7 +251,7 @@ const ExpensePreview = ( props ) => {
         </div>
         <div className="body">
             {
-                array.map(( expense, index ) => {
+                array.length ? array.map(( expense, index ) => {
                     let { amount, date, message } = expense,
                         count = index + 1
                     return <div className="item" key={ index }>
@@ -262,7 +262,7 @@ const ExpensePreview = ( props ) => {
                         </div>
                         <span className="price">{ `Rs. ${ amount }` }</span>
                     </div>
-                })
+                }) : <div>No Expenses Recorded.</div>
             }
         </div>
         <div className="foot">
@@ -298,7 +298,7 @@ const IncomePreview = ( props ) => {
         </div>
         <div className="body">
             {
-                array.map(( income, index ) => {
+                array.length ? array.map(( income, index ) => {
                     let { amount, date, message } = income,
                         count = index + 1
                     return <div className="item" key={ index }>
@@ -309,7 +309,7 @@ const IncomePreview = ( props ) => {
                         </div>
                         <span className="price">{ `Rs. ${ amount }` }</span>
                     </div>
-                })
+                }) : <div>No Income Recorded.</div>
             }
         </div>
         <div className="foot">

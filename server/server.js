@@ -780,7 +780,7 @@ app.post('/add-payroll', (req, res) => {
  * MARK: EXPENSES ONLY
  */
 app.post( '/expenses', ( request, res ) => { 
-  const selectQuery = `SELECT * FROM account WHERE type="expenses";`
+  const selectQuery = `SELECT account.*, users.name, users.profile FROM account JOIN users ON account.userId = users.id WHERE type="expenses";`
   con.query( selectQuery, ( error, result ) => {
     if ( error ) return res.status( 500 ).json({ error: "Database selection failed" });
     return res.status( 200 ).json({ result, success: true });
@@ -791,7 +791,7 @@ app.post( '/expenses', ( request, res ) => {
  * MARK: INCOME ONLY
  */
 app.post( '/income', ( request, res ) => { 
-  const selectQuery = `SELECT * FROM account WHERE type="income";`
+  const selectQuery = `SELECT account.*, users.name, users.profile FROM account JOIN users ON account.userId = users.id  WHERE type="income";`
   con.query( selectQuery, ( error, result ) => {
     if ( error ) return res.status( 500 ).json({ error: "Database selection failed" });
     return res.status( 200 ).json({ result, success: true });
@@ -901,6 +901,17 @@ app.post( '/accounts', ( request, res ) => {
 */
 app.post( '/all-payrolls', ( request, res ) => { 
   const selectQuery = `SELECT account.*, users.name, users.profile FROM account JOIN users ON account.userId = users.id WHERE type="expenses" AND purpose="payroll" ORDER BY account.date DESC;`
+  con.query( selectQuery, ( error, result ) => {
+    if ( error ) return res.status( 500 ).json({ error: "Database selection failed" });
+    return res.status( 200 ).json({ result, success: true });
+  })
+});
+
+/**
+* MARK: ALL FEES
+*/
+app.post( '/all-fees', ( request, res ) => { 
+  const selectQuery = `SELECT account.*, users.name, users.profile FROM account JOIN users ON account.userId = users.id WHERE type="income" AND purpose="fees" ORDER BY account.date DESC;`
   con.query( selectQuery, ( error, result ) => {
     if ( error ) return res.status( 500 ).json({ error: "Database selection failed" });
     return res.status( 200 ).json({ result, success: true });

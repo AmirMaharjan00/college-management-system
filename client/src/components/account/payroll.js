@@ -139,7 +139,7 @@ const Table = ( props ) => {
         </thead>
         <tbody>
             {
-                filteredPayrolls.map(( account, index ) => {
+                filteredPayrolls.length ? filteredPayrolls.map(( account, index ) => {
                     let count = index + 1,
                         { id, userId, name, amount, message, date, profile } = account
 
@@ -158,7 +158,7 @@ const Table = ( props ) => {
                         <td>{ message }</td>
                         <td>{ convertedDate( date ) }</td>
                     </tr>
-                })
+                }) : <div className="no-records">No records</div>
             }
         </tbody>
     </table>

@@ -31,7 +31,7 @@
         }
 
         td {
-            padding: 20px 15px;
+            padding: 12px 15px;
         }
 
         .profile {
@@ -60,5 +60,10 @@
                 color: var(--blue);
             }
         }
+    }
+
+    .no-records {
+        padding: 12px 15px;
+        font-weight: 600;
     }
 }

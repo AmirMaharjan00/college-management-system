@@ -100,11 +100,12 @@ const Table = ( props ) => {
                 <th>Purpose</th>
                 <th>Message</th>
                 <th>Date</th>
+                <th>View</th>
             </tr>
         </thead>
         <tbody>
             {
-                filteredAccounts.map(( account, index ) => {
+                filteredAccounts.length ? filteredAccounts.map(( account, index ) => {
                     let count = index + 1,
                         { id, userId, name, amount, message, type, purpose, date, profile } = account
 
@@ -126,8 +127,13 @@ const Table = ( props ) => {
                         <td>{ purpose.slice( 0, 1 ).toUpperCase() + purpose.slice( 1 ) }</td>
                         <td>{ message }</td>
                         <td>{ convertedDate( date ) }</td>
+                        <td>
+                            {
+                                [ 'fees', 'payroll' ].includes( purpose ) ? 'Payroll / Receipt' : '-'
+                            }
+                        </td>
                     </tr>
-                })
+                }) : <div className="no-records">No records</div>
             }
         </tbody>
     </table>
