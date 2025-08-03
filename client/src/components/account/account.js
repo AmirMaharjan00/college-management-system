@@ -1,7 +1,5 @@
 import { useState, useContext, useEffect, useMemo } from "react";
 import { Link } from "react-router-dom"
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faCirclePlus, faChevronRight, faBookOpen, faBook, faRotateLeft, faSackDollar, } from '@fortawesome/free-solid-svg-icons';
 import { ActionButton } from "../library/books"
 import student from '../assets/images/student.png'
 import teacher from '../assets/images/teacher.png'
@@ -13,8 +11,8 @@ import '../assets/scss/charts.scss'
 import { LineChart, DoughnutChart } from '../charts'
 import { PayFees } from '../student/fees'
 import { GLOBALCONTEXT } from "../../App";
-import { ourFetch, fetchCallback, getCurrentSelectValue } from "../functions";
-import Select from 'react-select'
+import { ourFetch, fetchCallback } from "../functions";
+import { PayrollForm } from './payroll'
 import { useDate } from "../includes/hooks";
 
 /**
@@ -222,7 +220,7 @@ export const Account = () => {
         </div>
 
         { formVisibility && ( buttonIdentifier === 'pay-fees' ) && <PayFees includeUser = { true }/> }
-        { formVisibility && ( buttonIdentifier === 'payroll' ) && <Payroll /> }
+        { formVisibility && ( buttonIdentifier === 'payroll' ) && <PayrollForm /> }
     </main>
 }
 
@@ -230,7 +228,9 @@ export const Account = () => {
  * MARK: EXPENSE PREVIEW
  */
 const ExpensePreview = ( props ) => {
-    const { convertedDate } = useDate(),
+    const Global = useContext( GLOBALCONTEXT ),
+        { formSuccess } = Global,
+        { convertedDate } = useDate(),
         { array } = props,
         [ todayExpense, setTodayExpense ] = useState({
             total: 0
@@ -242,7 +242,7 @@ const ExpensePreview = ( props ) => {
             callback: fetchCallback,
             setter: setTodayExpense
         })
-    }, [])
+    }, [ formSuccess ])
 
     return <div className="expense-preview-wrapper preview card">
         <div className="head">
@@ -275,7 +275,9 @@ const ExpensePreview = ( props ) => {
  * MARK: INCOME PREVIEW
  */
 const IncomePreview = ( props ) => {
-    const { convertedDate } = useDate(),
+    const Global = useContext( GLOBALCONTEXT ),
+        { formSuccess } = Global,
+        { convertedDate } = useDate(),
         { array } = props,
         [ todayIncome, setTodayIncome ] = useState({
             total: 0
@@ -287,7 +289,7 @@ const IncomePreview = ( props ) => {
             callback: fetchCallback,
             setter: setTodayIncome
         })
-    }, [])
+    }, [ formSuccess ])
 
     return <div className="income-preview-wrapper preview card">
         <div className="head">
@@ -313,120 +315,5 @@ const IncomePreview = ( props ) => {
             <span className="label">Today's total income: </span>
             <span className="count">{ `Rs. ${ todayIncome.total }` }</span>
         </div>
-    </div>
-}
-
-/**
- * MARK: PAYROLL
- */
-const Payroll = () => {
-    const Global = useContext( GLOBALCONTEXT ),
-        { setFormSuccess } = Global,
-        [ employees, setEmployees ] = useState([]),
-        employeesOptions = useMemo(() => {
-            return employees.reduce(( val, employee ) => {
-                let { id, name } = employee
-                val = [ ...val, { label: `${ name } ( ${ id } )`, value: id } ]
-                return val
-            }, [])
-        }, [ employees ]),
-        [ formData, setFormData ] = useState({
-            employeeId: '',
-            salary: 0,
-            message: ''
-        }),
-        { employeeId, salary, message } = formData
-
-    useEffect(() => {
-        ourFetch({
-            api: '/teachers-and-staffs',
-            callback: fetchCallback,
-            setter: setEmployees
-        })
-    }, [])
-
-    /**
-     * React select change handle
-     */
-    const handleReactSelectChange = ( option ) => {
-        let { label, value } = option,
-            slicedLabel = label.match(/^(.+?)\s*\(\s*(\d+)\s*\)$/),
-            name = slicedLabel[ 1 ];
-
-        setFormData({
-            ...formData,
-            employeeId: value,
-            message: `Salary paid to ${ name }`
-        })
-    }
-
-    /**
-     * Handle Change
-     */
-    const handleChange = ( event ) => {
-        let name = event.target.name,
-            value = event.target.value
-
-        setFormData({
-            ...formData, 
-            [ name ]: value
-        })
-    }
-
-    /**
-     * Handle Submit
-     */
-    const handleOnSubmit = ( event ) => {
-        event.preventDefault()
-        ourFetch({
-            api: '/payroll',
-            callback: formSubmitCallback,
-            body: JSON.stringify({
-                userId: employeeId,
-                message,
-                amount: salary
-            })
-        })
-    }
-
-    /**
-     * Form Submit callback
-     */
-    const formSubmitCallback = ( data ) => {
-        let { success } = data
-        if( success ) setFormSuccess( true )
-    }
-
-    return <div className="cmg-form-wrapper">
-        <form onSubmit={ handleOnSubmit }>
-            <div className="form-head">
-                <h2 className="form-title">Payroll</h2>
-                <h2 className="form-excerpt">Please fill in the details below.</h2>
-            </div>
-
-            <div className="form-field">
-                <label className="form-label">
-                    Name
-                    <span className="form-error">*</span>
-                </label>
-                <Select
-                    options = { employeesOptions }
-                    className = 'react-select'
-                    name = 'bookId'
-                    value = { getCurrentSelectValue( employeesOptions, employeeId ) }
-                    onChange = { handleReactSelectChange }
-                />
-            </div>
-
-            <div className="form-field">
-                <label className="form-label">
-                    Salary
-                    <span className="form-error">*</span>
-                </label>
-                <input type="number" name="salary" value={ salary } onChange={ handleChange } required />
-            </div>
-
-            <input type="submit" value="Pay"/>
-        </form>
     </div>
 }

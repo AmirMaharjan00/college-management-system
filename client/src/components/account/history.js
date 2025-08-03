@@ -33,7 +33,6 @@ export const History = () => {
             setter: setAccounts
         })
     }, [])
-
     
     /**
      * Handle next & previous

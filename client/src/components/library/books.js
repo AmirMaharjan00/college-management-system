@@ -175,7 +175,7 @@ export const ActionButton = ( props ) => {
  * MARK: ROW & SEARCH
  */
 export const RowAndSearch = ( props ) => {
-    const { rowsPerPage, setRowsPerPage, setSearched } = props
+    const { rowsPerPage, setRowsPerPage, setSearched, children } = props
 
     /**
      * Handle rows per page
@@ -201,6 +201,7 @@ export const RowAndSearch = ( props ) => {
             </select>
             <span className='suffix'>Entries</span>
         </div>
+        { children }
         <div className='search-wrapper'>
             <input type="search" name="student-search" placeholder='Search...' onChange={ handleSearch }/>
         </div>

@@ -122,10 +122,8 @@
     }
 }
 
-/**
-* MARK: HISTORY
-*/
-#cmg-main.history {
+#cmg-main.history,
+#cmg-main.payroll {
     .page-header {
         display: flex;
         justify-content: space-between;
@@ -146,6 +144,24 @@
                 svg {
                     margin-right: 5px;
                 }
+            }
+        }
+
+        .action-btn {
+            transition: all .4s;
+            background: var(--blue);
+            margin-right: 10px;
+            color: #fff;
+            padding: 10px;
+            border-radius: 5px;
+
+            &:hover {
+                transform: scale(1.03);
+                box-shadow: var(--boxShadow);
+            }
+
+            svg {
+                margin-right: 5px;
             }
         }
     }
