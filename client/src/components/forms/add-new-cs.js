@@ -1,6 +1,6 @@
 import { useState, useEffect, useContext } from 'react'
 import { GLOBALCONTEXT } from '../../App'
-import { ourFetch } from '../functions'
+import { ourFetch, fetchCallback } from '../functions'
 
 /**
  * Registration Form
@@ -34,17 +34,11 @@ export const AddNewCourseSubject = ( args ) => {
         if( type === 'subject' ) {
             ourFetch({
                 api: '/courses',
-                callback: getCoursesCallback
+                callback: fetchCallback,
+                setter: setCourses
             })
         }
     }, [])
-
-    /* Get Subject Callback */
-    const getCoursesCallback = ( data ) => {
-        if( data.success ) {
-            setCourses( data.result )
-        }
-    }
 
     useEffect(() => {
         if( registrationSuccess ) {

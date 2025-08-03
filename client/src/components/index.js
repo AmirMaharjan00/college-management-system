@@ -3,7 +3,7 @@ import { useNavigate, Outlet } from 'react-router-dom'
 import { Header } from './header'
 import { Sidebar } from './sidebar'
 import { GLOBALCONTEXT } from '../App'
-import { ourFetch } from './functions'
+import { ourFetch, fetchCallback } from './functions'
 
 export const Index = () => {
     const global = useContext( GLOBALCONTEXT )
@@ -11,7 +11,11 @@ export const Index = () => {
     const { setIsloggedIn, setLoggedInUser, overlay, setIsDarkMode, isDarkMode, canvasOpen } = global,
     bodyClass = useMemo(() => {
         return `cmg-body${( canvasOpen ? ' open' : '' )}`
-    }, [ canvasOpen ])
+    }, [ canvasOpen ]),
+    wrapperClass = useMemo(() => {
+        console.log( 'dark' )
+        return `cmg-wrapper ${ isDarkMode }`
+    }, [ isDarkMode ])
 
     useEffect(() => {
         ourFetch({
@@ -30,7 +34,8 @@ export const Index = () => {
                 let { id } = user
                 ourFetch({
                     api: '/dark-mode',
-                    callback: darkModeCallback,
+                    callback: fetchCallback,
+                    setter: setIsDarkMode,
                     body: JSON.stringify({ id })
                 })
             }
@@ -38,15 +43,6 @@ export const Index = () => {
             navigate( '/login' )
         }
     }
-    
-    /* Dark Mode Callback */
-    const darkModeCallback = ( data ) => {
-        let { view, success } = data
-        if( success ) setIsDarkMode( view )
-    }
-
-    let wrapperClass = 'cmg-wrapper';
-    wrapperClass += ` ${isDarkMode}`;
 
     return <>
         { overlay && <Overlay /> }

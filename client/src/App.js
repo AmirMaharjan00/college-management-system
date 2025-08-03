@@ -20,13 +20,19 @@ import { StaffsList } from './components/peoples/staffs.js'
 import { Payment, PaymentSuccess, PaymentFailure } from './components/student/payment.js'
 import { Invoice } from './components/student/invoice.js'
 import { StudentDetails } from './components/student/student-details.js'
+// Library
 import { Library } from './components/library/library.js'
-import { Account } from './components/account/account.js'
-import { History } from './components/account/history.js'
-import { PayFees } from './components/account/pay-fees.js'
 import { LibraryFines } from './components/library/fines.js'
 import { LibraryIssued } from './components/library/issued.js'
 import { LibraryBooks } from './components/library/books.js'
+// Account
+import { Account } from './components/account/account.js'
+import { History } from './components/account/history.js'
+import { PayFees } from './components/account/pay-fees.js'
+import { Expenses } from './components/account/expenses.js'
+import { Income } from './components/account/income.js'
+import { Payroll } from './components/account/payroll.js'
+// Academic
 import { Complaints } from './components/academic/complaints.js'
 import { Examinations } from './components/academic/examinations.js'
 import { HomeWork } from './components/academic/home-work.js'
@@ -59,7 +65,8 @@ function App() {
     [ deleteBookVisibility, setDeleteBookVisibility ] = useState( false ),
     [ currentBookId, setCurrentBookId ] = useState( 0 ),
     [ returnBookVisibility, setReturnBookVisibility ] = useState( 0 ),
-    [ canvasOpen, setCanvasOpen ] = useState( false )
+    [ canvasOpen, setCanvasOpen ] = useState( false ),
+    [ formSuccess, setFormSuccess ] = useState( false )
 
   /* Global Context Object */
   let globalContextObject = {
@@ -86,6 +93,7 @@ function App() {
     currentBookId, setCurrentBookId,  // holds the clicked book id
     returnBookVisibility, setReturnBookVisibility,  // Show return book form
     canvasOpen, setCanvasOpen,
+    formSuccess, setFormSuccess
   }
 
   return <GLOBALCONTEXT.Provider value={ globalContextObject }>
@@ -121,6 +129,9 @@ const Links = () => {
         <Route exact path='/dashboard/account' element={ <Account /> }/>
         <Route exact path='/dashboard/account/history' element={ <History /> }/>
         <Route exact path='/dashboard/account/pay-fees' element={ <PayFees /> }/>
+        <Route exact path='/dashboard/account/expense-tracking' element={ <Expenses /> }/>
+        <Route exact path='/dashboard/account/manage-income' element={ <Income /> }/>
+        <Route exact path='/dashboard/account/payroll' element={ <Payroll /> }/>
         {/* Academic */}
         <Route exact path='/dashboard/academic/complaints' element={ <Complaints /> }/>
         <Route exact path='/dashboard/academic/examinations' element={ <Examinations /> }/>

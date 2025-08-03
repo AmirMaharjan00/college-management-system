@@ -2,7 +2,7 @@ import { useContext, useState, useRef, useEffect } from 'react'
 import './assets/css/profile.css'
 import galaxy from './assets/images/galaxy.jpg'
 import { GLOBALCONTEXT } from '../App'
-import { ourFetch } from './functions'
+import { ourFetch, fetchCallback } from './functions'
 
 export const Profile = () => {
     const Global = useContext( GLOBALCONTEXT )

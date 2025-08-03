@@ -1,6 +1,6 @@
 import { useState, useEffect, useContext } from 'react'
 import { GLOBALCONTEXT } from '../../App'
-import { ourFetch } from '../functions'
+import { ourFetch, fetchCallback } from '../functions'
 
 /**
  * Registration Form

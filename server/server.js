@@ -193,20 +193,6 @@ app.post('/insert-leave', ( request, res ) => {
 });
 
 /**
- * MARK: Images Insert Query
- */
-app.post('/insert-images', (req, res) => {
-  const { userId, url } = req.body
-  const insertQuery = 'INSERT INTO images (userId, url) VALUES (?, ?)'
-  con.query( insertQuery, [ userId, url ], ( error, result ) => {
-    if ( error ) {
-      return res.status( 500 ).json({ message: "Failed ! Please Try again.", success: false, isError: true });
-    }
-    return res.status( 200 ).json({ message: "SuccessFully Added.", id: result.insertId, success: true });
-  })
-});
-
-/**
 * MARK: Login
 */
 app.post( '/login', ( request, res ) => {
@@ -248,7 +234,7 @@ app.post( '/isLoggedIn', ( request, res ) => {
 * MARK: Users Student and Teacher API
 */
 app.post( '/users-student-teacher', ( request, res ) => { 
-  const selectQuery = `SELECT role, COUNT(id) AS total FROM users WHERE role IN ('student', 'teacher') GROUP BY role;`
+  const selectQuery = `SELECT role, COUNT(id) AS total FROM users WHERE role IN ('student', 'teacher', 'staff') GROUP BY role;`
   con.query( selectQuery, ( error, result ) => {
     if ( error ) {
       return res.status( 500 ).json({ error: "Database selection failed" });
@@ -574,7 +560,7 @@ app.post( '/books-fined', ( request, res ) => {
  * MARK: Books Fined
  */
 app.post( '/library-fines-monthwise', ( request, res ) => { 
-  const selectQuery = `SELECT MONTHNAME(dueDate) AS month, SUM(fineAmount) AS totalFines FROM booksIssued WHERE status="overdue" GROUP BY MONTH(dueDate) ORDER BY MONTH(dueDate);`
+  const selectQuery = `SELECT MONTHNAME(dueDate) AS month, SUM(fineAmount) AS total FROM booksIssued WHERE status="overdue" GROUP BY MONTH(dueDate) ORDER BY MONTH(dueDate);`
   con.query( selectQuery, ( error, result ) => {
     if ( error ) {
       return res.status( 500 ).json({ error: "Database selection failed" });
@@ -723,5 +709,200 @@ app.post( '/update-book-return', ( request, res ) => {
       return res.status( 500 ).json({ success: false, error: "Database Update failed" });
     }
     return res.status( 200 ).json({ success: true, result });
+  })
+});
+
+/**
+ * MARK: STUDENTS ONLY
+ */
+app.post( '/students-only', ( request, res ) => { 
+  const selectQuery = `SELECT * FROM users WHERE role="student"`
+  con.query( selectQuery, ( error, result ) => {
+    if ( error ) {
+      return res.status( 500 ).json({ error: "Database selection failed" });
+    }
+    return res.status( 200 ).json({ result, success: true });
+  })
+});
+
+/**
+ * MARK: TEACHERS ONLY
+ */
+app.post( '/teachers-only', ( request, res ) => { 
+  const selectQuery = `SELECT * FROM users WHERE role="teacher"`
+  con.query( selectQuery, ( error, result ) => {
+    if ( error ) {
+      return res.status( 500 ).json({ error: "Database selection failed" });
+    }
+    return res.status( 200 ).json({ result, success: true });
+  })
+});
+
+/**
+ * MARK: STAFF ONLY
+ */
+app.post( '/staffs-only', ( request, res ) => { 
+  const selectQuery = `SELECT * FROM users WHERE role="staff"`
+  con.query( selectQuery, ( error, result ) => {
+    if ( error ) {
+      return res.status( 500 ).json({ error: "Database selection failed" });
+    }
+    return res.status( 200 ).json({ result, success: true });
+  })
+});
+
+/**
+ * MARK: STAFF & TEACHER
+ */
+app.post( '/teachers-and-staffs', ( request, res ) => { 
+  const selectQuery = `SELECT * FROM users WHERE role IN ('teacher', 'staff');`
+  con.query( selectQuery, ( error, result ) => {
+    if ( error ) return res.status( 500 ).json({ error: "Database selection failed" });
+    return res.status( 200 ).json({ result, success: true });
+  })
+});
+
+/**
+ * MARK: PAYROLL
+ */
+app.post('/add-payroll', (req, res) => {
+  const { userId, amount, message } = req.body
+  const insertQuery = `INSERT INTO account (userId, amount, message) SELECT ${ userId }, ${ amount }, "${ message }" WHERE NOT EXISTS ( SELECT 1 FROM account WHERE userId = ${ userId } AND year = YEAR(NOW()) AND month = MONTH(NOW()));`
+  con.query( insertQuery, [ userId, amount, message ], ( error, result ) => {
+    if ( error ) {
+      return res.status( 500 ).json({ error: "Database insertion failed" });
+    }
+    return res.status( 200 ).json({ message: "Data inserted successfully!", id: result.insertId, success: true });
+  })
+});
+
+/**
+ * MARK: EXPENSES ONLY
+ */
+app.post( '/expenses', ( request, res ) => { 
+  const selectQuery = `SELECT * FROM account WHERE type="expenses";`
+  con.query( selectQuery, ( error, result ) => {
+    if ( error ) return res.status( 500 ).json({ error: "Database selection failed" });
+    return res.status( 200 ).json({ result, success: true });
+  })
+});
+
+/**
+ * MARK: INCOME ONLY
+ */
+app.post( '/income', ( request, res ) => { 
+  const selectQuery = `SELECT * FROM account WHERE type="income";`
+  con.query( selectQuery, ( error, result ) => {
+    if ( error ) return res.status( 500 ).json({ error: "Database selection failed" });
+    return res.status( 200 ).json({ result, success: true });
+  })
+});
+
+/**
+ * MARK: YEAR EXPENSE
+ */
+app.post( '/year-expenses', ( request, res ) => { 
+  const selectQuery = `SELECT MONTHNAME(date) AS month, SUM(amount) AS total FROM account WHERE type="expenses" GROUP BY MONTH(date) ORDER BY MONTH(date);`
+  con.query( selectQuery, ( error, result ) => {
+    if ( error ) {
+      return res.status( 500 ).json({ error: "Database selection failed" });
+    }
+    return res.status( 200 ).json({ result, success: true });
+  })
+});
+
+/**
+ * MARK: YEAR INCOME
+ */
+app.post( '/year-income', ( request, res ) => { 
+  const selectQuery = `SELECT MONTHNAME(date) AS month, SUM(amount) AS total FROM account WHERE type="income" GROUP BY MONTH(date) ORDER BY MONTH(date);`
+  con.query( selectQuery, ( error, result ) => {
+    if ( error ) {
+      return res.status( 500 ).json({ error: "Database selection failed" });
+    }
+    return res.status( 200 ).json({ result, success: true });
+  })
+});
+
+/**
+ * MARK: YEAR INCOME
+ */
+app.post( '/paid-fees', ( request, res ) => { 
+  const selectQuery = `SELECT SUM(CASE WHEN COALESCE(p.totalPaid, 0) >= c.cost THEN 1 ELSE 0 END) AS paidFull, SUM(CASE WHEN COALESCE(p.totalPaid, 0) < c.cost THEN 1 ELSE 0 END) AS unpaid FROM users u JOIN courses c ON u.courseId = c.id LEFT JOIN ( SELECT userId, SUM(amount) AS totalPaid FROM account WHERE type = 'income' GROUP BY userId ) p ON u.id = p.userId WHERE u.role = 'student'`
+  con.query( selectQuery, ( error, result ) => {
+    if ( error ) {
+      return res.status( 500 ).json({ error: "Database selection failed" });
+    }
+    return res.status( 200 ).json({ result: result[0], success: true });
+  })
+});
+
+/**
+* MARK: Users Student and Teacher API
+*/
+app.post( '/expenses-income', ( request, res ) => { 
+  const selectQuery = `SELECT type, SUM(amount) AS total FROM account WHERE type IN ('expenses', 'income') AND YEAR(date) = YEAR(CURDATE()) GROUP BY type;`
+  con.query( selectQuery, ( error, result ) => {
+    if ( error ) {
+      return res.status( 500 ).json({ error: "Database selection failed" });
+    }
+    return res.status( 200 ).json({ result, success: true });
+  })
+});
+
+/**
+* MARK: MONTHLY PAYROLL
+*/
+app.post( '/monthly-payroll', ( request, res ) => { 
+  const selectQuery = `SELECT COUNT(*) as total FROM users u LEFT JOIN ( SELECT DISTINCT userId FROM account WHERE purpose = 'payroll' AND YEAR(date) = YEAR(CURDATE()) AND MONTH(date) = MONTH(CURDATE()) ) a ON u.id = a.userId WHERE u.role IN ('teacher', 'staff') AND a.userId IS NULL;`
+  con.query( selectQuery, ( error, result ) => {
+    if ( error ) {
+      return res.status( 500 ).json({ error: "Database selection failed" });
+    }
+    return res.status( 200 ).json({ result: result[ 0 ], success: true });
+  })
+});
+
+/**
+* MARK: TODAY EXPENSE
+*/
+app.post( '/today-expense', ( request, res ) => { 
+  const selectQuery = `SELECT IFNULL( SUM(amount), 0 ) AS total FROM account WHERE type="expenses" AND DATE(date) = CURDATE();`
+  con.query( selectQuery, ( error, result ) => {
+    if ( error ) return res.status( 500 ).json({ error: "Database selection failed" });
+    return res.status( 200 ).json({ result: result[ 0 ], success: true });
+  })
+});
+
+/**
+* MARK: TODAY INCOME
+*/
+app.post( '/today-income', ( request, res ) => { 
+  const selectQuery = `SELECT IFNULL( SUM(amount), 0 ) AS total FROM account WHERE type="income" AND DATE(date) = CURDATE();`
+  con.query( selectQuery, ( error, result ) => {
+    if ( error ) return res.status( 500 ).json({ error: "Database selection failed" });
+    return res.status( 200 ).json({ result: result[ 0 ], success: true });
+  })
+});
+
+/**
+* MARK: ALL ACCOUNTS
+*/
+app.post( '/accounts', ( request, res ) => { 
+  const selectQuery = `SELECT account.*, users.name, users.profile from account JOIN users ON account.userId = users.id ORDER BY account.date DESC;`
+  con.query( selectQuery, ( error, result ) => {
+    if ( error ) return res.status( 500 ).json({ error: "Database selection failed" });
+    return res.status( 200 ).json({ result, success: true });
+  })
+});
+
+/**
+* MARK: ALL PAYROLLS
+*/
+app.post( '/all-payrolls', ( request, res ) => { 
+  const selectQuery = `SELECT account.*, users.name, users.profile FROM account JOIN users ON account.userId = users.id WHERE type="expenses" AND purpose="payroll" ORDER BY account.date DESC;`
+  con.query( selectQuery, ( error, result ) => {
+    if ( error ) return res.status( 500 ).json({ error: "Database selection failed" });
+    return res.status( 200 ).json({ result, success: true });
   })
 });

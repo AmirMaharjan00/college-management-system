@@ -1,6 +1,6 @@
 import { useState, useMemo, useEffect, useContext } from 'react'
 import { Breadcrumb, ActionButton, RowAndSearch, Pagination } from "./books"
-import { ourFetch } from '../functions'
+import { ourFetch, fetchCallback } from '../functions'
 import { GLOBALCONTEXT } from '../../App'
 import { useDate } from '../includes/hooks'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -35,17 +35,10 @@ export const LibraryFines = () => {
     useEffect(() => {
         ourFetch({
             api: '/paid-fines',
-            callback: paidFinesCallback
+            callback: fetchCallback,
+            setter: setPaidFines
         })
     }, [ submitSuccess ])
-
-    /**
-     * Fined Users Callback
-     */
-    const paidFinesCallback = ( data ) => {
-        let { result, success } = data
-        if( success ) setPaidFines( result )
-    }
 
     // Handle Pagination
     const handlePagination = ( type ) => {
@@ -170,17 +163,10 @@ const CollectFine = ( props ) => {
     useEffect(() => {
         ourFetch({
             api: '/overdue-and-unpaid',
-            callback: finedUsersCallback
+            setter: setFines,
+            callback: fetchCallback
         })
     }, [])
-
-    /**
-     * Fined Users Callback
-     */
-    const finedUsersCallback = ( data ) => {
-        let { result, success } = data
-        if( success ) setFines( result )
-    }
 
     /**
      * Handle React select

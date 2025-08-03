@@ -3,7 +3,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faRotate, faPrint, faFileExport, faUserPlus, faList, faGrip, faMessage, faEllipsisVertical } from '@fortawesome/free-solid-svg-icons';
 import { GLOBALCONTEXT } from '../../App'
 import { Link } from 'react-router-dom'
-import { ourFetch, getScript } from '../functions';
+import { ourFetch, getScript, fetchCallback } from '../functions';
 import { useDate } from '../includes/hooks'
 import { Pagination } from './students'
 
@@ -21,18 +21,11 @@ export const TeachersList = () => {
     useEffect(() => {
         ourFetch({
             api: '/all-users-via-role',
-            callback: userCallback,
+            callback: fetchCallback,
+            setter: setAllStudents,
             body: JSON.stringify({ sortBy, role: 'teachers' })
         })
     }, [ sortBy, rowsPerPage ])
-
-    const userCallback = ( data ) => {
-        let { result, success } = data
-        console.log( result )
-        if( success ) {
-            setAllStudents( result )
-        }
-    }
 
     /**
      * Filter students acording to search

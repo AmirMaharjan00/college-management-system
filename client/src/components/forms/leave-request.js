@@ -1,6 +1,6 @@
 import { useState, useContext, useEffect } from 'react'
 import './assets/forms.css'
-import { ourFetch } from '../functions'
+import { ourFetch, fetchCallback } from '../functions'
 import { GLOBALCONTEXT } from '../../App'
 
 /**

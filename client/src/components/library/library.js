@@ -5,7 +5,7 @@ import student from '../assets/images/student.png'
 import teacher from '../assets/images/teacher.png'
 import course from '../assets/images/course.png'
 import staff from '../assets/images/staff.png'
-import { ourFetch } from '../functions'
+import { ourFetch, fetchCallback } from '../functions'
 import { Line } from 'react-chartjs-2';
 import { useDate } from '../includes/hooks'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -57,45 +57,25 @@ export const Library = () => {
     useEffect(() => {
         ourFetch({
             api: '/all-books',
-            callback: booksCallback
+            callback: fetchCallback,
+            setter: setBooks
         })
         ourFetch({
             api: '/all-books-issued',
-            callback: booksIssuedCallback
+            callback: fetchCallback,
+            setter: setBooksIssued
         })
         ourFetch({
             api: '/books-returned',
-            callback: booksReturnedCallback
+            callback: fetchCallback,
+            setter: setBooksReturned
         })
         ourFetch({
             api: '/books-fined',
-            callback: booksFinedCallback
+            callback: fetchCallback,
+            setter: setFines
         })
     }, [])
-
-    // Books Callback
-    const booksCallback = ( data ) => {
-        let { result, success = false } = data
-        if( success ) setBooks( result )
-    }
-
-    // Books Issued Callback
-    const booksIssuedCallback = ( data ) => {
-        let { result, success = false } = data
-        if( success ) setBooksIssued( result )
-    }
-
-    // Books returned Callback
-    const booksReturnedCallback = ( data ) => {
-        let { result, success = false } = data
-        if( success ) setBooksReturned( result )
-    }
-
-    // Books Fined Callback
-    const booksFinedCallback = ( data ) => {
-        let { result, success = false } = data
-        if( success ) setFines( result )
-    }
 
     let highlightsArray = {
         student: {
@@ -191,8 +171,8 @@ export const Library = () => {
 const LineChart = () => {
     const [ monthlyFines, setMonthlyFines ] = useState([]),
         months = monthlyFines.reduce(( value, fine ) => {
-            let { month, totalFines } = fine
-            value = { ...value, [ month ]: totalFines }
+            let { month, total } = fine
+            value = { ...value, [ month ]: total }
             return value;
         }, {}),
         labels = [ 'January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December' ];
@@ -200,15 +180,11 @@ const LineChart = () => {
     useEffect(() => {
         ourFetch({
             api: '/library-fines-monthwise',
-            callback: libraryFinesCallback
+            callback: fetchCallback,
+            setter: setMonthlyFines
         })
     }, [])
 
-    // Library Fines Callback
-    const libraryFinesCallback = ( data ) => {
-        let { result, success = false } = data
-        if( success ) setMonthlyFines( result )
-    }
     const data = {
         labels,
         datasets: [{

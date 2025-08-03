@@ -1,11 +1,12 @@
-import { useState, useEffect, useContext } from 'react'
+import { useState, useEffect, useContext, useMemo } from 'react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faDownload } from '@fortawesome/free-solid-svg-icons';
 import { TodaysDate } from '../includes/components-hooks'
 import { GLOBALCONTEXT } from '../../App'
 import { toWords } from 'number-to-words';
 import CryptoJS from 'crypto-js';
-import { ourFetch } from '../functions'
+import { ourFetch, getCurrentSelectValue, fetchCallback } from '../functions'
+import Select from 'react-select'
 
 const SECRET_KEY = 'college-management-system-secret-key'
 
@@ -71,22 +72,41 @@ export const StudentFees = () => {
  * 
  * @since 1.0.0
  */
-export const PayFees = () => {
-	const [formData, setFormData] = useState({
-		studentName: '',
-		studentId: '',
-		program: '',
-		semester: '',
-		feeType: '',
-		paymentMethod: '',
-		price: '',
-		priceInWords: '',
-		remarks: '',
-		successUrl: 'https://developer.esewa.com.np/success',
-		failureUrl: 'https://developer.esewa.com.np/failure',
-		signature: ''
-	}),
-	{ studentName, studentId, program, semester, feeType, paymentMethod, price, priceInWords, remarks, successUrl, failureUrl, signature } = formData
+export const PayFees = ( props ) => {
+	const { includeUser } = props,
+		[ students, setStudents ] = useState([]),
+		studentOptions = useMemo(() => {
+			return students.reduce(( val, student ) => {
+				let { id, name } = student
+				val = [ ...val, { label: `${ name } ( ${ id } )`, value: id } ]
+				return val
+			}, [])
+		}, [ students ]),
+		[formData, setFormData] = useState({
+			studentName: '',
+			studentId: '',
+			program: '',
+			semester: '',
+			feeType: '',
+			paymentMethod: '',
+			price: '',
+			priceInWords: '',
+			remarks: '',
+			successUrl: 'https://developer.esewa.com.np/success',
+			failureUrl: 'https://developer.esewa.com.np/failure',
+			signature: ''
+		}),
+		{ studentName, studentId, program, semester, feeType, paymentMethod, price, priceInWords, remarks, successUrl, failureUrl, signature } = formData
+
+	useEffect(() => {
+		if( includeUser ) {
+			ourFetch({
+				api: '/students-only',
+				callback: fetchCallback,
+				setter: setStudents
+			})
+		}
+	}, [])
 
 	function generateRandomString() {
 		const strings = "jdkfjakfjdkjj34kj23i42i4u23i4u23i423u4i";
@@ -157,13 +177,31 @@ export const PayFees = () => {
 		}));
 	};
 
+	const handleReactSelectChange = ( option ) => {
+		setFormData({
+			...formData,
+			studentId: option.value
+		})
+	};
+
 	return (
-		<div className='pay-fees-wrapper'>
+		<div className='cmg-form-wrapper'>
 			<form id="student-pay-fees" onSubmit={ handleSubmit }>
 				<div className="form-head">
 					<h2 className="form-title">College Fee Payment</h2>
 					<span className="form-excerpt">Please fill in your fee details below.</span>
 				</div>
+
+				{ includeUser && <div className="form-field">
+					<label className="form-label" htmlFor="feeType">Name <span className="form-error">*</span></label>
+					<Select
+						options = { studentOptions }
+						className = 'react-select'
+						name = 'studentId'
+						value = { getCurrentSelectValue( studentOptions, studentId ) }
+						onChange = { handleReactSelectChange }
+					/>
+				</div> }
 
 				<div className="form-field">
 					<label className="form-label" htmlFor="feeType">Fee Type <span className="form-error">*</span></label>
@@ -201,9 +239,7 @@ export const PayFees = () => {
 					</select>
 				</div>
 
-				<div className="form-field">
-					<input value="Pay Now" className="submit-button" type="submit"/>
-				</div>
+				<input value="Pay Now" className="submit-button" type="submit"/>
 			</form>
 		</div>
 	);
