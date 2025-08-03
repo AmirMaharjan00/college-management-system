@@ -1,0 +1,64 @@
+#cmg-table {
+    border-collapse: collapse;
+    font-size: 0.9em;
+    min-width: 400px;
+    width: 100%;
+    text-align: left;
+    border-radius: 5px 5px 0 0;
+    overflow: hidden;
+    table-layout: fixed;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.15);
+
+    .table-section {
+        height: 530px;
+        overflow-y: scroll;
+        margin: 15px 0;
+    }
+
+    thead tr th {
+        width: 300px;
+        text-align: left;
+        font-weight: 600;
+        background: var(--default);
+        font-weight: bold;
+        color: white;
+        padding: 12px 15px;
+    }
+
+    tbody tr {
+        &:nth-child(even) {
+            background: #ffffff;
+        }
+
+        td {
+            padding: 20px 15px;
+        }
+
+        .profile {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+
+            figure {
+                height: 30px;
+                width: 30px;
+                
+                img {
+                    height: 100%;
+                    width: 100%;
+                    border-radius: 50%;
+                    object-fit: cover;
+                }
+            }
+
+            .name a {
+                text-decoration: none;
+                color: var(--color);
+            }
+
+            .name:hover a {
+                color: var(--blue);
+            }
+        }
+    }
+}

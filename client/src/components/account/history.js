@@ -4,6 +4,7 @@ import { TodaysDate } from "../includes/components-hooks"
 import { RowAndSearch, Pagination } from '../library/books'
 import { fetchCallback, ourFetch } from "../functions"
 import { useDate } from "../includes/hooks"
+import { Link } from "react-router-dom"
 
 /**
  * History
@@ -88,7 +89,7 @@ const Table = ( props ) => {
     const { convertedDate } = useDate(),
         { filteredAccounts } = props
 
-    return <table className='table-wrapper'>
+    return <table className='table-wrapper' id="cmg-table">
         <thead>
             <tr>
                 <th>S.No</th>
@@ -105,12 +106,19 @@ const Table = ( props ) => {
             {
                 filteredAccounts.map(( account, index ) => {
                     let count = index + 1,
-                        { id, userId, name, amount, message, type, purpose, date } = account
+                        { id, userId, name, amount, message, type, purpose, date, profile } = account
 
                     return <tr key={ index }>
                         <td>{ `${ count }.` }</td>
                         <td>{ id }</td>
-                        <td>{ `${ name } ( ${ userId } )` }</td>
+                        <td>
+                            <div className='profile'>
+                                <figure>
+                                    <img src={ profile } alt={ name }/>
+                                </figure>
+                                <span className='name'><Link to="/dashboard/user-details" state={{ user: userId }}>{ `${ name } ( ${ userId } )` }</Link></span>
+                            </div>
+                        </td>
                         <td>{ `Rs. ${ amount }` }</td>
                         <td>
                             <span className={ `type ${ type }` }>{ type.slice( 0, 1 ).toUpperCase() + type.slice( 1 ) }</span>

@@ -8,6 +8,7 @@ import staff from '../assets/images/staff.png'
 import '../assets/scss/account.scss'
 import '../assets/scss/form.scss'
 import '../assets/scss/charts.scss'
+import '../assets/scss/table.scss'
 import { LineChart, DoughnutChart } from '../charts'
 import { PayFees } from '../student/fees'
 import { GLOBALCONTEXT } from "../../App";

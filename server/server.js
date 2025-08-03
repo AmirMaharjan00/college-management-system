@@ -889,7 +889,7 @@ app.post( '/today-income', ( request, res ) => {
 * MARK: ALL ACCOUNTS
 */
 app.post( '/accounts', ( request, res ) => { 
-  const selectQuery = `SELECT account.*, users.name from account JOIN users ON account.userId = users.id ORDER BY account.date DESC;`
+  const selectQuery = `SELECT account.*, users.name, users.profile from account JOIN users ON account.userId = users.id ORDER BY account.date DESC;`
   con.query( selectQuery, ( error, result ) => {
     if ( error ) return res.status( 500 ).json({ error: "Database selection failed" });
     return res.status( 200 ).json({ result, success: true });
@@ -900,7 +900,7 @@ app.post( '/accounts', ( request, res ) => {
 * MARK: ALL PAYROLLS
 */
 app.post( '/all-payrolls', ( request, res ) => { 
-  const selectQuery = `SELECT account.*, users.name FROM account JOIN users ON account.userId = users.id WHERE type="expenses" AND purpose="payroll" ORDER BY account.date DESC;`
+  const selectQuery = `SELECT account.*, users.name, users.profile FROM account JOIN users ON account.userId = users.id WHERE type="expenses" AND purpose="payroll" ORDER BY account.date DESC;`
   con.query( selectQuery, ( error, result ) => {
     if ( error ) return res.status( 500 ).json({ error: "Database selection failed" });
     return res.status( 200 ).json({ result, success: true });

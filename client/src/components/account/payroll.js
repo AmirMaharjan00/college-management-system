@@ -5,6 +5,7 @@ import { fetchCallback, ourFetch, getCurrentSelectValue } from "../functions"
 import { useDate } from "../includes/hooks"
 import Select from 'react-select'
 import { GLOBALCONTEXT } from "../../App"
+import { Link } from "react-router-dom"
 
 /**
  * Payroll
@@ -78,8 +79,27 @@ export const Payroll = () => {
             setRowsPerPage = { setRowsPerPage }
             setSearched = { setSearched }
         >
-            {/* <button>a</button>
-            <button>b</button> */}
+            <select className="payroll-select year">
+                <option>All</option>
+                <option>2025</option>
+                <option>2024</option>
+                <option>2023</option>
+            </select>
+            <select className="payroll-select month">
+                <option value="0">All</option>
+                <option value="1">January</option>
+                <option value="2">February</option>
+                <option value="3">March</option>
+                <option value="4">April</option>
+                <option value="5">May</option>
+                <option value="6">June</option>
+                <option value="7">July</option>
+                <option value="8">August</option>
+                <option value="9">September</option>
+                <option value="10">Octumber</option>
+                <option value="11">November</option>
+                <option value="12">December</option>
+            </select>
         </RowAndSearch>
 
         <Table
@@ -106,7 +126,7 @@ const Table = ( props ) => {
     const { convertedDate } = useDate(),
         { filteredPayrolls } = props
 
-    return <table className='table-wrapper'>
+    return <table className='table-wrapper' id="cmg-table">
         <thead>
             <tr>
                 <th>S.No</th>
@@ -121,12 +141,19 @@ const Table = ( props ) => {
             {
                 filteredPayrolls.map(( account, index ) => {
                     let count = index + 1,
-                        { id, userId, name, amount, message, purpose, date } = account
+                        { id, userId, name, amount, message, date, profile } = account
 
                     return <tr key={ index }>
                         <td>{ `${ count }.` }</td>
                         <td>{ id }</td>
-                        <td>{ `${ name } ( ${ userId } )` }</td>
+                        <td>
+                            <div className='profile'>
+                                <figure>
+                                    <img src={ profile } alt={ name }/>
+                                </figure>
+                                <span className='name'><Link to="/dashboard/user-details" state={{ user: userId }}>{ `${ name } ( ${ userId } )` }</Link></span>
+                            </div>
+                        </td>
                         <td>{ `Rs. ${ amount }` }</td>
                         <td>{ message }</td>
                         <td>{ convertedDate( date ) }</td>
