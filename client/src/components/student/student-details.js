@@ -221,9 +221,82 @@ const TimeTable = () => {
  * MARK: leave
  */
 const Leave = () => {
-    return <div>
-        Leave
-    </div>
+    return <>
+        <div className="leave-container">
+            <div className="leave-tabs sub-card">
+                <button className="leave-tabs__button leave-tabs__button--active">Leaves</button>
+                <button className="leave-tabs__button">Attendance</button>
+            </div>
+
+            <div className="leave-summary sub-card">
+                <div className="leave-summary__card">
+                    <p className="leave-summary__title">Medical Leave (10)</p>
+                    <p className="leave-summary__stats">
+                        <span className="leave-summary__used">Used : 5</span>
+                        <span className="leave-summary__available">Available : 5</span>
+                    </p>
+                </div>
+                <div className="leave-summary__card">
+                    <p className="leave-summary__title">Casual Leave (12)</p>
+                    <p className="leave-summary__stats">
+                        <span className="leave-summary__used">Used : 1</span>
+                        <span className="leave-summary__available">Available : 11</span>
+                    </p>
+                </div>
+                <div className="leave-summary__card">
+                    <p className="leave-summary__title">Maternity Leave (10)</p>
+                    <p className="leave-summary__stats">
+                        <span className="leave-summary__used">Used : 0</span>
+                        <span className="leave-summary__available">Available : 10</span>
+                    </p>
+                </div>
+                <div className="leave-summary__card">
+                    <p className="leave-summary__title">Paternity Leave (0)</p>
+                    <p className="leave-summary__stats">
+                        <span className="leave-summary__used">Used : 0</span>
+                        <span className="leave-summary__available">Available : 0</span>
+                    </p>
+                </div>
+            </div>
+
+            <div className="leave-section">
+                <div className="leave-section__header">
+                    <h3 className="leave-section__title">Leaves</h3>
+                    <button className="leave-section__apply-button">Apply Leave</button>
+                </div>
+
+                <div className="leave-section__table">
+                    <table className="leave-table">
+                        <thead>
+                            <tr>
+                                <th>Leave Type</th>
+                                <th>Leave Date</th>
+                                <th>No Of Days</th>
+                                <th>Applied Date</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Casual Leave</td>
+                                <td>07 May 2024 - 07 May 2024</td>
+                                <td>1</td>
+                                <td>07 May 2024</td>
+                                <td className="leave-table__status leave-table__status--approved"><span>Approved</span></td>
+                            </tr>
+                            <tr>
+                                <td>Casual Leave</td>
+                                <td>07 May 2024 - 07 May 2024</td>
+                                <td>1</td>
+                                <td>07 May 2024</td>
+                                <td className="leave-table__status leave-table__status--approved"><span>Approved</span></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </>
 }
 
 /**
@@ -248,7 +321,59 @@ const Exam = () => {
  * MARK: Library
  */
 const Library = () => {
-    return <div>
-        Library
-    </div>
+    return <>
+        <div className="library">
+            <div className="library__header">
+                <h3 className="library__title">Library</h3>
+                <button className="library__filter-button">This Year</button>
+            </div>
+
+            <div className="library__list">
+                <div className="library__card">
+                    <div className="library__thumbnail thumbnail"></div>
+                    <h2 className="library__book-title">The Small-Town Library</h2>
+                    <div className="library__dates">
+                        <span className="library__date-item">
+                            <span className="library__date-label">Book taken on</span>
+                            <p className="library__date-value">25 Jan 2024</p>
+                        </span>
+                        <span className="library__date-item">
+                            <span className="library__date-label">Last Date</span>
+                            <p className="library__date-value">25 Jan 2024</p>
+                        </span>
+                    </div>
+                </div>
+
+                <div className="library__card">
+                    <div className="library__thumbnail thumbnail"></div>
+                    <h2 className="library__book-title">The Small-Town Library</h2>
+                    <div className="library__dates">
+                        <span className="library__date-item">
+                            <span className="library__date-label">Book taken on</span>
+                            <p className="library__date-value">25 Jan 2024</p>
+                        </span>
+                        <span className="library__date-item">
+                            <span className="library__date-label">Last Date</span>
+                            <p className="library__date-value">25 Jan 2024</p>
+                        </span>
+                    </div>
+                </div>
+
+                <div className="library__card">
+                    <div className="library__thumbnail thumbnail"></div>
+                    <h2 className="library__book-title">The Small-Town Library</h2>
+                    <div className="library__dates">
+                        <span className="library__date-item">
+                            <span className="library__date-label">Book taken on</span>
+                            <p className="library__date-value">25 Jan 2024</p>
+                        </span>
+                        <span className="library__date-item">
+                            <span className="library__date-label">Last Date</span>
+                            <p className="library__date-value">25 Jan 2024</p>
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </>
 }
