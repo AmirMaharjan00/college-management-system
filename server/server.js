@@ -777,6 +777,20 @@ app.post('/add-payroll', (req, res) => {
 });
 
 /**
+ * MARK: ADD FINE
+ */
+app.post('/add-fine', (req, res) => {
+  const { userId, amount, message } = req.body
+  const insertQuery = `INSERT INTO account (userId, amount, message, type, purpose) VALUES (${ userId }, ${ amount }, "${ message }", "income", "fine");`
+  con.query( insertQuery, [ userId, amount, message ], ( error, result ) => {
+    if ( error ) {
+      return res.status( 500 ).json({ error: "Database insertion failed" });
+    }
+    return res.status( 200 ).json({ message: "Data inserted successfully!", id: result.insertId, success: true });
+  })
+});
+
+/**
  * MARK: EXPENSES ONLY
  */
 app.post( '/expenses', ( request, res ) => { 

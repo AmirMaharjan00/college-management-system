@@ -18,18 +18,22 @@ export const Payroll = () => {
         [ rowsPerPage, setRowsPerPage ] = useState( 10 ),
         [ activePage, setActivePage ] = useState( 1 ),
         [ formMode, setFormMode ] = useState( 'new' ),
+        [ year, setYear ] = useState( 0 ),
+        [ month, setMonth ] = useState( 0 ),
         totalPages = new Array( Math.ceil( payrolls.length / rowsPerPage ) ).fill( 0 ),
         filteredPayrolls = useMemo(() => {
-            if( searched === '' ) return payrolls.slice( ( activePage - 1 ) * rowsPerPage, ( activePage * rowsPerPage ) );
+            if( searched === '' ) {
+                return payrolls.slice( ( activePage - 1 ) * rowsPerPage, ( activePage * rowsPerPage ) );
+            }
             let newList = payrolls.reduce(( val, account ) => {
                 let { name } = account
-                if(  name.toLowerCase().includes( searched ) ) {
+                if( name.toLowerCase().includes( searched ) ) {
                     val = [ ...val, account ]
                 }
                 return val
             }, [])
             return newList.slice( 0, 10 );
-        }, [ searched, payrolls, activePage, rowsPerPage ])
+        }, [ searched, payrolls, activePage, rowsPerPage, year, month ])
     
     useEffect(() => {
         ourFetch({

@@ -151,13 +151,21 @@ const CollectFine = ( props ) => {
         { formVisibility, setCurrentBookId, setFormVisibility, setDeleteBookVisibility, setOverlay, setHeaderOverlay } = globalObject,
         { setSubmitSuccess } = props,
         [ fines, setFines ] = useState([]),
-        [ fineId, setFineId ] = useState( ''),
+        [ fineId, setFineId ] = useState( '' ),
         finedUsersOptions = useMemo(() => {
+            console.log( fines )
             return fines.reduce(( val, fine ) => {
                 let { id, name, userId } = fine
                 val = [ ...val, { value: id, label: `${ name } (${ userId })` }]
                 return val
             }, [])
+        }, [ fines ]),
+        userIds = useMemo(() => {
+            return fines.reduce(( val, fine ) => {
+                let { id, ...remain } = fine
+                val = { ...val, [ id ]: remain }
+                return val
+            }, {})
         }, [ fines ])
 
     useEffect(() => {
@@ -167,6 +175,10 @@ const CollectFine = ( props ) => {
             callback: fetchCallback
         })
     }, [])
+
+    useEffect(() => {
+        console.log( userIds )
+    }, [ userIds ])
 
     /**
      * Handle React select
@@ -183,7 +195,7 @@ const CollectFine = ( props ) => {
         ourFetch({
             api: '/update-fine',
             callback: formSubmitCallback,
-            body: JSON.stringify({ id: fineId })
+            body: JSON.stringify({ id: fineId, userId: userIds[ fineId ] })
         })
     }
 
@@ -199,6 +211,16 @@ const CollectFine = ( props ) => {
             setHeaderOverlay( false )
             setCurrentBookId( 0 )
             setFormVisibility( false )
+            ourFetch({
+                api: '/add-fine',
+                body: JSON.stringify({ 
+                    userId: userIds[ fineId ]?.userId,
+                    message: `${ userIds[ fineId ]?.name } paid library fine`, 
+                    amount: userIds[ fineId ]?.fineAmount,
+                    type: 'income',
+                    purpose: 'fine'
+                }),
+            })
         }
     }
 
