@@ -37,6 +37,7 @@ import { Complaints } from './components/academic/complaints.js'
 import { Examinations } from './components/academic/examinations.js'
 import { HomeWork } from './components/academic/home-work.js'
 import { Routines } from './components/academic/routines.js'
+import { Courses } from './components/academic/courses.js'
 import { Subjects } from './components/academic/subjects.js'
 import { Syllabus } from './components/academic/syllabus.js'
 import { TimeTable } from './components/academic/time-table.js'
@@ -138,6 +139,7 @@ const Links = () => {
         <Route exact path='/dashboard/academic/examinations' element={ <Examinations /> }/>
         <Route exact path='/dashboard/academic/home-work' element={ <HomeWork /> }/>
         <Route exact path='/dashboard/academic/routines' element={ <Routines /> }/>
+        <Route exact path='/dashboard/academic/courses' element={ <Courses /> }/>
         <Route exact path='/dashboard/academic/subjects' element={ <Subjects /> }/>
         <Route exact path='/dashboard/academic/syllabus' element={ <Syllabus /> }/>
         <Route exact path='/dashboard/academic/time-table' element={ <TimeTable /> }/>

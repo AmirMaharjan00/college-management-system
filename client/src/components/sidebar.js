@@ -73,43 +73,49 @@ export const Sidebar = () => {
                     <span>Academic</span>
                 </h2>
                 <ul className="cmg-submenu">
-                    <li className={ getClass( 'routines' ) }>
+                    <li className={ getClass( '/dashboard/academic/routines' ) }>
                         <Link to="/dashboard/academic/routines" className='cmg-icon-wrapper'>
                             <span className='cmg-icon'><FontAwesomeIcon icon={ faTable }/></span>
                             <span className='cmg-icon-label'>Class Routines</span>
                         </Link>
                     </li >
-                    <li className={ getClass( 'subjects' ) }>
+                    <li className={ getClass( '/dashboard/academic/courses' ) }>
+                        <Link to="/dashboard/academic/courses" className='cmg-icon-wrapper'>
+                            <span className='cmg-icon'><FontAwesomeIcon icon={ faBookOpen }/></span>
+                            <span className='cmg-icon-label'>Courses</span>
+                        </Link>
+                    </li >
+                    <li className={ getClass( '/dashboard/academic/subjects' ) }>
                         <Link to="/dashboard/academic/subjects" className='cmg-icon-wrapper'>
                             <span className='cmg-icon'><FontAwesomeIcon icon={ faBookOpen }/></span>
                             <span className='cmg-icon-label'>Subject</span>
                         </Link>
                     </li >
-                    <li className={ getClass( 'syllabus' ) }>
+                    <li className={ getClass( '/dashboard/academic/syllabus' ) }>
                         <Link to="/dashboard/academic/syllabus" className='cmg-icon-wrapper'>
                             <span className='cmg-icon'><FontAwesomeIcon icon={ faClipboardList }/></span>
                             <span className='cmg-icon-label'>Syllabus</span>
                         </Link>
                     </li >
-                    <li className={ getClass( 'home-work' ) }>
+                    <li className={ getClass( '/dashboard/academic/home-work' ) }>
                         <Link to="/dashboard/academic/home-work" className='cmg-icon-wrapper'>
                             <span className='cmg-icon'><FontAwesomeIcon icon={ faListCheck }/></span>
                             <span className='cmg-icon-label'>Home Work</span>
                         </Link>
                     </li >
-                    <li className={ getClass( 'examinations' ) }>
+                    <li className={ getClass( '/dashboard/academic/examinations' ) }>
                         <Link to="/dashboard/academic/examinations" className='cmg-icon-wrapper'>
                             <span className='cmg-icon'><FontAwesomeIcon icon={ faFilePen }/></span>
                             <span className='cmg-icon-label'>Examinations</span>
                         </Link>
                     </li >
-                    <li className={ getClass( 'complaints' ) }>
+                    <li className={ getClass( '/dashboard/academic/complaints' ) }>
                         <Link to="/dashboard/academic/complaints" className='cmg-icon-wrapper'>
                             <span className='cmg-icon'><FontAwesomeIcon icon={ faCircleExclamation }/></span>
                             <span className='cmg-icon-label'>Complaints</span>
                         </Link>
                     </li >
-                    <li className={ getClass( 'time-table' ) }>
+                    <li className={ getClass( '/dashboard/academic/time-table' ) }>
                         <Link to="/dashboard/academic/time-table" className='cmg-icon-wrapper'>
                             <span className='cmg-icon'><FontAwesomeIcon icon={ faCircleExclamation }/></span>
                             <span className='cmg-icon-label'>Time Table</span>

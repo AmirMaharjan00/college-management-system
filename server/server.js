@@ -287,7 +287,7 @@ app.post( '/courses', ( request, res ) => {
 * MARK: Subjects API
 */
 app.post( '/subjects', ( request, res ) => { 
-  const selectQuery = `SELECT * FROM subjects`
+  const selectQuery = `SELECT subjects.*, courses.name AS courseName, courses.abbreviation FROM subjects JOIN courses ON subjects.course_id = courses.id ORDER BY subjects.id DESC`
   con.query( selectQuery, ( error, result ) => {
     if ( error ) {
       return res.status( 500 ).json({ error: "Database selection failed" });
