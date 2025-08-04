@@ -109,6 +109,12 @@ export const Sidebar = () => {
                             <span className='cmg-icon-label'>Complaints</span>
                         </Link>
                     </li >
+                    <li className={ getClass( 'time-table' ) }>
+                        <Link to="/dashboard/academic/time-table" className='cmg-icon-wrapper'>
+                            <span className='cmg-icon'><FontAwesomeIcon icon={ faCircleExclamation }/></span>
+                            <span className='cmg-icon-label'>Time Table</span>
+                        </Link>
+                    </li >
                 </ul >
             </div>
             {

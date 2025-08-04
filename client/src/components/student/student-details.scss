@@ -550,7 +550,7 @@
 // Library
 .library {
 	padding: 1.5rem;
-	background-color: #f8f9fb;
+	background-color: #ffffff;
 	border-radius: 10px;
 
 	&__header {
@@ -586,7 +586,7 @@
 
 	&__list {
 		display: grid;
-		grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+		grid-template-columns: repeat(3, 1fr);
 		gap: 1.5rem;
 	}
 
@@ -603,8 +603,8 @@
 		}
 
 		.library__thumbnail {
-			width: 64px;
-			height: 80px;
+			width: 70px;
+			height: 65px;
 			background-color: #d1d5db;
 			border-radius: 6px;
 			margin-bottom: 1rem;
