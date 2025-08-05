@@ -6,6 +6,9 @@ import { useDate } from '../includes/hooks'
 import { TodaysDate } from '../includes/components-hooks'
 import './student-details.scss'
 import { useCallback } from 'react'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faCalendarMinus, faGraduationCap, faTable, faFileInvoiceDollar, faLinesLeaning, faAngleDown } from '@fortawesome/free-solid-svg-icons';
+import { RowAndSearch, ActionButton, Pagination } from '../components'
 
 
 /**
@@ -133,12 +136,12 @@ export const StudentDetails = () => {
             <div className="student-main">
                 <div className="student-main__tabs">
                     <ul className="student-main__tab-list">
-                        <li className={ `student-main__tab-item ${( tab === 'details' ? 'active' : '' )}` } onClick={() => handleTabClick( 'details' )}>Student Details</li>
-                        <li className={ `student-main__tab-item ${( tab === 'time-table' ? 'active' : '' )}` } onClick={() => handleTabClick( 'time-table' )}>Time Table</li>
-                        <li className={ `student-main__tab-item ${( tab === 'leave' ? 'active' : '' )}` } onClick={() => handleTabClick( 'leave' )}>Leave & Attendance</li>
-                        <li className={ `student-main__tab-item ${( tab === 'fees' ? 'active' : '' )}` } onClick={() => handleTabClick( 'fees' )}>Fees</li>
-                        <li className={ `student-main__tab-item ${( tab === 'exam' ? 'active' : '' )}` } onClick={() => handleTabClick( 'exam' )}>Exam & Results</li>
-                        <li className={ `student-main__tab-item ${( tab === 'library' ? 'active' : '' )}` } onClick={() => handleTabClick( 'library' )}>Library</li>
+                        <li className={ `student-main__tab-item ${( tab === 'details' ? 'active' : '' )}` } onClick={() => handleTabClick( 'details' )}><span className="icon"><FontAwesomeIcon icon={ faGraduationCap } /></span>Student Details</li>
+                        <li className={ `student-main__tab-item ${( tab === 'time-table' ? 'active' : '' )}` } onClick={() => handleTabClick( 'time-table' )}><span className="icon"><FontAwesomeIcon icon={ faTable } /></span>Time Table</li>
+                        <li className={ `student-main__tab-item ${( tab === 'leave' ? 'active' : '' )}` } onClick={() => handleTabClick( 'leave' )}><span className="icon"><FontAwesomeIcon icon={ faCalendarMinus } /></span>Leave & Attendance</li>
+                        <li className={ `student-main__tab-item ${( tab === 'fees' ? 'active' : '' )}` } onClick={() => handleTabClick( 'fees' )}><span className="icon"><FontAwesomeIcon icon={  faFileInvoiceDollar } /></span>Fees</li>
+                        <li className={ `student-main__tab-item ${( tab === 'exam' ? 'active' : '' )}` } onClick={() => handleTabClick( 'exam' )}><span className="icon"><FontAwesomeIcon icon={ faTable } /></span>Exam & Results</li>
+                        <li className={ `student-main__tab-item ${( tab === 'library' ? 'active' : '' )}` } onClick={() => handleTabClick( 'library' )}><span className="icon"><FontAwesomeIcon icon={ faLinesLeaning } /></span>Library</li>
                     </ul>
                 </div>
                 { ( tab === 'details' ) && <Details /> }
@@ -277,6 +280,8 @@ const Leave = () => {
                     <button className="leave-section__apply-button">Apply Leave</button>
                 </div>
 
+                <RowAndSearch />
+
                 <div className="leave-section__table">
                     <table className="leave-table">
                         <thead>
@@ -315,18 +320,90 @@ const Leave = () => {
  * MARK: fees
  */
 const Fees = () => {
-    return <div>
-        Fees
-    </div>
+    return <>
+        <div className="fees-wrapper">
+            <div className="fees-header">
+                <h3 className="fees-title">Fees</h3>
+                <div className="fees__filter-button dropdown">
+                    <span className="cmg-active-dropdown-item">
+                        <span className="icon"><FontAwesomeIcon icon={ faCalendarMinus } /></span>
+                        <span className="label">Year: 2024 / 2025</span>
+                    </span>
+                    <ul className="cmg-dropdown">
+                        <li className="cmg-list-item active">Year: 2024 / 2025</li>
+                        <li className="cmg-list-item">Year: 2023 / 2024</li>
+                        <li className="cmg-list-item">Year: 2022 / 2023</li>
+                    </ul>
+                    <span className="fees-dropdown-icon"><FontAwesomeIcon icon={ faAngleDown } /></span>
+                </div>
+            </div>
+
+            <RowAndSearch />
+
+            <div className="fees-table-wrapper">
+                <table className="fees-table">
+                    <thead>
+                        <tr>
+                            <th>Fees Group</th>
+                            <th>Due Date</th>
+                            <th>Amount $</th>
+                            <th>Status</th>
+                            <th>Ref Id</th>
+                            <th>Mode</th>
+                            <th>Date Paid</th>
+                            <th>Discount $</th>
+                            <th>Fine $</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Class 1 General</td>
+                            <td>10 Jan 2024</td>
+                            <td>25000</td>
+                            <td>Paid</td>
+                            <td>#4566</td>
+                            <td>Cash</td>
+                            <td>05 Jan 2024</td>
+                            <td>10%</td>
+                            <td>0</td>
+                        </tr>
+                        <tr>
+                            <td>Class 1 General</td>
+                            <td>10 Jan 2024</td>
+                            <td>25000</td>
+                            <td>Paid</td>
+                            <td>#4566</td>
+                            <td>Cash</td>
+                            <td>05 Jan 2024</td>
+                            <td>10%</td>
+                            <td>0</td>
+                        </tr>
+                        <tr>
+                            <td>Class 1 General</td>
+                            <td>10 Jan 2024</td>
+                            <td>25000</td>
+                            <td>Paid</td>
+                            <td>#4566</td>
+                            <td>Cash</td>
+                            <td>05 Jan 2024</td>
+                            <td>10%</td>
+                            <td>0</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+            {/* <Pagination /> */}
+    </>
 }
 
 /**
  * MARK: Exam & Results
  */
 const Exam = () => {
-    return <div>
-        Exam
-    </div>
+    return <>
+        
+    </>
 }
 
 /**
@@ -337,7 +414,17 @@ const Library = () => {
         <div className="library">
             <div className="library__header">
                 <h3 className="library__title">Library</h3>
-                <button className="library__filter-button">This Year</button>
+                <div className="library__filter-button dropdown">
+                    <span className="cmg-active-dropdown-item">
+                        <span className="icon"><FontAwesomeIcon icon={ faCalendarMinus } /></span>
+                        <span className="label">This Year</span>
+                    </span>
+                    <ul className="cmg-dropdown">
+                        <li className="cmg-list-item active">This Year</li>
+                        <li className="cmg-list-item">This Month</li>
+                        <li className="cmg-list-item">This Week</li>
+                    </ul>
+                </div>
             </div>
 
             <div className="library__list">

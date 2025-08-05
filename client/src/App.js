@@ -40,7 +40,6 @@ import { Routines } from './components/academic/routines.js'
 import { Courses } from './components/academic/courses.js'
 import { Subjects } from './components/academic/subjects.js'
 import { Syllabus } from './components/academic/syllabus.js'
-import { TimeTable } from './components/academic/time-table.js'
 
 export const GLOBALCONTEXT = createContext()
 
@@ -142,7 +141,6 @@ const Links = () => {
         <Route exact path='/dashboard/academic/courses' element={ <Courses /> }/>
         <Route exact path='/dashboard/academic/subjects' element={ <Subjects /> }/>
         <Route exact path='/dashboard/academic/syllabus' element={ <Syllabus /> }/>
-        <Route exact path='/dashboard/academic/time-table' element={ <TimeTable /> }/>
       </Route>
       <Route exact path='/login' element={ <Login /> }/>
       <Route exact path='/registration' element={ <Registration /> }/>

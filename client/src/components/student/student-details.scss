@@ -202,11 +202,19 @@
 				border-bottom: 2px solid transparent;
 				color: #4b5563;
 				transition: 0.2s ease-in;
+				font-size: 15px;
+				display: flex;
+				align-items: center;
+				gap: 10px;
 
 				&:hover,
 				&.active {
 					color: #4f46e5;
 					border-color: #4f46e5;
+				}
+
+				& .icon {
+					font-size: 11px;
 				}
 			}
 		}
@@ -546,6 +554,135 @@
 		}
 	}
 
+// Fees
+.fees-wrapper {
+	background: #fff;
+	border-radius: 8px;
+	overflow: hidden;
+	box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+	font-family: 'Segoe UI', sans-serif;
+	font-size: 14px;
+	color: #333;
+
+	.fees-header {
+		display: flex;
+		justify-content: space-between;
+		align-items: center;
+		padding: 20px;
+		border-bottom: 1px solid #efefef;
+
+		.fees-title {
+			font-size: 20px;
+			font-weight: 600;
+		}
+
+		.fees__filter-button {
+			position: relative;
+			background: #f8f9fc;
+			border: 1px solid #dfe3e8;
+			border-radius: 5px;
+			padding: 6px 12px;
+			cursor: pointer;
+			display: flex;
+			align-items: center;
+			gap: 8px;
+
+			.label {
+				font-weight: 500;
+				color: #333;
+			}
+
+			.icon {
+				color: #666;
+			}
+
+			.cmg-dropdown {
+				position: absolute;
+				top: 100%;
+				left: 0;
+				background: #fff;
+				border: 1px solid #dcdcdc;
+				border-radius: 5px;
+				margin-top: 4px;
+				z-index: 10;
+				width: max-content;
+				padding: 0;
+
+				.cmg-list-item {
+					padding: 8px 12px;
+					cursor: pointer;
+
+					&:hover {
+						background-color: #f0f0f0;
+					}
+
+					&.active {
+						background-color: #e9ecef;
+						font-weight: 600;
+					}
+				}
+			}
+		}
+
+		.fees-dropdown-icon {
+			margin-left: 6px;
+			color: #666;
+		}
+	}
+
+	.fees-table-wrapper {
+		overflow-x: auto;
+
+		.fees-table {
+			width: 100%;
+			border-collapse: collapse;
+
+			thead {
+				background-color: #f8f9fc;
+
+				th {
+				padding: 12px 20px;
+				text-align: left;
+				font-weight: 600;
+				font-size: 13px;
+				border-bottom: 1px solid #e0e0e0;
+				white-space: nowrap;
+				}
+			}
+
+			tbody {
+				tr {
+					&:nth-child(odd) {
+						background-color: #fff;
+					}
+
+					&:nth-child(even) {
+						background-color: #f9f9f9;
+					}
+
+					td {
+						padding: 12px 20px;
+						border-bottom: 1px solid #eaeaea;
+						white-space: nowrap;
+
+						&.status {
+							.paid {
+								background: #d4f8d4;
+								color: #28a745;
+								font-weight: 600;
+								font-size: 13px;
+								padding: 4px 8px;
+								border-radius: 12px;
+								display: inline-block;
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+}
+
 
 // Library
 .library {
@@ -580,6 +717,15 @@
 
 			&:hover {
 				background-color: #f1f3f5;
+			}
+
+			& .icon {
+				font-size: 12px;
+			}
+
+			#root & .cmg-dropdown {
+				right: 0;
+				top: 36px;
 			}
 		}
 	}
