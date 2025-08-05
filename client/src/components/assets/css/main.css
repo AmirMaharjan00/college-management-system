@@ -158,11 +158,12 @@ MARK: Global
     }
 
     #root .cmg-active-dropdown-item {
-        align-self: center;
+        display: flex;
+        align-items: center;
+        gap: 8px;
     }
 
     #root .cmg-active-dropdown-item .label {
-        margin-right: 5px;
         text-transform: capitalize;
     }
 
