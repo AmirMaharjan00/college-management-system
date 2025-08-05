@@ -83,8 +83,8 @@ con.connect(function(err) {
         });
 
         /**
-         * Create Courses Table
-         * MARK: Courses
+         * Create Subjects Table
+         * MARK: Subjects
          */
         let subjectsQuery = "CREATE TABLE IF NOT EXISTS subjects ("
           subjectsQuery += "id INT(11) NOT NULL AUTO_INCREMENT PRIMARY KEY, "
@@ -92,6 +92,7 @@ con.connect(function(err) {
           subjectsQuery += "course_id INT(11), "
           subjectsQuery += "semester INT(11) NOT NULL, "
           subjectsQuery += "year INT(11) NOT NULL, "
+          subjectsQuery += "code VARCHAR(255), "
           subjectsQuery += "registered_date DATETIME DEFAULT CURRENT_TIMESTAMP, "
           subjectsQuery += "FOREIGN KEY(course_id) REFERENCES courses(id) "
           subjectsQuery += ");"

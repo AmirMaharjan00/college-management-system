@@ -931,3 +931,15 @@ app.post( '/all-fees', ( request, res ) => {
     return res.status( 200 ).json({ result, success: true });
   })
 });
+
+/**
+* MARK: SUBJECT VIA ID
+*/
+app.post( '/subject-via-id', ( request, res ) => { 
+  const { id } = request.body
+    selectQuery = `SELECT subjects.*, courses.abbreviation FROM subjects JOIN courses ON subjects.course_id = courses.id WHERE course_id="${ id }";`
+  con.query( selectQuery, ( error, result ) => {
+    if ( error ) return res.status( 500 ).json({ error: "Database selection failed" });
+    return res.status( 200 ).json({ result, success: true });
+  })
+});
