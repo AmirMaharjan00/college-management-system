@@ -163,7 +163,7 @@ const Table = ( props ) => {
                         <td>{ convertedDate( date ) }</td>
                     </tr>
                 }) : <tr className="no-records">
-                    <td colspan="6">No records</td>
+                    <td colSpan="6">No records</td>
                 </tr>
             }
         </tbody>

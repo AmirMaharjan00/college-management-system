@@ -948,7 +948,7 @@ app.post( '/subject-via-id', ( request, res ) => {
 * MARK: ALL COMPLAINTS
 */
 app.post( '/all-complaints', ( request, res ) => { 
-  const selectQuery = `SELECT complaints.*, x.name AS complaintBy, z.name AS complaintAgainst FROM complaints JOIN users AS x ON complaints.by = x.id JOIN users AS z ON complaints.against = z.id;`
+  const selectQuery = `SELECT complaints.*, x.name AS complaintBy, x.profile as profileBy, z.name AS complaintAgainst, z.profile as profileAgainst FROM complaints JOIN users AS x ON complaints.by = x.id JOIN users AS z ON complaints.against = z.id;`
   con.query( selectQuery, ( error, result ) => {
     if ( error ) return res.status( 500 ).json({ error: "Database selection failed" });
     return res.status( 200 ).json({ result, success: true });

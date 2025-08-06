@@ -234,7 +234,7 @@ export const StudentsList = () => {
                                 </td>
                             </tr>
                         }) : <tr className="no-records">
-                            <td colspan="8">No Students.</td>
+                            <td colSpan="8">No Students.</td>
                         </tr>
                     }
                 </tbody>

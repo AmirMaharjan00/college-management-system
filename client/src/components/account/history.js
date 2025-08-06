@@ -134,7 +134,7 @@ const Table = ( props ) => {
                         </td>
                     </tr>
                 }) : <tr className="no-records">
-                    <td colspan="9">No records</td>
+                    <td colSpan="9">No records</td>
                 </tr>
             }
         </tbody>

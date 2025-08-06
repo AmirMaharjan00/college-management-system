@@ -7,18 +7,20 @@ import '../assets/scss/table.scss'
 import '../assets/scss/academic.scss'
 import { AddNewCourseSubject } from '../forms/add-new-cs'
 import { GLOBALCONTEXT } from "../../App"
+import { Link } from "react-router-dom"
 
 /**
  * Complaints
  */
 export const Complaints = () => {
     const Global = useContext( GLOBALCONTEXT ),
-        { formVisibility, formSuccess } = Global,
+        { formVisibility } = Global,
         [ complaints, setComplaints ] = useState([]),
         [ searched, setSearched ] = useState( '' ),
         [ rowsPerPage, setRowsPerPage ] = useState( 10 ),
         [ activePage, setActivePage ] = useState( 1 ),
         [ formMode, setFormMode ] = useState( 'new' ),
+        [ activeComplaint, setActiveComplaint ] = useState({}),
         totalPages = new Array( Math.ceil( complaints.length / rowsPerPage ) ).fill( 0 ),
         filteredComplaints = useMemo(() => {
             if( searched === '' ) return complaints.slice( ( activePage - 1 ) * rowsPerPage, ( activePage * rowsPerPage ) );
@@ -38,7 +40,7 @@ export const Complaints = () => {
             callback: fetchCallback,
             setter: setComplaints
         })
-    }, [ formSuccess ])
+    }, [])
 
     /**
      * Handle next & previous
@@ -74,7 +76,7 @@ export const Complaints = () => {
 
         <Table
             items = { filteredComplaints }
-            setFormMode = { setFormMode }
+            setActiveComplaint = { setActiveComplaint }
         />
 
         <Pagination
@@ -85,7 +87,9 @@ export const Complaints = () => {
             handlePagination = { handlePagination }
         />
 
-        { formVisibility && <AddNewCourseSubject /> }
+        { formVisibility && Object.keys( activeComplaint ).length && <Popup
+            complaint = { activeComplaint }
+        /> }
     </main>
 }
 
@@ -93,8 +97,20 @@ export const Complaints = () => {
  * MARK: TABLE
  */
 const Table = ( props ) => {
-    const { convertedDate } = useDate(),
-        { items } = props
+    const Global = useContext( GLOBALCONTEXT ),
+        { setOverlay, setHeaderOverlay, setFormVisibility } = Global,
+        { convertedDate } = useDate(),
+        { items, setActiveComplaint } = props
+
+    /**
+     * Handle View Click
+     */
+    const handleViewClick = ( item ) => {
+        setActiveComplaint( item )
+        setFormVisibility( true )
+        setOverlay( true )
+        setHeaderOverlay( true )
+    }
 
     return <table className='table-wrapper' id="cmg-table">
         <thead>
@@ -106,27 +122,68 @@ const Table = ( props ) => {
                 <th>Subject</th>
                 <th>Registered Date</th>
                 <th>Status</th>
+                <th>View</th>
             </tr>
         </thead>
         <tbody>
             {
-                items.length ? items.map(( account, index ) => {
+                items.length ? items.map(( item, index ) => {
                     let count = index + 1,
-                        { id, complaintBy, by, complaintAgainst, against, date, subject, status } = account
+                        { id, complaintBy, by, profileBy,complaintAgainst, against, profileAgainst, date, subject, status } = item
 
                     return <tr key={ index }>
                         <td>{ `${ count }.` }</td>
                         <td>{ id }</td>
-                        <td>{ `${ complaintBy } ( ${ by } )` }</td>
-                        <td>{ `${ complaintAgainst } ( ${ against } )` }</td>
+                        <td>
+                            <div className='profile'>
+                                <figure>
+                                    <img src={ profileBy } alt={ complaintBy }/>
+                                </figure>
+                                <span className='name'><Link to="/dashboard/user-details" state={{ user: by }}>{ `${ complaintBy } ( ${ by } )` }</Link></span>
+                            </div>
+                        </td>
+                        <td>
+                            <div className='profile-two'>
+                                <figure>
+                                    <img src={ profileAgainst } alt={ complaintAgainst }/>
+                                </figure>
+                                <span className='name'><Link to="/dashboard/user-details" state={{ user: against }}>{ `${ complaintAgainst } ( ${ against } )` }</Link></span>
+                            </div>
+                        </td>
                         <td>{ subject }</td>
                         <td>{ convertedDate( date ) }</td>
-                        <td>{ status.slice( 0, 1 ).toUpperCase() + status.slice( 1 ) }</td>
+                        <td>
+                            <span className={ `status ${ status }` }>{ status.slice( 0, 1 ).toUpperCase() + status.slice( 1 ) }</span>
+                        </td>
+                        <td>
+                            <button onClick={() => handleViewClick( item )}>View</button>
+                        </td>
                     </tr>
                 }) : <tr className="no-records">
-                    <td colspan="7">No records</td>
+                    <td colSpan="7">No records</td>
                 </tr>
             }
         </tbody>
     </table>
+}
+
+/**
+ * MARK: POPUP
+ */
+const Popup = ( props ) => {
+    const { complaint } = props,
+        { id, subject, message } = complaint
+
+    return <div className="full-complaint">
+        <div className="head">
+            <span className="id">
+                <span>Complaint ID: </span>
+                <span className="suffix">{ id }</span>
+            </span>
+            <span className="subject">{ subject }</span>
+        </div>
+        <div className="body">
+            { message }
+        </div>
+    </div>
 }
