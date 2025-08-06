@@ -143,7 +143,7 @@ export const StaffsList = () => {
                 </thead>
                 <tbody>
                     {
-                        filteredStudents.map(( student, index ) => {
+                        filteredStudents.length ? filteredStudents.map(( student, index ) => {
                             let count = index + 1,
                                 { id, name, gender, status, registered_date, semester, abbreviation, profile } = student
                             return <tr key={ index }>
@@ -165,7 +165,9 @@ export const StaffsList = () => {
                                     <button className='more-button'><FontAwesomeIcon icon={ faEllipsisVertical }/></button>
                                 </td>
                             </tr>
-                        })
+                        }) : <tr className="no-records">
+                            <td colSpan="8">No Staffs.</td>
+                        </tr>
                     }
                 </tbody>
             </table> : <div className='grid-wrapper'>
@@ -209,11 +211,11 @@ export const StaffsList = () => {
                 }
             </div>}
         </div>
-        { filteredStudents.length ? <Pagination
+        <Pagination
             totalPages = { totalPages }
             activePage = { activePage }
             setActivePage = { setActivePage }
             handlePagination = { handlePagination }
-        /> : <div className='no-data'>No data found</div>}
+        />
     </main>
 }

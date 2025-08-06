@@ -208,7 +208,7 @@ export const StudentsList = () => {
                 </thead>
                 <tbody>
                     {
-                        filteredStudents.map(( student, index ) => {
+                        filteredStudents.length ? filteredStudents.map(( student, index ) => {
                             let count = index + 1,
                                 { id, name, gender, status, registered_date, semester, abbreviation, profile } = student
                             return <tr key={ index }>
@@ -233,7 +233,9 @@ export const StudentsList = () => {
                                     </div>
                                 </td>
                             </tr>
-                        })
+                        }) : <tr className="no-records">
+                            <td colSpan="8">No Students.</td>
+                        </tr>
                     }
                 </tbody>
             </table> : <div className='grid-wrapper' ref={ pdf }>
@@ -281,12 +283,12 @@ export const StudentsList = () => {
                 }
             </div>}
         </div>
-        { filteredStudents.length ? <Pagination
+        <Pagination
             totalPages = { totalPages }
             activePage = { activePage }
             setActivePage = { setActivePage }
             handlePagination = { handlePagination }
-        /> : <div className='no-data'>No data found</div>}
+        />
         { newRegister && <AddNewUser role={ 'student' }/> }
         { showChat && <Chat id={ chatId }/> }
         { showPayFeesForm && <PayFees /> }
