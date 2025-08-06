@@ -202,6 +202,27 @@ con.connect(function(err) {
           if( err ) throw err
           console.log( 'Books Issued Table created.' )
         });
+
+        /**
+         * Create Complaints Table
+         * MARK: Complaints
+         */
+        let complaintsQuery = "CREATE TABLE IF NOT EXISTS `complaints` ("
+          complaintsQuery += "id INT(11) NOT NULL AUTO_INCREMENT PRIMARY KEY, "
+          complaintsQuery += "`by` INT(11), "
+          complaintsQuery += "`against` INT(11), "
+          complaintsQuery += "subject TEXT NOT NULL DEFAULT '-', "
+          complaintsQuery += "message LONGTEXT NOT NULL DEFAULT '-', "
+          complaintsQuery += "file TEXT, "
+          complaintsQuery += "status ENUM('pending', 'closed', 'rejected', 'progress') DEFAULT 'pending', "
+          complaintsQuery += "date DATETIME DEFAULT CURRENT_TIMESTAMP, "
+          complaintsQuery += "FOREIGN KEY(`by`) REFERENCES users(id), "
+          complaintsQuery += "FOREIGN KEY(`against`) REFERENCES users(id) "
+          complaintsQuery += ");"
+        con.query( complaintsQuery, function (err, result) {
+          if( err ) throw err
+          console.log( 'Complaints Table created.' )
+        });
       }
     });
 });

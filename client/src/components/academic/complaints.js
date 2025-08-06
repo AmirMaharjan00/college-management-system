@@ -23,8 +23,8 @@ export const Complaints = () => {
         filteredComplaints = useMemo(() => {
             if( searched === '' ) return complaints.slice( ( activePage - 1 ) * rowsPerPage, ( activePage * rowsPerPage ) );
             let newList = complaints.reduce(( val, item ) => {
-                let { name } = item
-                if(  name.toLowerCase().includes( searched ) ) {
+                let { subject, complaintAgainst, complaintBy } = item
+                if( subject.toLowerCase().includes( searched ) || complaintAgainst.toLowerCase().includes( searched ) || complaintBy.toLowerCase().includes( searched ) ) {
                     val = [ ...val, item ]
                 }
                 return val
@@ -34,7 +34,7 @@ export const Complaints = () => {
     
     useEffect(() => {
         ourFetch({
-            api: '/complaints',
+            api: '/all-complaints',
             callback: fetchCallback,
             setter: setComplaints
         })
@@ -103,28 +103,29 @@ const Table = ( props ) => {
                 <th>ID</th>
                 <th>By</th>
                 <th>Against</th>
+                <th>Subject</th>
                 <th>Registered Date</th>
-                <th>View</th>
+                <th>Status</th>
             </tr>
         </thead>
         <tbody>
             {
                 items.length ? items.map(( account, index ) => {
                     let count = index + 1,
-                        { id, name, by, against, registered_date } = account
+                        { id, complaintBy, by, complaintAgainst, against, date, subject, status } = account
 
                     return <tr key={ index }>
                         <td>{ `${ count }.` }</td>
                         <td>{ id }</td>
-                        <td>{ name }</td>
-                        <td>{ by }</td>
-                        <td>{ against }</td>
-                        <td>{ convertedDate( registered_date ) }</td>
-                        <td>
-                            <button>View</button>
-                        </td>
+                        <td>{ `${ complaintBy } ( ${ by } )` }</td>
+                        <td>{ `${ complaintAgainst } ( ${ against } )` }</td>
+                        <td>{ subject }</td>
+                        <td>{ convertedDate( date ) }</td>
+                        <td>{ status.slice( 0, 1 ).toUpperCase() + status.slice( 1 ) }</td>
                     </tr>
-                }) : <div className="no-records">No records</div>
+                }) : <tr className="no-records">
+                    <td colspan="7">No records</td>
+                </tr>
             }
         </tbody>
     </table>

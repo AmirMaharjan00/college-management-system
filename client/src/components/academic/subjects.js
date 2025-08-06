@@ -131,7 +131,9 @@ const Table = ( props ) => {
                         <td>{ getScript( year ) }</td>
                         <td>{ convertedDate( registered_date ) }</td>
                     </tr>
-                }) : <div className="no-records">No records</div>
+                }) : <tr className="no-records">
+                    <td colspan="7">No records</td>
+                </tr>
             }
         </tbody>
     </table>

@@ -117,7 +117,7 @@ const Table = ( props ) => {
             </thead>
             <tbody>
                 {
-                    paidFines.map(( book, index ) => {
+                    paidFines.length ? paidFines.map(( book, index ) => {
                         let count = index + 1,
                             { id, name, profile, returnDate, bookName, fineAmount, userId } = book
 
@@ -136,7 +136,9 @@ const Table = ( props ) => {
                             <td>{ `Rs. ${ fineAmount }` }</td>
                             <td>{ convertedDate( returnDate ) }</td>
                         </tr>
-                    })
+                    }) : <tr className="no-records">
+                        <td colspan="7">No records</td>
+                    </tr>
                 }
             </tbody>
         </table>

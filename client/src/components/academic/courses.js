@@ -135,7 +135,9 @@ const Table = ( props ) => {
                         <td>{ `Rs. ${ semesterCost }` }</td>
                         <td>{ convertedDate( registered_date ) }</td>
                     </tr>
-                }) : <div className="no-records">No records</div>
+                }) : <tr className="no-records">
+                    <td colspan="10">No records</td>
+                </tr>
             }
         </tbody>
     </table>
