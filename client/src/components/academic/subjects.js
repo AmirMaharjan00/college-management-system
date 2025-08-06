@@ -24,7 +24,7 @@ export const Subjects = () => {
             let newAccountsList = subjects.reduce(( val, item ) => {
                 let { name } = item
                 if(  name.toLowerCase().includes( searched ) ) {
-                    val = [ ...val, item ]
+                    val = [ ...val, item ]``
                 }
                 return val
             }, [])

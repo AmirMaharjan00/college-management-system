@@ -38,7 +38,7 @@ export const StudentDetails = () => {
      * Handle Tab click
      */
     const handleTabClick = ( current ) => {
-        setTab( current )
+        setTab( current );
     }
 
     return <main className="cmg-main student-details" id="cmg-main">
@@ -138,7 +138,7 @@ export const StudentDetails = () => {
                     <ul className="student-main__tab-list">
                         <li className={ `student-main__tab-item ${( tab === 'details' ? 'active' : '' )}` } onClick={() => handleTabClick( 'details' )}><span className="icon"><FontAwesomeIcon icon={ faGraduationCap } /></span>Student Details</li>
                         <li className={ `student-main__tab-item ${( tab === 'time-table' ? 'active' : '' )}` } onClick={() => handleTabClick( 'time-table' )}><span className="icon"><FontAwesomeIcon icon={ faTable } /></span>Time Table</li>
-                        <li className={ `student-main__tab-item ${( tab === 'leave' ? 'active' : '' )}` } onClick={() => handleTabClick( 'leave' )}><span className="icon"><FontAwesomeIcon icon={ faCalendarMinus } /></span>Leave & Attendance</li>
+                        <li className={ `student-main__tab-item ${( tab === 'LeaveAttendance' ? 'active' : '' )}` } onClick={() => handleTabClick( 'LeaveAttendance' )}><span className="icon"><FontAwesomeIcon icon={ faCalendarMinus } /></span>Leave & Attendance</li>
                         <li className={ `student-main__tab-item ${( tab === 'fees' ? 'active' : '' )}` } onClick={() => handleTabClick( 'fees' )}><span className="icon"><FontAwesomeIcon icon={  faFileInvoiceDollar } /></span>Fees</li>
                         <li className={ `student-main__tab-item ${( tab === 'exam' ? 'active' : '' )}` } onClick={() => handleTabClick( 'exam' )}><span className="icon"><FontAwesomeIcon icon={ faTable } /></span>Exam & Results</li>
                         <li className={ `student-main__tab-item ${( tab === 'library' ? 'active' : '' )}` } onClick={() => handleTabClick( 'library' )}><span className="icon"><FontAwesomeIcon icon={ faLinesLeaning } /></span>Library</li>
@@ -146,7 +146,7 @@ export const StudentDetails = () => {
                 </div>
                 { ( tab === 'details' ) && <Details /> }
                 { ( tab === 'time-table' ) && <TimeTable /> }
-                { ( tab === 'leave' ) && <Leave /> }
+                { ( tab === 'LeaveAttendance' ) && <LeaveAttendance /> }
                 { ( tab === 'fees' ) && <Fees /> }
                 { ( tab === 'exam' ) && <Exam /> }
                 { ( tab === 'library' ) && <Library /> }
@@ -235,81 +235,187 @@ const TimeTable = () => {
 /**
  * MARK: leave
  */
-const Leave = () => {
+const LeaveAttendance = () => {
+    const [ tab, setTab ] = useState( 'leaves' )
+
+    const handleTabClick = ( current ) => {
+        setTab(current);
+    }
+
     return <>
         <div className="leave-container">
             <div className="leave-tabs sub-card">
-                <button className="leave-tabs__button leave-tabs__button--active">Leaves</button>
-                <button className="leave-tabs__button">Attendance</button>
+                <button className={ `leave-tabs__button ${( tab === 'leaves' ? 'leave-tabs__button--active' : '' )}` } onClick={() => handleTabClick( 'leaves' )}>Leaves</button>
+                <button className={ `leave-tabs__button ${( tab === 'attendance' ? 'leave-tabs__button--active' : '' )}` } onClick={() => handleTabClick( 'attendance' )}>Attendance</button>
+            </div>
+            { ( tab === 'leaves' ) && <Leave /> }
+            { ( tab === 'attendance' ) && <Attendance /> }
+        </div>
+    </>
+}
+
+const Leave = () => {
+    return <>
+        <div className="leave-summary sub-card">
+            <div className="leave-summary__card">
+                <p className="leave-summary__title">Medical Leave (10)</p>
+                <p className="leave-summary__stats">
+                    <span className="leave-summary__used">Used : 5</span>
+                    <span className="leave-summary__available">Available : 5</span>
+                </p>
+            </div>
+            <div className="leave-summary__card">
+                <p className="leave-summary__title">Casual Leave (12)</p>
+                <p className="leave-summary__stats">
+                    <span className="leave-summary__used">Used : 1</span>
+                    <span className="leave-summary__available">Available : 11</span>
+                </p>
+            </div>
+            <div className="leave-summary__card">
+                <p className="leave-summary__title">Maternity Leave (10)</p>
+                <p className="leave-summary__stats">
+                    <span className="leave-summary__used">Used : 0</span>
+                    <span className="leave-summary__available">Available : 10</span>
+                </p>
+            </div>
+            <div className="leave-summary__card">
+                <p className="leave-summary__title">Paternity Leave (0)</p>
+                <p className="leave-summary__stats">
+                    <span className="leave-summary__used">Used : 0</span>
+                    <span className="leave-summary__available">Available : 0</span>
+                </p>
+            </div>
+        </div>
+
+        <div className="leave-section">
+            <div className="leave-section__header">
+                <h3 className="leave-section__title">Leaves</h3>
+                <button className="leave-section__apply-button">Apply Leave</button>
             </div>
 
-            <div className="leave-summary sub-card">
-                <div className="leave-summary__card">
-                    <p className="leave-summary__title">Medical Leave (10)</p>
-                    <p className="leave-summary__stats">
-                        <span className="leave-summary__used">Used : 5</span>
-                        <span className="leave-summary__available">Available : 5</span>
-                    </p>
+            <RowAndSearch />
+
+            <div className="leave-section__table">
+                <table className="leave-table">
+                    <thead>
+                        <tr>
+                            <th>Leave Type</th>
+                            <th>Leave Date</th>
+                            <th>No Of Days</th>
+                            <th>Applied Date</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Casual Leave</td>
+                            <td>07 May 2024 - 07 May 2024</td>
+                            <td>1</td>
+                            <td>07 May 2024</td>
+                            <td className="leave-table__status leave-table__status--approved"><span>Approved</span></td>
+                        </tr>
+                        <tr>
+                            <td>Casual Leave</td>
+                            <td>07 May 2024 - 07 May 2024</td>
+                            <td>1</td>
+                            <td>07 May 2024</td>
+                            <td className="leave-table__status leave-table__status--approved"><span>Approved</span></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </>
+}
+
+const Attendance = () => {
+    return <>
+        <div>
+            <div className="">
+                <div>
+                    <h3 className="">Attendance</h3>
+                    <div className="fees__filter-button dropdown">
+                        <span className="cmg-active-dropdown-item">
+                            <span className="icon"><FontAwesomeIcon icon={ faCalendarMinus } /></span>
+                            <span className="label">Year: 2024 / 2025</span>
+                        </span>
+                        <ul className="cmg-dropdown">
+                            <li className="cmg-list-item active">Year: 2024 / 2025</li>
+                            <li className="cmg-list-item">Year: 2023 / 2024</li>
+                            <li className="cmg-list-item">Year: 2022 / 2023</li>
+                        </ul>
+                        <span className="fees-dropdown-icon"><FontAwesomeIcon icon={ faAngleDown } /></span>
+                    </div>
                 </div>
-                <div className="leave-summary__card">
-                    <p className="leave-summary__title">Casual Leave (12)</p>
-                    <p className="leave-summary__stats">
-                        <span className="leave-summary__used">Used : 1</span>
-                        <span className="leave-summary__available">Available : 11</span>
-                    </p>
-                </div>
-                <div className="leave-summary__card">
-                    <p className="leave-summary__title">Maternity Leave (10)</p>
-                    <p className="leave-summary__stats">
-                        <span className="leave-summary__used">Used : 0</span>
-                        <span className="leave-summary__available">Available : 10</span>
-                    </p>
-                </div>
-                <div className="leave-summary__card">
-                    <p className="leave-summary__title">Paternity Leave (0)</p>
-                    <p className="leave-summary__stats">
-                        <span className="leave-summary__used">Used : 0</span>
-                        <span className="leave-summary__available">Available : 0</span>
-                    </p>
+                <div>
+                    <div>
+                        <span className="icon"></span>
+                        <div>
+                            <p>Present</p>
+                            <span>265</span>
+                        </div>
+                    </div>
+                    <div>
+                        <span className="icon"></span>
+                        <div>
+                            <p>Present</p>
+                            <span>265</span>
+                        </div>
+                    </div>
+                    <div>
+                        <span className="icon"></span>
+                        <div>
+                            <p>Present</p>
+                            <span>265</span>
+                        </div>
+                    </div>
+                    <div>
+                        <span className="icon"></span>
+                        <div>
+                            <p>Present</p>
+                            <span>265</span>
+                        </div>
+                    </div>
                 </div>
             </div>
 
-            <div className="leave-section">
-                <div className="leave-section__header">
-                    <h3 className="leave-section__title">Leaves</h3>
-                    <button className="leave-section__apply-button">Apply Leave</button>
+            <div>
+                <div>
+                    <h3 className="">Leave & Attendance</h3>
+                    <div className="fees__filter-button dropdown">
+                        <span className="cmg-active-dropdown-item">
+                            <span className="icon"><FontAwesomeIcon icon={ faCalendarMinus } /></span>
+                            <span className="label">Year: 2024 / 2025</span>
+                        </span>
+                        <ul className="cmg-dropdown">
+                            <li className="cmg-list-item active">Year: 2024 / 2025</li>
+                            <li className="cmg-list-item">Year: 2023 / 2024</li>
+                            <li className="cmg-list-item">Year: 2022 / 2023</li>
+                        </ul>
+                        <span className="fees-dropdown-icon"><FontAwesomeIcon icon={ faAngleDown } /></span>
+                    </div>
                 </div>
-
-                <RowAndSearch />
-
-                <div className="leave-section__table">
-                    <table className="leave-table">
-                        <thead>
-                            <tr>
-                                <th>Leave Type</th>
-                                <th>Leave Date</th>
-                                <th>No Of Days</th>
-                                <th>Applied Date</th>
-                                <th>Status</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td>Casual Leave</td>
-                                <td>07 May 2024 - 07 May 2024</td>
-                                <td>1</td>
-                                <td>07 May 2024</td>
-                                <td className="leave-table__status leave-table__status--approved"><span>Approved</span></td>
-                            </tr>
-                            <tr>
-                                <td>Casual Leave</td>
-                                <td>07 May 2024 - 07 May 2024</td>
-                                <td>1</td>
-                                <td>07 May 2024</td>
-                                <td className="leave-table__status leave-table__status--approved"><span>Approved</span></td>
-                            </tr>
-                        </tbody>
-                    </table>
+                <div>
+                    <div>
+                        <span className="icon"></span>
+                        <p>Present</p>
+                    </div>
+                    <div>
+                        <span className="icon"></span>
+                        <p>Present</p>
+                    </div>
+                    <div>
+                        <span className="icon"></span>
+                        <p>Present</p>
+                    </div>
+                    <div>
+                        <span className="icon"></span>
+                        <p>Present</p>
+                    </div>
+                    <div>
+                        <span className="icon"></span>
+                        <p>Present</p>
+                    </div>
                 </div>
             </div>
         </div>
@@ -338,7 +444,11 @@ const Fees = () => {
                 </div>
             </div>
 
-            <RowAndSearch />
+            {/* <RowAndSearch
+                rowsPerPage = { rowsPerPage }
+                setRowsPerPage = { setRowsPerPage }
+                setSearched = { setSearched }
+            /> */}
 
             <div className="fees-table-wrapper">
                 <table className="fees-table">
@@ -402,7 +512,27 @@ const Fees = () => {
  */
 const Exam = () => {
     return <>
-        
+        <div>
+            <div className="">
+                <h3 className="">Fees</h3>
+                <div className="fees__filter-button dropdown">
+                    <span className="cmg-active-dropdown-item">
+                        <span className="icon"><FontAwesomeIcon icon={ faCalendarMinus } /></span>
+                        <span className="label">Year: 2024 / 2025</span>
+                    </span>
+                    <ul className="cmg-dropdown">
+                        <li className="cmg-list-item active">Year: 2024 / 2025</li>
+                        <li className="cmg-list-item">Year: 2023 / 2024</li>
+                        <li className="cmg-list-item">Year: 2022 / 2023</li>
+                    </ul>
+                    <span className="fees-dropdown-icon"><FontAwesomeIcon icon={ faAngleDown } /></span>
+                </div>
+            </div>
+
+            <div>
+
+            </div>
+        </div>
     </>
 }
 
