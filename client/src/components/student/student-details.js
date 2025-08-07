@@ -25,6 +25,15 @@ export const StudentDetails = () => {
             if( role ) return role.slice( 0, 1 ).toUpperCase() + role.slice( 1 )
         }, [ userDetails ])
 
+        // const tabs = [
+        //     { label: 'Student Details', icon: 'faGraduationCap', path: '/student-details' },
+        //     { label: 'Time Table', icon: 'faTable', path: '/time-table' },
+        //     { label: 'Leave & Attendance', icon: 'faCalendarMinus', path: '/attendance' },
+        //     { label: 'Fees', icon: 'faFileInvoiceDollar', path: '/fees' },
+        //     { label: 'Exam & Results', icon: 'faTable', path: '/exam-results' },
+        //     { label: 'Library', icon: 'faLinesLeaning', path: '/library' }
+        // ];
+
     useEffect(() => {
         ourFetch({
             api: '/user-by-id',
@@ -136,7 +145,18 @@ export const StudentDetails = () => {
             <div className="student-main">
                 <div className="student-main__tabs">
                     <ul className="student-main__tab-list">
-                        <li className={ `student-main__tab-item ${( tab === 'details' ? 'active' : '' )}` } onClick={() => handleTabClick( 'details' )}><span className="icon"><FontAwesomeIcon icon={ faGraduationCap } /></span>Student Details</li>
+                        {/* {tabs.map(tab => (
+                            <li
+                            key={tab.path}
+                            className={`student-main__tab-item ${location.pathname === tab.path ? 'active' : ''}`}
+                            >
+                            <span className="icon">
+                                <i className={`fas ${tab.icon}`}></i>
+                            </span>
+                            {tab.label}
+                            </li>
+                        ))} */}
+                        <li className={ `student-main__tab-item ${( tab === 'time-table' ? 'active' : '' )}` } onClick={() => handleTabClick( 'Student-details' )}><span className="icon"><FontAwesomeIcon icon={ faGraduationCap } /></span>Time Table</li>
                         <li className={ `student-main__tab-item ${( tab === 'time-table' ? 'active' : '' )}` } onClick={() => handleTabClick( 'time-table' )}><span className="icon"><FontAwesomeIcon icon={ faTable } /></span>Time Table</li>
                         <li className={ `student-main__tab-item ${( tab === 'LeaveAttendance' ? 'active' : '' )}` } onClick={() => handleTabClick( 'LeaveAttendance' )}><span className="icon"><FontAwesomeIcon icon={ faCalendarMinus } /></span>Leave & Attendance</li>
                         <li className={ `student-main__tab-item ${( tab === 'fees' ? 'active' : '' )}` } onClick={() => handleTabClick( 'fees' )}><span className="icon"><FontAwesomeIcon icon={  faFileInvoiceDollar } /></span>Fees</li>
@@ -255,6 +275,34 @@ const LeaveAttendance = () => {
 }
 
 const Leave = () => {
+
+    const [ searched, setSearched ] = useState(''),
+        [ rowsPerPage, setRowsPerPage ] = useState( 10 ),
+        [ activePage, setActivePage ] = useState( 1 )
+        // [ leave, setLeave ] = useState([]),
+        // totalPages = new Array( Math.ceil( Leave.length / rowsPerPage ) ).fill( 0 )
+
+    // useEffect(() => {
+    //     ourFetch({
+    //         api: 'student-details',
+    //         callback: fetchCallback,
+    //         setter: setLeave
+    //     })
+    // })
+
+    /**
+     * Handle next & previous
+     */
+    // const handlePagination = ( type ) => {
+    //     if( type === 'next' ) {
+    //         if( activePage >= totalPages.length ) return
+    //         setActivePage( activePage + 1 )
+    //     } else {
+    //         if( activePage <= 1 ) return
+    //         setActivePage( activePage - 1 )
+    //     }
+    // }
+
     return <>
         <div className="leave-summary sub-card">
             <div className="leave-summary__card">
@@ -293,7 +341,11 @@ const Leave = () => {
                 <button className="leave-section__apply-button">Apply Leave</button>
             </div>
 
-            <RowAndSearch />
+            <RowAndSearch 
+                rowsPerPage = { rowsPerPage }
+                setRowsPerPage = { setRowsPerPage }
+                setSearched = { setSearched }
+            />
 
             <div className="leave-section__table">
                 <table className="leave-table">
@@ -325,10 +377,22 @@ const Leave = () => {
                 </table>
             </div>
         </div>
+        {/* <Pagination
+            books = { filteredLeave }
+            totalpages = { totalPages }
+            activePage = { activePage }
+            setActivePage = { setActivePage }
+            handlePagination = { handlePagination }
+        /> */}
     </>
 }
 
 const Attendance = () => {
+
+    const [ rowsPerPage, setRowsPerPage ] = useState( 10 ),
+        [ activePage, setActivePage ] = useState( 1 ),
+        [ searched, setSearched ] = useState( '' )
+
     return <>
         <div>
             <div className="">
@@ -402,21 +466,26 @@ const Attendance = () => {
                     </div>
                     <div>
                         <span className="icon"></span>
-                        <p>Present</p>
+                        <p>Absent</p>
                     </div>
                     <div>
                         <span className="icon"></span>
-                        <p>Present</p>
+                        <p>Late</p>
                     </div>
                     <div>
                         <span className="icon"></span>
-                        <p>Present</p>
+                        <p>HalfDay</p>
                     </div>
                     <div>
                         <span className="icon"></span>
-                        <p>Present</p>
+                        <p>holiday</p>
                     </div>
                 </div>
+                <RowAndSearch
+                    rowsPerPage = { rowsPerPage }
+                    setRowsPerPage = { setRowsPerPage }
+                    setSearched = { setSearched }
+                />
             </div>
         </div>
     </>
