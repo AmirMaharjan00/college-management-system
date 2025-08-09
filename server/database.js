@@ -48,6 +48,7 @@ con.connect(function(err) {
           booksQuery += "name VARCHAR(255) NOT NULL, "
           booksQuery += "author VARCHAR(255) NOT NULL, "
           booksQuery += "publication VARCHAR(255) NOT NULL, "
+          booksQuery += "copies INT(11) NOT NULL DEFAULT 1, "
           booksQuery += "publishedYear DATETIME, "
           booksQuery += "language VARCHAR(255) NOT NULL "
           booksQuery += ");"

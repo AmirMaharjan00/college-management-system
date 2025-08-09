@@ -319,7 +319,7 @@ const LibrayPreview = () => {
                     if( index > 3 ) return
                     let count = index + 1,
                         { name, detail, date } = item
-                    return <div className="list">
+                    return <div className="list" key={ index }>
                         <span className='count'>{ `${ count }.` }</span>
                         <div className="name-wrapper">
                             <span className="name">{ name }</span>

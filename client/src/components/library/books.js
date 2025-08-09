@@ -45,7 +45,7 @@ export const LibraryBooks = () => {
         })
         setDeleteSuccess( false )
         setSubmitSuccess( false )
-    }, [ deleteSuccess, submitSuccess, books ])
+    }, [ deleteSuccess, submitSuccess ])
 
      /**
      * Handle next & previous
@@ -234,6 +234,8 @@ export const Table = ( props ) => {
                     <th>S.No</th>
                     <th>Book ID</th>
                     <th>Name</th>
+                    <th>Copies</th>
+                    <th>Issued</th>
                     <th>Author</th>
                     <th>Publication</th>
                     <th>Published Year</th>
@@ -245,12 +247,14 @@ export const Table = ( props ) => {
                 {
                     items.map(( books, index ) => {
                         let count = index + 1,
-                            { id, name, author, publication, publishedYear, language } = books
+                            { id, name, author, publication, publishedYear, language, copies, issued } = books
 
                         return <tr key={ index }>
                             <td>{ `${ count }.` }</td>
                             <td>{ id }</td>
                             <td className='username-profile'>{ name }</td>
+                            <td>{ `${ copies } ( ${( copies - issued )} remaining )` }</td>
+                            <td>{ issued }</td>
                             <td>{ author }</td>
                             <td>{ publication }</td>
                             <td>{ convertedDate( publishedYear ) }</td>

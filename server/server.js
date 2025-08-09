@@ -508,7 +508,7 @@ app.post( '/payment-gateway', async ( request, res ) => {
  * MARK: Books
  */
 app.post( '/all-books', ( request, res ) => { 
-  const selectQuery = `SELECT * from books`
+  const selectQuery = `SELECT books.*, count(booksIssued.bookId) AS issued from books LEFT JOIN booksIssued ON books.id = booksIssued.bookId GROUP BY books.id ORDER BY books.id DESC`
   con.query( selectQuery, ( error, result ) => {
     if ( error ) {
       return res.status( 500 ).json({ error: "Database selection failed" });
@@ -521,7 +521,7 @@ app.post( '/all-books', ( request, res ) => {
  * MARK: Books Issued
  */
 app.post( '/all-books-issued', ( request, res ) => { 
-  const selectQuery = `SELECT booksIssued.*, issuer.name AS issuerName, issuer.profile AS issuerProfile, borrower.name AS borrowerName, borrower.profile AS borrowerProfile, books.name AS bookName FROM booksIssued JOIN users AS issuer ON booksIssued.issuedBy = issuer.id JOIN users AS borrower ON booksIssued.userId = borrower.id JOIN books ON booksIssued.bookId = books.id;`
+  const selectQuery = `SELECT booksIssued.*, issuer.name AS issuerName, issuer.profile AS issuerProfile, borrower.name AS borrowerName, borrower.profile AS borrowerProfile, books.name AS bookName FROM booksIssued JOIN users AS issuer ON booksIssued.issuedBy = issuer.id JOIN users AS borrower ON booksIssued.userId = borrower.id JOIN books ON booksIssued.bookId = books.id ORDER BY booksIssued.id DESC;`
   con.query( selectQuery, ( error, result ) => {
     if ( error ) {
       return res.status( 500 ).json({ error: "Database selection failed" });
@@ -534,7 +534,7 @@ app.post( '/all-books-issued', ( request, res ) => {
  * MARK: Books Returned
  */
 app.post( '/books-returned', ( request, res ) => { 
-  const selectQuery = `SELECT booksIssued.*, users.name FROM booksIssued JOIN users ON booksIssued.userId = users.id WHERE booksIssued.status="returned";`
+  const selectQuery = `SELECT booksIssued.*, users.name FROM booksIssued JOIN users ON booksIssued.userId = users.id WHERE booksIssued.status="returned" ORDER BY booksIssued.id DESC;`
   con.query( selectQuery, ( error, result ) => {
     if ( error ) {
       return res.status( 500 ).json({ error: "Database selection failed" });

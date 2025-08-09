@@ -524,33 +524,44 @@
     .books-table-wrapper.books-page {
         table {
             th:nth-child(1),
-            th:nth-child(2) {
+            th:nth-child(2){
+                width: 45px;
+            }
+            th:nth-child(5) {
                 width: 50px;
+                text-align: center;
             }
 
             th:nth-child(3) {
                 width: 300px;
             }
-            th:nth-child(4) {
-                width: 200px;
-            }
-            th:nth-child(5) {
-                width: 200px;
-            }
-            th:nth-child(6) {
-                width: 200px;
-            }
+            th:nth-child(6),
             th:nth-child(7) {
+                width: 180px;
+            }
+            th:nth-child(8){
+                width: 120px
+            }
+            th:nth-child(9) {
                 width: 100px;
             }
-            th:nth-child(8),
-            td:nth-child(8) {
+            th:nth-child(10) {
                 width: 30px;
                 text-align: center;
             }
 
             td:nth-child(3) {
                 font-weight: 600;
+            }
+
+            td:nth-child(4),
+            td:nth-child(5),
+            td:nth-child(10) {
+                text-align: center;
+            }
+
+            th:nth-child(4) {
+                width: 100px;
             }
         }
     }
