@@ -27,8 +27,16 @@
         }
     }
 
+    .form-flex {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 20px;
+    }
+
     .form-field {
         margin-bottom: 1.25rem;
+        width: 100%;
 
         .form-label {
             color: #2c3e50;
@@ -62,7 +70,7 @@
     input[type="date"],
     input[type="submit"],
     input[type="number"],
-    input[type="textarea"] {
+    textarea {
         width: 100%;
         padding: 0.75rem 1rem;
         font-size: 1rem;
@@ -104,5 +112,43 @@
         outline: none;
         border-color: #007BFF;
         background-color: #fff;
+    }
+
+    .form-sortable {
+        box-sizing: border-box;
+        padding: 20px;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+
+        .sortable {
+            padding: 0.75rem 1rem;
+            font-size: 1rem;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+
+            .icon {
+                color: #ddd;
+                padding: 0 10px;
+                cursor: grab;
+            }
+
+            &:last-child {
+                margin-bottom: 0px;
+            }
+
+            .name {
+                width: 50%;
+            }
+
+            input[type="date"] {
+                width: 25%;
+                padding: 0;
+                border: none;
+            }
+        }
     }
 }

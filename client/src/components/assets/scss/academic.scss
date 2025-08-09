@@ -241,6 +241,7 @@
         }
     }
 
+    // MARK: SYLLABUS
     &.syllabus {
         .courses {
             display: grid;
@@ -422,6 +423,7 @@
         }
     }
 
+    // MARK: COMPLAINTS
     &.complaints {
         .table-wrapper {
             thead tr th {
@@ -580,6 +582,150 @@
 
                 }
             }
+        }
+    }
+
+    // MARK: EXAMINATION
+    &.examinations {
+        .page-body {
+            margin-bottom: 1.4rem;
+            background-color: #ffffff;
+            padding: 1.5rem;
+            border-radius: 10px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+
+            .head {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                margin-bottom: 1.4rem;
+
+                .head-search {
+                    width: 250px;
+                    margin-right: 20px;
+                    background-color: #fff;
+                    border: 1px solid #ccc;
+                    padding: 10px;
+                    border-radius: 5px;
+
+                    &:focus {
+                        border: 1px solid blue;
+                    }
+                }
+
+                .action-btn {
+                    width: 110px;
+                    background: #4f46e5;
+                    color: var(--white);
+                    padding: 8px;
+                    border-radius: 5px;
+                    font-size: 15px;
+                    transition: 0.2s ease-in;
+
+                    svg {
+                        margin-right: 5px;
+                    }
+
+                    &:hover {
+                        transform: scale(1.03);
+                        box-shadow: var(--boxShadow);
+                    }
+                }
+
+                .tabs {
+                    flex: 1;
+                    display: flex;
+                    gap: 1.5rem;
+                    list-style: none;
+                    padding: 0;
+                    margin: 0;
+    
+                    .tab {
+                        font-weight: 500;
+                        cursor: pointer;
+                        padding-bottom: 0.5rem;
+                        border-bottom: 2px solid transparent;
+                        color: #4b5563;
+                        transition: 0.2s ease-in;
+                        font-size: 15px;
+                        display: flex;
+                        align-items: center;
+                        gap: 10px;
+    
+                        &:hover,
+                        &.active {
+                            color: #4f46e5;
+                            border-color: #4f46e5;
+                        }
+                    }
+                }
+            }
+
+            .table-wrapper {
+                thead tr th {
+                    &:nth-child(1),
+                    &:nth-child(2) {
+                        width: 10px;
+                    }
+
+                    &:nth-child(3) {
+                        width: 200px;
+                    }
+                    &:nth-child(4),
+                    &:nth-child(5) {
+                        width: 100px;
+                    }
+                    &:nth-child(6) {
+                        width: 90px;
+                    }
+
+                    &:nth-child(7) {
+                        width: 50px;
+                    }
+                    &:nth-child(8) {
+                        width: 50px;
+                    }
+                }
+
+                tbody tr td {
+
+                    &:nth-child(3),
+                    &:nth-child(6) {
+                        font-weight: 600;
+                    }
+
+                    &:nth-child(8) {
+                        button {
+                            padding: 5px 10px;
+                            background: rgb(170.0614754098, 22.9385245902, 62.487704918);
+                            color: white;
+                            border-radius: 5px;
+                            transition: all .4s;
+
+                            &:hover {
+                                transform: scale(1.03);
+                                box-shadow: var(--boxShadow);
+                            }
+                        }
+                    }
+
+                    .status {
+                        padding: 5px 10px;
+                        border-radius: 5px;
+
+                        &.pending {
+                            background: #eab3003b;
+                            border: 2px solid #eab300;
+                        }
+
+                        &.rejected {
+                            background: #e826463a;
+                            border: 2px solid #e82646;
+                        }
+                    }
+                }
+            }
+
         }
     }
 }

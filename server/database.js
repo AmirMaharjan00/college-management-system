@@ -224,6 +224,27 @@ con.connect(function(err) {
           if( err ) throw err
           console.log( 'Complaints Table created.' )
         });
+
+        /**
+         * Create Examinations Table
+         * MARK: Examinations
+         */
+        let examsQuery = "CREATE TABLE IF NOT EXISTS `exams` ("
+          examsQuery += "id INT(11) NOT NULL AUTO_INCREMENT PRIMARY KEY, "
+          examsQuery += "title TEXT NOT NULL, " 
+          examsQuery += "type ENUM('first', 'second', 'third', 'pre-board', 'practical') DEFAULT 'first', " 
+          examsQuery += "data LONGTEXT NOT NULL, "  // { date: '', subject: '' }
+          examsQuery += "start DATETIME, "
+          examsQuery += "end DATETIME, "
+          examsQuery += "courseId INT(11) DEFAULT 0, "
+          examsQuery += "semester INT(11) DEFAULT 1, "
+          examsQuery += "notice TEXT, "
+          examsQuery += "FOREIGN KEY(courseId) REFERENCES courses(id) "
+          examsQuery += ");"
+        con.query( examsQuery, function (err, result) {
+          if( err ) throw err
+          console.log( 'Exams Table created.' )
+        });
       }
     });
 });

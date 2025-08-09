@@ -25,7 +25,8 @@ export const Breadcrumb = ( props ) => {
 export const ActionButton = ( props ) => {
     const Global = useContext( GLOBALCONTEXT ),
         { formVisibility, setFormVisibility, setOverlay, setHeaderOverlay } = Global,
-        { setFormMode, label = 'New Book', extendFunction } = props
+        { setFormMode, label = 'New Book', extendFunction, classes = '' } = props,
+        allClasses = `action-btn add ${ classes }`
 
     /**
      * Handle add new book
@@ -38,7 +39,7 @@ export const ActionButton = ( props ) => {
         if( extendFunction ) extendFunction()
     }
 
-    return <button className='action-btn add' onClick={ handleClick }>
+    return <button className={ allClasses } onClick={ handleClick }>
         <FontAwesomeIcon icon={ faCirclePlus }/>
         <span className='label'>{ label }</span>
     </button>

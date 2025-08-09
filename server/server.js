@@ -954,3 +954,26 @@ app.post( '/all-complaints', ( request, res ) => {
     return res.status( 200 ).json({ result, success: true });
   })
 });
+
+/**
+* MARK: ALL Exams
+*/
+app.post( '/all-exams', ( request, res ) => { 
+  const selectQuery = `SELECT exams.*, courses.abbreviation FROM exams LEFT JOIN courses ON courses.id = exams.courseId ORDER BY id DESC;`
+  con.query( selectQuery, ( error, result ) => {
+    if ( error ) return res.status( 500 ).json({ error: "Database selection failed" });
+    return res.status( 200 ).json({ result, success: true });
+  })
+});
+
+/**
+* MARK: ADD Exams
+*/
+app.post( '/add-exams', ( request, res ) => { 
+  const { title, type, data, start, end, course: courseId, semester, notice } = request.body
+    insertQuery = `INSERT INTO exams ( title, type, data, start, end, courseId, semester, notice ) VALUES ( ?, ?, ?, ?, ?, ?, ?, ? )`
+  con.query( insertQuery, [ title, type, data, start, end, courseId, semester, notice ], ( error, result ) => {
+    if ( error ) return res.status( 500 ).json({ error: "Database Insertion failed" });
+    return res.status( 200 ).json({ result, success: true });
+  })
+});

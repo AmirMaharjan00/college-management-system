@@ -1,5 +1,5 @@
-
-
+-- Add courses
+-- MARK: COURSES
 INSERT INTO `courses` (`id`, `name`, `abbreviation`, `duration`, `semester`, `cost`, `registered_date`) VALUES 
 (NULL, 'Bachelor in Business Studies', 'BBS', '4', '4', '100000', current_timestamp()), 
 (NULL, 'Bachelor of Arts in Social Works', 'BASW', '4', '4', '200000', current_timestamp()), 
@@ -7,8 +7,8 @@ INSERT INTO `courses` (`id`, `name`, `abbreviation`, `duration`, `semester`, `co
 (NULL, 'Class 12', 'XII', '1', '1', '80000', current_timestamp()),
 (NULL, 'Bachelor in Computer Application', 'BCA', '4', '8', '360000', current_timestamp());
 
-
-
+-- Add Subjects
+-- MARK: SUBJECTS
 INSERT INTO `subjects` (`id`, `name`, `course_id`, `semester`, `year`, `code`, `registered_date`) VALUE
 (NULL, 'Computer Fundamentals & Applications', '5', '1', '1', 'CACS101', CURRENT_TIMESTAMP()),
 (NULL, 'Society and Technology', '5', '1', '1', 'CACO102', CURRENT_TIMESTAMP()),
@@ -82,8 +82,8 @@ INSERT INTO `subjects` (`id`, `name`, `course_id`, `semester`, `year`, `code`, `
 (NULL, 'Theoretical Ideologies of Social Work', 2, 4, 4, 'SW426', CURRENT_TIMESTAMP()),
 (NULL, 'Social Problems, Identification & Interventions', 2, 4, 4, 'SW427', CURRENT_TIMESTAMP());
 
-
-
+-- Add Books
+-- MARK: BOOKS
 INSERT INTO `books` (`id`, `name`, `author`, `publication`, `copies`, `publishedYear`, `language`) VALUES
 (NULL, 'Computer Fundamentals & Applications', 'Amir Maharjan', 'Kirtipur Publication', 10, '2025-07-01', 'English'),
 (NULL, 'Introduction to Algorithms', 'Thomas H. Cormen', 'MIT Press', 10, '2020-06-15', 'English'),
@@ -106,8 +106,8 @@ INSERT INTO `books` (`id`, `name`, `author`, `publication`, `copies`, `published
 (NULL, 'Introduction to Machine Learning', 'Ethem Alpaydin', 'MIT Press', 10, '2022-10-10', 'English'),
 (NULL, 'Computer Architecture', 'John L. Hennessy', 'Morgan Kaufmann', 10, '2023-02-28', 'English');
 
-
-
+-- Add Users
+-- MARK: USERS
 INSERT INTO `users` (`id`, `name`, `email`, `password`, `contact`, `address`, `gender`, `role`, `view`, `courseId`, `semester`, `status`, `profile`, `registered_date`) VALUES 
 (NULL, 'Shahid Smarak College', 'shahidsmarak@gmail.com', 'Shahid@123', '9876543210', 'Nepal', 'male', 'admin', 'light', null, '0', 'offline', '/images/user.jpg', current_timestamp()),
 (NULL, 'Amir Maharjan', 'mhrznamir.am@gmail.com', 'Amir@123', '9808362724', 'Nepal', 'male', 'student', 'light', 5, '8', 'offline', '/images/user.jpg', current_timestamp()),
@@ -134,8 +134,8 @@ INSERT INTO `users` (`id`, `name`, `email`, `password`, `contact`, `address`, `g
 (NULL, 'Rajesh Khadka', 'rajesh.khadka@college.edu', 'Rajesh@123', '9840033211', 'Nepal', 'male', 'teacher', 'light', null, '0', 'offline', '/images/user.jpg', current_timestamp()),
 (NULL, 'Sabina Tamang', 'sabina.tamang@college.edu', 'Sabina@123', '9860001122', 'Nepal', 'female', 'staff', 'dark', null, '0', 'offline', '/images/user.jpg', current_timestamp());
 
-
-
+-- Add Books Issued
+-- MARK: BOOKS ISSUED
 INSERT INTO `booksissued` (`id`, `bookId`, `userId`, `issuedDate`, `dueDate`, `returnDate`, `status`, `fineAmount`, `issuedBy`, `fineStatus`) VALUES
 (NULL, '1', '3', CURRENT_TIMESTAMP(), '2025-07-09 00:00:00', NULL, 'returned', '0', '1', 'N/A'),
 (NULL, '2', '4', CURRENT_TIMESTAMP(), '2025-07-10 00:00:00', NULL, 'overdue', '50', '2', 'unpaid'),

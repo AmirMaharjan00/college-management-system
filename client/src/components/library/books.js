@@ -29,7 +29,7 @@ export const LibraryBooks = () => {
             if( searched === '' ) return books.slice( ( activePage - 1 ) * rowsPerPage, ( activePage * rowsPerPage ) );
             let newStudentsList = books.reduce(( val, student ) => {
                 let { name } = student
-                if(  name.toLowerCase().includes( searched ) ) {
+                if( name.toLowerCase().includes( searched ) ) {
                     val = [ ...val, student ]
                 }
                 return val
