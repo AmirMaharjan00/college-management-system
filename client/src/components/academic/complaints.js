@@ -1,13 +1,14 @@
 import { useEffect, useState, useMemo, useContext } from "react"
 import { Breadcrumb, Pagination, RowAndSearch } from "../components"
-import { fetchCallback, ourFetch, getScript } from "../functions"
+import { fetchCallback, ourFetch } from "../functions"
 import { TodaysDate } from "../includes/components-hooks"
 import { useDate } from "../includes/hooks"
 import '../assets/scss/table.scss'
 import '../assets/scss/academic.scss'
-import { AddNewCourseSubject } from '../forms/add-new-cs'
 import { GLOBALCONTEXT } from "../../App"
 import { Link } from "react-router-dom"
+import Lightbox from "yet-another-react-lightbox";
+import "yet-another-react-lightbox/styles.css";
 
 /**
  * Complaints
@@ -172,7 +173,11 @@ const Table = ( props ) => {
  */
 const Popup = ( props ) => {
     const { complaint } = props,
-        { id, subject, message } = complaint
+        { id, subject, message, file } = complaint,
+        files = useMemo(() => {
+            return file.split(",").map(item => item.trim());
+        }, [ file ]),
+        [ open, setOpen ] = useState( false )
 
     return <div className="full-complaint">
         <div className="head">
@@ -183,7 +188,29 @@ const Popup = ( props ) => {
             <span className="subject">{ subject }</span>
         </div>
         <div className="body">
-            { message }
+            <p className="message">{ message }</p>
+            { files.length && <ul className="files">
+                {
+                    files.map(( file, index ) => {
+                        console.log( file )
+                        return <li className="file" key={ index } onClick={() => setOpen( true )}>
+                            <figure className="thumb-fig">
+                                <img className="thumb" src={ file } alt="Image not found." />
+                            </figure>
+                            <div className="overlay">
+                                <span>View</span>
+                            </div>
+                        </li>
+                    })
+                }
+            </ul> }
+            <Lightbox
+                open = { open }
+                close = {() => setOpen( false )}
+                slides = { files.map(( file ) => {
+                    return { src: file } 
+                }) }
+            />
         </div>
     </div>
 }

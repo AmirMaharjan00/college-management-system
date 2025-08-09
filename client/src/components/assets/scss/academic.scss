@@ -528,6 +528,57 @@
                 padding: 10px;
                 border: 1px solid var(--body-bg);
                 border-radius: 5px;
+
+                .message {
+                    text-align: justify;
+                    margin-bottom: 20px;
+                }
+
+                .files {
+                    display: flex;
+                    gap: 10px;
+
+                    .file {
+                        border: 1px solid var(--lightGrey);
+                        padding: 10px;
+                        cursor: pointer;
+                        position: relative;
+
+                        &:hover .overlay {
+                            opacity: 1;
+                        }
+
+                        .thumb-fig {
+                            height: 100px;
+                            width: 100px;
+    
+                            .thumb {
+                                height: 100%;
+                                width: 100%;
+                                object-fit: cover;
+                            }
+                        }
+
+                        .overlay {
+                            position: absolute;
+                            height: 100%;
+                            width: 100%;
+                            // display: none;
+                            top: 50%;
+                            left: 50%;
+                            transform: translate(-50%, -50%);
+                            background: rgba(0,0,0,0.5);
+                            color: white;
+                            display: flex;
+                            justify-content: center;
+                            align-items: center;
+                            transition: opacity 0.3s ease;
+                            opacity: 0;
+                            font-weight: 600;
+                        }
+                    }
+
+                }
             }
         }
     }
