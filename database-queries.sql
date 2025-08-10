@@ -157,3 +157,35 @@ INSERT INTO `booksissued` (`id`, `bookId`, `userId`, `issuedDate`, `dueDate`, `r
 (NULL, '18', '2', CURRENT_TIMESTAMP(), '2025-07-26 00:00:00', NULL, 'overdue', '50', '3', 'unpaid'),
 (NULL, '19', '1', CURRENT_TIMESTAMP(), '2025-07-27 00:00:00', NULL, 'overdue', '50', '1', 'unpaid'),
 (NULL, '20', '2', CURRENT_TIMESTAMP(), '2025-07-28 00:00:00', NULL, 'issued', '0', '2', 'N/A');
+
+
+-- Add Exams
+-- MARK: EXAMS
+INSERT INTO `exams` (`id`, `title`, `type`, `data`, `start`, `end`, `courseId`, `semester`, `notice`) VALUES
+(NULL, 'First Terminal Exams 2020', 'first', '[{\"date\":\"2020-02-10\",\"subject\":\"Mathematics\"},{\"date\":\"2020-02-12\",\"subject\":\"Physics\"}]', '2020-02-10 00:00:00', '2020-02-12 00:00:00', 1, 1, 'Be on time for all exams.'),
+(NULL, 'Second Terminal Exams 2020', 'second', '[{\"date\":\"2020-07-15\",\"subject\":\"Chemistry\"},{\"date\":\"2020-07-17\",\"subject\":\"Biology\"}]', '2020-07-15 00:00:00', '2020-07-17 00:00:00', 2, 2, 'Carry your admit card.'),
+(NULL, 'Third Terminal Exams 2020', 'third', '[{\"date\":\"2020-11-05\",\"subject\":\"Computer Science\"},{\"date\":\"2020-11-07\",\"subject\":\"English\"}]', '2020-11-05 00:00:00', '2020-11-07 00:00:00', 3, 3, 'No cheating allowed.'),
+(NULL, 'First Terminal Exams 2021', 'first', '[{\"date\":\"2021-02-08\",\"subject\":\"Statistics\"},{\"date\":\"2021-02-10\",\"subject\":\"Economics\"}]', '2021-02-08 00:00:00', '2021-02-10 00:00:00', 4, 4, 'Follow COVID safety protocols.'),
+(NULL, 'Second Terminal Exams 2021', 'second', '[{\"date\":\"2021-07-12\",\"subject\":\"Nepali\"},{\"date\":\"2021-07-14\",\"subject\":\"History\"}]', '2021-07-12 00:00:00', '2021-07-14 00:00:00', 5, 5, 'Wear school uniform.'),
+(NULL, 'Practical Exams 2021', 'practical', '[{\"date\":\"2021-09-01\",\"subject\":\"Physics Lab\"},{\"date\":\"2021-09-03\",\"subject\":\"Chemistry Lab\"}]', '2021-09-01 00:00:00', '2021-09-03 00:00:00', 2, 3, 'Bring lab coat.'),
+(NULL, 'Pre Board Exams 2021', 'pre-board', '[{\"date\":\"2021-11-20\",\"subject\":\"Accountancy\"},{\"date\":\"2021-11-22\",\"subject\":\"Business Studies\"}]', '2021-11-20 00:00:00', '2021-11-22 00:00:00', 1, 8, 'Mandatory for board eligibility.'),
+(NULL, 'First Terminal Exams 2022', 'first', '[{\"date\":\"2022-02-14\",\"subject\":\"Mathematics\"},{\"date\":\"2022-02-16\",\"subject\":\"Physics\"}]', '2022-02-14 00:00:00', '2022-02-16 00:00:00', 3, 1, 'Reach 15 minutes early.'),
+(NULL, 'Second Terminal Exams 2022', 'second', '[{\"date\":\"2022-07-18\",\"subject\":\"Chemistry\"},{\"date\":\"2022-07-20\",\"subject\":\"Biology\"}]', '2022-07-18 00:00:00', '2022-07-20 00:00:00', 4, 2, 'No electronic devices allowed.'),
+(NULL, 'Third Terminal Exams 2022', 'third', '[{\"date\":\"2022-11-07\",\"subject\":\"English\"},{\"date\":\"2022-11-09\",\"subject\":\"Geography\"}]', '2022-11-07 00:00:00', '2022-11-09 00:00:00', 5, 3, 'Silence must be maintained.'),
+(NULL, 'Practical Exams 2022', 'practical', '[{\"date\":\"2022-09-05\",\"subject\":\"Biology Lab\"},{\"date\":\"2022-09-07\",\"subject\":\"Computer Lab\"}]', '2022-09-05 00:00:00', '2022-09-07 00:00:00', 2, 4, 'Submit lab reports before exam.'),
+(NULL, 'Pre Board Exams 2022', 'pre-board', '[{\"date\":\"2022-11-25\",\"subject\":\"Economics\"},{\"date\":\"2022-11-27\",\"subject\":\"Statistics\"}]', '2022-11-25 00:00:00', '2022-11-27 00:00:00', 1, 8, 'Important for graduation.'),
+(NULL, 'First Terminal Exams 2023', 'first', '[{\"date\":\"2023-02-06\",\"subject\":\"Mathematics\"},{\"date\":\"2023-02-08\",\"subject\":\"Physics\"}]', '2023-02-06 00:00:00', '2023-02-08 00:00:00', 3, 1, 'Arrive early.'),
+(NULL, 'Second Terminal Exams 2023', 'second', '[{\"date\":\"2023-07-10\",\"subject\":\"Chemistry\"},{\"date\":\"2023-07-12\",\"subject\":\"Biology\"}]', '2023-07-10 00:00:00', '2023-07-12 00:00:00', 4, 2, 'Admit card compulsory.'),
+(NULL, 'Third Terminal Exams 2023', 'third', '[{\"date\":\"2023-11-06\",\"subject\":\"English\"},{\"date\":\"2023-11-08\",\"subject\":\"Geography\"}]', '2023-11-06 00:00:00', '2023-11-08 00:00:00', 5, 3, 'Maintain silence.'),
+(NULL, 'Practical Exams 2023', 'practical', '[{\"date\":\"2023-09-04\",\"subject\":\"Biology Lab\"},{\"date\":\"2023-09-06\",\"subject\":\"Computer Lab\"}]', '2023-09-04 00:00:00', '2023-09-06 00:00:00', 2, 4, 'Lab coats required.'),
+(NULL, 'Pre Board Exams 2023', 'pre-board', '[{\"date\":\"2023-11-24\",\"subject\":\"Economics\"},{\"date\":\"2023-11-26\",\"subject\":\"Statistics\"}]', '2023-11-24 00:00:00', '2023-11-26 00:00:00', 1, 8, 'Final preparation for boards.'),
+(NULL, 'First Terminal Exams 2024', 'first', '[{\"date\":\"2024-02-05\",\"subject\":\"Mathematics\"},{\"date\":\"2024-02-07\",\"subject\":\"Physics\"}]', '2024-02-05 00:00:00', '2024-02-07 00:00:00', 3, 1, 'Bring your own stationery.'),
+(NULL, 'Second Terminal Exams 2024', 'second', '[{\"date\":\"2024-07-08\",\"subject\":\"Chemistry\"},{\"date\":\"2024-07-10\",\"subject\":\"Biology\"}]', '2024-07-08 00:00:00', '2024-07-10 00:00:00', 4, 2, 'Keep the classroom clean.'),
+(NULL, 'Third Terminal Exams 2024', 'third', '[{\"date\":\"2024-11-04\",\"subject\":\"English\"},{\"date\":\"2024-11-06\",\"subject\":\"Geography\"}]', '2024-11-04 00:00:00', '2024-11-06 00:00:00', 5, 3, 'Sit according to roll number.'),
+(NULL, 'Practical Exams 2024', 'practical', '[{\"date\":\"2024-09-02\",\"subject\":\"Biology Lab\"},{\"date\":\"2024-09-04\",\"subject\":\"Computer Lab\"}]', '2024-09-02 00:00:00', '2024-09-04 00:00:00', 2, 4, 'Safety goggles required.'),
+(NULL, 'Pre Board Exams 2024', 'pre-board', '[{\"date\":\"2024-11-22\",\"subject\":\"Economics\"},{\"date\":\"2024-11-24\",\"subject\":\"Statistics\"}]', '2024-11-22 00:00:00', '2024-11-24 00:00:00', 1, 8, 'No re-exams will be held.'),
+(NULL, 'First Terminal Exams 2025', 'first', '[{\"date\":\"2025-02-03\",\"subject\":\"Mathematics\"},{\"date\":\"2025-02-05\",\"subject\":\"Physics\"}]', '2025-02-03 00:00:00', '2025-02-05 00:00:00', 3, 1, 'Mobile phones prohibited.'),
+(NULL, 'Second Terminal Exams 2025', 'second', '[{\"date\":\"2025-07-07\",\"subject\":\"Chemistry\"},{\"date\":\"2025-07-09\",\"subject\":\"Biology\"}]', '2025-07-07 00:00:00', '2025-07-09 00:00:00', 4, 2, 'Carry your ID card.'),
+(NULL, 'Third Terminal Exams 2025', 'third', '[{\"date\":\"2025-11-03\",\"subject\":\"English\"},{\"date\":\"2025-11-05\",\"subject\":\"Geography\"}]', '2025-11-03 00:00:00', '2025-11-05 00:00:00', 5, 3, 'Listen to instructions.'),
+(NULL, 'Practical Exams 2025', 'practical', '[{\"date\":\"2025-09-01\",\"subject\":\"Biology Lab\"},{\"date\":\"2025-09-03\",\"subject\":\"Computer Lab\"}]', '2025-09-01 00:00:00', '2025-09-03 00:00:00', 2, 4, 'Report submission required.'),
+(NULL, 'Pre Board Exams 2025', 'pre-board', '[{\"date\":\"2025-08-10\",\"subject\":\"Principles of Management\"},{\"date\":\"2025-08-11\",\"subject\":\"Accounting for Financial Analysis\"}]', '2025-08-10 00:00:00', '2025-08-11 00:00:00', 5, 8, 'Those who don\'t attend won\'t be eligible for board exams.');

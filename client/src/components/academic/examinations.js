@@ -1,6 +1,6 @@
 import { useEffect, useState, useMemo, useContext, useCallback, useRef } from "react"
-import { Breadcrumb, Pagination, ActionButton } from "../components"
-import { fetchCallback, ourFetch, getScript } from "../functions"
+import { Breadcrumb, Pagination, ActionButton, ActionButtonDropdown } from "../components"
+import { fetchCallback, ourFetch, getScript, adjustDate } from "../functions"
 import { useDate } from "../includes/hooks"
 import '../assets/scss/table.scss'
 import '../assets/scss/form.scss'
@@ -31,10 +31,11 @@ import {
  */
 export const Examinations = () => {
     const Global = useContext( GLOBALCONTEXT ),
-        { formSuccess } = Global,
+        { formSuccess, setOverlay, setHeaderOverlay, setFormSuccess, setFormVisibility, formVisibility } = Global,
         [ searched, setSearch ] = useState( '' ),
         [ exams, setExams ] = useState([]),
         [ formMode, setFormMode ] = useState( 'new' ),
+        [ formType, setFormType ] = useState( 'routine' ),
         [ tab, setTab ] = useState( 'all' ),
         tabClasses = useCallback(( _thisTab ) => {
             return `tab${( _thisTab === tab ) ? ' active': '' }`
@@ -57,7 +58,8 @@ export const Examinations = () => {
             }, [])
         }, [ searched, tab, exams ]),
         actionButton = useRef(),
-        [ currentDropdownId, setCurrentDropdownId ] = useState( null )
+        [ currentDropdownId, setCurrentDropdownId ] = useState( null ),
+        [ currentFormValues, setCurrentFormValues ] = useState({})
 
     useEffect(() => {
         ourFetch({
@@ -65,7 +67,30 @@ export const Examinations = () => {
             callback: fetchCallback,
             setter: setExams
         })
+        if( formSuccess ) {
+            setOverlay( false )
+            setHeaderOverlay( false )
+            setFormSuccess( false )
+            setFormVisibility( false )
+        }
     }, [ formSuccess ])
+
+    useEffect(() => {
+        if( ! formVisibility ) {
+            setCurrentDropdownId( null )
+        }
+    }, [ formVisibility ])
+
+    useEffect(() => {
+        if( currentDropdownId ) {
+            let _this = exams.reduce(( val, exam ) => {
+                let { id, courseId, data } = exam
+                if( currentDropdownId === id ) val = { ...exam, course: courseId, data: JSON.parse( data ) }
+                return val
+            }, {})
+            setCurrentFormValues( _this )
+        }
+    }, [ currentDropdownId, formType ])
 
     return <main className="cmg-main examinations" id="cmg-main">
         
@@ -98,16 +123,25 @@ export const Examinations = () => {
                 <ActionButton
                     setFormMode = { setFormMode }
                     label = "New Exam"
+                    extendFunction = {() => setFormType( 'form' )}
                 />
             </div>
 
             <Table
                 items = { filteredExams }
+                setFormMode = { setFormMode }
+                currentDropdownId = { currentDropdownId }
+                setCurrentDropdownId = { setCurrentDropdownId }
+                setFormType = { setFormType }
             />
 
-            <Form
-                exams = { exams }
-            />
+            { currentDropdownId && ( formType === 'form' ) && <Form
+                currentFormValues = { currentFormValues }
+            /> }
+
+            { currentDropdownId && ( formType === 'routine' ) && <Routine 
+                currentFormValues = { currentFormValues }
+            /> }
         </div>
 
     </main>
@@ -117,8 +151,29 @@ export const Examinations = () => {
  * MARK: Table 
  */
 const Table = ( props ) => {
-    const { convertedDate } = useDate(),
-        { items } = props
+    const Global = useContext( GLOBALCONTEXT ),
+        { formVisibility, setOverlay, setHeaderOverlay, setFormVisibility } = Global,
+        { convertedDate } = useDate(),
+        { items, setFormMode, currentDropdownId } = props
+
+    /**
+     * Handle Dropdown
+     */
+    const handleDropdown = ( id ) => {
+        props.setCurrentDropdownId( currentDropdownId === id ? null : id )
+        props.setFormType( 'form' )
+    }
+
+    /**
+     * Handle Title click
+     */
+    const handleTitleClick = ( id ) => {
+        props.setCurrentDropdownId( currentDropdownId === id ? null : id )
+        setOverlay( true )
+        setHeaderOverlay( true )
+        setFormVisibility( true )
+        props.setFormType( 'routine' )
+    }
 
     return <table className='table-wrapper' id="cmg-table">
         <thead>
@@ -142,15 +197,17 @@ const Table = ( props ) => {
                     return <tr key={ index }>
                         <td>{ `${ count }.` }</td>
                         <td>{ id }</td>
-                        <td>{ title }</td>
+                        <td>
+                            <span className="title" onClick={() => handleTitleClick( id )}>{ title }</span>
+                        </td>
                         <td>{ convertedDate( start ) }</td>
                         <td>{ convertedDate( end ) }</td>
                         <td>{ `${ abbreviation } ( ${ courseId } )` }</td>
                         <td>{ getScript( semester ) }</td>
                         <td className='action-buttons'>
                             <div className={ `more-button-wrapper` }>
-                                <button className='more-button'><FontAwesomeIcon icon={ faEllipsisVertical }/></button>
-                                {/* { currentDropdownId === id && <ActionButtonDropdown setFormMode = { setFormMode } /> } */}
+                                <button className='more-button' onClick={() => handleDropdown( id )}><FontAwesomeIcon icon={ faEllipsisVertical }/></button>
+                                { currentDropdownId === id && ! formVisibility && <ActionButtonDropdown setFormMode = { setFormMode } /> }
                             </div>
                         </td>
                     </tr>
@@ -165,9 +222,10 @@ const Table = ( props ) => {
 /**
  * MARK: FORM
  */
-const Form = ({ exams }) => {
+const Form = ( props ) => {
     const Global = useContext( GLOBALCONTEXT ),
         { formVisibility, setFormSuccess } = Global,
+        { currentFormValues } = props,
         [ courses, setCourses ] = useState([]),
         [ subjects, setSubjects ] = useState([]),
         [ dragActive, setDragActive ] = useState( null ),
@@ -199,6 +257,10 @@ const Form = ({ exams }) => {
         );
 
     useEffect(() => {
+        if( Object.keys( currentFormValues ).length ) setFormData( currentFormValues )
+    }, [ currentFormValues ])
+
+    useEffect(() => {
         ourFetch({
             api: '/courses',
             callback: fetchCallback,
@@ -220,12 +282,12 @@ const Form = ({ exams }) => {
         setFormData({
             ...formData,
             data: newList.reduce(( val, subject, index ) => {
-                let { name } = subject
-                val = [ ...val, { date: data[ index ]?.date, subject: name } ]
+                let { name, code } = subject
+                val = [ ...val, { date: data[ index ]?.date, subject: name, code } ]
                 return val
             }, [])
         })
-    }, [ subjects, semester, course, exams ])
+    }, [ subjects, semester, course ])
 
     /**
      * Handle Change
@@ -247,7 +309,6 @@ const Form = ({ exams }) => {
         event.preventDefault()
         let newFormData = {
             ...formData,
-            data: JSON.stringify( data ),
             start: data[ 0 ].date,
             end: data[( data.length - 1 )].date,
         }
@@ -403,7 +464,7 @@ export const SortableItem = ( props ) =>  {
     const { item, id } = props,
     { subject, date } = item,
     { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({ id });
-    
+
     const style = {
         transform: CSS.Transform.toString( transform ),
         transition,
@@ -412,7 +473,61 @@ export const SortableItem = ( props ) =>  {
     
     return <div className="sortable" ref={ setNodeRef } style={ style } { ...attributes } { ...listeners }>
         <span className="name">{ subject }</span>
-        <input type="date" value={ date } onChange={( event ) => props.handleRoutineDate( event, id ) } required />
+        <input type="date" value={ adjustDate( date ) } onChange={( event ) => props.handleRoutineDate( event, id ) } required />
         <span className="icon"><FontAwesomeIcon icon={ faGripVertical }/></span>
+    </div>
+}
+
+/**
+ * MARK: ROUTINE
+ */
+export const Routine = ( props ) => {
+    const Global = useContext( GLOBALCONTEXT ),
+        { formVisibility } = Global,
+        { currentFormValues } = props,
+        { title = '', notice = '', data = [] } = currentFormValues
+
+    return <div className="routine-wrapper">
+        <div className="routine-head">
+            <figure className="logo">
+                <img src="/images/tu-logo.png"/>
+            </figure>
+            <div className="head-info">
+                <h2 className="info university">Tribhuwan University</h2>
+                <h2 className="info department">Faculty of Humanities and Social Sciences</h2>
+                <h2 className="info office">Office of the Dean</h2>
+                <h3 className="info address">Kirtipur, Kathmandu</h3>
+            </div>
+        </div>
+        <div className="routine-body">
+            <div className="subject">{ title }</div>
+            <div className="notice">{ notice }</div>
+            <div className="routine">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Date</th>
+                            <th>Subject</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {
+                            data.map(( item, index ) => {
+                                let { date, subject, code = '' } = item
+                                return <tr key={ index }>
+                                    <td>{ date }</td>
+                                    <td>{ `${ code }: ${ subject }` }</td>
+                                </tr>
+                            })
+                        }
+                    </tbody>
+                </table>
+                
+            </div>
+        </div>
+        <div className="routine-foot">
+            <span className="address">कीर्तिपुर, काठमाडौ, नेपाल । टेलिफोनः (९७७-१) ४-३३०३५८, ४-३३३९८०, ४-३३५१०४, ५-९०२३६८, ५-३१४६७९</span>
+            <span className="emails">E-mail support@tufohss edu.np, tufohss ma@gmail.com, tubca2017@gmail.com, Website: www.tufohss.edu.np</span>
+        </div>
     </div>
 }

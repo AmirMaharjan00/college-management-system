@@ -972,7 +972,7 @@ app.post( '/all-exams', ( request, res ) => {
 app.post( '/add-exams', ( request, res ) => { 
   const { title, type, data, start, end, course: courseId, semester, notice } = request.body
     insertQuery = `INSERT INTO exams ( title, type, data, start, end, courseId, semester, notice ) VALUES ( ?, ?, ?, ?, ?, ?, ?, ? )`
-  con.query( insertQuery, [ title, type, data, start, end, courseId, semester, notice ], ( error, result ) => {
+  con.query( insertQuery, [ title, type, JSON.stringify( data ), start, end, courseId, semester, notice ], ( error, result ) => {
     if ( error ) return res.status( 500 ).json({ error: "Database Insertion failed" });
     return res.status( 200 ).json({ result, success: true });
   })
