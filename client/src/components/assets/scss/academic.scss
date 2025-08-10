@@ -602,7 +602,6 @@
 
                 .head-search {
                     width: 250px;
-                    margin-right: 20px;
                     background-color: #fff;
                     border: 1px solid #ccc;
                     padding: 10px;
@@ -614,6 +613,7 @@
                 }
 
                 .action-btn {
+                    margin-left: 20px;
                     width: 110px;
                     background: #4f46e5;
                     color: var(--white);

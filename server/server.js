@@ -948,7 +948,10 @@ app.post( '/subject-via-id', ( request, res ) => {
 * MARK: ALL COMPLAINTS
 */
 app.post( '/all-complaints', ( request, res ) => { 
-  const selectQuery = `SELECT complaints.*, x.name AS complaintBy, x.profile as profileBy, z.name AS complaintAgainst, z.profile as profileAgainst FROM complaints JOIN users AS x ON complaints.by = x.id JOIN users AS z ON complaints.against = z.id;`
+  const { user = {} } = request.session,
+    { id, role } = user,
+    selectQuery = `SELECT complaints.*, x.name AS complaintBy, x.profile as profileBy, z.name AS complaintAgainst, z.profile as profileAgainst FROM complaints JOIN users AS x ON complaints.by = x.id JOIN users AS z ON complaints.against = z.id`
+    if( role !== 'admin' ) selectQuery += ` WHERE complaints.by=${ id }`
   con.query( selectQuery, ( error, result ) => {
     if ( error ) return res.status( 500 ).json({ error: "Database selection failed" });
     return res.status( 200 ).json({ result, success: true });
@@ -970,9 +973,36 @@ app.post( '/all-exams', ( request, res ) => {
 * MARK: ADD Exams
 */
 app.post( '/add-exams', ( request, res ) => { 
-  const { title, type, data, start, end, course: courseId, semester, notice } = request.body
+  const { title, type, data, start, end, course: courseId, semester, notice } = request.body,
     insertQuery = `INSERT INTO exams ( title, type, data, start, end, courseId, semester, notice ) VALUES ( ?, ?, ?, ?, ?, ?, ?, ? )`
   con.query( insertQuery, [ title, type, JSON.stringify( data ), start, end, courseId, semester, notice ], ( error, result ) => {
+    if ( error ) return res.status( 500 ).json({ error: "Database Insertion failed" });
+    return res.status( 200 ).json({ result, success: true });
+  })
+});
+
+/**
+* MARK: USERS EXCEPT ME
+*/
+app.post( '/users-except-me', ( request, res ) => { 
+  const { user = {} } = request.session,
+    { id = 0 } = user,
+    selectQuery = `SELECT * FROM users WHERE id!=${ id };`
+  con.query( selectQuery, ( error, result ) => {
+    if ( error ) return res.status( 500 ).json({ error: "Database selection failed" });
+    return res.status( 200 ).json({ result, success: true });
+  })
+});
+
+/**
+* MARK: ADD COMPLAINT
+*/
+app.post( '/add-complaint', ( request, res ) => { 
+  const { against, subject, message, file } = request.body,
+    { user = {} } = request.session,
+    { id = 0 } = user,
+    insertQuery = 'INSERT INTO complaints ( `by`, `against`, subject, message, file ) VALUES ( ?, ?, ?, ?, ? )'
+  con.query( insertQuery, [ id, against, subject, message, file ], ( error, result ) => {
     if ( error ) return res.status( 500 ).json({ error: "Database Insertion failed" });
     return res.status( 200 ).json({ result, success: true });
   })

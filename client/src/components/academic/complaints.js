@@ -1,6 +1,6 @@
 import { useEffect, useState, useMemo, useContext } from "react"
-import { Breadcrumb, Pagination, RowAndSearch } from "../components"
-import { fetchCallback, ourFetch } from "../functions"
+import { Breadcrumb, Pagination, RowAndSearch, ActionButton } from "../components"
+import { fetchCallback, ourFetch, getCurrentSelectValue } from "../functions"
 import { TodaysDate } from "../includes/components-hooks"
 import { useDate } from "../includes/hooks"
 import '../assets/scss/table.scss'
@@ -9,18 +9,21 @@ import { GLOBALCONTEXT } from "../../App"
 import { Link } from "react-router-dom"
 import Lightbox from "yet-another-react-lightbox";
 import "yet-another-react-lightbox/styles.css";
+import Select from 'react-select'
 
 /**
  * Complaints
  */
 export const Complaints = () => {
     const Global = useContext( GLOBALCONTEXT ),
-        { formVisibility } = Global,
+        { formVisibility, loggedInUser } = Global,
+        { role } = loggedInUser,
         [ complaints, setComplaints ] = useState([]),
         [ searched, setSearched ] = useState( '' ),
         [ rowsPerPage, setRowsPerPage ] = useState( 10 ),
         [ activePage, setActivePage ] = useState( 1 ),
         [ formMode, setFormMode ] = useState( 'new' ),
+        [ formType, setFormType ] = useState( 'new' ),
         [ activeComplaint, setActiveComplaint ] = useState({}),
         totalPages = new Array( Math.ceil( complaints.length / rowsPerPage ) ).fill( 0 ),
         filteredComplaints = useMemo(() => {
@@ -65,7 +68,17 @@ export const Complaints = () => {
                 middle = { false }
             />
 
-            <TodaysDate />
+            { 
+                role === 'admin' ? <TodaysDate /> : <div className='action-buttons'>
+                
+                    <ActionButton 
+                        setFormMode = { setFormMode }
+                        label = { 'Add Complaint' }
+                        extendFunction = {() => setFormType( 'new' )}
+                    />
+
+                </div>
+            }
 
         </div>
 
@@ -78,6 +91,7 @@ export const Complaints = () => {
         <Table
             items = { filteredComplaints }
             setActiveComplaint = { setActiveComplaint }
+            setFormType = { setFormType }
         />
 
         <Pagination
@@ -88,7 +102,9 @@ export const Complaints = () => {
             handlePagination = { handlePagination }
         />
 
-        { formVisibility && Object.keys( activeComplaint ).length && <Popup
+        { ( formType === 'new' ) && <Form /> }
+
+        { formVisibility && ( formType === 'view' ) && Object.keys( activeComplaint ).length && <Popup
             complaint = { activeComplaint }
         /> }
     </main>
@@ -101,7 +117,7 @@ const Table = ( props ) => {
     const Global = useContext( GLOBALCONTEXT ),
         { setOverlay, setHeaderOverlay, setFormVisibility } = Global,
         { convertedDate } = useDate(),
-        { items, setActiveComplaint } = props
+        { items, setActiveComplaint, setFormType } = props
 
     /**
      * Handle View Click
@@ -111,6 +127,7 @@ const Table = ( props ) => {
         setFormVisibility( true )
         setOverlay( true )
         setHeaderOverlay( true )
+        setFormType( 'view' )
     }
 
     return <table className='table-wrapper' id="cmg-table">
@@ -212,5 +229,127 @@ const Popup = ( props ) => {
                 }) }
             />
         </div>
+    </div>
+}
+
+/**
+ * MARK: FORM
+ */
+const Form = () => {
+    const Global = useContext( GLOBALCONTEXT ),
+        { formVisibility } = Global,
+        [ users, setUsers ] = useState([]),
+        [ formData, setFormData ] = useState({
+            subject: '',
+            against: '',
+            message: '',
+            file: ''
+        }),
+        { subject, against, message, file } = formData,
+        userOptions = useMemo(() => {
+            return users.reduce(( val, _this ) => {
+                let { id, name } = _this
+                val = [ ...val, { label: `${ name } ( ${ id } )`, value: id } ]
+                return val
+            }, [])
+        }, [ users ])
+
+    useEffect(() => {
+        ourFetch({
+            api: '/users-except-me',
+            callback: fetchCallback,
+            setter: setUsers
+        })
+    }, [])
+
+    /**
+     * Handle Form Submit
+     */
+    const handleFormSubmit = ( event ) => {
+        event.preventDefault()
+        ourFetch({
+            api: '/add-complaint',
+            callback: submitCallback,
+            body: JSON.stringify( formData )
+        })
+    }
+
+    /**
+     * @Callback
+     */
+    const submitCallback = ( data ) => {
+        let { success } = data
+        if( success ) {
+            console.log( formData )
+        }
+    }
+
+    /**
+     * Handle Change
+     */
+    const handleChange = ( event ) => {
+        let name = event.target.name,
+            value = event.target.value
+
+        setFormData({
+            ...formData,
+            [ name ]: value
+        })
+    }
+
+    /**
+     * React select change handle
+     */
+    const handleReactSelectChange = ( option ) => {
+        let { label, value } = option
+
+        setFormData({
+            ...formData,
+            against: value
+        })
+    }
+
+    return formVisibility && <div className="cmg-form-wrapper">
+        <form onSubmit={ handleFormSubmit }>
+            <div className="form-head">
+                <h2 className="form-title">File a Complaint</h2>
+                <p className="form-exceprt">Please fill the details below.</p>
+            </div>
+            <div className="form-field">
+                <label className="form-label">
+                    Subject
+                    <span className="form-error">*</span>
+                </label>
+                <input type="text" placeholder="Wifi Issues" name="subject" value={ subject } onChange={ handleChange } required/>
+            </div>
+            <div className="form-field">
+                <label className="form-label">
+                    Complaint Against
+                    <span className="form-error">*</span>
+                </label>
+                <Select
+                    options = { userOptions }
+                    className = 'react-select'
+                    name = 'against'
+                    value = { getCurrentSelectValue( userOptions, against ) }
+                    onChange = { handleReactSelectChange }
+                />
+            </div>
+            <div className="form-field">
+                <label className="form-label">
+                    Message
+                    <span className="form-error">*</span>
+                </label>
+                <textarea name="message" onChange={ handleChange } value={ message } required></textarea>
+            </div>
+            <div className="form-field">
+                <label className="form-label">
+                    Files
+                    <span className="form-error">*</span>
+                </label>
+                <input type="file" name="file" onChange={ handleChange } value={ file } />
+            </div>
+            <input type="submit" value={ 'File Complaint' }/>
+        </form>
     </div>
 }

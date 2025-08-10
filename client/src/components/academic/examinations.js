@@ -31,7 +31,8 @@ import {
  */
 export const Examinations = () => {
     const Global = useContext( GLOBALCONTEXT ),
-        { formSuccess, setOverlay, setHeaderOverlay, setFormSuccess, setFormVisibility, formVisibility } = Global,
+        { formSuccess, setOverlay, setHeaderOverlay, setFormSuccess, setFormVisibility, formVisibility, loggedInUser } = Global,
+        { role } = loggedInUser,
         [ searched, setSearch ] = useState( '' ),
         [ exams, setExams ] = useState([]),
         [ formMode, setFormMode ] = useState( 'new' ),
@@ -120,11 +121,12 @@ export const Examinations = () => {
 
                 <input type="search" className="head-search" placeholder="Search..." value={ searched } onChange={( event ) => setSearch( event.target.value )}/>
 
-                <ActionButton
+                { ( role === 'admin' ) && <ActionButton
                     setFormMode = { setFormMode }
                     label = "New Exam"
                     extendFunction = {() => setFormType( 'form' )}
-                />
+                /> }
+
             </div>
 
             <Table
@@ -152,7 +154,8 @@ export const Examinations = () => {
  */
 const Table = ( props ) => {
     const Global = useContext( GLOBALCONTEXT ),
-        { formVisibility, setOverlay, setHeaderOverlay, setFormVisibility } = Global,
+        { formVisibility, setOverlay, setHeaderOverlay, setFormVisibility, loggedInUser } = Global,
+        { role } = loggedInUser,
         { convertedDate } = useDate(),
         { items, setFormMode, currentDropdownId } = props
 
@@ -185,7 +188,7 @@ const Table = ( props ) => {
                 <th>End Date</th>
                 <th>Course</th>
                 <th>Semester</th>
-                <th>Actions</th>
+                { ( role === 'admin' ) && <th>Actions</th> }
             </tr>
         </thead>
         <tbody>
@@ -204,12 +207,12 @@ const Table = ( props ) => {
                         <td>{ convertedDate( end ) }</td>
                         <td>{ `${ abbreviation } ( ${ courseId } )` }</td>
                         <td>{ getScript( semester ) }</td>
-                        <td className='action-buttons'>
+                        { ( role === 'admin' ) && <td className='action-buttons'>
                             <div className={ `more-button-wrapper` }>
                                 <button className='more-button' onClick={() => handleDropdown( id )}><FontAwesomeIcon icon={ faEllipsisVertical }/></button>
                                 { currentDropdownId === id && ! formVisibility && <ActionButtonDropdown setFormMode = { setFormMode } /> }
                             </div>
-                        </td>
+                        </td> }
                     </tr>
                 }) : <tr className="no-records">
                     <td colSpan="7">No records</td>

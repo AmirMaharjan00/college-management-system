@@ -6,13 +6,15 @@ import '../assets/scss/table.scss'
 import '../assets/scss/academic.scss'
 import { AddNewCourseSubject } from '../forms/add-new-cs'
 import { GLOBALCONTEXT } from "../../App"
+import { TodaysDate } from "../includes/components-hooks"
 
 /**
  * Courses
  */
 export const Courses = () => {
     const Global = useContext( GLOBALCONTEXT ),
-        { formVisibility, formSuccess } = Global,
+        { formVisibility, formSuccess, loggedInUser } = Global,
+        { role } = loggedInUser,
         [ courses, setCourses ] = useState([]),
         [ searched, setSearched ] = useState( '' ),
         [ rowsPerPage, setRowsPerPage ] = useState( 10 ),
@@ -61,14 +63,16 @@ export const Courses = () => {
                 middle = { false }
             />
 
-            <div className='action-buttons'>
+            { 
+                role === 'admin' ? <div className='action-buttons'>
 
-                <ActionButton 
-                    setFormMode = { setFormMode }
-                    label = { 'Add Course' }
-                />
+                    <ActionButton 
+                        setFormMode = { setFormMode }
+                        label = { 'Add Course' }
+                    />
 
-            </div>
+                </div> : <TodaysDate />
+            }
 
         </div>
 
