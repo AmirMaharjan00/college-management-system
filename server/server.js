@@ -949,9 +949,10 @@ app.post( '/subject-via-id', ( request, res ) => {
 */
 app.post( '/all-complaints', ( request, res ) => { 
   const { user = {} } = request.session,
-    { id, role } = user,
-    selectQuery = `SELECT complaints.*, x.name AS complaintBy, x.profile as profileBy, z.name AS complaintAgainst, z.profile as profileAgainst FROM complaints JOIN users AS x ON complaints.by = x.id JOIN users AS z ON complaints.against = z.id`
-    if( role !== 'admin' ) selectQuery += ` WHERE complaints.by=${ id }`
+    { id, role } = user
+  let selectQuery = `SELECT complaints.*, x.name AS complaintBy, x.profile as profileBy, z.name AS complaintAgainst, z.profile as profileAgainst FROM complaints JOIN users AS x ON complaints.by = x.id JOIN users AS z ON complaints.against = z.id`
+  if( role !== 'admin' ) selectQuery += ` WHERE complaints.by=${ id }`
+  console.log( selectQuery )
   con.query( selectQuery, ( error, result ) => {
     if ( error ) return res.status( 500 ).json({ error: "Database selection failed" });
     return res.status( 200 ).json({ result, success: true });
@@ -1004,6 +1005,19 @@ app.post( '/add-complaint', ( request, res ) => {
     insertQuery = 'INSERT INTO complaints ( `by`, `against`, subject, message, file ) VALUES ( ?, ?, ?, ?, ? )'
   con.query( insertQuery, [ id, against, subject, message, file ], ( error, result ) => {
     if ( error ) return res.status( 500 ).json({ error: "Database Insertion failed" });
+    return res.status( 200 ).json({ result, success: true });
+  })
+});
+
+/**
+* MARK: MY BOOKS
+*/
+app.post( '/my-books', ( request, res ) => { 
+  const { user = {} } = request.session,
+    { id = 0 } = user,
+    selectQuery = `SELECT booksissued.*, books.name, users.profile, users.name AS issuer FROM booksissued LEFT JOIN books ON booksissued.bookid = books.id LEFT JOIN users ON booksissued.issuedBy = users.id WHERE userId=${ id };`
+  con.query( selectQuery, ( error, result ) => {
+    if ( error ) return res.status( 500 ).json({ error: "Database selection failed" });
     return res.status( 200 ).json({ result, success: true });
   })
 });

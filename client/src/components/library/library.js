@@ -1,5 +1,6 @@
-import { useState, useEffect, useContext, createContext } from 'react'
+import { useState, useEffect, useContext, createContext, useCallback, useMemo } from 'react'
 import './library.scss'
+import '../assets/scss/table.scss'
 import { Link } from 'react-router-dom'
 import student from '../assets/images/student.png'
 import teacher from '../assets/images/teacher.png'
@@ -22,6 +23,7 @@ import {
   Tooltip,
   Legend,
 } from 'chart.js';
+import { ActionButton } from '../components'
 
 // Register necessary chart components
 ChartJS.register(
@@ -41,12 +43,14 @@ const LibraryContext = createContext();
  */
 export const Library = () => {
     const globalObject = useContext( GLOBALCONTEXT ),
-        { formVisibility, currentBookId, setCurrentBookId, setFormVisibility, setDeleteBookVisibility, setOverlay, setHeaderOverlay } = globalObject,
+        { loggedInUser, setFormVisibility, setOverlay, setHeaderOverlay } = globalObject,
+        { role } = loggedInUser,
         [ books, setBooks ] = useState([]),
         [ booksIssued, setBooksIssued ] = useState([]),
         [ booksReturned, setBooksReturned ] = useState([]),
         [ submitSuccess, setSubmitSuccess ] = useState( false ),
         [ fines, setFines ] = useState([]),
+        [ formMode, setFormMode ] = useState([]),
         libraryObject = {
             books,
             booksIssued,
@@ -120,10 +124,10 @@ export const Library = () => {
                     </ul>
                 </div>
                 <div className="dashboard-actions">
-                    <button className="button-action add-student" onClick={ handleNewBook }>
-                        <FontAwesomeIcon icon={ faCirclePlus } className='icon' />
-                        <span>Add New Book</span>
-                    </button>
+                    <ActionButton
+                        setFormMode = { setFormMode }
+                        label = { ( role === 'admin' ) ? "Add New Book" : "Check Book Availability" }
+                    />
                 </div>
             </div>{/* .dashboard-head */}
             <div className="dashboard-highlights">
@@ -152,15 +156,22 @@ export const Library = () => {
                     })
                 }
             </div>
-            <div className='chart-preview-wrapper'>
-                <LineChart />
-                <LibrayPreview />
-            </div>
-            <QuickLinks />
-            <NewBookForm
-                formMode = 'new'
-                setSubmitSuccess = { setSubmitSuccess }
-            />
+           { ( role === 'admin' ) && <>
+                <div className='chart-preview-wrapper'>
+                    <LineChart />
+                    <LibrayPreview />
+                </div>
+                <QuickLinks />
+                <NewBookForm
+                    formMode = 'new'
+                    setSubmitSuccess = { setSubmitSuccess }
+                />
+           </> }
+           {
+                ( role === 'student' ) && <>
+                    <Student />
+                </>
+           }
         </LibraryContext.Provider>
     </main>
 }
@@ -358,5 +369,132 @@ const QuickLinks = () => {
             <span className="link-label">Fines</span>
             <span className="link-view-more"><FontAwesomeIcon icon={ faChevronRight } /></span>
         </Link>
+    </div>
+}
+
+/**
+ * MARK: Student Library
+ */
+const Student = () => {
+    const [ books, setBooks ] = useState([]),
+        [ tab, setTab ] = useState( 'current-issued' ),
+        [ searched, setSearched ] = useState( '' ),
+        tabClasses = useCallback(( _thisTab ) => {
+            return `tab${( _thisTab === tab ) ? ' active': '' }`
+        }, [ tab ]),
+        filteredBooks = useMemo(() => {
+            let newStatus = '',
+                newList = []
+
+            switch( tab ) {
+                case 'all-issued' :
+                    newStatus = 'all'
+                    break;
+                case 'current-issued' :
+                    newStatus = 'issued'
+                    break;
+                case 'returned' :
+                    newStatus = 'returned'
+                    break;
+                case 'fines' :
+                    newStatus = 'overdue'
+                    break;
+            }
+            if( newStatus === 'all' ) {
+                newList = books
+            } else {
+                newList = books.reduce(( val, book ) => {
+                    let { status } = book
+                    if( status === newStatus ) val = [ ...val, book ] 
+                    return val
+                }, [])
+            }
+            return newList.reduce(( val, book ) => {
+                let { name } = book
+                if( name.includes( searched ) ) val = [ ...val, book ]
+                return val
+            }, [])
+        }, [ tab, searched, books ])
+
+    useEffect(() => {
+        ourFetch({
+            api: '/my-books',
+            callback: fetchCallback,
+            setter: setBooks
+        })
+    }, [])
+
+    return <div className='student-library-wrapper'>
+        
+            <div className="head">
+                <ul className="tabs">
+                    <li className={ tabClasses( 'all-issued' ) } onClick={() => setTab( 'all-issued' )}>All Issued</li>
+                    <li className={ tabClasses( 'current-issued' ) } onClick={() => setTab( 'current-issued' )}>Current Issued</li>
+                    <li className={ tabClasses( 'returned' ) } onClick={() => setTab( 'returned' )}>Returned</li>
+                    <li className={ tabClasses( 'fines' ) } onClick={() => setTab( 'fines' )}>Fines</li>
+                </ul>
+
+                <input type="search" className="head-search" placeholder="Search..." value={ searched } onChange={( event ) => setSearched( event.target.value )}/>
+
+                {/* { ( role === 'admin' ) && <ActionButton
+                    setFormMode = { setFormMode }
+                    label = "New Exam"
+                    extendFunction = {() => setFormType( 'form' )}
+                /> } */}
+
+            </div>
+
+            <Table
+                items = { filteredBooks }
+                // setFormMode = { setFormMode }
+                // currentDropdownId = { currentDropdownId }
+                // setCurrentDropdownId = { setCurrentDropdownId }
+                // setFormType = { setFormType }
+            />
+
+    </div>
+}
+
+/**
+ * MARK: TABLE
+ */
+const Table = ( props ) => {
+    const { items } = props,
+        { convertedDate } = useDate()
+
+    return <div className='student-table-wrapper'>
+        <table className='table-wrapper' id='cmg-table'>
+            <thead>
+                <tr>
+                    <th>S.No</th>
+                    <th>Book Name</th>
+                    <th>Issued By</th>
+                    <th>Issued Date</th>
+                </tr>
+            </thead>
+            <tbody>
+                {
+                    items.length ? items.map(( item, index ) => {
+                        let count = index + 1,
+                            { id, name, issuedBy, issuedDate, issuer, profile } = item
+                        return <tr>
+                            <td>{ `${ count }.` }</td>
+                            <td>{ `${ name } ( ${ id } )` }</td>
+                            <td>
+                                <div className='profile'>
+                                    <figure>
+                                        <img src={ profile } alt={ issuer }/>
+                                    </figure>
+                                    <span className='name'><Link to="/dashboard/user-details" state={{ user: issuedBy }}>{ `${ issuer } ( ${ issuedBy } )` }</Link></span>
+                                </div>
+                            </td>
+                            <td>{ convertedDate( issuedDate ) }</td>
+                        </tr>
+                    }) : <tr className="no-records">
+                        <td colSpan="4">No records</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
     </div>
 }
