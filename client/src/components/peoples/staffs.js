@@ -134,7 +134,6 @@ export const StaffsList = () => {
                         <th>S.No</th>
                         <th>Student ID</th>
                         <th>Name</th>
-                        <th>Semester</th>
                         <th>Gender</th>
                         <th>Status</th>
                         <th>Date of Join</th>
@@ -145,7 +144,7 @@ export const StaffsList = () => {
                     {
                         filteredStudents.length ? filteredStudents.map(( student, index ) => {
                             let count = index + 1,
-                                { id, name, gender, status, registered_date, semester, abbreviation, profile } = student
+                                { id, name, gender, status, registered_date, profile } = student
                             return <tr key={ index }>
                                 <td>{ count }</td>
                                 <td>{ id }</td>
@@ -155,7 +154,6 @@ export const StaffsList = () => {
                                     </figure>
                                     { name }
                                 </td>
-                                <td>{ `${ abbreviation } ${ getScript( semester ) }` }</td>
                                 <td>{ gender.slice( 0, 1 ).toUpperCase() + gender.slice( 1 ) }</td>
                                 <td>{ status.slice( 0, 1 ).toUpperCase() + status.slice( 1 ) }</td>
                                 <td>{ convertedDate( registered_date ) }</td>

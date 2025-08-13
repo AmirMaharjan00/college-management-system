@@ -192,6 +192,7 @@ const Popup = ( props ) => {
     const { complaint } = props,
         { id, subject, message, file } = complaint,
         files = useMemo(() => {
+            if( ! file ) return []
             return file.split(",").map(item => item.trim());
         }, [ file ]),
         [ open, setOpen ] = useState( false )
@@ -206,10 +207,9 @@ const Popup = ( props ) => {
         </div>
         <div className="body">
             <p className="message">{ message }</p>
-            { files.length && <ul className="files">
+            { files.length ? <ul className="files">
                 {
                     files.map(( file, index ) => {
-                        console.log( file )
                         return <li className="file" key={ index } onClick={() => setOpen( true )}>
                             <figure className="thumb-fig">
                                 <img className="thumb" src={ file } alt="Image not found." />
@@ -220,7 +220,7 @@ const Popup = ( props ) => {
                         </li>
                     })
                 }
-            </ul> }
+            </ul> : "" }
             <Lightbox
                 open = { open }
                 close = {() => setOpen( false )}

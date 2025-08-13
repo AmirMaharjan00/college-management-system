@@ -513,7 +513,7 @@
                 border-radius: 5px;
 
                 .id {
-                    width: 110px;
+                    width: 120px;
 
                     .suffix {
                         font-weight: 600;
@@ -533,7 +533,9 @@
 
                 .message {
                     text-align: justify;
-                    margin-bottom: 20px;
+                }
+                .files {
+                    margin-top: 20px;
                 }
 
                 .files {
