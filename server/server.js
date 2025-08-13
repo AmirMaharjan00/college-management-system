@@ -903,7 +903,11 @@ app.post( '/today-income', ( request, res ) => {
 * MARK: ALL ACCOUNTS
 */
 app.post( '/accounts', ( request, res ) => { 
-  const selectQuery = `SELECT account.*, users.name, users.profile from account JOIN users ON account.userId = users.id ORDER BY account.date DESC;`
+  const { user = {} } = request.session,
+    { role, id = 0 } = user
+  let join = ''
+  if( role !== 'admin' ) join = `WHERE userId="${ id }"`
+  let selectQuery = `SELECT account.*, users.name, users.profile from account JOIN users ON account.userId = users.id ${ join } ORDER BY account.date DESC`
   con.query( selectQuery, ( error, result ) => {
     if ( error ) return res.status( 500 ).json({ error: "Database selection failed" });
     return res.status( 200 ).json({ result, success: true });

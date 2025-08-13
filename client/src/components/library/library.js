@@ -486,7 +486,7 @@ const Student = ( props ) => {
 
             <Table
                 items = { filteredBooks }
-                // setFormMode = { setFormMode }
+                tab = { tab }
                 // currentDropdownId = { currentDropdownId }
                 // setCurrentDropdownId = { setCurrentDropdownId }
                 // setFormType = { setFormType }
@@ -499,7 +499,7 @@ const Student = ( props ) => {
  * MARK: TABLE
  */
 const Table = ( props ) => {
-    const { items } = props,
+    const { items, tab } = props,
         { convertedDate } = useDate()
 
     return <div className='student-table-wrapper'>
@@ -509,14 +509,19 @@ const Table = ( props ) => {
                     <th>S.No</th>
                     <th>Book Name</th>
                     <th>Issued By</th>
+                    { ( tab === 'all-issued' ) && <th>Status</th> }
                     <th>Issued Date</th>
+                    <th>Due Date</th>
+                    { [ 'returned', 'fines', 'all-issued' ].includes( tab ) && <th>Returned Date</th> }
+                    { [ 'returned', 'fines', 'all-issued' ].includes( tab ) && <th>Fine Status</th> }
                 </tr>
             </thead>
             <tbody>
                 {
                     items.length ? items.map(( item, index ) => {
                         let count = index + 1,
-                            { id, name, issuedBy, issuedDate, issuer, profile } = item
+                            { id, name, issuedBy, status, issuedDate, issuer, profile, returnDate, dueDate, fineStatus } = item
+
                         return <tr>
                             <td>{ `${ count }.` }</td>
                             <td>{ `${ name } ( ${ id } )` }</td>
@@ -528,7 +533,15 @@ const Table = ( props ) => {
                                     <span className='name'><Link to="/dashboard/user-details" state={{ user: issuedBy }}>{ `${ issuer } ( ${ issuedBy } )` }</Link></span>
                                 </div>
                             </td>
+                            { ( tab === 'all-issued' ) && <td>
+                                <span className={ `status ${ status }` }>{ status.slice( 0, 1 ).toUpperCase() + status.slice( 1 ) }</span>
+                            </td> }
                             <td>{ convertedDate( issuedDate ) }</td>
+                            <td>{ convertedDate( dueDate ) }</td>
+                            { [ 'returned', 'fines', 'all-issued' ].includes( tab ) && <td>{ returnDate ? convertedDate( returnDate ) : '-' }</td> }
+                            { [ 'returned', 'fines', 'all-issued' ].includes( tab ) && <td>
+                                <span className={ `fine-status ${ fineStatus.toLowerCase() }` }>{ fineStatus.slice( 0, 1 ).toUpperCase() + fineStatus.slice( 1 ) }</span>
+                            </td> }
                         </tr>
                     }) : <tr className="no-records">
                         <td colSpan="4">No records</td>

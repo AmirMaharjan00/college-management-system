@@ -12,7 +12,7 @@ import '../assets/scss/table.scss'
 import { LineChart, DoughnutChart } from '../charts'
 import { PayFees } from '../student/fees'
 import { GLOBALCONTEXT } from "../../App";
-import { ourFetch, fetchCallback } from "../functions";
+import { ourFetch, fetchCallback, convertedDate } from "../functions";
 import { PayrollForm } from './payroll'
 import { useDate } from "../includes/hooks";
 
@@ -21,7 +21,8 @@ import { useDate } from "../includes/hooks";
  */
 export const Account = () => {
     const Global = useContext( GLOBALCONTEXT ),
-        { formVisibility, formSuccess, setFormSuccess, setFormVisibility, setOverlay, setHeaderOverlay } = Global,
+        { formVisibility, formSuccess, setFormSuccess, setFormVisibility, setOverlay, setHeaderOverlay, loggedInUser } = Global,
+        { role } = loggedInUser,
         [ buttonIdentifier, setButtonIdentifier ] = useState( null ),
         [ formMode, setFormMode ] = useState( 'new' ),
         [ allExpenses, setAllExpenses ] = useState([]),
@@ -156,72 +157,80 @@ export const Account = () => {
                     extendFunction = {() => setButtonIdentifier( 'pay-fees' )}
                 />
 
-                <ActionButton
+                { ( role === 'admin' ) &&  <ActionButton
                     setFormMode = { setFormMode }
                     label = "Payroll"
                     extendFunction = {() => setButtonIdentifier( 'payroll' )}
-                />
+                /> }
 
             </div>
         </div>{/* .dashboard-head */}
-        <div className="dashboard-highlights">
-            {
-                Object.entries( highlightsArray ).map(([ id, values ]) => {
-                    let { label, image, count } = values,
-                        prefix = ( [ 'fees', 'payroll' ].includes( id ) ) ? '' : 'Rs. '
+        { ( role === 'admin' ) &&  <>
+            <div className="dashboard-highlights">
+                {
+                    Object.entries( highlightsArray ).map(([ id, values ]) => {
+                        let { label, image, count } = values,
+                            prefix = ( [ 'fees', 'payroll' ].includes( id ) ) ? '' : 'Rs. '
 
-                    return <div className={ `highlight ${id}` } key={ id }>
-                        <div className="highlight-head">
-                            <figure className="highlight-thumb"><img src={ image } alt={ id } /></figure>
-                            <div className="highlight-info">
-                                <span className="count total-count">{ `${ prefix }${ count }` }</span>
-                                <span className="label highlight-label">{ label }</span>
+                        return <div className={ `highlight ${id}` } key={ id }>
+                            <div className="highlight-head">
+                                <figure className="highlight-thumb"><img src={ image } alt={ id } /></figure>
+                                <div className="highlight-info">
+                                    <span className="count total-count">{ `${ prefix }${ count }` }</span>
+                                    <span className="label highlight-label">{ label }</span>
+                                </div>
+                            </div>
+                            <div className="highlight-foot">
+                                <div className="old-wrapper">
+                                    <span className="old-label">{ 'Old: ' }</span>
+                                    <span className="old-count">{ 0 }</span>
+                                </div>
+                                <div className="new-wrapper">
+                                    <span className="new-label">{ 'New: ' }</span>
+                                    <span className="new-count">{ 0 }</span>
+                                </div>
                             </div>
                         </div>
-                        <div className="highlight-foot">
-                            <div className="old-wrapper">
-                                <span className="old-label">{ 'Old: ' }</span>
-                                <span className="old-count">{ 0 }</span>
-                            </div>
-                            <div className="new-wrapper">
-                                <span className="new-label">{ 'New: ' }</span>
-                                <span className="new-count">{ 0 }</span>
-                            </div>
-                        </div>
-                    </div>
-                })
-            }
-        </div>
+                    })
+                }
+            </div>
+            <div className="charts-wrapper">
+                <LineChart
+                    api = '/year-expenses'
+                    label = { 'Expenses (Rs.)' }
+                    title = { 'Expenses of 2025' }
+                />
+                <LineChart
+                    api = '/year-income'
+                    label = { 'Incomes (Rs.)' }
+                    title = { 'Incomes of 2025' }
+                />
+                <DoughnutChart 
+                    api = '/paid-fees'
+                    label = { 'Fees (Rs.)' }
+                    title = { 'Paid Fees 2025' }
+                />
+            </div>
 
-        <div className="charts-wrapper">
-            <LineChart
-                api = '/year-expenses'
-                label = { 'Expenses (Rs.)' }
-                title = { 'Expenses of 2025' }
-            />
-            <LineChart
-                api = '/year-income'
-                label = { 'Incomes (Rs.)' }
-                title = { 'Incomes of 2025' }
-            />
-            <DoughnutChart 
-                api = '/paid-fees'
-                label = { 'Fees (Rs.)' }
-                title = { 'Paid Fees 2025' }
-            />
-        </div>
+            <div className="preview-wrap">
+                <ExpensePreview 
+                    array = { allExpenses }
+                />
+                <IncomePreview 
+                    array = { allIncomes }
+                />
+            </div>
 
-        <div className="preview-wrap">
-            <ExpensePreview 
-                array = { allExpenses }
-            />
-            <IncomePreview 
-                array = { allIncomes }
-            />
-        </div>
+            { formVisibility && ( buttonIdentifier === 'payroll' ) && <PayrollForm /> }
+        </> }
+
+        {
+            ( role === 'student' ) && <>
+                <Student />
+            </>
+        }
 
         { formVisibility && ( buttonIdentifier === 'pay-fees' ) && <PayFees includeUser = { true }/> }
-        { formVisibility && ( buttonIdentifier === 'payroll' ) && <PayrollForm /> }
     </main>
 }
 
@@ -316,5 +325,66 @@ const IncomePreview = ( props ) => {
             <span className="label">Today's total income: </span>
             <span className="count">{ `Rs. ${ todayIncome.total }` }</span>
         </div>
+    </div>
+}
+
+/**
+ * MARK: STUDENT
+ */
+const Student = () => {
+    return <>
+        <Table />
+    </>
+}
+
+/**
+ * MARK: TABLE
+ */
+const Table = () => {
+    const [ records, setRecords ] = useState([]),
+        { convertedDate } = useDate()
+
+    useEffect(() => {
+        ourFetch({
+            api: '/accounts',
+            callback: fetchCallback,
+            setter: setRecords
+        })
+    }, [])
+
+    return <div className="">
+        <table className="table-wrapper" id="cmg-table">
+            <thead>
+                <tr>
+                    <th>S.No</th>
+                    <th>Purpose</th>
+                    <th>Amount</th>
+                    <th>Date</th>
+                    <th>Receipt</th>
+                </tr>
+            </thead>
+            <tbody>
+                {
+                    records.length ? records.map(( record, index ) => {
+                        let { name, profile, amount, purpose, date } = record,
+                            count = index + 1
+                        return <tr key={ index }>
+                            <td>{ `${ count }.` }</td>
+                            <td>
+                                <span className={ `purpose ${ purpose }` }>{ purpose.slice( 0, 1 ).toUpperCase() + purpose.slice( 1 ) }</span>
+                            </td>
+                            <td>{ `Rs. ${ amount }` }</td>
+                            <td>{ convertedDate( date ) }</td>
+                            <td>
+                                {/* onClick={() => handleViewClick( item )} */}
+                                <button >View</button>
+                            </td>
+                        </tr>
+                    }) : <tr className="no-records">
+                        <td colSpan="4">No records</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
     </div>
 }
