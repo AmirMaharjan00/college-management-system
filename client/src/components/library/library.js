@@ -52,58 +52,79 @@ export const Library = () => {
         [ submitSuccess, setSubmitSuccess ] = useState( false ),
         [ fines, setFines ] = useState([]),
         [ formMode, setFormMode ] = useState([]),
+        [ count, setCount ] = useState({
+            books: 0,
+            issued: 0, 
+            returned: 0,
+            fines: 0
+        }),
         libraryObject = {
             books,
             booksIssued,
             booksReturned,
             fines
-        }
+        },
+        highlightsArray = useMemo(() => {
+            return {
+                student: {
+                    label: 'Total Books',
+                    image: student,
+                    count: count.books
+                },
+                teacher: {
+                    label: 'Total Issues',
+                    image: teacher,
+                    count: count.issued
+                },
+                staff: {
+                    label: 'Total Returned',
+                    image: staff,
+                    count: count.returned
+                },
+                course: {
+                    label: 'Total Fines',
+                    image: course,
+                    count: count.fines
+                }
+            }
+
+        }, [ count ])
 
     useEffect(() => {
-        ourFetch({
-            api: '/all-books',
-            callback: fetchCallback,
-            setter: setBooks
-        })
-        ourFetch({
-            api: '/all-books-issued',
-            callback: fetchCallback,
-            setter: setBooksIssued
-        })
-        ourFetch({
-            api: '/books-returned',
-            callback: fetchCallback,
-            setter: setBooksReturned
-        })
-        ourFetch({
-            api: '/books-fined',
-            callback: fetchCallback,
-            setter: setFines
-        })
+        if( role === 'admin' ) {
+            ourFetch({
+                api: '/all-books',
+                callback: fetchCallback,
+                setter: setBooks
+            })
+            ourFetch({
+                api: '/all-books-issued',
+                callback: fetchCallback,
+                setter: setBooksIssued
+            })
+            ourFetch({
+                api: '/books-returned',
+                callback: fetchCallback,
+                setter: setBooksReturned
+            })
+            ourFetch({
+                api: '/books-fined',
+                callback: fetchCallback,
+                setter: setFines
+            })
+        }
     }, [])
 
-    let highlightsArray = {
-        student: {
-            label: 'Total Books',
-            image: student,
-            count: books.length
-        },
-        teacher: {
-            label: 'Total Issues',
-            image: teacher,
-            count: booksIssued.length
-        },
-        staff: {
-            label: 'Total Returned',
-            image: staff,
-            count: booksReturned.length
-        },
-        course: {
-            label: 'Total Fines',
-            image: course,
-            count: fines.length
+    useEffect(( ) => {
+        if( role === 'admin' ) {
+            setCount({
+                books: books.length,
+                issued: booksIssued.length, 
+                returned: booksReturned.length,
+                fines: fines.length
+            })
         }
-    }
+    }, [ books, booksIssued, booksReturned, fines ])
 
     return <main className="cmg-main cmg-library" id="cmg-main">
         <LibraryContext.Provider value={ libraryObject }>
@@ -161,7 +182,9 @@ export const Library = () => {
            </> }
            {
                 ( role === 'student' ) && <>
-                    <Student />
+                    <Student
+                        setCount = { setCount }
+                    />
                     <Form />
                 </>
            }
@@ -368,7 +391,7 @@ const QuickLinks = () => {
 /**
  * MARK: Student Library
  */
-const Student = () => {
+const Student = ( props ) => {
     const [ books, setBooks ] = useState([]),
         [ tab, setTab ] = useState( 'current-issued' ),
         [ searched, setSearched ] = useState( '' ),
@@ -416,6 +439,30 @@ const Student = () => {
             setter: setBooks
         })
     }, [])
+
+    useEffect(() => {
+        let value = {
+            books: books.length,
+            issued: 0, 
+            returned: 0,
+            fines: 0
+        }
+        books.map(( item ) => {
+            let { status } = item
+            switch( status ) {
+                case 'returned':
+                    value.returned++;
+                    break;
+                case 'issued':
+                    value.issued++;
+                    break;
+                case 'overdue':
+                    value.fines++;
+                    break;
+            }
+        })
+        props.setCount( value )
+    }, [ books ])
 
     return <div className='student-library-wrapper'>
         
