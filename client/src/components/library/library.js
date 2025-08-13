@@ -6,13 +6,14 @@ import student from '../assets/images/student.png'
 import teacher from '../assets/images/teacher.png'
 import course from '../assets/images/course.png'
 import staff from '../assets/images/staff.png'
-import { ourFetch, fetchCallback } from '../functions'
+import { ourFetch, fetchCallback, getScript, getCurrentSelectValue } from '../functions'
 import { Line } from 'react-chartjs-2';
 import { useDate } from '../includes/hooks'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCirclePlus, faChevronRight, faBookOpen, faBook, faRotateLeft, faSackDollar, } from '@fortawesome/free-solid-svg-icons';
 import { GLOBALCONTEXT } from '../../App'
 import { NewBookForm } from './books'
+import Select from 'react-select'
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -43,7 +44,7 @@ const LibraryContext = createContext();
  */
 export const Library = () => {
     const globalObject = useContext( GLOBALCONTEXT ),
-        { loggedInUser, setFormVisibility, setOverlay, setHeaderOverlay } = globalObject,
+        { loggedInUser } = globalObject,
         { role } = loggedInUser,
         [ books, setBooks ] = useState([]),
         [ booksIssued, setBooksIssued ] = useState([]),
@@ -104,15 +105,6 @@ export const Library = () => {
         }
     }
 
-    /**
-     * Handle New Book click
-     */
-    const handleNewBook = () => {
-        setFormVisibility( true )
-        setOverlay( true )
-        setHeaderOverlay( true )
-    }
-
     return <main className="cmg-main cmg-library" id="cmg-main">
         <LibraryContext.Provider value={ libraryObject }>
             <div className="dashboard-head">
@@ -170,6 +162,7 @@ export const Library = () => {
            {
                 ( role === 'student' ) && <>
                     <Student />
+                    <Form />
                 </>
            }
         </LibraryContext.Provider>
@@ -411,7 +404,7 @@ const Student = () => {
             }
             return newList.reduce(( val, book ) => {
                 let { name } = book
-                if( name.includes( searched ) ) val = [ ...val, book ]
+                if( name.toLowerCase().includes( searched.toLowerCase() ) ) val = [ ...val, book ]
                 return val
             }, [])
         }, [ tab, searched, books ])
@@ -496,5 +489,163 @@ const Table = ( props ) => {
                 }
             </tbody>
         </table>
+    </div>
+}
+
+/**
+ * MARK: FORM
+ */
+const Form = () => {
+    const Global = useContext( GLOBALCONTEXT ),
+        { formVisibility } = Global,
+        [ books, setBooks ] = useState([]),
+        [ courses, setCourses ] = useState([]),
+        [ issuedCount, setIssuedCount ] = useState( 0 ),
+        [ searched, setSearched ] = useState( '' ),
+        [ formData, setFormData ] = useState({
+            course: 1,
+            semester: 1,
+            bookId: ''
+        }),
+        { course, semester, bookId } = formData,
+        semesters = useMemo(() => {
+            let total = courses.reduce(( val, _thisCourse ) => {
+                let { id, semester } = _thisCourse
+                val = { ...val, [ id ]: semester }
+                return val
+            }, {})
+            let _this = total[ course ]
+            return new Array( _this ).fill( 0 )
+        }, [ courses, course ]),
+        bookOptions = useMemo(() => {
+            return books.reduce(( val, book ) => {
+                let { id, name, semester: _thisSem, courseId: _thisCourse } = book
+                if( searched === '' ) {
+                    if( ( semester == _thisSem ) && ( course == _thisCourse ) ) val = [ ...val, { label: `${ name } ( ${ id } )`, value: id } ]
+                } else {
+                    if( name.toLowerCase().includes( searched.toLowerCase() ) ) val = [ ...val, { label: `${ name } ( ${ id } )`, value: id } ]
+                }
+                return val
+            }, [])
+        }, [ books, course, semester, searched ])
+
+    useEffect(() => {
+        ourFetch({
+            api: '/all-books',
+            callback: fetchCallback,
+            setter: setBooks
+        })
+        ourFetch({
+            api: '/courses',
+            callback: fetchCallback,
+            setter: setCourses
+        })
+    }, [])
+
+     /**
+     * Handle Change
+     */
+    const handleChange = ( event ) => {
+        let name = event.target.name,
+            value = event.target.value
+
+        setFormData({
+            ...formData,
+            [ name ]: value
+        })
+    }
+
+    /**
+     * React select change handle
+     */
+    const handleReactSelectChange = ( option ) => {
+        setIssuedCount( 0 )
+        console.log( option )
+        let { label, value } = option
+
+        setFormData({
+            ...formData,
+            bookId: value
+        })
+    }
+
+    /**
+     * Handle Form Submit
+     */
+    const handleFormSubmit = ( event ) => {
+        event.preventDefault()
+        ourFetch({
+            api: '/check-book',
+            callback: submitCallback,
+            body: JSON.stringify({ bookId })
+        })
+    }
+
+    /**
+     * @callback
+     */
+    const submitCallback = ( data ) => {
+        let { result, success } = data
+        if( success ) {
+            let { issuedCount } = result
+            setIssuedCount( issuedCount )
+        }
+    }
+
+    return formVisibility && <div className='cmg-form-wrapper'>
+        <form onSubmit={ handleFormSubmit }>
+            <div className='form-head'>
+                <h2 className='form-title'>Check if book is available</h2>
+                <p className='form-excerpt'>Please fill the details below.</p>
+            </div>
+            <div className="form-flex">
+                <div className="form-field">
+                    <label className="form-label">
+                        Course
+                        <span className="form-error">*</span>
+                    </label>
+                    <select name="course" value={ course } onChange={ handleChange }>
+                        {
+                            courses?.map(( course, index ) => {
+                                let { name, abbreviation, id } = course
+                                return <option value={ id } key={ index }>{ `${ name } ( ${ abbreviation } )` }</option>
+                            })
+                        }
+                    </select>
+                </div>
+                { ( semesters.length > 1 ) && <div className="form-field">
+                    <label className="form-label">
+                        Semester
+                        <span className="form-error">*</span>
+                    </label>
+                    <select name="semester" value={ semester } onChange={ handleChange }>
+                        {
+                            semesters?.map(( item, index ) => {
+                                let count = index + 1
+                                return <option value={ count } key={ index }>{ `${ getScript( count ) } semester` }</option>
+                            })
+                        }
+                    </select>
+                </div> }
+            </div>
+            <div className="form-field">
+                <label className="form-label">
+                    Name
+                    <span className="form-error">*</span>
+                </label>
+                <Select
+                    options = { bookOptions }
+                    className = 'react-select'
+                    name = 'bookId'
+                    value = { getCurrentSelectValue( bookOptions, bookId ) }
+                    onChange = { handleReactSelectChange }
+                    onInputChange={( inputValue, { action }) => {
+                        if ( action === "input-change" ) setSearched( inputValue )
+                    }}
+                />
+            </div>
+
+            { ( issuedCount === 0 ) ? <input type='submit' value="Check" /> : <div>{ `${ issuedCount } copies remaining.` }</div> }
+        </form>
     </div>
 }

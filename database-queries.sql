@@ -84,27 +84,27 @@ INSERT INTO `subjects` (`id`, `name`, `course_id`, `semester`, `year`, `code`, `
 
 -- Add Books
 -- MARK: BOOKS
-INSERT INTO `books` (`id`, `name`, `author`, `publication`, `copies`, `publishedYear`, `language`) VALUES
-(NULL, 'Computer Fundamentals & Applications', 'Amir Maharjan', 'Kirtipur Publication', 10, '2025-07-01', 'English'),
-(NULL, 'Introduction to Algorithms', 'Thomas H. Cormen', 'MIT Press', 10, '2020-06-15', 'English'),
-(NULL, 'Data Structures in C', 'Reema Thareja', 'Oxford University Press', 10, '2019-01-10', 'English'),
-(NULL, 'Operating System Concepts', 'Abraham Silberschatz', 'Wiley', 10, '2021-09-01', 'English'),
-(NULL, 'Database Management Systems', 'Raghu Ramakrishnan', 'McGraw-Hill', 10, '2018-05-20', 'English'),
-(NULL, 'Artificial Intelligence: A Modern Approach', 'Stuart Russell', 'Pearson', 10, '2022-02-12', 'English'),
-(NULL, 'Digital Logic and Computer Design', 'M. Morris Mano', 'Pearson', 10, '2017-07-30', 'English'),
-(NULL, 'Let Us C', 'Yashavant Kanetkar', 'BPB Publications', 10, '2019-12-01', 'English'),
-(NULL, 'Computer Networks', 'Andrew S. Tanenbaum', 'Prentice Hall', 10, '2020-04-01', 'English'),
-(NULL, 'Modern Operating Systems', 'Andrew S. Tanenbaum', 'Pearson', 10, '2021-08-05', 'English'),
-(NULL, 'Python Programming', 'John Zelle', 'Franklin Beedle & Associates', 10, '2019-03-10', 'English'),
-(NULL, 'Java: The Complete Reference', 'Herbert Schildt', 'McGraw-Hill', 10, '2020-07-20', 'English'),
-(NULL, 'C++ Primer', 'Stanley B. Lippman', 'Addison-Wesley', 10, '2018-10-18', 'English'),
-(NULL, 'Head First Java', 'Kathy Sierra', 'Reilly Media', 10, '2017-05-14', 'English'),
-(NULL, 'Clean Code', 'Robert C. Martin', 'Prentice Hall', 10, '2020-01-01', 'English'),
-(NULL, 'The Pragmatic Programmer', 'Andy Hunt', 'Addison-Wesley', 10, '2019-11-25', 'English'),
-(NULL, 'You Don’t Know JS', 'Kyle Simpson', 'Reilly Media', 10, '2021-04-04', 'English'),
-(NULL, 'Design Patterns', 'Erich Gamma', 'Addison-Wesley', 10, '2018-06-01', 'English'),
-(NULL, 'Introduction to Machine Learning', 'Ethem Alpaydin', 'MIT Press', 10, '2022-10-10', 'English'),
-(NULL, 'Computer Architecture', 'John L. Hennessy', 'Morgan Kaufmann', 10, '2023-02-28', 'English');
+INSERT INTO `books` (`id`, `courseId`, `semester`, `name`, `author`, `publication`, `copies`, `publishedYear`, `language`) VALUES
+(NULL, 5, 1, 'Computer Fundamentals & Applications', 'Amir Maharjan', 'Kirtipur Publication', 10, '2025-07-01', 'English'),
+(NULL, 5, 1, 'Introduction to Algorithms', 'Thomas H. Cormen', 'MIT Press', 10, '2020-06-15', 'English'),
+(NULL, 5, 1, 'Data Structures in C', 'Reema Thareja', 'Oxford University Press', 10, '2019-01-10', 'English'),
+(NULL, 5, 1, 'Operating System Concepts', 'Abraham Silberschatz', 'Wiley', 10, '2021-09-01', 'English'),
+(NULL, 1, 1, 'Database Management Systems', 'Raghu Ramakrishnan', 'McGraw-Hill', 10, '2018-05-20', 'English'),
+(NULL, 1, 1, 'Artificial Intelligence: A Modern Approach', 'Stuart Russell', 'Pearson', 10, '2022-02-12', 'English'),
+(NULL, 1, 1, 'Digital Logic and Computer Design', 'M. Morris Mano', 'Pearson', 10, '2017-07-30', 'English'),
+(NULL, 2, 1, 'Let Us C', 'Yashavant Kanetkar', 'BPB Publications', 10, '2019-12-01', 'English'),
+(NULL, 2, 1, 'Computer Networks', 'Andrew S. Tanenbaum', 'Prentice Hall', 10, '2020-04-01', 'English'),
+(NULL, 2, 1, 'Modern Operating Systems', 'Andrew S. Tanenbaum', 'Pearson', 10, '2021-08-05', 'English'),
+(NULL, 3, 1, 'Python Programming', 'John Zelle', 'Franklin Beedle & Associates', 10, '2019-03-10', 'English'),
+(NULL, 3, 1, 'Java: The Complete Reference', 'Herbert Schildt', 'McGraw-Hill', 10, '2020-07-20', 'English'),
+(NULL, 3, 1, 'C++ Primer', 'Stanley B. Lippman', 'Addison-Wesley', 10, '2018-10-18', 'English'),
+(NULL, 4, 1, 'Head First Java', 'Kathy Sierra', 'Reilly Media', 10, '2017-05-14', 'English'),
+(NULL, 4, 1, 'Clean Code', 'Robert C. Martin', 'Prentice Hall', 10, '2020-01-01', 'English'),
+(NULL, 4, 1, 'The Pragmatic Programmer', 'Andy Hunt', 'Addison-Wesley', 10, '2019-11-25', 'English'),
+(NULL, 0, 1, 'You Don’t Know JS', 'Kyle Simpson', 'Reilly Media', 10, '2021-04-04', 'English'),
+(NULL, 0, 1, 'Design Patterns', 'Erich Gamma', 'Addison-Wesley', 10, '2018-06-01', 'English'),
+(NULL, 0, 1, 'Introduction to Machine Learning', 'Ethem Alpaydin', 'MIT Press', 10, '2022-10-10', 'English'),
+(NULL, 0, 1, 'Computer Architecture', 'John L. Hennessy', 'Morgan Kaufmann', 10, '2023-02-28', 'English');
 
 -- Add Users
 -- MARK: USERS

@@ -1021,3 +1021,15 @@ app.post( '/my-books', ( request, res ) => {
     return res.status( 200 ).json({ result, success: true });
   })
 });
+
+/**
+* MARK: CHECK BOOKS
+*/
+app.post( '/check-book', ( request, res ) => { 
+  const { bookId } = request.body,
+    selectQuery = `SELECT (b.copies - COUNT(bi.bookId)) AS issuedCount FROM books b LEFT JOIN booksIssued bi ON b.id = bi.bookId WHERE b.id = "${ bookId }" GROUP BY b.id HAVING issuedCount > 0`
+  con.query( selectQuery, ( error, result ) => {
+    if ( error ) return res.status( 500 ).json({ error: "Database selection failed" });
+    return res.status( 200 ).json({ result: result[0], success: true });
+  })
+});
