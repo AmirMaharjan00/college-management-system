@@ -335,7 +335,6 @@ const IncomePreview = ( props ) => {
 const Student = () => {
     return <>
         <Table />
-        <Esewa />
     </>
 }
 

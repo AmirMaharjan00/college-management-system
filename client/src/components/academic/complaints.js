@@ -30,7 +30,7 @@ export const Complaints = () => {
             if( searched === '' ) return complaints.slice( ( activePage - 1 ) * rowsPerPage, ( activePage * rowsPerPage ) );
             let newList = complaints.reduce(( val, item ) => {
                 let { subject, complaintAgainst, complaintBy } = item
-                if( subject.toLowerCase().includes( searched ) || complaintAgainst.toLowerCase().includes( searched ) || complaintBy.toLowerCase().includes( searched ) ) {
+                if( subject.toLowerCase().includes( searched.toLowerCase() ) || complaintAgainst.toLowerCase().includes( searched.toLowerCase() ) || complaintBy.toLowerCase().includes( searched.toLowerCase() ) ) {
                     val = [ ...val, item ]
                 }
                 return val
