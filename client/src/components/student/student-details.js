@@ -25,15 +25,6 @@ export const StudentDetails = () => {
             if( role ) return role.slice( 0, 1 ).toUpperCase() + role.slice( 1 )
         }, [ userDetails ])
 
-        // const tabs = [
-        //     { label: 'Student Details', icon: 'faGraduationCap', path: '/student-details' },
-        //     { label: 'Time Table', icon: 'faTable', path: '/time-table' },
-        //     { label: 'Leave & Attendance', icon: 'faCalendarMinus', path: '/attendance' },
-        //     { label: 'Fees', icon: 'faFileInvoiceDollar', path: '/fees' },
-        //     { label: 'Exam & Results', icon: 'faTable', path: '/exam-results' },
-        //     { label: 'Library', icon: 'faLinesLeaning', path: '/library' }
-        // ];
-
     useEffect(() => {
         ourFetch({
             api: '/user-by-id',
@@ -145,18 +136,7 @@ export const StudentDetails = () => {
             <div className="student-main">
                 <div className="student-main__tabs">
                     <ul className="student-main__tab-list">
-                        {/* {tabs.map(tab => (
-                            <li
-                            key={tab.path}
-                            className={`student-main__tab-item ${location.pathname === tab.path ? 'active' : ''}`}
-                            >
-                            <span className="icon">
-                                <i className={`fas ${tab.icon}`}></i>
-                            </span>
-                            {tab.label}
-                            </li>
-                        ))} */}
-                        <li className={ `student-main__tab-item ${( tab === 'time-table' ? 'active' : '' )}` } onClick={() => handleTabClick( 'Student-details' )}><span className="icon"><FontAwesomeIcon icon={ faGraduationCap } /></span>Time Table</li>
+                        <li className={ `student-main__tab-item ${( tab === 'details' ? 'active' : '' )}` } onClick={() => handleTabClick( 'details' )}><span className="icon"><FontAwesomeIcon icon={ faGraduationCap } /></span>Student Details</li>
                         <li className={ `student-main__tab-item ${( tab === 'time-table' ? 'active' : '' )}` } onClick={() => handleTabClick( 'time-table' )}><span className="icon"><FontAwesomeIcon icon={ faTable } /></span>Time Table</li>
                         <li className={ `student-main__tab-item ${( tab === 'LeaveAttendance' ? 'active' : '' )}` } onClick={() => handleTabClick( 'LeaveAttendance' )}><span className="icon"><FontAwesomeIcon icon={ faCalendarMinus } /></span>Leave & Attendance</li>
                         <li className={ `student-main__tab-item ${( tab === 'fees' ? 'active' : '' )}` } onClick={() => handleTabClick( 'fees' )}><span className="icon"><FontAwesomeIcon icon={  faFileInvoiceDollar } /></span>Fees</li>
