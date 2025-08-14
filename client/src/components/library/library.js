@@ -1,17 +1,19 @@
-import { useState, useEffect, useContext, createContext } from 'react'
+import { useState, useEffect, useContext, createContext, useCallback, useMemo } from 'react'
 import './library.scss'
+import '../assets/scss/table.scss'
 import { Link } from 'react-router-dom'
 import student from '../assets/images/student.png'
 import teacher from '../assets/images/teacher.png'
 import course from '../assets/images/course.png'
 import staff from '../assets/images/staff.png'
-import { ourFetch, fetchCallback } from '../functions'
+import { ourFetch, fetchCallback, getScript, getCurrentSelectValue } from '../functions'
 import { Line } from 'react-chartjs-2';
 import { useDate } from '../includes/hooks'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCirclePlus, faChevronRight, faBookOpen, faBook, faRotateLeft, faSackDollar, } from '@fortawesome/free-solid-svg-icons';
 import { GLOBALCONTEXT } from '../../App'
 import { NewBookForm } from './books'
+import Select from 'react-select'
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -22,6 +24,7 @@ import {
   Tooltip,
   Legend,
 } from 'chart.js';
+import { ActionButton } from '../components'
 
 // Register necessary chart components
 ChartJS.register(
@@ -41,73 +44,87 @@ const LibraryContext = createContext();
  */
 export const Library = () => {
     const globalObject = useContext( GLOBALCONTEXT ),
-        { formVisibility, currentBookId, setCurrentBookId, setFormVisibility, setDeleteBookVisibility, setOverlay, setHeaderOverlay } = globalObject,
+        { loggedInUser } = globalObject,
+        { role } = loggedInUser,
         [ books, setBooks ] = useState([]),
         [ booksIssued, setBooksIssued ] = useState([]),
         [ booksReturned, setBooksReturned ] = useState([]),
         [ submitSuccess, setSubmitSuccess ] = useState( false ),
         [ fines, setFines ] = useState([]),
+        [ formMode, setFormMode ] = useState([]),
+        [ count, setCount ] = useState({
+            books: 0,
+            issued: 0, 
+            returned: 0,
+            fines: 0
+        }),
         libraryObject = {
             books,
             booksIssued,
             booksReturned,
             fines
-        }
+        },
+        highlightsArray = useMemo(() => {
+            return {
+                student: {
+                    label: 'Total Books',
+                    image: student,
+                    count: count.books
+                },
+                teacher: {
+                    label: 'Total Issues',
+                    image: teacher,
+                    count: count.issued
+                },
+                staff: {
+                    label: 'Total Returned',
+                    image: staff,
+                    count: count.returned
+                },
+                course: {
+                    label: 'Total Fines',
+                    image: course,
+                    count: count.fines
+                }
+            }
+
+        }, [ count ])
 
     useEffect(() => {
-        ourFetch({
-            api: '/all-books',
-            callback: fetchCallback,
-            setter: setBooks
-        })
-        ourFetch({
-            api: '/all-books-issued',
-            callback: fetchCallback,
-            setter: setBooksIssued
-        })
-        ourFetch({
-            api: '/books-returned',
-            callback: fetchCallback,
-            setter: setBooksReturned
-        })
-        ourFetch({
-            api: '/books-fined',
-            callback: fetchCallback,
-            setter: setFines
-        })
+        if( role === 'admin' ) {
+            ourFetch({
+                api: '/all-books',
+                callback: fetchCallback,
+                setter: setBooks
+            })
+            ourFetch({
+                api: '/all-books-issued',
+                callback: fetchCallback,
+                setter: setBooksIssued
+            })
+            ourFetch({
+                api: '/books-returned',
+                callback: fetchCallback,
+                setter: setBooksReturned
+            })
+            ourFetch({
+                api: '/books-fined',
+                callback: fetchCallback,
+                setter: setFines
+            })
+        }
     }, [])
 
-    let highlightsArray = {
-        student: {
-            label: 'Total Books',
-            image: student,
-            count: books.length
-        },
-        teacher: {
-            label: 'Total Issues',
-            image: teacher,
-            count: booksIssued.length
-        },
-        staff: {
-            label: 'Total Returned',
-            image: staff,
-            count: booksReturned.length
-        },
-        course: {
-            label: 'Total Fines',
-            image: course,
-            count: fines.length
+    useEffect(( ) => {
+        if( role === 'admin' ) {
+            setCount({
+                books: books.length,
+                issued: booksIssued.length, 
+                returned: booksReturned.length,
+                fines: fines.length
+            })
         }
-    }
-
-    /**
-     * Handle New Book click
-     */
-    const handleNewBook = () => {
-        setFormVisibility( true )
-        setOverlay( true )
-        setHeaderOverlay( true )
-    }
+    }, [ books, booksIssued, booksReturned, fines ])
 
     return <main className="cmg-main cmg-library" id="cmg-main">
         <LibraryContext.Provider value={ libraryObject }>
@@ -120,10 +137,10 @@ export const Library = () => {
                     </ul>
                 </div>
                 <div className="dashboard-actions">
-                    <button className="button-action add-student" onClick={ handleNewBook }>
-                        <FontAwesomeIcon icon={ faCirclePlus } className='icon' />
-                        <span>Add New Book</span>
-                    </button>
+                    <ActionButton
+                        setFormMode = { setFormMode }
+                        label = { ( role === 'admin' ) ? "Add New Book" : "Check Book Availability" }
+                    />
                 </div>
             </div>{/* .dashboard-head */}
             <div className="dashboard-highlights">
@@ -152,15 +169,25 @@ export const Library = () => {
                     })
                 }
             </div>
-            <div className='chart-preview-wrapper'>
-                <LineChart />
-                <LibrayPreview />
-            </div>
-            <QuickLinks />
-            <NewBookForm
-                formMode = 'new'
-                setSubmitSuccess = { setSubmitSuccess }
-            />
+           { ( role === 'admin' ) && <>
+                <div className='chart-preview-wrapper'>
+                    <LineChart />
+                    <LibrayPreview />
+                </div>
+                <QuickLinks />
+                <NewBookForm
+                    formMode = 'new'
+                    setSubmitSuccess = { setSubmitSuccess }
+                />
+           </> }
+           {
+                ( role === 'student' ) && <>
+                    <Student
+                        setCount = { setCount }
+                    />
+                    <Form />
+                </>
+           }
         </LibraryContext.Provider>
     </main>
 }
@@ -358,5 +385,327 @@ const QuickLinks = () => {
             <span className="link-label">Fines</span>
             <span className="link-view-more"><FontAwesomeIcon icon={ faChevronRight } /></span>
         </Link>
+    </div>
+}
+
+/**
+ * MARK: Student Library
+ */
+const Student = ( props ) => {
+    const [ books, setBooks ] = useState([]),
+        [ tab, setTab ] = useState( 'current-issued' ),
+        [ searched, setSearched ] = useState( '' ),
+        tabClasses = useCallback(( _thisTab ) => {
+            return `tab${( _thisTab === tab ) ? ' active': '' }`
+        }, [ tab ]),
+        filteredBooks = useMemo(() => {
+            let newStatus = '',
+                newList = []
+
+            switch( tab ) {
+                case 'all-issued' :
+                    newStatus = 'all'
+                    break;
+                case 'current-issued' :
+                    newStatus = 'issued'
+                    break;
+                case 'returned' :
+                    newStatus = 'returned'
+                    break;
+                case 'fines' :
+                    newStatus = 'overdue'
+                    break;
+            }
+            if( newStatus === 'all' ) {
+                newList = books
+            } else {
+                newList = books.reduce(( val, book ) => {
+                    let { status } = book
+                    if( status === newStatus ) val = [ ...val, book ] 
+                    return val
+                }, [])
+            }
+            return newList.reduce(( val, book ) => {
+                let { name } = book
+                if( name.toLowerCase().includes( searched.toLowerCase() ) ) val = [ ...val, book ]
+                return val
+            }, [])
+        }, [ tab, searched, books ])
+
+    useEffect(() => {
+        ourFetch({
+            api: '/my-books',
+            callback: fetchCallback,
+            setter: setBooks
+        })
+    }, [])
+
+    useEffect(() => {
+        let value = {
+            books: books.length,
+            issued: 0, 
+            returned: 0,
+            fines: 0
+        }
+        books.map(( item ) => {
+            let { status } = item
+            switch( status ) {
+                case 'returned':
+                    value.returned++;
+                    break;
+                case 'issued':
+                    value.issued++;
+                    break;
+                case 'overdue':
+                    value.fines++;
+                    break;
+            }
+        })
+        props.setCount( value )
+    }, [ books ])
+
+    return <div className='student-library-wrapper'>
+        
+            <div className="head">
+                <ul className="tabs">
+                    <li className={ tabClasses( 'all-issued' ) } onClick={() => setTab( 'all-issued' )}>All Issued</li>
+                    <li className={ tabClasses( 'current-issued' ) } onClick={() => setTab( 'current-issued' )}>Current Issued</li>
+                    <li className={ tabClasses( 'returned' ) } onClick={() => setTab( 'returned' )}>Returned</li>
+                    <li className={ tabClasses( 'fines' ) } onClick={() => setTab( 'fines' )}>Fines</li>
+                </ul>
+
+                <input type="search" className="head-search" placeholder="Search..." value={ searched } onChange={( event ) => setSearched( event.target.value )}/>
+
+                {/* { ( role === 'admin' ) && <ActionButton
+                    setFormMode = { setFormMode }
+                    label = "New Exam"
+                    extendFunction = {() => setFormType( 'form' )}
+                /> } */}
+
+            </div>
+
+            <Table
+                items = { filteredBooks }
+                tab = { tab }
+                // currentDropdownId = { currentDropdownId }
+                // setCurrentDropdownId = { setCurrentDropdownId }
+                // setFormType = { setFormType }
+            />
+
+    </div>
+}
+
+/**
+ * MARK: TABLE
+ */
+const Table = ( props ) => {
+    const { items, tab } = props,
+        { convertedDate } = useDate()
+
+    return <div className='student-table-wrapper'>
+        <table className='table-wrapper' id='cmg-table'>
+            <thead>
+                <tr>
+                    <th>S.No</th>
+                    <th>Book Name</th>
+                    <th>Issued By</th>
+                    { ( tab === 'all-issued' ) && <th>Status</th> }
+                    <th>Issued Date</th>
+                    <th>Due Date</th>
+                    { [ 'returned', 'fines', 'all-issued' ].includes( tab ) && <th>Returned Date</th> }
+                    { [ 'returned', 'fines', 'all-issued' ].includes( tab ) && <th>Fine Status</th> }
+                </tr>
+            </thead>
+            <tbody>
+                {
+                    items.length ? items.map(( item, index ) => {
+                        let count = index + 1,
+                            { id, name, issuedBy, status, issuedDate, issuer, profile, returnDate, dueDate, fineStatus } = item
+
+                        return <tr>
+                            <td>{ `${ count }.` }</td>
+                            <td>{ `${ name } ( ${ id } )` }</td>
+                            <td>
+                                <div className='profile'>
+                                    <figure>
+                                        <img src={ profile } alt={ issuer }/>
+                                    </figure>
+                                    <span className='name'><Link to="/dashboard/user-details" state={{ user: issuedBy }}>{ `${ issuer } ( ${ issuedBy } )` }</Link></span>
+                                </div>
+                            </td>
+                            { ( tab === 'all-issued' ) && <td>
+                                <span className={ `status ${ status }` }>{ status.slice( 0, 1 ).toUpperCase() + status.slice( 1 ) }</span>
+                            </td> }
+                            <td>{ convertedDate( issuedDate ) }</td>
+                            <td>{ convertedDate( dueDate ) }</td>
+                            { [ 'returned', 'fines', 'all-issued' ].includes( tab ) && <td>{ returnDate ? convertedDate( returnDate ) : '-' }</td> }
+                            { [ 'returned', 'fines', 'all-issued' ].includes( tab ) && <td>
+                                <span className={ `fine-status ${ fineStatus.toLowerCase() }` }>{ fineStatus.slice( 0, 1 ).toUpperCase() + fineStatus.slice( 1 ) }</span>
+                            </td> }
+                        </tr>
+                    }) : <tr className="no-records">
+                        <td colSpan="4">No records</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+}
+
+/**
+ * MARK: FORM
+ */
+const Form = () => {
+    const Global = useContext( GLOBALCONTEXT ),
+        { formVisibility } = Global,
+        [ books, setBooks ] = useState([]),
+        [ courses, setCourses ] = useState([]),
+        [ issuedCount, setIssuedCount ] = useState( 0 ),
+        [ searched, setSearched ] = useState( '' ),
+        [ formData, setFormData ] = useState({
+            course: 1,
+            semester: 1,
+            bookId: ''
+        }),
+        { course, semester, bookId } = formData,
+        semesters = useMemo(() => {
+            let total = courses.reduce(( val, _thisCourse ) => {
+                let { id, semester } = _thisCourse
+                val = { ...val, [ id ]: semester }
+                return val
+            }, {})
+            let _this = total[ course ]
+            return new Array( _this ).fill( 0 )
+        }, [ courses, course ]),
+        bookOptions = useMemo(() => {
+            return books.reduce(( val, book ) => {
+                let { id, name, semester: _thisSem, courseId: _thisCourse } = book
+                if( searched === '' ) {
+                    if( ( semester == _thisSem ) && ( course == _thisCourse ) ) val = [ ...val, { label: `${ name } ( ${ id } )`, value: id } ]
+                } else {
+                    if( name.toLowerCase().includes( searched.toLowerCase() ) ) val = [ ...val, { label: `${ name } ( ${ id } )`, value: id } ]
+                }
+                return val
+            }, [])
+        }, [ books, course, semester, searched ])
+
+    useEffect(() => {
+        ourFetch({
+            api: '/all-books',
+            callback: fetchCallback,
+            setter: setBooks
+        })
+        ourFetch({
+            api: '/courses',
+            callback: fetchCallback,
+            setter: setCourses
+        })
+    }, [])
+
+     /**
+     * Handle Change
+     */
+    const handleChange = ( event ) => {
+        let name = event.target.name,
+            value = event.target.value
+
+        setFormData({
+            ...formData,
+            [ name ]: value
+        })
+    }
+
+    /**
+     * React select change handle
+     */
+    const handleReactSelectChange = ( option ) => {
+        setIssuedCount( 0 )
+        console.log( option )
+        let { label, value } = option
+
+        setFormData({
+            ...formData,
+            bookId: value
+        })
+    }
+
+    /**
+     * Handle Form Submit
+     */
+    const handleFormSubmit = ( event ) => {
+        event.preventDefault()
+        ourFetch({
+            api: '/check-book',
+            callback: submitCallback,
+            body: JSON.stringify({ bookId })
+        })
+    }
+
+    /**
+     * @callback
+     */
+    const submitCallback = ( data ) => {
+        let { result, success } = data
+        if( success ) {
+            let { issuedCount } = result
+            setIssuedCount( issuedCount )
+        }
+    }
+
+    return formVisibility && <div className='cmg-form-wrapper'>
+        <form onSubmit={ handleFormSubmit }>
+            <div className='form-head'>
+                <h2 className='form-title'>Check if book is available</h2>
+                <p className='form-excerpt'>Please fill the details below.</p>
+            </div>
+            <div className="form-flex">
+                <div className="form-field">
+                    <label className="form-label">
+                        Course
+                        <span className="form-error">*</span>
+                    </label>
+                    <select name="course" value={ course } onChange={ handleChange }>
+                        {
+                            courses?.map(( course, index ) => {
+                                let { name, abbreviation, id } = course
+                                return <option value={ id } key={ index }>{ `${ name } ( ${ abbreviation } )` }</option>
+                            })
+                        }
+                    </select>
+                </div>
+                { ( semesters.length > 1 ) && <div className="form-field">
+                    <label className="form-label">
+                        Semester
+                        <span className="form-error">*</span>
+                    </label>
+                    <select name="semester" value={ semester } onChange={ handleChange }>
+                        {
+                            semesters?.map(( item, index ) => {
+                                let count = index + 1
+                                return <option value={ count } key={ index }>{ `${ getScript( count ) } semester` }</option>
+                            })
+                        }
+                    </select>
+                </div> }
+            </div>
+            <div className="form-field">
+                <label className="form-label">
+                    Name
+                    <span className="form-error">*</span>
+                </label>
+                <Select
+                    options = { bookOptions }
+                    className = 'react-select'
+                    name = 'bookId'
+                    value = { getCurrentSelectValue( bookOptions, bookId ) }
+                    onChange = { handleReactSelectChange }
+                    onInputChange={( inputValue, { action }) => {
+                        if ( action === "input-change" ) setSearched( inputValue )
+                    }}
+                />
+            </div>
+
+            { ( issuedCount === 0 ) ? <input type='submit' value="Check" /> : <div>{ `${ issuedCount } copies remaining.` }</div> }
+        </form>
     </div>
 }

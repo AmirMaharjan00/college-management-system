@@ -474,7 +474,7 @@ app.post('/upload', upload.single('image'), (req, res) => {
  */
 app.post( '/all-users-via-role', ( request, res ) => { 
   let { sortBy = 'asc', role = 'student' } = request.body
-  const selectQuery = `SELECT users.*, courses.abbreviation FROM users JOIN courses ON users.courseId = courses.id WHERE role="${ role }" ORDER BY users.id ${ sortBy };`
+  const selectQuery = `SELECT users.*, courses.abbreviation FROM users LEFT JOIN courses ON users.courseId = courses.id WHERE users.role="${ role }" ORDER BY users.id ${ sortBy };`
   con.query( selectQuery, ( error, result ) => {
     if ( error ) {
       return res.status( 500 ).json({ error: "Database selection failed" });
@@ -903,7 +903,11 @@ app.post( '/today-income', ( request, res ) => {
 * MARK: ALL ACCOUNTS
 */
 app.post( '/accounts', ( request, res ) => { 
-  const selectQuery = `SELECT account.*, users.name, users.profile from account JOIN users ON account.userId = users.id ORDER BY account.date DESC;`
+  const { user = {} } = request.session,
+    { role, id = 0 } = user
+  let join = ''
+  if( role !== 'admin' ) join = `WHERE userId="${ id }"`
+  let selectQuery = `SELECT account.*, users.name, users.profile from account JOIN users ON account.userId = users.id ${ join } ORDER BY account.date DESC`
   con.query( selectQuery, ( error, result ) => {
     if ( error ) return res.status( 500 ).json({ error: "Database selection failed" });
     return res.status( 200 ).json({ result, success: true });
@@ -948,7 +952,11 @@ app.post( '/subject-via-id', ( request, res ) => {
 * MARK: ALL COMPLAINTS
 */
 app.post( '/all-complaints', ( request, res ) => { 
-  const selectQuery = `SELECT complaints.*, x.name AS complaintBy, x.profile as profileBy, z.name AS complaintAgainst, z.profile as profileAgainst FROM complaints JOIN users AS x ON complaints.by = x.id JOIN users AS z ON complaints.against = z.id;`
+  const { user = {} } = request.session,
+    { id, role } = user
+  let selectQuery = `SELECT complaints.*, x.name AS complaintBy, x.profile as profileBy, z.name AS complaintAgainst, z.profile as profileAgainst FROM complaints JOIN users AS x ON complaints.by = x.id JOIN users AS z ON complaints.against = z.id`
+  if( role !== 'admin' ) selectQuery += ` WHERE complaints.by=${ id }`
+  console.log( selectQuery )
   con.query( selectQuery, ( error, result ) => {
     if ( error ) return res.status( 500 ).json({ error: "Database selection failed" });
     return res.status( 200 ).json({ result, success: true });
@@ -970,10 +978,62 @@ app.post( '/all-exams', ( request, res ) => {
 * MARK: ADD Exams
 */
 app.post( '/add-exams', ( request, res ) => { 
-  const { title, type, data, start, end, course: courseId, semester, notice } = request.body
+  const { title, type, data, start, end, course: courseId, semester, notice } = request.body,
     insertQuery = `INSERT INTO exams ( title, type, data, start, end, courseId, semester, notice ) VALUES ( ?, ?, ?, ?, ?, ?, ?, ? )`
-  con.query( insertQuery, [ title, type, data, start, end, courseId, semester, notice ], ( error, result ) => {
+  con.query( insertQuery, [ title, type, JSON.stringify( data ), start, end, courseId, semester, notice ], ( error, result ) => {
     if ( error ) return res.status( 500 ).json({ error: "Database Insertion failed" });
     return res.status( 200 ).json({ result, success: true });
+  })
+});
+
+/**
+* MARK: USERS EXCEPT ME
+*/
+app.post( '/users-except-me', ( request, res ) => { 
+  const { user = {} } = request.session,
+    { id = 0 } = user,
+    selectQuery = `SELECT * FROM users WHERE id!=${ id };`
+  con.query( selectQuery, ( error, result ) => {
+    if ( error ) return res.status( 500 ).json({ error: "Database selection failed" });
+    return res.status( 200 ).json({ result, success: true });
+  })
+});
+
+/**
+* MARK: ADD COMPLAINT
+*/
+app.post( '/add-complaint', ( request, res ) => { 
+  const { against, subject, message, file } = request.body,
+    { user = {} } = request.session,
+    { id = 0 } = user,
+    insertQuery = 'INSERT INTO complaints ( `by`, `against`, subject, message, file ) VALUES ( ?, ?, ?, ?, ? )'
+  con.query( insertQuery, [ id, against, subject, message, file ], ( error, result ) => {
+    if ( error ) return res.status( 500 ).json({ error: "Database Insertion failed" });
+    return res.status( 200 ).json({ result, success: true });
+  })
+});
+
+/**
+* MARK: MY BOOKS
+*/
+app.post( '/my-books', ( request, res ) => { 
+  const { user = {} } = request.session,
+    { id = 0 } = user,
+    selectQuery = `SELECT booksissued.*, books.name, users.profile, users.name AS issuer FROM booksissued LEFT JOIN books ON booksissued.bookid = books.id LEFT JOIN users ON booksissued.issuedBy = users.id WHERE userId=${ id };`
+  con.query( selectQuery, ( error, result ) => {
+    if ( error ) return res.status( 500 ).json({ error: "Database selection failed" });
+    return res.status( 200 ).json({ result, success: true });
+  })
+});
+
+/**
+* MARK: CHECK BOOKS
+*/
+app.post( '/check-book', ( request, res ) => { 
+  const { bookId } = request.body,
+    selectQuery = `SELECT (b.copies - COUNT(bi.bookId)) AS issuedCount FROM books b LEFT JOIN booksIssued bi ON b.id = bi.bookId WHERE b.id = "${ bookId }" GROUP BY b.id HAVING issuedCount > 0`
+  con.query( selectQuery, ( error, result ) => {
+    if ( error ) return res.status( 500 ).json({ error: "Database selection failed" });
+    return res.status( 200 ).json({ result: result[0], success: true });
   })
 });

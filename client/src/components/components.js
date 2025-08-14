@@ -101,3 +101,37 @@ export const Pagination = ( props ) => {
         <button className='pagination-button next' onClick={() => handlePagination( 'next' )}>Next</button>
     </div> : ''
 }
+
+/**
+ * MARK: Action Button Dropdown
+ */
+export const ActionButtonDropdown = ( props ) => {
+    const Global = useContext( GLOBALCONTEXT ),
+        { setFormVisibility, setOverlay, setHeaderOverlay, setDeleteBookVisibility } = Global,
+        { setFormMode, children } = props
+
+    /**
+     * Handle Edit click
+     */
+    const handleEditClick = () => {
+        setFormVisibility( true )
+        setOverlay( true )
+        setHeaderOverlay( true )
+        setFormMode( 'edit' )
+    }
+
+    /**
+     * Handle delete click
+     */
+    const handleDeleteClick = () => {
+        setDeleteBookVisibility( true )
+        setOverlay( true )
+        setHeaderOverlay( true )
+    }
+
+    return <div className='action-button-dropdown'>
+        <button onClick={ handleEditClick }>Edit</button>
+        <button onClick={ handleDeleteClick }>Delete</button>
+        { children }
+    </div>
+}

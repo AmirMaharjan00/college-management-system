@@ -45,12 +45,15 @@ con.connect(function(err) {
          */
         let booksQuery = "CREATE TABLE IF NOT EXISTS `books` ("
           booksQuery += "id INT(11) NOT NULL AUTO_INCREMENT PRIMARY KEY, "
+          booksQuery += "courseId INT(11) DEFAULT 0, "
+          booksQuery += "semester INT(11) DEFAULT 1, "
           booksQuery += "name VARCHAR(255) NOT NULL, "
           booksQuery += "author VARCHAR(255) NOT NULL, "
           booksQuery += "publication VARCHAR(255) NOT NULL, "
           booksQuery += "copies INT(11) NOT NULL DEFAULT 1, "
           booksQuery += "publishedYear DATETIME, "
-          booksQuery += "language VARCHAR(255) NOT NULL "
+          booksQuery += "language VARCHAR(255) NOT NULL, "
+          booksQuery += "FOREIGN KEY(courseId) REFERENCES courses(id) "
           booksQuery += ");"
         con.query( booksQuery, function (err, result) {
           if( err ) throw err

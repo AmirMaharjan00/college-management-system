@@ -13,7 +13,6 @@ export const Index = () => {
         return `cmg-body${( canvasOpen ? ' open' : '' )}`
     }, [ canvasOpen ]),
     wrapperClass = useMemo(() => {
-        console.log( 'dark' )
         return `cmg-wrapper ${ isDarkMode }`
     }, [ isDarkMode ])
 
