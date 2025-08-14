@@ -414,6 +414,11 @@ MARK: MESSAGE
         z-index: 99;
     }
 
+    #message-wrapper .message-dropdown .inner-list {
+        height: 300px;
+        overflow-y: auto;
+    }
+
     #message-wrapper .message-dropdown .cmg-list-item {
         padding: 10px;
         border-radius: 3px;
