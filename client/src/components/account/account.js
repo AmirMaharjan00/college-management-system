@@ -15,6 +15,7 @@ import { GLOBALCONTEXT } from "../../App";
 import { ourFetch, fetchCallback, convertedDate } from "../functions";
 import { PayrollForm } from './payroll'
 import { useDate } from "../includes/hooks";
+import CryptoJS from 'crypto-js';
 
 /**
  * Account
@@ -230,7 +231,7 @@ export const Account = () => {
             </>
         }
 
-        { formVisibility && ( buttonIdentifier === 'pay-fees' ) && <PayFees includeUser = { true }/> }
+        { formVisibility && ( buttonIdentifier === 'pay-fees' ) && <PayFees /> }
     </main>
 }
 
@@ -334,6 +335,7 @@ const IncomePreview = ( props ) => {
 const Student = () => {
     return <>
         <Table />
+        <Esewa />
     </>
 }
 

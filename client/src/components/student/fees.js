@@ -8,7 +8,7 @@ import CryptoJS from 'crypto-js';
 import { ourFetch, getCurrentSelectValue, fetchCallback } from '../functions'
 import Select from 'react-select'
 
-const SECRET_KEY = 'college-management-system-secret-key'
+const SECRET_KEY = '8gBm/:&EnhH.1/q';
 
 export const StudentFees = () => {
     const Global = useContext( GLOBALCONTEXT ),
@@ -72,8 +72,10 @@ export const StudentFees = () => {
  * 
  * @since 1.0.0
  */
-export const PayFees = ( props ) => {
-	const { includeUser } = props,
+export const PayFees = () => {
+	const Global = useContext( GLOBALCONTEXT ),
+		{ loggedInUser } = Global,
+		{ role, id: userID, name, courseId, semester: _thisSem } = loggedInUser,
 		[ students, setStudents ] = useState([]),
 		studentOptions = useMemo(() => {
 			return students.reduce(( val, student ) => {
@@ -82,11 +84,15 @@ export const PayFees = ( props ) => {
 				return val
 			}, [])
 		}, [ students ]),
+		isAdmin = useMemo(() => {
+			if( role === 'admin' ) return true
+			return false
+		}, [ role ]),
 		[formData, setFormData] = useState({
-			studentName: '',
-			studentId: '',
-			program: '',
-			semester: '',
+			studentName: isAdmin ? '' : name,
+			studentId: isAdmin ? '' : userID,
+			course: isAdmin ? '' : courseId,
+			semester: isAdmin ? '' : _thisSem,
 			feeType: '',
 			paymentMethod: '',
 			price: '',
@@ -96,10 +102,12 @@ export const PayFees = ( props ) => {
 			failureUrl: 'https://developer.esewa.com.np/failure',
 			signature: ''
 		}),
-		{ studentName, studentId, program, semester, feeType, paymentMethod, price, priceInWords, remarks, successUrl, failureUrl, signature } = formData
+		{ studentName, studentId, program, semester, feeType, paymentMethod, price, priceInWords, remarks, successUrl, failureUrl, signature } = formData,
+		transactionUuid = Math.floor(100000 + Math.random() * 900000).toString(),
+		SECRET_KEY = '8gBm/:&EnhH.1/q';
 
 	useEffect(() => {
-		if( includeUser ) {
+		if( isAdmin ) {
 			ourFetch({
 				api: '/students-only',
 				callback: fetchCallback,
@@ -108,65 +116,15 @@ export const PayFees = ( props ) => {
 		}
 	}, [])
 
-	function generateRandomString() {
-		const strings = "jdkfjakfjdkjj34kj23i42i4u23i4u23i423u4i";
-		let code = "";
-		let length = 25;
-		for (let i = 0; i < length; i++) {
-			code += strings[Math.floor(Math.random() * strings.length)];
-		}
-		return code;
-	}
+	const handleChange = ( e ) => {
+		let name = e.target.name,
+			value = e.target.value
 
-	const handleChange = (e) => {
-		setFormData({ ...formData, [e.target.name]: e.target.value });
+		setFormData({ 
+			...formData,
+			[ name ]: value
+		});
 	};
-
-	const handleSubmit = (e) => {
-		let bodyParams = {}
-		if( paymentMethod === 'esewa' ) {
-			let transactionUUid = generateRandomString(),
-				signaturePayload = `total_amount=110,transaction_uuid=${ transactionUUid },product_code=EPAYTEST`,
-				rawSignature = CryptoJS.HmacSHA256( signaturePayload, SECRET_KEY ),
-				signature = CryptoJS.enc.Base64.stringify( rawSignature );
-	
-			bodyParams = {
-				amount: "100",
-				failure_url: "https://developer.esewa.com.np/failure",
-				product_delivery_charge: "0",
-				product_service_charge: "0",
-				product_code: "EPAYTEST",
-				signature,
-				signed_field_names: "total_amount,transaction_uuid,product_code",
-				success_url: "https://developer.esewa.com.np/success",
-				tax_amount: "10",
-				total_amount: "110",
-				transaction_uuid: "241028"
-			}
-		} else {
-			bodyParams = {
-				"return_url": "http://example.com/",
-				"website_url": "https://example.com/",
-				"amount": "1000",
-				"purchase_order_id": "Order01",
-				"purchase_order_name": "test",
-				"customer_info": {
-					"name": "Ram Bahadur",
-					"email": "test@khalti.com",
-					"phone": "9800000001"
-				}
-			}
-		}
-		ourFetch({
-			api: '/payment-gateway',
-			callback: testCallback,
-			body: JSON.stringify( bodyParams )
-		})
-	};
-
-	const testCallback = ( data ) => {
-		console.log( data )
-	}
 
 	const handlePriceChange = (e) => {
 		const price = e.target.value;
@@ -182,17 +140,22 @@ export const PayFees = ( props ) => {
 			...formData,
 			studentId: option.value
 		})
+	}
+
+	const generateSignature = () => {
+		const stringToSign = `total_amount=${price},transaction_uuid=${transactionUuid},product_code=EPAYTEST`,
+			rawSignature = CryptoJS.HmacSHA256(stringToSign, SECRET_KEY );
+		return CryptoJS.enc.Base64.stringify(rawSignature);
 	};
 
 	return (
 		<div className='cmg-form-wrapper'>
-			<form id="student-pay-fees" onSubmit={ handleSubmit }>
+			<form action="https://rc-epay.esewa.com.np/api/epay/main/v2/form" method="POST">
 				<div className="form-head">
 					<h2 className="form-title">College Fee Payment</h2>
 					<span className="form-excerpt">Please fill in your fee details below.</span>
 				</div>
-
-				{ includeUser && <div className="form-field">
+				{ isAdmin && <div className="form-field">
 					<label className="form-label" htmlFor="feeType">Name <span className="form-error">*</span></label>
 					<Select
 						options = { studentOptions }
@@ -213,12 +176,10 @@ export const PayFees = ( props ) => {
 						<option value="exam">Exam</option>
 					</select>
 				</div>
-
 				<div className="form-field">
 					<label className="form-label" htmlFor="price">Price <span className="form-error">*</span></label>
-					<input required type="number" id="price" name="price" min="0" value={formData.price} onChange={handlePriceChange} />
+					<input required type="number" id="price" name="price" min="0" value={ price } onChange={handlePriceChange} />
 				</div>
-
 				<div className="form-field">
 					<label className="form-label" htmlFor="priceInWords">Price in Words <span className="form-error">*</span></label>
 					<input required type="text" id="priceInWords" name="priceInWords" value={formData.priceInWords} onChange={handleChange} readOnly />
@@ -238,7 +199,17 @@ export const PayFees = ( props ) => {
 						<option value='bank'>Bank Transfer</option>
 					</select>
 				</div>
-
+				<input type="hidden" name="amount" value={ price } required />
+				<input type="hidden" name="tax_amount" value="0" required />
+				<input type="hidden" name="total_amount" value={price} required />
+				<input type="hidden" name="transaction_uuid" value={transactionUuid} required />
+				<input type="hidden" name="product_code" value="EPAYTEST" required />
+				<input type="hidden" name="product_service_charge" value="0" required />
+				<input type="hidden" name="product_delivery_charge" value="0" required />
+				<input type="hidden" name="success_url" value="https://developer.esewa.com.np/success" required />
+				<input type="hidden" name="failure_url" value="https://developer.esewa.com.np/failure" required />
+				<input type="hidden" name="signed_field_names" value="total_amount,transaction_uuid,product_code" required />
+				<input type="hidden" name="signature" value={generateSignature()} required />
 				<input value="Pay Now" className="submit-button" type="submit"/>
 			</form>
 		</div>
