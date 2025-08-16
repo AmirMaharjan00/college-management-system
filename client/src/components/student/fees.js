@@ -91,24 +91,28 @@ export const PayFees = ( props ) => {
 			return false
 		}, [ role ]),
 		{ userId, amount, message, type, purpose, paymentMethod } = feeDetails,
-		[ formData, setFormData ] = useState({
-			tax_amount: 0,
-			total_amount: amount,
-			transaction_uuid: Math.floor(100000 + Math.random() * 900000).toString(),
-			product_code: "EPAYTEST",
-			product_service_charge: 0,
-			product_delivery_charge: 0,
-			success_url: 'http://localhost:5000/digital-payment/success',
-			failure_url: 'http://localhost:5000/digital-payment/failure',
-			signed_field_names: 'total_amount,transaction_uuid,product_code'
+		params = new URLSearchParams({
+			userId,
+			message,
+			paymentMethod,
+			type,
+			purpose
 		}),
+		formData = useMemo(() => {
+			return {
+				tax_amount: 0,
+				total_amount: amount,
+				transaction_uuid: Math.floor(100000 + Math.random() * 900000).toString(),
+				product_code: "EPAYTEST",
+				product_service_charge: 0,
+				product_delivery_charge: 0,
+				success_url: `http://localhost:5000/digital-payment/success`,
+				failure_url: `http://localhost:5000/digital-payment/failure`,
+				signed_field_names: 'total_amount,transaction_uuid,product_code'
+			}
+		}, [ amount ]),
 		{ tax_amount, total_amount, transaction_uuid, product_code, product_service_charge, product_delivery_charge, success_url, failure_url, signed_field_names } = formData,
-		SECRET_KEY = '8gBm/:&EnhH.1/q',
-		signature = useMemo(() => {
-			const stringToSign = `total_amount=${amount},transaction_uuid=${transaction_uuid},product_code=EPAYTEST`,
-				rawSignature = CryptoJS.HmacSHA256(stringToSign, SECRET_KEY );
-			return CryptoJS.enc.Base64.stringify(rawSignature);
-		}, [ amount, transaction_uuid ] )
+		SECRET_KEY = '8gBm/:&EnhH.1/q'
 
 	useEffect(() => {
 		if( isAdmin ) {
@@ -148,6 +152,12 @@ export const PayFees = ( props ) => {
 			...feeDetails,
 			userId: option.value
 		})
+	}
+
+	const generateSignature = () => {
+		const stringToSign = `total_amount=${amount},transaction_uuid=${transaction_uuid},product_code=EPAYTEST`,
+			rawSignature = CryptoJS.HmacSHA256(stringToSign, SECRET_KEY );
+		return CryptoJS.enc.Base64.stringify(rawSignature);
 	}
 
 	return (
@@ -200,7 +210,7 @@ export const PayFees = ( props ) => {
 				<input type="hidden" name="success_url" value={ success_url } required />
 				<input type="hidden" name="failure_url" value={ failure_url } required />
 				<input type="hidden" name="signed_field_names" value={ signed_field_names } required />
-				<input type="hidden" name="signature" value={ signature } required />
+				<input type="hidden" name="signature" value={ generateSignature() } required />
 				<input value="Pay Now" className="submit-button" type="submit"/>
 			</form>
 		</div>

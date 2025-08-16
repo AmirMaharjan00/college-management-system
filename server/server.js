@@ -484,23 +484,59 @@ app.post( '/all-users-via-role', ( request, res ) => {
 });
 
 /**
- * MARK: Users via role
+ * MARK: DIGITAL PAYMENT SUCCESS
  */
-app.post( '/payment-gateway', async ( request, res ) => { 
-  const { transaction_uuid, total_amount, product_code } = request.body,
-    url =  `https://rc-epay.esewa.com.np/api/epay/transaction/status/?product_code=${product_code}&total_amount=${total_amount}&transaction_uuid=${transaction_uuid}`
-
+app.get( '/digital-payment/success', async ( request, res ) => { 
+  console.log( request.query, 'query' )
   try {
-    const response = await fetch( url, {
-      method: 'get'
-    });
-
-    const data = await response.json();
-    console.log( data, 'data' )
-    res.json(data);
+    const splitQuery = request.query.split( '?' )
+      // {} = splitQuery[ 0 ],
+      // { data } = splitQuery[ 1 ]
+      // decoded = Buffer.from( data, "base64" ).toString( "utf-8" ),
+      // paymentInfo = JSON.parse( decoded ),
+      // { transaction_uuid, total_amount, product_code, status } = paymentInfo,
+      // insertQuery = `INSERT INTO account (userId, amount, message, paymentMethod, type, purpose) VALUES (?, ?, ?, ?, ?, ?)`
+    
+    // console.log( paymentInfo, 'paymentInfo' )
+    // if( status === 'COMPLETE' ) {
+      // con.query( insertQuery, [ userId, total_amount, message, paymentMethod, type, purpose ], ( error, result ) => {
+      //   if ( error ) return res.status( 500 ).json({ message: "Failed ! Please Try again.", success: false, isError: true });
+      //   res.redirect( "http://localhost:3000/dashboard" )
+      // })
+    // } else {
+    //   res.redirect( "http://localhost:3000/dashboard" )
+    // }
   } catch (error) {
-    res.status(500).json({ error: 'Khalti request failed' });
+    res.status(500).json({ error: 'Request failed' });
   }
+});
+
+/**
+ * MARK: DIGITAL PAYMENT FAILURE
+ */
+app.get( '/digital-payment/failure', async ( request, res ) => { 
+  console.log( request.query )
+  // try {
+  //   const { data } = request.query,
+  //     decoded = Buffer.from( data, "base64" ).toString( "utf-8" ),
+  //     paymentInfo = JSON.parse( decoded ),
+  //     { transaction_uuid, total_amount, product_code, status, userId = 0, message = '', paymentMethod = 'esewa', type = 'income', purpose = 'fees' } = paymentInfo,
+  //     insertQuery = `INSERT INTO account (userId, amount, message, paymentMethod, type, purpose) VALUES (?, ?, ?, ?, ?, ?)`
+    
+  //   console.log( paymentInfo, 'paymentInfo' )
+  //   if( status === 'COMPLETE' ) {
+  //     // con.query( insertQuery, [ userId, total_amount, message, paymentMethod, type, purpose ], ( error, result ) => {
+  //     //   if ( error ) return res.status( 500 ).json({ message: "Failed ! Please Try again.", success: false, isError: true });
+  //     //   res.redirect( "http://localhost:3000/dashboard" )
+  //     // })
+  //   } else {
+  //     res.redirect( "http://localhost:3000/dashboard" )
+  //   }
+      
+    
+  // } catch (error) {
+  //   res.status(500).json({ error: 'Request failed' });
+  // }
 });
 
 /**
