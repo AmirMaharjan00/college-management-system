@@ -291,7 +291,9 @@ export const StudentsList = () => {
         />
         { newRegister && <AddNewUser role={ 'student' }/> }
         { showChat && <Chat id={ chatId }/> }
-        { showPayFeesForm && <PayFees /> }
+        { showPayFeesForm && <PayFees
+            includeSelect = { false }
+        /> }
     </main>
 }
 

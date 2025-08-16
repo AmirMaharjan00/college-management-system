@@ -34,7 +34,11 @@ export const Account = () => {
             fees: 0,
             payroll: 0
         }),
-        { expenses, income, fees, payroll } = highlights
+        { expenses, income, fees, payroll } = highlights,
+        isAdmin = useMemo(() => {
+			if( role === 'admin' ) return true
+			return false
+		}, [ role ])
 
     useEffect(() => {
         ourFetch({
@@ -231,7 +235,9 @@ export const Account = () => {
             </>
         }
 
-        { formVisibility && ( buttonIdentifier === 'pay-fees' ) && <PayFees /> }
+        { formVisibility && ( buttonIdentifier === 'pay-fees' ) && <PayFees
+            includeSelect = { isAdmin }
+        /> }
     </main>
 }
 

@@ -98,20 +98,20 @@ export const Payment = () => {
 	);
 };
 
+/**
+ * MARK: SUCCESS
+ */
 export const PaymentSuccess = () =>  {
     return <main className="cmg-main" id="cmg-main">
-        <h1>hello</h1>
+        <h1>Success</h1>
     </main>
 }
 
+/**
+ * MARK: FAILURE
+ */
 export const PaymentFailure = () =>  {
     return <main className="cmg-main" id="cmg-main">
-        <h1>hello</h1>
+        <h1>Failure</h1>
     </main>
 }
-
-// export const Invoice = () => {
-//     return <main className="cmg-main" id="cmg-main">
-//         <h1>hello</h1>
-//     </main>
-// }
