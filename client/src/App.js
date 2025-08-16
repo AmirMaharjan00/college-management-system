@@ -67,7 +67,15 @@ function App() {
     [ currentBookId, setCurrentBookId ] = useState( 0 ),
     [ returnBookVisibility, setReturnBookVisibility ] = useState( 0 ),
     [ canvasOpen, setCanvasOpen ] = useState( false ),
-    [ formSuccess, setFormSuccess ] = useState( false )
+    [ formSuccess, setFormSuccess ] = useState( false ),
+    [ feeDetails, setFeeDetails ] = useState({
+			userId: 0,
+			amount: 0,
+			message: '',
+			type: 'income',
+			purpose: 'fees',
+      paymentMethod: 'esewa'
+    })
 
   /* Global Context Object */
   let globalContextObject = {
@@ -94,7 +102,8 @@ function App() {
     currentBookId, setCurrentBookId,  // holds the clicked book id
     returnBookVisibility, setReturnBookVisibility,  // Show return book form
     canvasOpen, setCanvasOpen,
-    formSuccess, setFormSuccess
+    formSuccess, setFormSuccess,
+    feeDetails, setFeeDetails
   }
 
   return <GLOBALCONTEXT.Provider value={ globalContextObject }>

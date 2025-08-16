@@ -12,7 +12,7 @@ import { PayFees } from '../student/fees'
 
 export const StudentsList = () => {
     const Global = useContext( GLOBALCONTEXT ),
-        { newRegister, setNewRegister, setHeaderOverlay, setOverlay, showChat, setShowChat, chatId, setChatId, showPayFeesForm, setShowPayFeesForm } = Global,
+        { newRegister, setNewRegister, setHeaderOverlay, setOverlay, showChat, setShowChat, chatId, setChatId, showPayFeesForm, setShowPayFeesForm, feeDetails, setFeeDetails } = Global,
         [ allStudents, setAllStudents ] = useState([]),
         [ searched, setSearched ] = useState( '' ),
         { convertedDate } = useDate(),
@@ -125,10 +125,14 @@ export const StudentsList = () => {
     /**
      * Handle Fees
      */
-    const handleFees = () => {
+    const handleFees = ( id ) => {
         setShowPayFeesForm( true )
         setHeaderOverlay( true )
         setOverlay( true )
+        setFeeDetails({
+            ...feeDetails, 
+            userId: id
+        })
     }
 
     /**
@@ -226,7 +230,7 @@ export const StudentsList = () => {
                                 <td>{ convertedDate( registered_date ) }</td>
                                 <td className='action-buttons'>
                                     <button onClick={() => handleMessageClick( id )}><FontAwesomeIcon icon={ faMessage }/></button>
-                                    <button onClick={() => handleFees()}>Collect Fees</button>
+                                    <button onClick={() => handleFees( id )}>Collect Fees</button>
                                     <div className={ `more-button-wrapper${ currentDropdownId === id ? ' active' : '' }` } ref={ actionButton }>
                                         <button className='more-button' onClick={() => handleActionButton( id )}><FontAwesomeIcon icon={ faEllipsisVertical }/></button>
                                         { currentDropdownId === id && <ActionButtonDropdown id={ id } /> }
@@ -276,7 +280,7 @@ export const StudentsList = () => {
                             </div>
                             <div className='foot'>
                                 <button onClick={() => handleMessageClick( id )}><FontAwesomeIcon icon={ faMessage }/></button>
-                                <button onClick={() => handleFees()}>Collect Fees</button>
+                                <button onClick={() => handleFees( id )}>Collect Fees</button>
                             </div>
                         </div>
                     })

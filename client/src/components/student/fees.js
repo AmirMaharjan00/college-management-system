@@ -12,12 +12,7 @@ const SECRET_KEY = '8gBm/:&EnhH.1/q';
 
 export const StudentFees = () => {
     const Global = useContext( GLOBALCONTEXT ),
-        { setOverlay, showPayFeesForm, setShowPayFeesForm, setHeaderOverlay, loggedInUser } = Global,
-		{ role } = loggedInUser,
-		isAdmin = useMemo(() => {
-			if( role === 'admin' ) return true
-			return false
-		}, [ role ])
+        { setOverlay, showPayFeesForm, setShowPayFeesForm, setHeaderOverlay, } = Global;
 		
     let test = [ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20 ]
 
@@ -67,9 +62,7 @@ export const StudentFees = () => {
             <div className='fees-total-wrapper'>
                 This is total
             </div>
-            { showPayFeesForm && <PayFees
-				includeSelect = { isAdmin }
-			/> }
+            { showPayFeesForm && <PayFees /> }
         </div>
     </main>
 }
@@ -79,10 +72,9 @@ export const StudentFees = () => {
  * 
  * @since 1.0.0
  */
-export const PayFees = ( props ) => {
+export const PayFees = () => {
 	const Global = useContext( GLOBALCONTEXT ),
 		{ loggedInUser } = Global,
-		{ includeSelect = false } = props,
 		{ role, id: userID, name, courseId, semester: _thisSem } = loggedInUser,
 		[ students, setStudents ] = useState([]),
 		studentOptions = useMemo(() => {
@@ -106,13 +98,17 @@ export const PayFees = ( props ) => {
 			price: '',
 			priceInWords: '',
 			remarks: '',
-			successUrl: 'http://localhost:3000/dashboard/payment-success',
-			failureUrl: 'http://localhost:3000/dashboard/payment-failure',
-			signature: ''
+			successUrl: 'https://developer.esewa.com.np/success',
+			failureUrl: 'https://developer.esewa.com.np/failure',
 		}),
-		{ studentName, studentId, program, semester, feeType, paymentMethod, price, priceInWords, remarks, successUrl, failureUrl, signature } = formData,
+		{ studentName, studentId, program, semester, feeType, paymentMethod, price, priceInWords, remarks, successUrl, failureUrl } = formData,
 		transactionUuid = Math.floor(100000 + Math.random() * 900000).toString(),
-		SECRET_KEY = '8gBm/:&EnhH.1/q';
+		SECRET_KEY = '8gBm/:&EnhH.1/q',
+		signature = useMemo(() => {
+			const stringToSign = `total_amount=${price},transaction_uuid=${transactionUuid},product_code=EPAYTEST`,
+				rawSignature = CryptoJS.HmacSHA256(stringToSign, SECRET_KEY );
+			return CryptoJS.enc.Base64.stringify(rawSignature);
+		}, [ price, transactionUuid ] )
 
 	useEffect(() => {
 		if( isAdmin ) {
@@ -150,12 +146,6 @@ export const PayFees = ( props ) => {
 		})
 	}
 
-	const generateSignature = () => {
-		const stringToSign = `total_amount=${price},transaction_uuid=${transactionUuid},product_code=EPAYTEST`,
-			rawSignature = CryptoJS.HmacSHA256(stringToSign, SECRET_KEY );
-		return CryptoJS.enc.Base64.stringify(rawSignature);
-	};
-
 	return (
 		<div className='cmg-form-wrapper'>
 			<form action="https://rc-epay.esewa.com.np/api/epay/main/v2/form" method="POST">
@@ -163,7 +153,7 @@ export const PayFees = ( props ) => {
 					<h2 className="form-title">College Fee Payment</h2>
 					<span className="form-excerpt">Please fill in your fee details below.</span>
 				</div>
-				{ isAdmin && includeSelect && <div className="form-field">
+				{ isAdmin && <div className="form-field">
 					<label className="form-label" htmlFor="feeType">Name <span className="form-error">*</span></label>
 					<Select
 						options = { studentOptions }
@@ -174,16 +164,6 @@ export const PayFees = ( props ) => {
 					/>
 				</div> }
 
-				<div className="form-field">
-					<label className="form-label" htmlFor="feeType">Fee Type <span className="form-error">*</span></label>
-					<select required id="feeType" name="feeType" value={formData.feeType} onChange={handleChange}>
-						<option value="">Select Type</option>
-						<option value="tuition">Tuition</option>
-						<option value="hostel">Hostel</option>
-						<option value="library">Library</option>
-						<option value="exam">Exam</option>
-					</select>
-				</div>
 				<div className="form-field">
 					<label className="form-label" htmlFor="price">Price <span className="form-error">*</span></label>
 					<input required type="number" id="price" name="price" min="0" value={ price } onChange={handlePriceChange} />
@@ -207,17 +187,17 @@ export const PayFees = ( props ) => {
 						<option value='bank'>Bank Transfer</option>
 					</select>
 				</div>
-				<input type="hidden" name="amount" value={ price } required />
+				<input type="hidden" name="amount" value={ '' } required />
 				<input type="hidden" name="tax_amount" value="0" required />
-				<input type="hidden" name="total_amount" value={price} required />
-				<input type="hidden" name="transaction_uuid" value={transactionUuid} required />
+				<input type="hidden" name="total_amount" value={''} required />
+				<input type="hidden" name="transaction_uuid" value={''} required />
 				<input type="hidden" name="product_code" value="EPAYTEST" required />
 				<input type="hidden" name="product_service_charge" value="0" required />
 				<input type="hidden" name="product_delivery_charge" value="0" required />
-				<input type="hidden" name="success_url" value={ successUrl } required />
-				<input type="hidden" name="failure_url" value={ failureUrl } required />
+				<input type="hidden" name="success_url" value="https://developer.esewa.com.np/success" required />
+				<input type="hidden" name="failure_url" value="https://developer.esewa.com.np/failure" required />
 				<input type="hidden" name="signed_field_names" value="total_amount,transaction_uuid,product_code" required />
-				<input type="hidden" name="signature" value={generateSignature()} required />
+				<input type="hidden" name="signature" value={ '' } required />
 				<input value="Pay Now" className="submit-button" type="submit"/>
 			</form>
 		</div>

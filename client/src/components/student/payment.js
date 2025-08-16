@@ -2,6 +2,8 @@ import React from 'react'
 import { useState, useEffect, useContext } from 'react'
 import { v4 as uuidv4 } from 'uuid'
 import CryptoJs from 'crypto-js'
+import { GLOBALCONTEXT } from '../../App';
+import { ourFetch } from '../functions';
 
 export const Payment = () => {
 
@@ -102,6 +104,28 @@ export const Payment = () => {
  * MARK: SUCCESS
  */
 export const PaymentSuccess = () =>  {
+    const Global = useContext( GLOBALCONTEXT ),
+        { feeDetails, setFeeDetails } = Global
+
+    useEffect(() => {
+        console.log( feeDetails )
+        ourFetch({
+            api: '/add-fees',
+            callback: callback,
+            body: JSON.stringify( feeDetails )
+        })
+    }, [])
+
+    /**
+     * @callback
+     */
+    const callback = ( data ) => {
+        let { result, success } = data
+        if( success ) {
+            console.log( result, 'result' )
+        }
+    }
+
     return <main className="cmg-main" id="cmg-main">
         <h1>Success</h1>
     </main>
@@ -111,6 +135,27 @@ export const PaymentSuccess = () =>  {
  * MARK: FAILURE
  */
 export const PaymentFailure = () =>  {
+    const Global = useContext( GLOBALCONTEXT ),
+        { feeDetails, setFeeDetails } = Global
+
+    useEffect(() => {
+        ourFetch({
+            api: '',
+            callback: callback,
+            body: JSON.stringify({})
+        })
+    }, [])
+
+    /**
+     * @callback
+     */
+    const callback = ( data ) => {
+        let { result, success } = data
+        if( success ) {
+            console.log( result, 'result' )
+        }
+    }
+
     return <main className="cmg-main" id="cmg-main">
         <h1>Failure</h1>
     </main>

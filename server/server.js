@@ -487,17 +487,16 @@ app.post( '/all-users-via-role', ( request, res ) => {
  * MARK: Users via role
  */
 app.post( '/payment-gateway', async ( request, res ) => { 
+  const { transaction_uuid, total_amount, product_code } = request.body,
+    url =  `https://rc-epay.esewa.com.np/api/epay/transaction/status/?product_code=${product_code}&total_amount=${total_amount}&transaction_uuid=${transaction_uuid}`
+
   try {
-    const response = await fetch('https://dev.khalti.com/api/v2/epayment/initiate/', {
-      method: 'POST',
-      headers: {
-        'Authorization': 'Key YOUR_KHALTI_SECRET_KEY',
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify(req.body)
+    const response = await fetch( url, {
+      method: 'get'
     });
 
     const data = await response.json();
+    console.log( data, 'data' )
     res.json(data);
   } catch (error) {
     res.status(500).json({ error: 'Khalti request failed' });
@@ -839,10 +838,23 @@ app.post( '/year-income', ( request, res ) => {
 });
 
 /**
- * MARK: YEAR INCOME
+ * MARK: PAID FEES
  */
 app.post( '/paid-fees', ( request, res ) => { 
   const selectQuery = `SELECT SUM(CASE WHEN COALESCE(p.totalPaid, 0) >= c.cost THEN 1 ELSE 0 END) AS paidFull, SUM(CASE WHEN COALESCE(p.totalPaid, 0) < c.cost THEN 1 ELSE 0 END) AS unpaid FROM users u JOIN courses c ON u.courseId = c.id LEFT JOIN ( SELECT userId, SUM(amount) AS totalPaid FROM account WHERE type = 'income' GROUP BY userId ) p ON u.id = p.userId WHERE u.role = 'student'`
+  con.query( selectQuery, ( error, result ) => {
+    if ( error ) {
+      return res.status( 500 ).json({ error: "Database selection failed" });
+    }
+    return res.status( 200 ).json({ result: result[0], success: true });
+  })
+});
+
+/**
+ * MARK: ADD FEES
+ */
+app.post( '/add-fees', ( request, res ) => { 
+  const selectQuery = `INSERT INTO account (userId, amount, message, type, purpose) VALUES (${ userId }, ${ amount }, "${ message }", "income", "fine");`
   con.query( selectQuery, ( error, result ) => {
     if ( error ) {
       return res.status( 500 ).json({ error: "Database selection failed" });
