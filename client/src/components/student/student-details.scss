@@ -323,9 +323,11 @@
 	}
 }
 
-// =====================
-// Info Section (Docs & Address)
-// =====================
+/**
+*
+*	MARK: Info Section (Docs & Address)
+*/
+
 .info-section {
 	display: flex;
 	flex-wrap: wrap;
@@ -381,7 +383,11 @@
 	}
 }
 
-// leave & attendance
+/**
+*
+*	MARK: leave & attendance
+*/
+
 	.leave-container {
 		& .sub-card {
 			padding: 1.5rem;
@@ -554,7 +560,187 @@
 		}
 	}
 
-// Fees
+	// Attandence
+	.attendance-wrapper {
+		.attendance-section,
+		.leave-section {
+			margin-bottom: 30px;
+			padding: 20px;
+			background: #fff;
+			border-radius: 10px;
+			box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+
+			.attendance-header,
+			.leave-header {
+				display: flex;
+				align-items: center;
+				justify-content: space-between;
+				margin-bottom: 20px;
+
+				h3 {
+					font-size: 18px;
+					font-weight: 600;
+					color: #1e293b;
+				}
+
+				.fees__filter-button {
+					position: relative;
+					cursor: pointer;
+					display: flex;
+					align-items: center;
+					background: #f9fafb;
+					border: 1px solid #e2e8f0;
+					border-radius: 6px;
+					padding: 6px 12px;
+
+					.cmg-active-dropdown-item {
+						display: flex;
+						align-items: center;
+						gap: 8px;
+
+						.icon {
+							color: #334155;
+						}
+
+						.label {
+							font-size: 14px;
+							color: #475569;
+						}
+					}
+
+					.fees-dropdown-icon {
+						margin-left: 8px;
+						color: #64748b;
+					}
+
+					.cmg-dropdown {
+						display: none;
+						position: absolute;
+						top: 100%;
+						left: 0;
+						width: 180px;
+						background: #fff;
+						border: 1px solid #e2e8f0;
+						border-radius: 6px;
+						margin-top: 4px;
+						box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+						z-index: 10;
+
+						.cmg-list-item {
+							padding: 10px 14px;
+							font-size: 14px;
+							color: #334155;
+							cursor: pointer;
+
+							&:hover {
+								background: #f1f5f9;
+							}
+
+							&.active {
+								background: #e2e8f0;
+								font-weight: 500;
+							}
+						}
+					}
+
+					&:hover .cmg-dropdown {
+						display: block;
+					}
+				}
+			}
+
+			// Cards Layout
+			.attendance-stats,
+			.leave-stats {
+				display: grid;
+				grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+				gap: 16px;
+			}
+
+			.attendance-card,
+			.leave-card {
+				background: #f9fafb;
+				border-radius: 8px;
+				padding: 16px;
+				display: flex;
+				align-items: center;
+				gap: 12px;
+				box-shadow: 0 1px 4px rgba(0,0,0,0.05);
+				transition: transform 0.2s ease;
+
+				&:hover {
+					transform: translateY(-3px);
+				}
+
+				.icon {
+					width: 36px;
+					height: 36px;
+					border-radius: 8px;
+					display: flex;
+					align-items: center;
+					justify-content: center;
+					font-size: 18px;
+				}
+
+				p {
+					margin: 0;
+					font-size: 14px;
+					font-weight: 500;
+					color: #475569;
+				}
+
+				span {
+					font-size: 20px;
+					font-weight: 600;
+					color: #1e293b;
+				}
+			}
+
+			// Color variations for Attendance cards
+			.attendance-card:nth-child(1) .icon {
+				background: #eef2ff;
+				color: #6366f1;
+			}
+			.attendance-card:nth-child(2) .icon {
+				background: #fee2e2;
+				color: #ef4444;
+			}
+			.attendance-card:nth-child(3) .icon {
+				background: #fef9c3;
+				color: #eab308;
+			}
+			.attendance-card:nth-child(4) .icon {
+				background: #e0f2fe;
+				color: #0284c7;
+			}
+
+			// Leave & Attendance icons
+			.leave-card:nth-child(1) .icon {
+				background: #dcfce7;
+				color: #22c55e;
+			}
+			.leave-card:nth-child(2) .icon {
+				background: #fee2e2;
+				color: #ef4444;
+			}
+			.leave-card:nth-child(3) .icon {
+				background: #fef9c3;
+				color: #eab308;
+			}
+			.leave-card:nth-child(4) .icon {
+				background: #e0f2fe;
+				color: #0284c7;
+			}
+			.leave-card:nth-child(5) .icon {
+				background: #ede9fe;
+				color: #8b5cf6;
+			}
+		}
+	}
+/**
+*
+*	MARK: Fees
+*/
 .fees-wrapper {
 	background: #fff;
 	border-radius: 8px;

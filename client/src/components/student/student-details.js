@@ -374,13 +374,13 @@ const Attendance = () => {
         [ searched, setSearched ] = useState( '' )
 
     return <>
-        <div>
-            <div className="">
-                <div>
-                    <h3 className="">Attendance</h3>
+        <div className="attendance-wrapper">
+            <div className="attendance-section">
+                <div className="attendance-header">
+                    <h3 className="attendance-title">Attendance</h3>
                     <div className="fees__filter-button dropdown">
                         <span className="cmg-active-dropdown-item">
-                            <span className="icon"><FontAwesomeIcon icon={ faCalendarMinus } /></span>
+                            <span className="icon"><FontAwesomeIcon icon={faCalendarMinus} /></span>
                             <span className="label">Year: 2024 / 2025</span>
                         </span>
                         <ul className="cmg-dropdown">
@@ -388,47 +388,48 @@ const Attendance = () => {
                             <li className="cmg-list-item">Year: 2023 / 2024</li>
                             <li className="cmg-list-item">Year: 2022 / 2023</li>
                         </ul>
-                        <span className="fees-dropdown-icon"><FontAwesomeIcon icon={ faAngleDown } /></span>
+                        <span className="fees-dropdown-icon"><FontAwesomeIcon icon={faAngleDown} /></span>
                     </div>
                 </div>
-                <div>
-                    <div>
+
+                <div className="attendance-stats">
+                    <div className="attendance-card">
                         <span className="icon"></span>
-                        <div>
+                        <div className="attendance-info">
                             <p>Present</p>
                             <span>265</span>
                         </div>
                     </div>
-                    <div>
+                    <div className="attendance-card">
                         <span className="icon"></span>
-                        <div>
-                            <p>Present</p>
-                            <span>265</span>
+                        <div className="attendance-info">
+                            <p>Absent</p>
+                            <span>15</span>
                         </div>
                     </div>
-                    <div>
+                    <div className="attendance-card">
                         <span className="icon"></span>
-                        <div>
-                            <p>Present</p>
-                            <span>265</span>
+                        <div className="attendance-info">
+                            <p>Late</p>
+                            <span>8</span>
                         </div>
                     </div>
-                    <div>
+                    <div className="attendance-card">
                         <span className="icon"></span>
-                        <div>
-                            <p>Present</p>
-                            <span>265</span>
+                        <div className="attendance-info">
+                            <p>Half Day</p>
+                            <span>5</span>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <div>
-                <div>
-                    <h3 className="">Leave & Attendance</h3>
+            <div className="leave-section">
+                <div className="leave-header">
+                    <h3 className="leave-title">Leave & Attendance</h3>
                     <div className="fees__filter-button dropdown">
                         <span className="cmg-active-dropdown-item">
-                            <span className="icon"><FontAwesomeIcon icon={ faCalendarMinus } /></span>
+                            <span className="icon"><FontAwesomeIcon icon={faCalendarMinus} /></span>
                             <span className="label">Year: 2024 / 2025</span>
                         </span>
                         <ul className="cmg-dropdown">
@@ -436,37 +437,35 @@ const Attendance = () => {
                             <li className="cmg-list-item">Year: 2023 / 2024</li>
                             <li className="cmg-list-item">Year: 2022 / 2023</li>
                         </ul>
-                        <span className="fees-dropdown-icon"><FontAwesomeIcon icon={ faAngleDown } /></span>
+                        <span className="fees-dropdown-icon"><FontAwesomeIcon icon={faAngleDown} /></span>
                     </div>
                 </div>
-                <div>
-                    <div>
+
+                <div className="leave-stats">
+                    <div className="leave-card">
                         <span className="icon"></span>
                         <p>Present</p>
                     </div>
-                    <div>
+                    <div className="leave-card">
                         <span className="icon"></span>
                         <p>Absent</p>
                     </div>
-                    <div>
+                    <div className="leave-card">
                         <span className="icon"></span>
                         <p>Late</p>
                     </div>
-                    <div>
+                    <div className="leave-card">
                         <span className="icon"></span>
-                        <p>HalfDay</p>
+                        <p>Half Day</p>
                     </div>
-                    <div>
+                    <div className="leave-card">
                         <span className="icon"></span>
-                        <p>holiday</p>
+                        <p>Holiday</p>
                     </div>
                 </div>
-                <RowAndSearch
-                    rowsPerPage = { rowsPerPage }
-                    setRowsPerPage = { setRowsPerPage }
-                    setSearched = { setSearched }
-                />
             </div>
+
+            
         </div>
     </>
 }
@@ -579,7 +578,59 @@ const Exam = () => {
             </div>
 
             <div>
-
+                <div>
+                    <button>
+                        <span className="icon"></span>
+                        <h2>Monthly Test (May)</h2>
+                    </button>
+                    <div>
+                        <table>
+                            <thead>
+                                <th>
+                                    <tr>
+                                        <th>Subject</th>
+                                        <th>Max Marks</th>
+                                        <th>Min Marks</th>
+                                        <th>Marks Obtained</th>
+                                        <th class="text-end">Result</th>
+                                    </tr>
+                                </th>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>English (150)</td>
+                                    <td>100</td>
+                                    <td>35</td>
+                                    <td>65</td>
+                                    <td class="text-end">Pass</td>
+                                </tr>
+                                <tr>
+                                    <td>English (150)</td>
+                                    <td>100</td>
+                                    <td>35</td>
+                                    <td>65</td>
+                                    <td class="text-end">Pass</td>
+                                </tr>
+                                <tr>
+                                    <td>English (150)</td>
+                                    <td>100</td>
+                                    <td>35</td>
+                                    <td>65</td>
+                                    <td class="text-end">Pass</td>
+                                </tr>
+                                <tr>
+                                    <td>Rank : 30</td>
+                                    <td>Total : 500</td>
+                                    <td>Marks Obtained : 395</td>
+                                    <td>
+                                        <span>Percentage: 79.50</span>
+                                        <h2>Result: Pass</h2>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
             </div>
         </div>
     </>
