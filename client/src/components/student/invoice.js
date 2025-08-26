@@ -1,7 +1,13 @@
 import logo from '../assets/images/sscollege-logo.png';
+import { useLocation } from 'react-router-dom'
 
 export const Invoice = () => {
-    return <div className="invoice-section">
+    const location = useLocation()
+        // { id } = location.state
+    
+    console.log( location )
+
+    return <div className="invoice-section popup">
         <div className="invoice-wrapepr">
             <div className="invoice-sidebar">
                 <h2 className="invoice-title">Receipt</h2>

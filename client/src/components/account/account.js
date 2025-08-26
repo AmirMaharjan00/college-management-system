@@ -15,7 +15,9 @@ import { GLOBALCONTEXT } from "../../App";
 import { ourFetch, fetchCallback, convertedDate } from "../functions";
 import { PayrollForm } from './payroll'
 import { useDate } from "../includes/hooks";
-import CryptoJS from 'crypto-js';
+import { Invoice } from "../student/invoice";
+import '../assets/scss/popup.scss'
+
 
 /**
  * Account
@@ -145,6 +147,13 @@ export const Account = () => {
         }
     }
 
+    /**
+     * Handle Print
+     */
+    const handlePrint = () => {
+        window.print();
+    }
+
     return <main className="cmg-main cmg-account" id="cmg-main">
         <div className="dashboard-head">
             <div className="dashboard-intro">
@@ -231,13 +240,20 @@ export const Account = () => {
 
         {
             ( role === 'student' ) && <>
-                <Student />
+                <Student
+                    setButtonIdentifier = { setButtonIdentifier }
+                />
             </>
         }
 
         { formVisibility && ( buttonIdentifier === 'pay-fees' ) && <PayFees
             includeSelect = { isAdmin }
         /> }
+
+        { ( buttonIdentifier === 'invoice' ) && formVisibility && <div className="cmg-popup-wrapper">
+            <Invoice />
+            <button onClick={ handlePrint }>Print</button>
+        </div> }
     </main>
 }
 
@@ -338,18 +354,24 @@ const IncomePreview = ( props ) => {
 /**
  * MARK: STUDENT
  */
-const Student = () => {
+const Student = ( props ) => {
+    const { setButtonIdentifier } = props
+
     return <>
-        <Table />
+        <Table
+            setButtonIdentifier = { setButtonIdentifier }
+        />
     </>
 }
 
 /**
  * MARK: TABLE
  */
-const Table = () => {
+const Table = ( props ) => {
     const [ records, setRecords ] = useState([]),
-        { convertedDate } = useDate()
+        { convertedDate } = useDate(),
+        Global = useContext( GLOBALCONTEXT ),
+        { formVisibility, formSuccess, setFormSuccess, setFormVisibility, setOverlay, setHeaderOverlay, loggedInUser } = Global
 
     useEffect(() => {
         ourFetch({
@@ -358,6 +380,16 @@ const Table = () => {
             setter: setRecords
         })
     }, [])
+
+    /**
+     * Handle View Button Click
+     */
+    const handleView = () => {
+        setOverlay( true )
+        setHeaderOverlay( true )
+        setFormVisibility( true )
+        props.setButtonIdentifier( 'invoice' )
+    }
 
     return <div className="">
         <table className="table-wrapper" id="cmg-table">
@@ -373,7 +405,7 @@ const Table = () => {
             <tbody>
                 {
                     records.length ? records.map(( record, index ) => {
-                        let { name, profile, amount, purpose, date } = record,
+                        let { id, name, profile, amount, purpose, date } = record,
                             count = index + 1
                         return <tr key={ index }>
                             <td>{ `${ count }.` }</td>
@@ -383,8 +415,7 @@ const Table = () => {
                             <td>{ `Rs. ${ amount }` }</td>
                             <td>{ convertedDate( date ) }</td>
                             <td>
-                                {/* onClick={() => handleViewClick( item )} */}
-                                <button >View</button>
+                                <button onClick={ handleView }>View</button>
                             </td>
                         </tr>
                     }) : <tr className="no-records">
