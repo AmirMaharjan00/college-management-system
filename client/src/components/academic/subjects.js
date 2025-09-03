@@ -1,6 +1,6 @@
 import { useEffect, useState, useMemo, useContext } from "react"
 import { Breadcrumb, Pagination, RowAndSearch, ActionButton } from "../components"
-import { fetchCallback, ourFetch, getScript } from "../functions"
+import { fetchCallback, ourFetch, getScript, getOrdinals } from "../functions"
 import { useDate } from "../includes/hooks"
 import '../assets/scss/table.scss'
 import '../assets/scss/academic.scss'
@@ -16,22 +16,42 @@ export const Subjects = () => {
         { formVisibility, formSuccess, loggedInUser } = Global,
         { role } = loggedInUser,
         [ subjects, setSubjects ] = useState([]),
+        [ courses, setCourses ] = useState([]),
+        [ activeCourse, setActiveCourse ] = useState( 'all' ),
+        [ semesters, setSemesters ] = useState([]),
+        [ activeSem, setActiveSem ] = useState( 0 ),
         [ searched, setSearched ] = useState( '' ),
         [ rowsPerPage, setRowsPerPage ] = useState( 10 ),
         [ activePage, setActivePage ] = useState( 1 ),
         [ formMode, setFormMode ] = useState( 'new' ),
         totalPages = new Array( Math.ceil( subjects.length / rowsPerPage ) ).fill( 0 ),
         filteredSubjects = useMemo(() => {
-            if( searched === '' ) return subjects.slice( ( activePage - 1 ) * rowsPerPage, ( activePage * rowsPerPage ) );
+            if( searched === '' && activeCourse !== 'all' ) {
+                let activeCourseObj = courses[ activeCourse ],
+                    { id: courseId } = activeCourseObj,
+                    test = subjects.reduce(( val, item ) => {
+                        let { course_id, semester } = item
+                        if( course_id === courseId ) {
+                            if( semester === activeSem ) {
+                                val = [ ...val, item ]
+                            } else {
+                                val = [ ...val, item ] 
+                            }
+                        }
+                        return val
+                    }, [])
+                return test.slice( ( activePage - 1 ) * rowsPerPage, ( activePage * rowsPerPage ) );
+            }
+            if( searched === '' && activeCourse === 'all' ) return  subjects.slice( ( activePage - 1 ) * rowsPerPage, ( activePage * rowsPerPage ) );
             let newAccountsList = subjects.reduce(( val, item ) => {
                 let { name } = item
-                if(  name.toLowerCase().includes( searched ) ) {
-                    val = [ ...val, item ]``
+                if( name.toLowerCase().includes( searched ) ) {
+                    val = [ ...val, item ]
                 }
                 return val
             }, [])
-            return newAccountsList.slice( 0, 10 );
-        }, [ searched, subjects, activePage, rowsPerPage ])
+            return newAccountsList.slice( ( activePage - 1 ) * rowsPerPage, ( activePage * rowsPerPage ) );
+        }, [ searched, subjects, activePage, rowsPerPage, activeCourse, activeSem ])
     
     useEffect(() => {
         ourFetch({
@@ -39,7 +59,21 @@ export const Subjects = () => {
             callback: fetchCallback,
             setter: setSubjects
         })
+        ourFetch({
+            api: '/courses',
+            callback: fetchCallback,
+            setter: setCourses
+        })
     }, [ formSuccess ])
+
+    useEffect(() => {
+        // console.log( activeCourse )
+        if( activeCourse !== 'all' ) {
+            let firstCourse = courses[ activeCourse ],
+                semArr = Array.from({ length: firstCourse?.semester }, ( _, index ) => index + 1 )
+            setSemesters( semArr )
+        }
+    }, [ courses, activeCourse ])
 
     /**
      * Handle next & previous
@@ -52,6 +86,22 @@ export const Subjects = () => {
             if( activePage <= 1 ) return
             setActivePage( activePage - 1 )
         }
+    }
+
+    /**
+     * Handle Course Change
+     */
+    const handleCourseChange = ( event ) => {
+        let value = event.target.value
+        setActiveCourse( value )
+    }
+
+    /**
+     * Handle Semester Change
+     */
+    const handleSemesterChange = ( event ) => {
+        let value = event.target.value
+        setActiveSem( value )
     }
     
     return <main className="cmg-main subjects" id="cmg-main">
@@ -80,7 +130,25 @@ export const Subjects = () => {
             rowsPerPage = { rowsPerPage }
             setRowsPerPage = { setRowsPerPage }
             setSearched = { setSearched }
-        />
+        >
+            <select className="children courses" onChange={ handleCourseChange }>
+                <option value="all">All</option>
+                {
+                    courses?.map(( course, index ) => {
+                        let { abbreviation }  = course
+                        return <option key={ index } value={ index }>{ abbreviation }</option>
+                    })
+                }
+            </select>
+            { activeCourse !== 'all' && <select className="children semesters" onChange={ handleSemesterChange }>
+                <option value="all">All</option>
+                {
+                    semesters?.map(( sem ) => {
+                        return <option key={ sem }>{ getOrdinals( sem ) }</option>
+                    })
+                }
+            </select> }
+        </RowAndSearch>
 
         <Table
             items = { filteredSubjects }

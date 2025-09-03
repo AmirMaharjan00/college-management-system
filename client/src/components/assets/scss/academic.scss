@@ -53,9 +53,11 @@
         align-items: center;
         padding: 15px;
         background: var(--white);
+        gap: 10px;
 
         .rows-per-page-wrapper {
             font-size: 14px;
+            flex: 1 1;
 
             .suffix {
                 margin-left: 5px;
@@ -107,6 +109,10 @@
             padding: 8px 10px;
             border-radius: 5px;
             width: 200px;
+        }
+
+        .children {
+
         }
     }
 
