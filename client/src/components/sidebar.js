@@ -33,12 +33,6 @@ export const Sidebar = () => {
                             <span className="cmg-icon-label">Dashboard</span>
                         </Link>
                     </li>
-                    <li className={ getClass( '/application' ) }>
-                        <a href="#" className="cmg-icon-wrapper">
-                            <span className="cmg-icon"><FontAwesomeIcon icon={ faTableList } /></span>
-                            <span className="cmg-icon-label">Application</span>
-                        </a>
-                    </li>
                 </ul>
             </div>
             {
@@ -97,12 +91,12 @@ export const Sidebar = () => {
                             <span className='cmg-icon-label'>Syllabus</span>
                         </Link>
                     </li >
-                    <li className={ getClass( '/dashboard/academic/home-work' ) }>
+                    {( role !== 'admin' ) && <li className={ getClass( '/dashboard/academic/home-work' ) }>
                         <Link to="/dashboard/academic/home-work" className='cmg-icon-wrapper'>
                             <span className='cmg-icon'><FontAwesomeIcon icon={ faListCheck }/></span>
                             <span className='cmg-icon-label'>Home Work</span>
                         </Link>
-                    </li >
+                    </li >}
                     <li className={ getClass( '/dashboard/academic/examinations' ) }>
                         <Link to="/dashboard/academic/examinations" className='cmg-icon-wrapper'>
                             <span className='cmg-icon'><FontAwesomeIcon icon={ faFilePen }/></span>

@@ -97,8 +97,10 @@ con.connect(function(err) {
           subjectsQuery += "semester INT(11) NOT NULL, "
           subjectsQuery += "year INT(11) NOT NULL, "
           subjectsQuery += "code VARCHAR(255), "
+          subjectsQuery += "teacherId INT(255), "
           subjectsQuery += "registered_date DATETIME DEFAULT CURRENT_TIMESTAMP, "
-          subjectsQuery += "FOREIGN KEY(course_id) REFERENCES courses(id) "
+          subjectsQuery += "FOREIGN KEY(course_id) REFERENCES courses(id),"
+          subjectsQuery += "FOREIGN KEY(teacherId) REFERENCES users(id) "
           subjectsQuery += ");"
         con.query( subjectsQuery, function (err, result) {
           if( err ) throw err

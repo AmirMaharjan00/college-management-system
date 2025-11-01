@@ -36,7 +36,7 @@ export const Syllabus = () => {
 
     useEffect(() => {
         ourFetch({
-            api: '/subject-via-id',
+            api: '/subject-via-course-id',
             callback: fetchCallback,
             setter: setSubjects,
             body: JSON.stringify({ id: activePopupId })
