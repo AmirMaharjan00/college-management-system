@@ -17,7 +17,11 @@ export const Sidebar = () => {
         { role } = loggedInUser,
         location = useLocation(),
         getClass = useCallback(( id ) => {
-            return `cmg-list-item${( id === location.pathname ? ' active' : '' )}`
+            if( typeof( id ) === 'object' ) {
+                return `cmg-list-item${( id.includes( location.pathname ) ? ' active' : '' )}`
+            } else {
+                return `cmg-list-item${( id === location.pathname ? ' active' : '' )}`
+            }
         }, [ location ])
 
     return <aside className="cmg-sidebar" id="cmg-sidebar">
@@ -79,7 +83,7 @@ export const Sidebar = () => {
                             <span className='cmg-icon-label'>Courses</span>
                         </Link>
                     </li >
-                    <li className={ getClass( '/dashboard/academic/subjects' ) }>
+                    <li className={ getClass( [ '/dashboard/academic/subjects', '/dashboard/subject' ] ) }>
                         <Link to="/dashboard/academic/subjects" className='cmg-icon-wrapper'>
                             <span className='cmg-icon'><FontAwesomeIcon icon={ faBookOpen }/></span>
                             <span className='cmg-icon-label'>Subject</span>
