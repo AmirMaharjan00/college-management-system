@@ -158,10 +158,10 @@ const Popup = ( props ) => {
                                             <td>{ code }</td>
                                             <td>{ name }</td>
                                             <td>
-                                                <div className="has-tooltip action">
+                                                {( role === 'admin' ) && <div className="has-tooltip action">
                                                     <FontAwesomeIcon className='edit' icon={ faPenToSquare } />
                                                     <span className="tooltip-text">Edit</span>
-                                                </div>
+                                                </div> }
                                                 <div className="has-tooltip action">
                                                     <FontAwesomeIcon className='view' icon={ faEye } />
                                                     <span className="tooltip-text">View</span>
