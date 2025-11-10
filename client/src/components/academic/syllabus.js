@@ -3,13 +3,16 @@ import { fetchCallback, getScript, ourFetch } from '../functions'
 import { Breadcrumb } from '../components'
 import { TodaysDate } from "../includes/components-hooks"
 import { GLOBALCONTEXT } from '../../App'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faPenToSquare, faEye } from '@fortawesome/free-solid-svg-icons';
 
 /**
  * Syllabus
  */
 export const Syllabus = () => {
     const Global = useContext( GLOBALCONTEXT ),
-        { setOverlay, setHeaderOverlay, setFormVisibility, formVisibility } = Global,
+        { setOverlay, setHeaderOverlay, setFormVisibility, formVisibility, loggedInUser } = Global,
+        { role } = loggedInUser,
         [ courses, setCourses ] = useState([]),
         [ activePopupId, setActivePopupId ] = useState( 0 ),
         [ activeSemester, setActiveSemester ] = useState( 1 ),
@@ -102,6 +105,7 @@ export const Syllabus = () => {
             popupDetails = { popupDetails }
             activeSemester = { activeSemester }
             setActiveSemester = { setActiveSemester }
+            role = { role }
         /> }
     </main>
 }
@@ -110,7 +114,7 @@ export const Syllabus = () => {
  * MARK: POPUP
  */
 const Popup = ( props ) => {
-    const { subjects, popupDetails, setActiveSemester, activeSemester } = props,
+    const { subjects, popupDetails, setActiveSemester, activeSemester, role } = props,
         { name, abbreviation, semester } = popupDetails,
         semesterArr = new Array( semester ).fill( 0 )
 
@@ -136,13 +140,13 @@ const Popup = ( props ) => {
                 }
             </div>
             <div className='details'>
-                <button className='view-syllabus'>View Syllabus</button>
                 <div className='subjects'>
                     <table>
                         <thead>
                             <tr>
                                 <th>Code</th>
                                 <th>Subject</th>
+                                <th>Actions</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -153,6 +157,16 @@ const Popup = ( props ) => {
                                         return <tr>
                                             <td>{ code }</td>
                                             <td>{ name }</td>
+                                            <td>
+                                                <div className="has-tooltip action">
+                                                    <FontAwesomeIcon className='edit' icon={ faPenToSquare } />
+                                                    <span className="tooltip-text">Edit</span>
+                                                </div>
+                                                <div className="has-tooltip action">
+                                                    <FontAwesomeIcon className='view' icon={ faEye } />
+                                                    <span className="tooltip-text">View</span>
+                                                </div>
+                                            </td>
                                         </tr>
                                     }
                                 })
