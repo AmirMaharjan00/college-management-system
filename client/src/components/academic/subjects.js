@@ -7,6 +7,7 @@ import '../assets/scss/academic.scss'
 import { AddNewCourseSubject } from '../forms/add-new-cs'
 import { GLOBALCONTEXT } from "../../App"
 import { TodaysDate } from "../includes/components-hooks"
+import { Link } from 'react-router-dom'
 
 /**
  * Subjects
@@ -197,7 +198,9 @@ const Table = ( props ) => {
                     return <tr key={ index }>
                         <td>{ `${ count }.` }</td>
                         <td>{ id }</td>
-                        <td>{ name }</td>
+                        <td>
+                            <Link to="/dashboard/subject" state={{ subjectId: id }}>{ name }</Link>
+                        </td>
                         <td>{ `${ abbreviation } ( ${ course_id } )` }</td>
                         <td> { getScript( semester ) }</td>
                         <td>{ getScript( year ) }</td>

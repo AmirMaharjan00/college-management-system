@@ -1,0 +1,21 @@
+/**
+    1.  INNER SUBJECT
+*/
+
+// MARK: INNER SUBJECT
+#cmg-main.subject-inner {
+    .content-wrapper{
+        background: var(--white);
+        padding: 20px;
+        border-radius: 5px;
+
+        .page-header {
+            padding-bottom: 20px;
+            border-bottom: 1px solid var(--body-bg);
+        }
+    }
+
+    .cmg-form-wrapper.no-center {
+        width: 50%;
+    }
+}

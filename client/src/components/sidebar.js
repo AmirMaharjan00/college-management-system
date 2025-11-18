@@ -17,7 +17,11 @@ export const Sidebar = () => {
         { role } = loggedInUser,
         location = useLocation(),
         getClass = useCallback(( id ) => {
-            return `cmg-list-item${( id === location.pathname ? ' active' : '' )}`
+            if( typeof( id ) === 'object' ) {
+                return `cmg-list-item${( id.includes( location.pathname ) ? ' active' : '' )}`
+            } else {
+                return `cmg-list-item${( id === location.pathname ? ' active' : '' )}`
+            }
         }, [ location ])
 
     return <aside className="cmg-sidebar" id="cmg-sidebar">
@@ -32,12 +36,6 @@ export const Sidebar = () => {
                             <span className="cmg-icon"><i className='bx bxs-dashboard'></i></span>
                             <span className="cmg-icon-label">Dashboard</span>
                         </Link>
-                    </li>
-                    <li className={ getClass( '/application' ) }>
-                        <a href="#" className="cmg-icon-wrapper">
-                            <span className="cmg-icon"><FontAwesomeIcon icon={ faTableList } /></span>
-                            <span className="cmg-icon-label">Application</span>
-                        </a>
                     </li>
                 </ul>
             </div>
@@ -85,7 +83,7 @@ export const Sidebar = () => {
                             <span className='cmg-icon-label'>Courses</span>
                         </Link>
                     </li >
-                    <li className={ getClass( '/dashboard/academic/subjects' ) }>
+                    <li className={ getClass( [ '/dashboard/academic/subjects', '/dashboard/subject' ] ) }>
                         <Link to="/dashboard/academic/subjects" className='cmg-icon-wrapper'>
                             <span className='cmg-icon'><FontAwesomeIcon icon={ faBookOpen }/></span>
                             <span className='cmg-icon-label'>Subject</span>
@@ -97,12 +95,12 @@ export const Sidebar = () => {
                             <span className='cmg-icon-label'>Syllabus</span>
                         </Link>
                     </li >
-                    <li className={ getClass( '/dashboard/academic/home-work' ) }>
+                    {( role !== 'admin' ) && <li className={ getClass( '/dashboard/academic/home-work' ) }>
                         <Link to="/dashboard/academic/home-work" className='cmg-icon-wrapper'>
                             <span className='cmg-icon'><FontAwesomeIcon icon={ faListCheck }/></span>
                             <span className='cmg-icon-label'>Home Work</span>
                         </Link>
-                    </li >
+                    </li >}
                     <li className={ getClass( '/dashboard/academic/examinations' ) }>
                         <Link to="/dashboard/academic/examinations" className='cmg-icon-wrapper'>
                             <span className='cmg-icon'><FontAwesomeIcon icon={ faFilePen }/></span>
