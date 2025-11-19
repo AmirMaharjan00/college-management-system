@@ -4,7 +4,7 @@
     min-width: 400px;
     width: 100%;
     text-align: left;
-    border-radius: 5px 5px 0 0;
+    border-radius: 0 0 5px 5px;
     overflow: hidden;
     table-layout: fixed;
     box-shadow: 0 0 20px rgba(0, 0, 0, 0.15);
@@ -22,6 +22,7 @@
         font-weight: bold;
         color: white;
         padding: 12px 15px;
+        table-layout: auto;
     }
 
     tbody tr {
@@ -29,7 +30,8 @@
             background: #ffffff;
         }
 
-        td {
+        td,
+        td a {
             padding: 12px 15px;
             color: var(--color);
         }
@@ -70,7 +72,6 @@
 }
 
 #cmg-wrapper.dark {
-    background-color: green;
     #cmg-table {
         box-shadow: 0 0 20px rgba(224, 219, 219, 0.15);
 

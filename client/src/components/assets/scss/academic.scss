@@ -10,6 +10,7 @@
 
         .title {
             margin-bottom: 5px;
+            color: var(--cmg-black-dark-color);
         }
 
         .today-date {
@@ -17,6 +18,7 @@
             justify-content: space-between;
             align-items: center;
             gap: 10px;
+            color: var(--cmg-black-dark-color);
 
             .today {
                 svg {
@@ -38,7 +40,8 @@
                 box-shadow: var(--boxShadow);
             }
 
-            svg {
+            &.export svg,
+            &.add svg {
                 margin-right: 5px;
             }
         }
@@ -52,19 +55,22 @@
         justify-content: space-between;
         align-items: center;
         padding: 15px;
-        background: var(--white);
+        background: var(--cmg-white-dark-color);
         gap: 10px;
+        border-radius: 5px 5px 0 0;
 
         .rows-per-page-wrapper {
             font-size: 14px;
             flex: 1 1;
 
-            .suffix {
-                margin-left: 5px;
-            }
-
             .prefix {
                 margin-right: 5px;
+                color: var(--cmg-black-dark-color);
+            }
+
+            .suffix {
+                margin-left: 5px;
+                color: var(--cmg-black-dark-color);
             }
 
         }
@@ -154,8 +160,7 @@
                 }
                 
                 &:nth-child(2) {
-                    width: 70px;
-                    text-align: center;
+                    width: 50px;
                 }
 
                 &:nth-child(3) {
@@ -178,7 +183,6 @@
 
             tbody tr td {
 
-                &:nth-child(2),
                 &:nth-child(5),
                 &:nth-child(6) {
                     text-align: center;
@@ -602,9 +606,7 @@
     // MARK: EXAMINATION
     &.examinations {
         .page-body {
-            margin-bottom: 1.4rem;
-            background-color: #ffffff;
-            padding: 1.5rem;
+            background-color: var(--cmg-white-dark-color);
             border-radius: 10px;
             box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
 
@@ -612,7 +614,7 @@
                 display: flex;
                 justify-content: space-between;
                 align-items: center;
-                margin-bottom: 1.4rem;
+                padding: 25px;
 
                 .head-search {
                     width: 250px;
@@ -665,6 +667,7 @@
                         display: flex;
                         align-items: center;
                         gap: 10px;
+                        color: var(--cmg-black-dark-color);
     
                         &:hover,
                         &.active {

@@ -8,6 +8,7 @@ MARK: GLOBAL
         border: 1px solid var(--actionBorder);
         color: var(--headerColor);
         border-radius: 5px;
+        transition: all .3s ease-in-out;
     }
 
     #cmg-header .action .cmg-active-dropdown-item:hover {
@@ -164,11 +165,12 @@ MARK: ACADEMIC YEAR
         z-index: 9;
         background: var(--background);
         border-radius: 3px;
+        overflow: hidden;
     }
 
     #academic-year-wrapper .cmg-list-item.active {
         background: var(--default);
-        color: var(--color);
+        color: var(--white);
     }
 
     #academic-year-wrapper .cmg-list-item {
@@ -196,13 +198,14 @@ MARK: LANGUAGE
         box-shadow: var(--boxShadow);
         transform: translate(-50%);
         z-index: 9;
-        background: var(--background);
+        background: var(--cmg-white-dark-color);
         border-radius: 3px;
+        overflow: hidden;
     }
 
     #language-wrapper .cmg-list-item.active {
         background: var(--default);
-        color: var(--color);
+        color: var(--white);
     }
 
     #language-wrapper .cmg-list-item {
@@ -212,7 +215,7 @@ MARK: LANGUAGE
     }
 
     #language-wrapper .cmg-list-item:not(.active):hover {
-        background: var(--blue);
+        background: var(--default);
         cursor: pointer;
         color: var(--white);
     }

@@ -1,5 +1,5 @@
 .timetable {
-    background-color: #fff;
+    background-color: var(--cmg-white-dark-color);
     border-radius: 8px;
 
     &__header {
@@ -7,12 +7,13 @@
         justify-content: space-between;
         align-items: center;
         padding: 1.4rem;
-        border-bottom: 1px solid #efefef;
+        border-bottom: 1px solid var(--cmg-grey-dark-color);
     }
 
     &__title {
         font-size: 1.5rem;
         font-weight: bold;
+        color: var(--cmg-black-dark-color);
     }
 
     &__filter-button {
@@ -36,6 +37,7 @@
         &-name {
             font-weight: 600;
             margin-bottom: 0.5rem;
+            color: var(--cmg-black-dark-color);
         }
     }
 
@@ -51,6 +53,7 @@
             font-size: 1rem;
             font-weight: 500;
             margin: 0.25rem 0;
+            color: var(--cmg-black-dark-color);
         }
 
         .timetable__teacher {
@@ -81,7 +84,7 @@
     }
 
     &__break {
-        border: 1px solid #e2e8f0;
+        border: 1px solid var(--cmg-grey-dark-color);
         border-radius: 10px;
         padding: 1rem;
         width: 100%;

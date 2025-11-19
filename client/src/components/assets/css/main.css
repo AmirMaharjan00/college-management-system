@@ -27,6 +27,10 @@
     --heading-color: #495057;
     --secondary-color: #878a99;
     --progress-bg: #edf3ff;
+
+    --cmg-white-dark-color: #fff;
+    --cmg-black-dark-color: #000;
+    --cmg-grey-dark-color: #efefef;
 }
 
 /*
@@ -50,6 +54,10 @@ MARK: DARK MODE
         --boxShadow: 0 1px 2px rgba(56, 65, 74, 0.15);
         --heading-color: #ced4da;
         --progress-bg: #2a2d31;
+
+        --cmg-white-dark-color: #000;
+        --cmg-black-dark-color: #fff;
+        --cmg-grey-dark-color: #efefef36;
     }
 
 a {
@@ -307,16 +315,19 @@ ADMIN DASHBOARD
 MARK: Admin Dashboard
 ==============================
 */
+    body {
+        background: var(--body-bg);
+    }
+
     #root #cmg-body {
         display: flex;
-        /* margin-top: 60px; */
-        background: var(--body-bg);
     }
 
     #cmg-body #cmg-main {
         margin-left: 260px;
         padding: 24px;
         width: 100%;
+        /* height: calc(100vh - 60px); */
         margin-top: 60px;
         min-width: 0;
     }

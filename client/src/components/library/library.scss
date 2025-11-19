@@ -362,7 +362,7 @@
             box-shadow: 0 0 20px rgba(0, 0, 0, 0.15);
 
             thead tr th {
-                width: 300px;
+                width: 100%;
                 text-align: left;
                 font-weight: 600;
                 background: var(--default);
@@ -402,43 +402,56 @@
                 }
 
                 .more-button-wrapper {
-                    border: 1px solid var(--black);
-                    padding: 10px;
+                    position: relative;
+                    outline: 1px solid var(--black);
+                    width: 30px;
+                    height: 30px;
                     border-radius: 50%;
                     cursor: pointer;
-                    position: relative;
+                    display: flex;
+                    justify-content: center;
+                    align-items: center;
+                    transition: all .3s ease-in-out;
                 }
 
                 .more-button-wrapper:hover,
                 .more-button-wrapper.active {
                     background: var(--default);
-                    border: 1px solid var(--default);
+                    outline: 1px solid var(--default);
                     
-                    button {
+                    > button {
                         color: var(--white);
                     }
                 }
 
                 .action-button-dropdown {
-                    background: var(--black);
+                    background: var(--cmg-white-dark-color);
                     position: absolute;
                     right: 0;
                     width: 150px;
                     border-radius: 5px;
                     z-index: 99;
                     top: 40px;
+                    box-shadow: 0 0 6px #0000001f;
+                    overflow: hidden;
 
                     button {
                         display: block;
                         width: 100%;
                         height: 40px;
-                        color: var(--white);
+                        color: var(--cmg-black-dark-color);
                         font-weight: 600;
+                        transition: all .3s ease-in-out;
+                    }
+
+                    button + button {
+                        border-top: 1px solid #efefef;
                     }
 
                     button:hover {
                         background: var(--default);
                         color: var(--white);
+                        border-color: var(--default);
                     }
                 }
             }
@@ -542,83 +555,25 @@
     .books-table-wrapper.books-page {
         table {
             th:nth-child(1),
-            th:nth-child(2){
-                width: 45px;
-            }
             th:nth-child(5) {
-                width: 50px;
-                text-align: center;
+                width: 40px;
             }
 
-            th:nth-child(3) {
-                width: 300px;
+            th:nth-child(2) {
+                width: 50px;
             }
-            th:nth-child(6),
-            th:nth-child(7) {
-                width: 180px;
-            }
-            th:nth-child(8){
-                width: 120px
-            }
-            th:nth-child(9) {
-                width: 100px;
-            }
+
             th:nth-child(10) {
-                width: 30px;
                 text-align: center;
+                width: 50px;
             }
 
             td:nth-child(3) {
                 font-weight: 600;
             }
 
-            td:nth-child(4),
             td:nth-child(5),
             td:nth-child(10) {
-                text-align: center;
-            }
-
-            th:nth-child(4) {
-                width: 100px;
-            }
-        }
-    }
-
-    .books-table-wrapper.issue-page {
-        table {
-            th:nth-child(1),
-            th:nth-child(2) {
-                width: 50px;
-            }
-
-            th:nth-child(3) {
-                width: 300px;
-            }
-            th:nth-child(4),
-            th:nth-child(5){
-                width: 200px;
-            }
-
-            th:nth-child(6) {
-                width: 150px;
-            }
-            th:nth-child(7),
-            th:nth-child(9),
-            th:nth-child(8) {
-                width: 100px;
-            }
-            th:nth-child(10),
-            td:nth-child(10) {
-                width: 40px;
-                text-align: center;
-            }
-
-            td:nth-child(3),
-            td:nth-child(5) {
-                font-weight: 600;
-            }
-
-            td:nth-child(9) {
                 text-align: center;
             }
         }
