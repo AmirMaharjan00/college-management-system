@@ -1,0 +1,39 @@
+.accordionContainer {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  min-height: 75vh;
+}
+.accordion {
+  cursor: pointer;
+  width: 400px;
+  margin-bottom: 0.6rem;
+  border-radius: 5px;
+  overflow: hidden;
+}
+.title,
+.content {
+  background-color: white;
+  color: black;
+}
+.title {
+  display: flex;
+  padding: 0.6rem;
+  justify-content: space-between;
+  align-items: center;
+}
+i {
+  font-size: 1.3rem;
+  transition: all 0.3s ease;
+}
+.content {
+  color: gray;
+  padding: 0 0.45rem 0.3rem;
+  display: none;
+}
+.show {
+  display: flex;
+}
+.rotate {
+  transform: rotate(180deg);
+}
