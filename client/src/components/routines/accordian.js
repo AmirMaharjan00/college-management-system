@@ -1,13 +1,42 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faAngleDown } from "@fortawesome/free-solid-svg-icons";
-import React, { forwardRef } from "react";
+import React, { forwardRef,  createRef, useRef  } from "react";
 
+/*
+  Full Accordian
+*/
+const Accordions = ({ selectedProgram }) => {
+  const accordionRefs = useRef({});
+  return (
+    <>
+      <div className="accordionContainer">
+        {selectedProgram.map((program) => {
+          return (
+            <Accordion
+              key={program.id}
+              program={program}
+              ref={
+                accordionRefs.current[program.id]
+                  ? accordionRefs.current[program.id]
+                  : (accordionRefs.current[program.id] = createRef())
+              }
+            />
+          );
+        })}
+      </div>
+    </>
+  );
+};
+
+/*
+  Accordian Toggles
+*/
 const Accordion = forwardRef(({ program }, accordionRef) => {
   const { semester, courses } = program;
 
   const handleClick = () => {
-    const content = accordionRef.current.querySelector(".content");
-    const icon = accordionRef.current.querySelector(".arrow-icon");
+    const content = accordionRef.current.querySelector(".content"),
+      icon = accordionRef.current.querySelector(".arrow-icon");
 
     content.classList.toggle("show");
     icon.classList.toggle("rotate");
@@ -48,4 +77,4 @@ const Accordion = forwardRef(({ program }, accordionRef) => {
   );
 });
 
-export default Accordion;
+export default Accordions;

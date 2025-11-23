@@ -4,7 +4,7 @@
 import "../assets/scss/routines.scss";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faAngleDown } from "@fortawesome/free-solid-svg-icons";
-import Accordions from "./accordians";
+import Accordions from "./accordian";
 import { useId, useState } from "react";
 
 export const Routines = () => {
