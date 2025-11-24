@@ -107,6 +107,12 @@ export const Sidebar = () => {
                             <span className='cmg-icon-label'>Examinations</span>
                         </Link>
                     </li >
+                    <li className={ getClass( '/dashboard/academic/results' ) }>
+                        <Link to="/dashboard/academic/results" className='cmg-icon-wrapper'>
+                            <span className='cmg-icon'><FontAwesomeIcon icon={ faFilePen }/></span>
+                            <span className='cmg-icon-label'>Results</span>
+                        </Link>
+                    </li >
                     <li className={ getClass( '/dashboard/academic/complaints' ) }>
                         <Link to="/dashboard/academic/complaints" className='cmg-icon-wrapper'>
                             <span className='cmg-icon'><FontAwesomeIcon icon={ faCircleExclamation }/></span>
