@@ -44,7 +44,7 @@ export const Complaints = () => {
             callback: fetchCallback,
             setter: setComplaints
         })
-    }, [])
+    }, [ formVisibility ])
 
     /**
      * Handle next & previous
@@ -102,7 +102,7 @@ export const Complaints = () => {
             handlePagination = { handlePagination }
         />
 
-        { ( formType === 'new' ) && <Form /> }
+        { ( formType === 'new' ) && formVisibility && <Form /> }
 
         { formVisibility && ( formType === 'view' ) && Object.keys( activeComplaint ).length && <Popup
             complaint = { activeComplaint }
@@ -237,8 +237,9 @@ const Popup = ( props ) => {
  */
 const Form = () => {
     const Global = useContext( GLOBALCONTEXT ),
-        { formVisibility } = Global,
+        { setFormVisibility, setOverlay, setHeaderOverlay } = Global,
         [ users, setUsers ] = useState([]),
+        [ imageObject, setImageObject ] = useState( '' ),
         [ formData, setFormData ] = useState({
             subject: '',
             against: '',
@@ -272,6 +273,7 @@ const Form = () => {
             callback: submitCallback,
             body: JSON.stringify( formData )
         })
+        handleSave()
     }
 
     /**
@@ -280,7 +282,10 @@ const Form = () => {
     const submitCallback = ( data ) => {
         let { success } = data
         if( success ) {
-            console.log( formData )
+            console.log( data )
+            setFormVisibility( false )
+            setOverlay( false )
+            setHeaderOverlay( false )
         }
     }
 
@@ -297,6 +302,20 @@ const Form = () => {
         })
     }
 
+    /* Handle image */
+    const handleImage = ( event ) => {
+        let files = event.target.files
+        if( files.length > 0 ) {
+            let picture = files[0]
+            let pictureUrl = URL.createObjectURL( picture )
+            setFormData({
+                ...formData,
+                file: pictureUrl
+            })
+            setImageObject( picture )
+        }
+    }
+
     /**
      * React select change handle
      */
@@ -309,8 +328,20 @@ const Form = () => {
         })
     }
 
-    return formVisibility && <div className="cmg-form-wrapper">
-        <form onSubmit={ handleFormSubmit }>
+    
+    /* Handle Save */
+    const handleSave = () => {
+        const formData = new FormData();
+        formData.append('image', imageObject); // 'image' should match your backend field name
+        ourFetch({
+            api: '/upload',
+            headersMultipart: true,
+            body: formData
+        })
+    }
+
+    return <div className="cmg-form-wrapper">
+        <form method="POST" encType="multipart/form-data" action="/upload" onSubmit={ handleFormSubmit }>
             <div className="form-head">
                 <h2 className="form-title">File a Complaint</h2>
                 <p className="form-exceprt">Please fill the details below.</p>
@@ -347,9 +378,9 @@ const Form = () => {
                     Files
                     <span className="form-error">*</span>
                 </label>
-                <input type="file" name="file" onChange={ handleChange } value={ file } />
+                <input type="file" id="file-input" onChange={ handleImage } name="image"/>
             </div>
-            <input type="submit" value={ 'File Complaint' }/>
+            <input type="submit" value={ 'File Complaint' } />
         </form>
     </div>
 }
