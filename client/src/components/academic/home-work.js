@@ -16,5 +16,6 @@ export const HomeWork = () => {
             <TodaysDate />
 
         </div>
+        <h2>Coming Soon.</h2>
     </main>
 }
