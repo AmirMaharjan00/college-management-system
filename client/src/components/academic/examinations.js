@@ -31,6 +31,16 @@ import {
  */
 export const Examinations = () => {
     const Global = useContext( GLOBALCONTEXT ),
+        defaultFormValues = {
+            title: '',
+            start: '',
+            end: '',
+            course: 1,
+            semester: 1,
+            notice: '',
+            type: 'first',
+            data: []
+        },
         { formSuccess, setOverlay, setHeaderOverlay, setFormSuccess, setFormVisibility, formVisibility, loggedInUser } = Global,
         { role } = loggedInUser,
         [ searched, setSearch ] = useState( '' ),
@@ -60,7 +70,7 @@ export const Examinations = () => {
         }, [ searched, tab, exams ]),
         actionButton = useRef(),
         [ currentDropdownId, setCurrentDropdownId ] = useState( null ),
-        [ currentFormValues, setCurrentFormValues ] = useState({})
+        [ currentFormValues, setCurrentFormValues ] = useState( defaultFormValues )
 
     useEffect(() => {
         ourFetch({
@@ -124,7 +134,10 @@ export const Examinations = () => {
                 { ( role === 'admin' ) && <ActionButton
                     setFormMode = { setFormMode }
                     label = "New Exam"
-                    extendFunction = {() => setFormType( 'form' )}
+                    extendFunction = {() => {
+                        setFormType( 'form' )
+                        setCurrentFormValues( defaultFormValues )
+                    }}
                 /> }
 
             </div>
@@ -137,8 +150,10 @@ export const Examinations = () => {
                 setFormType = { setFormType }
             />
 
-            { currentDropdownId && ( formType === 'form' ) && <Form
+            { formVisibility && ( [ 'form', 'edit' ].includes( formType ) ) && <Form
                 currentFormValues = { currentFormValues }
+                formMode = { formMode }
+                setCurrentFormValues = { setCurrentFormValues }
             /> }
 
             { currentDropdownId && ( formType === 'routine' ) && <Routine 
@@ -227,22 +242,13 @@ const Table = ( props ) => {
  */
 const Form = ( props ) => {
     const Global = useContext( GLOBALCONTEXT ),
-        { formVisibility, setFormSuccess } = Global,
-        { currentFormValues } = props,
+        { setFormSuccess } = Global,
+        { currentFormValues, formMode, setCurrentFormValues } = props,
         [ courses, setCourses ] = useState([]),
         [ subjects, setSubjects ] = useState([]),
         [ dragActive, setDragActive ] = useState( null ),
-        [ formData, setFormData ] = useState({
-            title: '',
-            start: '',
-            end: '',
-            course: 1,
-            semester: 1,
-            notice: '',
-            type: 'first',
-            data: []
-        }),
-        { title, course, semester, notice, type, data } = formData,
+        [ hasInteracted, setHasInteracted ] = useState( false ),
+        { title, course, semester, notice, type, data } = currentFormValues,
         semesters = useMemo(() => {
             let total = courses.reduce(( val, _thisCourse ) => {
                 let { id, semester } = _thisCourse
@@ -260,10 +266,6 @@ const Form = ( props ) => {
         );
 
     useEffect(() => {
-        if( Object.keys( currentFormValues ).length ) setFormData( currentFormValues )
-    }, [ currentFormValues ])
-
-    useEffect(() => {
         ourFetch({
             api: '/courses',
             callback: fetchCallback,
@@ -277,20 +279,23 @@ const Form = ( props ) => {
     }, [])
 
     useEffect(() => {
-        let newList = subjects.reduce(( val, subject ) => {
-            let { semester: _thisSemester, course_id: _thisCourse } = subject
-            if( ( _thisSemester == semester ) && ( _thisCourse == course ) ) val = [ ...val, subject ]
-            return val
-        }, [])
-        setFormData({
-            ...formData,
-            data: newList.reduce(( val, subject, index ) => {
-                let { name, code } = subject
-                val = [ ...val, { date: data[ index ]?.date, subject: name, code } ]
+        if( ( formMode === 'new' && ! hasInteracted ) || ( formMode === 'edit' && hasInteracted ) ) {
+            let newList = subjects.reduce(( val, subject ) => {
+                let { semester: _thisSemester, course_id: _thisCourse } = subject
+                if( ( _thisSemester == semester ) && ( _thisCourse == course ) ) val = [ ...val, subject ]
                 return val
             }, [])
-        })
-    }, [ subjects, semester, course ])
+            setCurrentFormValues({
+                ...currentFormValues,
+                data: newList.reduce(( val, subject, index ) => {
+                    let { name, code } = subject
+                    val = [ ...val, { date: data[ index ]?.date, subject: name, code } ]
+                    return val
+                }, [])
+            })
+            setHasInteracted( false )
+        }
+    }, [ subjects, semester, course, hasInteracted ])
 
     /**
      * Handle Change
@@ -299,8 +304,9 @@ const Form = ( props ) => {
         let name = event.target.name,
             value = event.target.value
 
-        setFormData({
-            ...formData,
+        if( [ 'course', 'semester' ].includes( name ) ) setHasInteracted( true )
+        setCurrentFormValues({
+            ...currentFormValues,
             [ name ]: value
         })
     }
@@ -311,11 +317,11 @@ const Form = ( props ) => {
     const handleSubmit = ( event ) => {
         event.preventDefault()
         let newFormData = {
-            ...formData,
+            ...currentFormValues,
             start: data[ 0 ].date,
             end: data[( data.length - 1 )].date,
         }
-        setFormData( newFormData )
+        setCurrentFormValues( newFormData )
 
         ourFetch({
             api: '/add-exams',
@@ -339,8 +345,8 @@ const Form = ( props ) => {
         const { active, over } = event;
     
         if ( active.id !== over.id ) {
-            setFormData({
-                ...formData,
+            setCurrentFormValues({
+                ...currentFormValues,
                 data: arrayMove( data, active.id, over.id )
             });
         }
@@ -351,17 +357,17 @@ const Form = ( props ) => {
      */
     const handleRoutineDate = ( event, index ) => {
         let test = {
-            ...formData,
+            ...currentFormValues,
             data: [
-                ...formData.data.slice( 0, index ),
-                { ...formData.data[ index ], date: event.target.value },
-                ...formData.data.slice( index + 1 )
+                ...currentFormValues.data.slice( 0, index ),
+                { ...currentFormValues.data[ index ], date: event.target.value },
+                ...currentFormValues.data.slice( index + 1 )
             ]
         }
-        setFormData( test )
+        setCurrentFormValues( test )
     }
 
-    return formVisibility && <div className="cmg-form-wrapper">
+    return <div className="cmg-form-wrapper">
         <form onSubmit={ handleSubmit }>
             <div className="form-head">
                 <h2 className="form-title">Create New Exam Routine</h2>
@@ -455,7 +461,7 @@ const Form = ( props ) => {
                 <textarea name="notice" value={ notice } onChange={ handleChange } ></textarea>
             </div>
 
-            <input type="submit" value="Create Routine" />
+            <input type="submit" value={( formMode === 'edit' ) ? 'Update Routine' : 'Create Routine' } />
         </form>
     </div>
 }
@@ -465,8 +471,8 @@ const Form = ( props ) => {
  */
 export const SortableItem = ( props ) =>  {
     const { item, id } = props,
-    { subject, date } = item,
-    { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({ id });
+        { subject, date } = item,
+        { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({ id });
 
     const style = {
         transform: CSS.Transform.toString( transform ),
@@ -476,7 +482,7 @@ export const SortableItem = ( props ) =>  {
     
     return <div className="sortable" ref={ setNodeRef } style={ style } { ...attributes } { ...listeners }>
         <span className="name">{ subject }</span>
-        <input type="date" value={ adjustDate( date ) } onChange={( event ) => props.handleRoutineDate( event, id ) } required />
+        <input type="date" value={ date } onChange={( event ) => props.handleRoutineDate( event, id ) } required />
         <span className="icon"><FontAwesomeIcon icon={ faGripVertical }/></span>
     </div>
 }

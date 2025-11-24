@@ -98,8 +98,8 @@ export const getScript = ( number ) => {
  * Adjust date
  */
 export const adjustDate = ( date ) => {
-    // console.log( date )
     if( ! date ) return ''
+    if( /^\d{4}-\d{2}-\d{2}$/.test( date ) ) return date
     let newDate = new Date( date )
     return newDate.toISOString().split('T')[0];
 }
