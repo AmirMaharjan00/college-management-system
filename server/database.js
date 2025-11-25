@@ -98,6 +98,7 @@ con.connect(function(err) {
           subjectsQuery += "year INT(11) NOT NULL, "
           subjectsQuery += "code VARCHAR(255), "
           subjectsQuery += "teacherId INT(255), "
+          subjectsQuery += "completion INT(255) NOT NULL DEFAULT 0, "
           subjectsQuery += "registered_date DATETIME DEFAULT CURRENT_TIMESTAMP, "
           subjectsQuery += "FOREIGN KEY(course_id) REFERENCES courses(id),"
           subjectsQuery += "FOREIGN KEY(teacherId) REFERENCES users(id) "

@@ -1,6 +1,6 @@
 import { useEffect, useState, useMemo, useContext } from "react"
 import { Breadcrumb, Pagination, RowAndSearch, ActionButton } from "../components"
-import { fetchCallback, ourFetch, getScript, getOrdinals } from "../functions"
+import { fetchCallback, ourFetch, getScript, getOrdinals, removeOrdinals } from "../functions"
 import { useDate } from "../includes/hooks"
 import '../assets/scss/table.scss'
 import '../assets/scss/academic.scss'
@@ -15,7 +15,7 @@ import { Link } from 'react-router-dom'
 export const Subjects = () => {
     const Global = useContext( GLOBALCONTEXT ),
         { formVisibility, formSuccess, loggedInUser } = Global,
-        { role } = loggedInUser,
+        { role, id: userId } = loggedInUser,
         [ subjects, setSubjects ] = useState([]),
         [ courses, setCourses ] = useState([]),
         [ activeCourse, setActiveCourse ] = useState( 'all' ),
@@ -25,25 +25,40 @@ export const Subjects = () => {
         [ rowsPerPage, setRowsPerPage ] = useState( 10 ),
         [ activePage, setActivePage ] = useState( 1 ),
         [ formMode, setFormMode ] = useState( 'new' ),
-        totalPages = new Array( Math.ceil( subjects.length / rowsPerPage ) ).fill( 0 ),
+        totalPages = useMemo(() => {
+            let totalSubjects = subjects.reduce(( val, item ) => {
+                let { teacherId } = item
+                if( teacherId === userId ) val = [ ...val, item ]
+                return val
+            }, [])
+            return new Array( Math.ceil( totalSubjects.length / rowsPerPage ) ).fill( 0 )
+        }, [ subjects, rowsPerPage ]),
         filteredSubjects = useMemo(() => {
             if( searched === '' && activeCourse !== 'all' ) {
                 let activeCourseObj = courses[ activeCourse ],
                     { id: courseId } = activeCourseObj,
                     test = subjects.reduce(( val, item ) => {
-                        let { course_id, semester } = item
+                        let { course_id, semester, teacherId } = item
                         if( course_id === courseId ) {
-                            if( semester === activeSem ) {
+                            if( role === 'teacher' && teacherId === userId ) {
                                 val = [ ...val, item ]
                             } else {
-                                val = [ ...val, item ] 
+                                if( semester === removeOrdinals( activeSem ) ) val = [ ...val, item ]
+                                if( removeOrdinals( activeSem ) === 0 ) val = [ ...val, item ]
                             }
                         }
                         return val
                     }, [])
                 return test.slice( ( activePage - 1 ) * rowsPerPage, ( activePage * rowsPerPage ) );
             }
-            if( searched === '' && activeCourse === 'all' ) return  subjects.slice( ( activePage - 1 ) * rowsPerPage, ( activePage * rowsPerPage ) );
+            if( searched === '' && activeCourse === 'all' ) {
+                let filtered = subjects.reduce(( val, item ) => {
+                    let { teacherId } = item
+                    if( role === 'teacher' && teacherId === userId ) val = [  ...val, item ]
+                    return val
+                }, [])
+                return filtered.slice( ( activePage - 1 ) * rowsPerPage, ( activePage * rowsPerPage ) );
+            }
             let newAccountsList = subjects.reduce(( val, item ) => {
                 let { name } = item
                 if( name.toLowerCase().includes( searched ) ) {
@@ -53,6 +68,9 @@ export const Subjects = () => {
             }, [])
             return newAccountsList.slice( ( activePage - 1 ) * rowsPerPage, ( activePage * rowsPerPage ) );
         }, [ searched, subjects, activePage, rowsPerPage, activeCourse, activeSem ])
+
+    console.log( filteredSubjects )
+    console.log( rowsPerPage )
     
     useEffect(() => {
         ourFetch({
@@ -142,7 +160,7 @@ export const Subjects = () => {
                 }
             </select>
             { activeCourse !== 'all' && <select className="children semesters" onChange={ handleSemesterChange }>
-                <option value="all">All</option>
+                <option value="0">All</option>
                 {
                     semesters?.map(( sem ) => {
                         return <option key={ sem }>{ getOrdinals( sem ) }</option>

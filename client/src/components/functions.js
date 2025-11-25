@@ -123,3 +123,11 @@ export const fetchCallback = ( data, setter ) => {
     let { result, success } = data
     if( success ) setter( result )
 }
+
+/**
+ * MAKR: Remove Ordinals
+ */
+export const removeOrdinals = ( ordinal ) => {
+    if( Number.isInteger( ordinal ) ) return ordinal
+    return parseInt( ordinal.replace( /(st|nd|rd|th)$/i, "" ), 10 );
+}
