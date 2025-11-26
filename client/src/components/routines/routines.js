@@ -302,43 +302,42 @@ export const Routines = () => {
     ],
   });
 
-  const [selectedProgram, setSelectedProgram] = useState([]);
+  const [selectedProgram, setSelectedProgram] = useState(collegePrograms.BCA);
 
   return (
     <main className="cmg-main" id="cmg-main">
-      <div>
-        <h1>Programs at Sahid Smarak College</h1>
+      <div className="cmg-routines-wrapper">
+        <h1 className="cmg-title">Programs</h1>
 
-        {/* Table with programs and button */}
-        <table border="1" cellPadding="10">
-          <thead>
-            <tr>
-              <th>Program</th>
-              <th>Action</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td>BCA</td>
-              <td>
-                <button onClick={() => setSelectedProgram(collegePrograms.BCA)}>
-                  Select BCA
+        <div className="cmg-routine-wrap">
+          <div className="cmg-routine-sidebar">
+            <h2 className="cmg-sidebar-title">Courses</h2>
+            <ul className="cmg-sidebar-list">
+              <li className="cmg-sidebar-item">
+                <button
+                  className="cmg-sidebar-btn"
+                  onClick={() => setSelectedProgram(collegePrograms.BCA)}
+                >
+                  BCA
                 </button>
-              </td>
-            </tr>
-            <tr>
-              <td>BBS</td>
-              <td>
-                <button onClick={() => setSelectedProgram(collegePrograms.BBS)}>
-                  Select BBS
+              </li>
+              <li className="cmg-sidebar-item">
+                <button
+                  className="cmg-sidebar-btn"
+                  onClick={() => setSelectedProgram(collegePrograms.BBS)}
+                >
+                  BBS
                 </button>
-              </td>
-            </tr>
-          </tbody>
-        </table>
+              </li>
+            </ul>
+          </div>
+
+          <div className="cmg-routine-content">
+            <h2 className="cmg-content-title">Routines</h2>
+            <Accordions selectedProgram={selectedProgram} />
+          </div>
+        </div>
       </div>
-
-      <Accordions selectedProgram={selectedProgram} />
     </main>
   );
 };
