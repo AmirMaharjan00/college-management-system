@@ -1040,6 +1040,7 @@ app.post( '/all-exams', ( request, res ) => {
 app.post( '/add-exams', ( request, res ) => { 
   const { title, type, data, start, end, course: courseId, semester, notice } = request.body,
     insertQuery = `INSERT INTO exams ( title, type, data, start, end, courseId, semester, notice ) VALUES ( ?, ?, ?, ?, ?, ?, ?, ? )`
+    console.log( insertQuery )
   con.query( insertQuery, [ title, type, JSON.stringify( data ), start, end, courseId, semester, notice ], ( error, result ) => {
     if ( error ) return res.status( 500 ).json({ error: "Database Insertion failed" });
     return res.status( 200 ).json({ result, success: true });
@@ -1095,5 +1096,16 @@ app.post( '/check-book', ( request, res ) => {
   con.query( selectQuery, ( error, result ) => {
     if ( error ) return res.status( 500 ).json({ error: "Database selection failed" });
     return res.status( 200 ).json({ result: result[0], success: true });
+  })
+});
+
+/**
+* MARK: CHECK BOOKS
+*/
+app.post( '/dashboard-fees-collection', ( request, res ) => { 
+  const selectQuery = `SELECT MONTHNAME(date) AS month, SUM(amount) AS total FROM account WHERE purpose="fees" GROUP BY MONTH(date) ORDER BY MONTH(date)`
+  con.query( selectQuery, ( error, result ) => {
+    if ( error ) return res.status( 500 ).json({ error: "Database selection failed" });
+    return res.status( 200 ).json({ result: result, success: true });
   })
 });

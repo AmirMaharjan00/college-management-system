@@ -237,14 +237,14 @@ con.connect(function(err) {
          */
         let examsQuery = "CREATE TABLE IF NOT EXISTS `exams` ("
           examsQuery += "id INT(11) NOT NULL AUTO_INCREMENT PRIMARY KEY, "
-          examsQuery += "title TEXT NOT NULL, " 
+          examsQuery += "title LONGTEXT NOT NULL, " 
           examsQuery += "type ENUM('first', 'second', 'third', 'pre-board', 'practical') DEFAULT 'first', " 
           examsQuery += "data LONGTEXT NOT NULL, "  // { date: '', subject: '' }
           examsQuery += "start DATETIME, "
           examsQuery += "end DATETIME, "
           examsQuery += "courseId INT(11) DEFAULT 0, "
           examsQuery += "semester INT(11) DEFAULT 1, "
-          examsQuery += "notice TEXT, "
+          examsQuery += "notice LONGTEXT, "
           examsQuery += "FOREIGN KEY(courseId) REFERENCES courses(id) "
           examsQuery += ");"
         con.query( examsQuery, function (err, result) {

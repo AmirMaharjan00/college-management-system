@@ -25,14 +25,6 @@ export const Subjects = () => {
         [ rowsPerPage, setRowsPerPage ] = useState( 10 ),
         [ activePage, setActivePage ] = useState( 1 ),
         [ formMode, setFormMode ] = useState( 'new' ),
-        totalPages = useMemo(() => {
-            let totalSubjects = subjects.reduce(( val, item ) => {
-                let { teacherId } = item
-                if( teacherId === userId ) val = [ ...val, item ]
-                return val
-            }, [])
-            return new Array( Math.ceil( totalSubjects.length / rowsPerPage ) ).fill( 0 )
-        }, [ subjects, rowsPerPage ]),
         filteredSubjects = useMemo(() => {
             if( searched === '' && activeCourse !== 'all' ) {
                 let activeCourseObj = courses[ activeCourse ],
@@ -55,6 +47,7 @@ export const Subjects = () => {
                 let filtered = subjects.reduce(( val, item ) => {
                     let { teacherId } = item
                     if( role === 'teacher' && teacherId === userId ) val = [  ...val, item ]
+                    if( role === 'admin' ) val = [  ...val, item ]
                     return val
                 }, [])
                 return filtered.slice( ( activePage - 1 ) * rowsPerPage, ( activePage * rowsPerPage ) );
@@ -67,10 +60,16 @@ export const Subjects = () => {
                 return val
             }, [])
             return newAccountsList.slice( ( activePage - 1 ) * rowsPerPage, ( activePage * rowsPerPage ) );
-        }, [ searched, subjects, activePage, rowsPerPage, activeCourse, activeSem ])
-
-    console.log( filteredSubjects )
-    console.log( rowsPerPage )
+        }, [ searched, subjects, activePage, rowsPerPage, activeCourse, activeSem ]),
+        totalPages = useMemo(() => {
+            let totalSubjects = subjects.reduce(( val, item ) => {
+                let { teacherId } = item
+                if( role === 'teacher' && teacherId === userId ) val = [  ...val, item ]
+                if( role === 'admin' ) val = [  ...val, item ]
+                return val
+            }, [])
+            return new Array( Math.ceil( totalSubjects.length / rowsPerPage ) ).fill( 0 )
+        }, [ subjects, rowsPerPage, filteredSubjects ])
     
     useEffect(() => {
         ourFetch({
