@@ -88,7 +88,7 @@ export const RowAndSearch = ( props ) => {
 export const Pagination = ( props ) => {
     const { books, totalPages, activePage, setActivePage, handlePagination } = props
 
-    return books.length > 9 ? <div className='pagination-wrapper'>
+    return <div className='pagination-wrapper'>
         <button className='pagination-button previous' onClick={() => handlePagination( 'previous' ) }>Prev</button>
         <div className='pages'>
             {
@@ -99,7 +99,7 @@ export const Pagination = ( props ) => {
             }
         </div>
         <button className='pagination-button next' onClick={() => handlePagination( 'next' )}>Next</button>
-    </div> : ''
+    </div>
 }
 
 /**
