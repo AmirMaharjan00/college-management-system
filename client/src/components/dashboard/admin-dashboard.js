@@ -566,6 +566,7 @@ const LeaveRequest = () => {
     })
     const { result, success } = leaveRequests
     const [ dateDuration, setDateDuration ] = useState( 'today' )
+    const [ update, setUpdate ] = useState( false )
 
     useEffect(() => {
         ourFetch({
@@ -573,7 +574,8 @@ const LeaveRequest = () => {
             callback: setLeaveRequests,
             body: JSON.stringify({ dateDuration })
         })
-    }, [ dateDuration ])
+        setUpdate( false )
+    }, [ dateDuration, update ])
 
     /* Handle dropdown click */
     const handleDropdownClick = ( event ) => {
@@ -596,9 +598,15 @@ const LeaveRequest = () => {
     const handleButtonClick = ( leaveId, status ) => {
         ourFetch({
             api: '/update-leave-status',
-            callback: setLeaveRequests,
+            callback: leaveActionCallback,
             body: JSON.stringify({ id: leaveId, status })
         })
+    }
+
+    // Callback
+    const leaveActionCallback = ( data ) => {
+        let { result: res, success } = data
+        if( success ) setUpdate( true )
     }
 
     return <div className="leave-requests-wrapper element">
@@ -620,7 +628,7 @@ const LeaveRequest = () => {
         <div className="foot">
             {
                 success && result.map(( leave, index ) => {
-                    let { name, leaveType, role, start, end, appliedOn, profile, id: leaveId, status } = leave
+                    let { name, leaveType, role = 'admin', start, end, appliedOn, profile, id: leaveId, status } = leave
                     return <div className="leave-request" key={ index }>
                         <div className="leave-applicant">
                             <figure className="applicant-thumb"><img src={ profile } alt="#" /></figure>
