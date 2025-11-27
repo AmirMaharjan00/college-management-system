@@ -11,7 +11,7 @@ export const Routines = () => {
   const [collegePrograms, setCollegePrograms] = useState({
     BCA: [
       {
-        semester: "I",
+        semester: "Semester I",
         id: useId(),
         courses: [
           {
@@ -32,7 +32,7 @@ export const Routines = () => {
         ],
       },
       {
-        semester: "II",
+        semester: "Semester II",
         id: useId(),
         courses: [
           { sno: 1, name: "C Programming", start: "09:00", end: "10:30" },
@@ -53,7 +53,7 @@ export const Routines = () => {
         ],
       },
       {
-        semester: "III",
+        semester: "Semester III",
         id: useId(),
         courses: [
           {
@@ -79,7 +79,7 @@ export const Routines = () => {
         ],
       },
       {
-        semester: "IV",
+        semester: "Semester IV",
         id: useId(),
         courses: [
           { sno: 1, name: "Operating System", start: "09:00", end: "10:30" },
@@ -101,7 +101,7 @@ export const Routines = () => {
         ],
       },
       {
-        semester: "V",
+        semester: "Semester V",
         id: useId(),
         courses: [
           { sno: 1, name: "MIS and E-Business", start: "09:00", end: "10:30" },
@@ -122,7 +122,7 @@ export const Routines = () => {
         ],
       },
       {
-        semester: "VI",
+        semester: "Semester VI",
         id: useId(),
         courses: [
           { sno: 1, name: "Mobile Programming", start: "09:00", end: "10:30" },
@@ -139,7 +139,7 @@ export const Routines = () => {
         ],
       },
       {
-        semester: "VII",
+        semester: "Semester VII",
         id: useId(),
         courses: [
           {
@@ -155,7 +155,7 @@ export const Routines = () => {
         ],
       },
       {
-        semester: "VIII",
+        semester: "Semester VIII",
         id: useId(),
         courses: [
           { sno: 1, name: "Operations Research", start: "09:00", end: "10:30" },
@@ -168,7 +168,7 @@ export const Routines = () => {
 
     BBS: [
       {
-        semester: "I",
+        semester: "Year I",
         id: useId(),
         courses: [
           {
@@ -204,7 +204,7 @@ export const Routines = () => {
         ],
       },
       {
-        semester: "II",
+        semester: "Year II",
         id: useId(),
         courses: [
           {
@@ -240,7 +240,7 @@ export const Routines = () => {
         ],
       },
       {
-        semester: "III",
+        semester: "Year III",
         id: useId(),
         courses: [
           {
@@ -276,7 +276,7 @@ export const Routines = () => {
         ],
       },
       {
-        semester: "IV",
+        semester: "Year IV",
         id: useId(),
         courses: [
           {
@@ -315,15 +315,19 @@ export const Routines = () => {
             <ul className="cmg-sidebar-list">
               <li className="cmg-sidebar-item">
                 <button
-                  className="cmg-sidebar-btn"
+                  className={`cmg-sidebar-btn ${
+                    selectedProgram === collegePrograms.BCA ? "active" : ""
+                  }`}
                   onClick={() => setSelectedProgram(collegePrograms.BCA)}
                 >
                   BCA
                 </button>
-              </li>
-              <li className="cmg-sidebar-item">
+
                 <button
-                  className="cmg-sidebar-btn"
+                  style={{ marginTop: 20 }}
+                  className={`cmg-sidebar-btn ${
+                    selectedProgram === collegePrograms.BBS ? "active" : ""
+                  }`}
                   onClick={() => setSelectedProgram(collegePrograms.BBS)}
                 >
                   BBS
