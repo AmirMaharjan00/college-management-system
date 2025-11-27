@@ -131,8 +131,8 @@ export const TeachersList = () => {
             { ( layout === 'list' ) ? <table className='table-wrapper'>
                 <thead>
                     <tr>
-                        <th>S.No</th>
-                        <th>Student ID</th>
+                        <th style={{width: 40}}>S.No</th>
+                        <th style={{width: 100}}>Teacher ID</th>
                         <th>Name</th>
                         <th>Gender</th>
                         <th>Status</th>

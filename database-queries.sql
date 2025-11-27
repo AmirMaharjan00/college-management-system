@@ -7,6 +7,34 @@ INSERT INTO `courses` (`id`, `name`, `abbreviation`, `duration`, `semester`, `co
 (NULL, 'Class 12', 'XII', '1', '1', '80000', current_timestamp()),
 (NULL, 'Bachelor in Computer Application', 'BCA', '4', '8', '360000', current_timestamp());
 
+-- Add Users
+-- MARK: USERS
+INSERT INTO `users` (`id`, `name`, `email`, `password`, `contact`, `address`, `gender`, `role`, `view`, `courseId`, `semester`, `status`, `profile`, `registered_date`) VALUES 
+(NULL, 'Shahid Smarak College', 'shahidsmarak@gmail.com', 'Shahid@123', '9876543210', 'Nepal', 'male', 'admin', 'light', null, '0', 'offline', '/images/user.jpg', current_timestamp()),
+(NULL, 'Amir Maharjan', 'mhrznamir.am@gmail.com', 'Amir@123', '9808362724', 'Nepal', 'male', 'student', 'light', 5, '8', 'offline', '/images/user.jpg', current_timestamp()),
+(NULL, 'Saroj Maharjan', 'sarojmhzn28@gmail.com', 'Saroj@123', '9876543210', 'Nepal', 'male', 'student', 'light', 5, '8', 'offline', '/images/user.jpg', current_timestamp()),
+(NULL, 'Shrijal Maharjan', 'shrijalmaharjan@gmail.com', 'Shrijal@123', '8765432109', 'Nepal', 'male', 'student', 'light', 5, '8', 'offline', '/images/user.jpg', current_timestamp()),
+(NULL, 'Swaraj Maharjan', 'swarajmaharjan@gmail.com', 'Swaraj@123', '8765432109', 'Nepal', 'male', 'student', 'light', 5, '8', 'offline', '/images/user.jpg', current_timestamp()),
+(NULL, 'Ajesh Maharjan', 'ajeshmaharjan@gmail.com', 'Ajesh@123', '8765432109', 'Nepal', 'male', 'student', 'light', 5, '8', 'offline', '/images/user.jpg', current_timestamp()),
+(NULL, 'Pracess Maharjan', 'pracessmaharjan@gmail.com', 'Pracess@123', '8765432109', 'Nepal', 'male', 'student', 'light', 5, '8', 'offline', '/images/user.jpg', current_timestamp()),
+(NULL, 'Om Kapali', 'pracessmaharjan@gmail.com', 'Omkapali@123', '8765432109', 'Nepal', 'male', 'student', 'light', 5, '8', 'offline', '/images/user.jpg', current_timestamp()),
+(NULL, 'Nishan Thapa', 'nishanthapa@gmail.com', 'Nishan@123', '8765432109', 'Nepal', 'male', 'student', 'light', 5, '8', 'offline', '/images/user.jpg', current_timestamp()),
+(NULL, 'Suren Bohora', 'surenbohora@gmail.com', 'Suren@123', '8765432109', 'Nepal', 'male', 'student', 'light', 5, '8', 'offline', '/images/user.jpg', current_timestamp()),
+(NULL, 'Nishant Man Singh', 'nishantmansingh@gmail.com', 'Nishant@123', '8765432109', 'Nepal', 'male', 'student', 'light', 5, '8', 'offline', '/images/user.jpg', current_timestamp()),
+(NULL, 'Biswas Oli', 'biswasoli@gmail.com', 'Biswas@123', '8765432109', 'Nepal', 'male', 'student', 'light', 5, '8', 'offline', '/images/user.jpg', current_timestamp()),
+(NULL, 'Ayush Manandhar', 'ayushmanandhar@gmail.com', 'Ayush@123', '8765432109', 'Nepal', 'male', 'student', 'light', 5, '8', 'offline', '/images/user.jpg', current_timestamp()),
+(NULL, 'Bisesh Adhikari', 'biseshadhikari@gmail.com', 'Bisesh@123', '9808362724', 'Nepal', 'male', 'student', 'light', 5, '8', 'offline', '/images/user.jpg', current_timestamp()),
+(NULL, 'Bishal Sharma', 'bishal.sharma@college.edu', 'Bishal@123', '9812345678', 'Nepal', 'male', 'teacher', 'dark', null, '0', 'offline', '/images/user.jpg', current_timestamp()),
+(NULL, 'Anita Thapa', 'anita.thapa@college.edu', 'Anita@123', '9801234567', 'Nepal', 'female', 'teacher', 'light', null, '0', 'offline', '/images/user.jpg', current_timestamp()),
+(NULL, 'Ravi Gurung', 'ravi.gurung@college.edu', 'Ravi@123', '9823456781', 'Nepal', 'male', 'teacher', 'dark', null, '0', 'offline', '/images/user.jpg', current_timestamp()),
+(NULL, 'Sujata Lama', 'sujata.lama@college.edu', 'Sujata@123', '9845671230', 'Nepal', 'female', 'teacher', 'light', null, '0', 'offline', '/images/user.jpg', current_timestamp()),
+(NULL, 'Manish Shrestha', 'manish.staff@college.edu', 'Manish@123', '9865432109', 'Nepal', 'male', 'staff', 'light', null, '0', 'offline', '/images/user.jpg', current_timestamp()),
+(NULL, 'Rachana KC', 'rachana.kc@college.edu', 'Rachana@123', '9854321987', 'Nepal', 'female', 'staff', 'dark', null, '0', 'offline', '/images/user.jpg', current_timestamp()),
+(NULL, 'Kiran Adhikari', 'kiran.adhikari@college.edu', 'Kiran@123', '9832109876', 'Nepal', 'male', 'staff', 'light', null, '0', 'offline', '/images/user.jpg', current_timestamp()),
+(NULL, 'Deepa Maharjan', 'deepa.maharjan@college.edu', 'Deepa@123', '9811112222', 'Nepal', 'female', 'staff', 'dark', null, '0', 'offline', '/images/user.jpg', current_timestamp()),
+(NULL, 'Rajesh Khadka', 'rajesh.khadka@college.edu', 'Rajesh@123', '9840033211', 'Nepal', 'male', 'teacher', 'light', null, '0', 'offline', '/images/user.jpg', current_timestamp()),
+(NULL, 'Sabina Tamang', 'sabina.tamang@college.edu', 'Sabina@123', '9860001122', 'Nepal', 'female', 'staff', 'dark', null, '0', 'offline', '/images/user.jpg', current_timestamp());
+
 -- Add Subjects
 -- MARK: SUBJECTS
 INSERT INTO `subjects` (`id`, `name`, `course_id`, `semester`, `year`, `code`, `teacherId`, `completion`, `registered_date`) VALUE
@@ -31,7 +59,7 @@ INSERT INTO `subjects` (`id`, `name`, `course_id`, `semester`, `year`, `code`, `
 (NULL, 'Scripting Language', '5', '4', '2', 'CACS254', 18, 0, CURRENT_TIMESTAMP()),
 (NULL, 'Database Management System', '5', '4', '2', 'CACS255', 19, 0, CURRENT_TIMESTAMP()),
 (NULL, 'Project I', '5', '4', '2', 'CAPJ256', 23, 0, CURRENT_TIMESTAMP()),
-(NULL, 'MIS and E‑Business', '5', '5', '3', 'CACS301', 16, 0, CURRENT_TIMESTAMP()),
+(NULL, 'MIS and E-Business', '5', '5', '3', 'CACS301', 16, 0, CURRENT_TIMESTAMP()),
 (NULL, 'DotNet Technology', '5', '5', '3', 'CACS302', 17, 0, CURRENT_TIMESTAMP()),
 (NULL, 'Computer Networking', '5', '5', '3', 'CACS303', 18, 0, CURRENT_TIMESTAMP()),
 (NULL, 'Introduction to Management', '5', '5', '3', 'CAMG304', 19, 0, CURRENT_TIMESTAMP()),
@@ -105,34 +133,6 @@ INSERT INTO `books` (`id`, `courseId`, `semester`, `name`, `author`, `publicatio
 (NULL, 0, 1, 'Design Patterns', 'Erich Gamma', 'Addison-Wesley', 10, '2018-06-01', 'English'),
 (NULL, 0, 1, 'Introduction to Machine Learning', 'Ethem Alpaydin', 'MIT Press', 10, '2022-10-10', 'English'),
 (NULL, 0, 1, 'Computer Architecture', 'John L. Hennessy', 'Morgan Kaufmann', 10, '2023-02-28', 'English');
-
--- Add Users
--- MARK: USERS
-INSERT INTO `users` (`id`, `name`, `email`, `password`, `contact`, `address`, `gender`, `role`, `view`, `courseId`, `semester`, `status`, `profile`, `registered_date`) VALUES 
-(NULL, 'Shahid Smarak College', 'shahidsmarak@gmail.com', 'Shahid@123', '9876543210', 'Nepal', 'male', 'admin', 'light', null, '0', 'offline', '/images/user.jpg', current_timestamp()),
-(NULL, 'Amir Maharjan', 'mhrznamir.am@gmail.com', 'Amir@123', '9808362724', 'Nepal', 'male', 'student', 'light', 5, '8', 'offline', '/images/user.jpg', current_timestamp()),
-(NULL, 'Saroj Maharjan', 'sarojmhzn28@gmail.com', 'Saroj@123', '9876543210', 'Nepal', 'male', 'student', 'light', 5, '8', 'offline', '/images/user.jpg', current_timestamp()),
-(NULL, 'Shrijal Maharjan', 'shrijalmaharjan@gmail.com', 'Shrijal@123', '8765432109', 'Nepal', 'male', 'student', 'light', 5, '8', 'offline', '/images/user.jpg', current_timestamp()),
-(NULL, 'Swaraj Maharjan', 'swarajmaharjan@gmail.com', 'Swaraj@123', '8765432109', 'Nepal', 'male', 'student', 'light', 5, '8', 'offline', '/images/user.jpg', current_timestamp()),
-(NULL, 'Ajesh Maharjan', 'ajeshmaharjan@gmail.com', 'Ajesh@123', '8765432109', 'Nepal', 'male', 'student', 'light', 5, '8', 'offline', '/images/user.jpg', current_timestamp()),
-(NULL, 'Pracess Maharjan', 'pracessmaharjan@gmail.com', 'Pracess@123', '8765432109', 'Nepal', 'male', 'student', 'light', 5, '8', 'offline', '/images/user.jpg', current_timestamp()),
-(NULL, 'Om Kapali', 'pracessmaharjan@gmail.com', 'Omkapali@123', '8765432109', 'Nepal', 'male', 'student', 'light', 5, '8', 'offline', '/images/user.jpg', current_timestamp()),
-(NULL, 'Nishan Thapa', 'nishanthapa@gmail.com', 'Nishan@123', '8765432109', 'Nepal', 'male', 'student', 'light', 5, '8', 'offline', '/images/user.jpg', current_timestamp()),
-(NULL, 'Suren Bohora', 'surenbohora@gmail.com', 'Suren@123', '8765432109', 'Nepal', 'male', 'student', 'light', 5, '8', 'offline', '/images/user.jpg', current_timestamp()),
-(NULL, 'Nishant Man Singh', 'nishantmansingh@gmail.com', 'Nishant@123', '8765432109', 'Nepal', 'male', 'student', 'light', 5, '8', 'offline', '/images/user.jpg', current_timestamp()),
-(NULL, 'Biswas Oli', 'biswasoli@gmail.com', 'Biswas@123', '8765432109', 'Nepal', 'male', 'student', 'light', 5, '8', 'offline', '/images/user.jpg', current_timestamp()),
-(NULL, 'Ayush Manandhar', 'ayushmanandhar@gmail.com', 'Ayush@123', '8765432109', 'Nepal', 'male', 'student', 'light', 5, '8', 'offline', '/images/user.jpg', current_timestamp()),
-(NULL, 'Bisesh Adhikari', 'biseshadhikari@gmail.com', 'Bisesh@123', '9808362724', 'Nepal', 'male', 'student', 'light', 5, '8', 'offline', '/images/user.jpg', current_timestamp()),
-(NULL, 'Bishal Sharma', 'bishal.sharma@college.edu', 'Bishal@123', '9812345678', 'Nepal', 'male', 'teacher', 'dark', null, '0', 'offline', '/images/user.jpg', current_timestamp()),
-(NULL, 'Anita Thapa', 'anita.thapa@college.edu', 'Anita@123', '9801234567', 'Nepal', 'female', 'teacher', 'light', null, '0', 'offline', '/images/user.jpg', current_timestamp()),
-(NULL, 'Ravi Gurung', 'ravi.gurung@college.edu', 'Ravi@123', '9823456781', 'Nepal', 'male', 'teacher', 'dark', null, '0', 'offline', '/images/user.jpg', current_timestamp()),
-(NULL, 'Sujata Lama', 'sujata.lama@college.edu', 'Sujata@123', '9845671230', 'Nepal', 'female', 'teacher', 'light', null, '0', 'offline', '/images/user.jpg', current_timestamp()),
-(NULL, 'Manish Shrestha', 'manish.staff@college.edu', 'Manish@123', '9865432109', 'Nepal', 'male', 'staff', 'light', null, '0', 'offline', '/images/user.jpg', current_timestamp()),
-(NULL, 'Rachana KC', 'rachana.kc@college.edu', 'Rachana@123', '9854321987', 'Nepal', 'female', 'staff', 'dark', null, '0', 'offline', '/images/user.jpg', current_timestamp()),
-(NULL, 'Kiran Adhikari', 'kiran.adhikari@college.edu', 'Kiran@123', '9832109876', 'Nepal', 'male', 'staff', 'light', null, '0', 'offline', '/images/user.jpg', current_timestamp()),
-(NULL, 'Deepa Maharjan', 'deepa.maharjan@college.edu', 'Deepa@123', '9811112222', 'Nepal', 'female', 'staff', 'dark', null, '0', 'offline', '/images/user.jpg', current_timestamp()),
-(NULL, 'Rajesh Khadka', 'rajesh.khadka@college.edu', 'Rajesh@123', '9840033211', 'Nepal', 'male', 'teacher', 'light', null, '0', 'offline', '/images/user.jpg', current_timestamp()),
-(NULL, 'Sabina Tamang', 'sabina.tamang@college.edu', 'Sabina@123', '9860001122', 'Nepal', 'female', 'staff', 'dark', null, '0', 'offline', '/images/user.jpg', current_timestamp());
 
 -- Add Books Issued
 -- MARK: BOOKS ISSUED

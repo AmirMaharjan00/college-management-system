@@ -200,8 +200,8 @@ export const StudentsList = () => {
             { ( layout === 'list' ) ? <table className='table-wrapper' ref={ pdf }>
                 <thead>
                     <tr>
-                        <th>S.No</th>
-                        <th>Student ID</th>
+                        <th style={{width: 40}}>S.No</th>
+                        <th style={{width: 100}}>Student ID</th>
                         <th>Name</th>
                         <th>Semester</th>
                         <th>Gender</th>

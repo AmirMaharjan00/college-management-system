@@ -92,7 +92,7 @@ const Table = ( props ) => {
     return <table className='table-wrapper' id="cmg-table">
         <thead>
             <tr>
-                <th>S.No</th>
+                <th style={{width: 40}}>S.No</th>
                 <th>Transaction Id</th>
                 <th>Name ( Id )</th>
                 <th>Amount</th>

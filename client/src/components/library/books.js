@@ -234,12 +234,12 @@ export const Table = ( props ) => {
                     <th>S.No</th>
                     <th>Book ID</th>
                     <th>Name</th>
-                    <th>Copies</th>
+                    <th style={{width: 150}}>Copies</th>
                     <th>Issued</th>
                     <th>Author</th>
                     <th>Publication</th>
-                    <th>Published Year</th>
-                    <th>Language</th>
+                    <th style={{width: 160}}>Published Year</th>
+                    <th style={{width: 75}}>Language</th>
                     <th>Action</th>
                 </tr>
             </thead>
