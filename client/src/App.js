@@ -18,11 +18,7 @@ import { Profile } from "./components/profile.js";
 import { StudentsList } from "./components/peoples/students.js";
 import { TeachersList } from "./components/peoples/teachers.js";
 import { StaffsList } from "./components/peoples/staffs.js";
-import {
-  Payment,
-  PaymentSuccess,
-  PaymentFailure,
-} from "./components/student/payment.js";
+import { Payment, PaymentSuccess, PaymentFailure } from "./components/student/payment.js";
 import { Invoice } from "./components/student/invoice.js";
 import { StudentDetails } from "./components/student/student-details.js";
 // Library
@@ -52,33 +48,32 @@ import { InnerSubject } from "./components/inner-pages/subject.js";
 export const GLOBALCONTEXT = createContext();
 
 function App() {
-  const [isLoggedIn, setIsloggedIn] = useState(false),
-    [loggedInUser, setLoggedInUser] = useState({}),
-    [overlay, setOverlay] = useState(false),
-    [isDarkMode, setIsDarkMode] = useState("light"),
-    [isUserLogoutDropdownActive, setIsUserLogoutDropdownActive] =
-      useState(false),
-    [isUserAddNewActive, setIsUserAddNewActive] = useState(false),
-    [isAcademicYearActive, setIsAcademicYearActive] = useState(false),
-    [isLanguageActive, setIsLanguageActive] = useState(false),
-    [newRegister, setNewRegister] = useState(false),
-    [isNotificationDropdownActive, setIsNotificationDropdownActive] =
-      useState(false),
-    [isMessageDropdownActive, setIsMessageDropdownActive] = useState(false),
-    [isNotificationShown, setIsNotificationShown] = useState(false),
-    [notificationId, setNotificationId] = useState(0),
-    [showChat, setShowChat] = useState(false),
-    [chatId, setChatId] = useState(0),
-    [headerOverlay, setHeaderOverlay] = useState(false),
-    [leaveModal, setLeaveModal] = useState(false),
-    [showPayFeesForm, setShowPayFeesForm] = useState(false),
-    [formVisibility, setFormVisibility] = useState(false),
-    [deleteBookVisibility, setDeleteBookVisibility] = useState(false),
-    [currentBookId, setCurrentBookId] = useState(0),
-    [returnBookVisibility, setReturnBookVisibility] = useState(0),
-    [canvasOpen, setCanvasOpen] = useState(false),
-    [formSuccess, setFormSuccess] = useState(false),
-    [feeDetails, setFeeDetails] = useState({
+  const [ isLoggedIn, setIsloggedIn ] = useState( false ),
+    [ loggedInUser, setLoggedInUser ] = useState( {} ),
+    [ overlay, setOverlay ] = useState( false ),
+    [ isDarkMode, setIsDarkMode ] = useState( "light" ),
+    [ isUserLogoutDropdownActive, setIsUserLogoutDropdownActive ] = useState( false ),
+    [ isUserAddNewActive, setIsUserAddNewActive ] = useState( false ),
+    [ isAcademicYearActive, setIsAcademicYearActive ] = useState( false ),
+    [ isLanguageActive, setIsLanguageActive ] = useState( false ),
+    [ newRegister, setNewRegister ] = useState( false ),
+    [ isNotificationDropdownActive, setIsNotificationDropdownActive ] = useState( false ),
+    [ isMessageDropdownActive, setIsMessageDropdownActive ] = useState( false ),
+    [ isNotificationShown, setIsNotificationShown ] = useState( false ),
+    [ notificationId, setNotificationId ] = useState( 0 ),
+    [ showChat, setShowChat ] = useState( false ),
+    [ chatId, setChatId ] = useState( 0 ),
+    [ headerOverlay, setHeaderOverlay ] = useState( false ),
+    [ leaveModal, setLeaveModal ] = useState( false ),
+    [ showPayFeesForm, setShowPayFeesForm ] = useState( false ),
+    [ formVisibility, setFormVisibility ] = useState( false ),
+    [ deleteBookVisibility, setDeleteBookVisibility ] = useState( false ),
+    [ currentBookId, setCurrentBookId ] = useState( 0 ),
+    [ returnBookVisibility, setReturnBookVisibility ] = useState( 0 ),
+    [ canvasOpen, setCanvasOpen ] = useState( false ),
+    [ formSuccess, setFormSuccess ] = useState( false ),
+    [ editPopupStatus, setEditPopupStatus ] = useState( false ),
+    [ feeDetails, setFeeDetails ] = useState({
       userId: 0,
       amount: 0,
       message: "",
@@ -89,56 +84,32 @@ function App() {
 
   /* Global Context Object */
   let globalContextObject = {
-    isLoggedIn,
-    setIsloggedIn,
-    loggedInUser,
-    setLoggedInUser,
-    overlay,
-    setOverlay,
-    isUserLogoutDropdownActive,
-    setIsUserLogoutDropdownActive,
-    isDarkMode,
-    setIsDarkMode,
-    isUserAddNewActive,
-    setIsUserAddNewActive,
-    isAcademicYearActive,
-    setIsAcademicYearActive,
-    isLanguageActive,
-    setIsLanguageActive,
-    newRegister,
-    setNewRegister,
-    isNotificationDropdownActive,
-    setIsNotificationDropdownActive,
-    isMessageDropdownActive,
-    setIsMessageDropdownActive,
-    isNotificationShown,
-    setIsNotificationShown,
-    notificationId,
-    setNotificationId,
-    showChat,
-    setShowChat,
-    chatId,
-    setChatId,
-    headerOverlay,
-    setHeaderOverlay,
-    leaveModal,
-    setLeaveModal,
-    showPayFeesForm,
-    setShowPayFeesForm,
-    formVisibility,
-    setFormVisibility, // For adding new book
-    deleteBookVisibility,
-    setDeleteBookVisibility, // For showing delete popup
-    currentBookId,
-    setCurrentBookId, // holds the clicked book id
-    returnBookVisibility,
-    setReturnBookVisibility, // Show return book form
-    canvasOpen,
-    setCanvasOpen,
-    formSuccess,
-    setFormSuccess,
-    feeDetails,
-    setFeeDetails,
+    isLoggedIn, setIsloggedIn,
+    loggedInUser, setLoggedInUser,
+    overlay, setOverlay,
+    isUserLogoutDropdownActive, setIsUserLogoutDropdownActive,
+    isDarkMode, setIsDarkMode,
+    isUserAddNewActive, setIsUserAddNewActive,
+    isAcademicYearActive, setIsAcademicYearActive,
+    isLanguageActive, setIsLanguageActive,
+    newRegister, setNewRegister,
+    isNotificationDropdownActive, setIsNotificationDropdownActive,
+    isMessageDropdownActive, setIsMessageDropdownActive,
+    isNotificationShown, setIsNotificationShown,
+    notificationId, setNotificationId,
+    showChat, setShowChat,
+    chatId, setChatId,
+    headerOverlay, setHeaderOverlay,
+    leaveModal, setLeaveModal,
+    showPayFeesForm, setShowPayFeesForm,
+    formVisibility, setFormVisibility, // For adding new book
+    deleteBookVisibility, setDeleteBookVisibility, // For showing delete popup
+    currentBookId, setCurrentBookId, // holds the clicked book id
+    returnBookVisibility, setReturnBookVisibility, // Show return book form
+    canvasOpen, setCanvasOpen,
+    formSuccess, setFormSuccess,
+    feeDetails, setFeeDetails,
+    editPopupStatus, setEditPopupStatus
   };
 
   return (
@@ -163,86 +134,30 @@ const Links = () => {
         {/* Payment */}
         <Route exact path="/dashboard/fees" element={<StudentFees />} />
         <Route exact path="/dashboard/payment" element={<Payment />} />
-        <Route
-          exact
-          path="/dashboard/payment-success"
-          element={<PaymentSuccess />}
-        />
-        <Route
-          exact
-          path="/dashboard/payment-failure"
-          element={<PaymentFailure />}
-        />
+        <Route exact path="/dashboard/payment-success" element={<PaymentSuccess />} />
+        <Route exact path="/dashboard/payment-failure" element={<PaymentFailure />} />
         {/* User Details */}
-        <Route
-          exact
-          path="/dashboard/user-details"
-          element={<StudentDetails />}
-        />
+        <Route exact path="/dashboard/user-details" element={<StudentDetails />} />
         {/* Library */}
         <Route exact path="/dashboard/library" element={<Library />} />
-        <Route
-          exact
-          path="/dashboard/library/books"
-          element={<LibraryBooks />}
-        />
-        <Route
-          exact
-          path="/dashboard/library/fines"
-          element={<LibraryFines />}
-        />
-        <Route
-          exact
-          path="/dashboard/library/issued"
-          element={<LibraryIssued />}
-        />
+        <Route exact path="/dashboard/library/books" element={<LibraryBooks />} />
+        <Route exact path="/dashboard/library/fines" element={<LibraryFines />} />
+        <Route exact path="/dashboard/library/issued" element={<LibraryIssued />} />
         {/* Account */}
         <Route exact path="/dashboard/account" element={<Account />} />
         <Route exact path="/dashboard/account/history" element={<History />} />
         <Route exact path="/dashboard/account/pay-fees" element={<PayFees />} />
-        <Route
-          exact
-          path="/dashboard/account/expense-tracking"
-          element={<Expenses />}
-        />
-        <Route
-          exact
-          path="/dashboard/account/manage-income"
-          element={<Income />}
-        />
+        <Route exact path="/dashboard/account/expense-tracking" element={<Expenses />} />
+        <Route exact path="/dashboard/account/manage-income" element={<Income />} />
         <Route exact path="/dashboard/account/payroll" element={<Payroll />} />
         {/* Academic */}
-        <Route
-          exact
-          path="/dashboard/academic/complaints"
-          element={<Complaints />}
-        />
-        <Route
-          exact
-          path="/dashboard/academic/examinations"
-          element={<Examinations />}
-        />
-        <Route
-          exact
-          path="/dashboard/academic/home-work"
-          element={<HomeWork />}
-        />
-        <Route
-          exact
-          path="/dashboard/academic/routines"
-          element={<Routines />}
-        />
+        <Route exact path="/dashboard/academic/complaints" element={<Complaints />} />
+        <Route exact path="/dashboard/academic/examinations" element={<Examinations />} />
+        <Route exact path="/dashboard/academic/home-work" element={<HomeWork />} />
+        <Route exact path="/dashboard/academic/routines" element={<Routines />} />
         <Route exact path="/dashboard/academic/courses" element={<Courses />} />
-        <Route
-          exact
-          path="/dashboard/academic/subjects"
-          element={<Subjects />}
-        />
-        <Route
-          exact
-          path="/dashboard/academic/syllabus"
-          element={<Syllabus />}
-        />
+        <Route exact path="/dashboard/academic/subjects" element={<Subjects />} />
+        <Route exact path="/dashboard/academic/syllabus" element={<Syllabus />} />
         <Route exact path="/dashboard/academic/results" element={<Results />} />
         <Route exact path="/dashboard/subject" element={<InnerSubject />} />
       </Route>

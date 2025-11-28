@@ -1,17 +1,18 @@
-import { useState, useEffect, useContext, useMemo } from 'react'
+import { useState, useEffect, useContext, useMemo, createContext } from 'react'
 import { fetchCallback, getScript, ourFetch } from '../functions'
 import { Breadcrumb } from '../components'
 import { TodaysDate } from "../includes/components-hooks"
 import { GLOBALCONTEXT } from '../../App'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faPenToSquare, faEye } from '@fortawesome/free-solid-svg-icons';
+import { faPenToSquare, faEye, faPlus, faRepeat, faFloppyDisk } from '@fortawesome/free-solid-svg-icons';
+const SYLLABUS = createContext()
 
 /**
  * Syllabus
  */
 export const Syllabus = () => {
     const Global = useContext( GLOBALCONTEXT ),
-        { setOverlay, setHeaderOverlay, setFormVisibility, formVisibility, loggedInUser } = Global,
+        { setOverlay, setHeaderOverlay, setFormVisibility, formVisibility, loggedInUser, editPopupStatus, setEditPopupStatus } = Global,
         { role } = loggedInUser,
         [ courses, setCourses ] = useState([]),
         [ activePopupId, setActivePopupId ] = useState( 0 ),
@@ -27,7 +28,15 @@ export const Syllabus = () => {
                 let { semester } = subject
                 if( semester == activeSemester ) return subject
             })
-        }, [ subjects, activeSemester ])
+        }, [ subjects, activeSemester ]),
+        syllabusObject = {
+            filteredSubjects,
+            popupDetails,
+            activeSemester,
+            setActiveSemester,
+            role,
+            setEditPopupStatus
+        }
 
     useEffect(() => {
         ourFetch({
@@ -100,21 +109,20 @@ export const Syllabus = () => {
             }
         </div>
 
-        { ( activePopupId !== 0 ) && formVisibility && <Popup 
-            subjects = { filteredSubjects }
-            popupDetails = { popupDetails }
-            activeSemester = { activeSemester }
-            setActiveSemester = { setActiveSemester }
-            role = { role }
-        /> }
+        <SYLLABUS.Provider value={ syllabusObject }>
+            { ( activePopupId !== 0 ) && ! editPopupStatus && formVisibility && <Popup /> }
+            { editPopupStatus && <EditPopup /> }
+        </SYLLABUS.Provider>
+
     </main>
 }
 
 /**
  * MARK: POPUP
  */
-const Popup = ( props ) => {
-    const { subjects, popupDetails, setActiveSemester, activeSemester, role } = props,
+const Popup = () => {
+    const syllabusContext = useContext( SYLLABUS ),
+        { filteredSubjects, popupDetails, setActiveSemester, activeSemester, role, setEditPopupStatus } = syllabusContext,
         { name, abbreviation, semester } = popupDetails,
         semesterArr = new Array( semester ).fill( 0 )
 
@@ -123,6 +131,13 @@ const Popup = ( props ) => {
      */
     const handleSemesterClick = ( id ) => {
         setActiveSemester( id )
+    }
+
+    /**
+     * Handle edit click
+     */
+    const handleEditClick = () => {
+        setEditPopupStatus( true )
     }
     
     return <div className='popup-wrapper'>
@@ -151,14 +166,14 @@ const Popup = ( props ) => {
                         </thead>
                         <tbody>
                             {
-                                subjects?.map(( subject ) => {
+                                filteredSubjects?.map(( subject, index ) => {
                                     if( subject ) {
                                         let { name, code } = subject
-                                        return <tr>
+                                        return <tr key={ index }>
                                             <td>{ code }</td>
                                             <td>{ name }</td>
                                             <td>
-                                                {( role === 'admin' ) && <div className="has-tooltip action">
+                                                {( role === 'admin' ) && <div className="has-tooltip action" onClick={ handleEditClick }>
                                                     <FontAwesomeIcon className='edit' icon={ faPenToSquare } />
                                                     <span className="tooltip-text">Edit</span>
                                                 </div> }
@@ -175,6 +190,32 @@ const Popup = ( props ) => {
                     </table>
                 </div>
             </div>
+        </div>
+    </div>
+}
+
+/**
+ * MARK: Edit Popup
+ */
+const EditPopup = () => {
+    return <div className='edit-popup-wrapper popup-wrapper'>
+        <h2 className="title">Edit this file.</h2>
+        <div className='pdf-viewer'>
+
+        </div>
+        <div className="buttons">
+            <button className="action add">
+                <FontAwesomeIcon icon={ faPlus } />
+                <span className="label">Add</span>
+            </button>
+            <button className="action replace">
+                <FontAwesomeIcon icon={ faRepeat } />
+                <span className="label">Replace</span>
+            </button>
+            <button className="action save">
+                <FontAwesomeIcon icon={faFloppyDisk} />
+                <span className="label">Save</span>
+            </button>
         </div>
     </div>
 }

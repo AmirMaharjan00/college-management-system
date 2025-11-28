@@ -1,3 +1,15 @@
+/**
+  ==================
+  VARIABLES
+  ==================
+**/
+$green: #04AA6D;
+$blue: #0061b3;
+$red: red;
+$white: white;
+$black: black;
+$maroon: #d62977;
+
 #cmg-main {
   /*
     * MARK: Page Header
@@ -429,6 +441,52 @@
                 background: var(--body-bg);
               }
             }
+          }
+        }
+      }
+    }
+
+    .edit-popup-wrapper {
+      .pdf-viewer {
+        max-height: 500px;
+        width: 100%;
+        height: 500px;
+      }
+
+      .buttons {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 10px;
+
+        .action {
+          color: $white;
+          flex: 1 1;
+          padding: 10px;
+          border-radius: 5px;
+          font-size: 16px;
+          cursor: pointer;
+          transition: 0.3s;
+          box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+
+          &:hover {
+            background: #2980b9;
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.3);
+          }
+          
+          .label {
+            margin-left: 5px;
+          }
+
+          &.add {
+            background: $maroon;
+          }
+          &.replace {
+            background: $blue;
+          }
+          &.save {
+            background: $green;
           }
         }
       }
