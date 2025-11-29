@@ -21,8 +21,12 @@ export const Profile = () => {
         meta = [ 'dob', 'secondaryContact', 'motherName', 'fatherName', 'motherEmail', 'fatherEmail', 'motherContact', 'fatherContact', 'motherProfile', 'fatherProfile', 'documents', 'motherTongue', 'language' ],
         { name, email, role, contact, address, gender, profile } = value,
         [ imageObject, setImageObject ] = useState( '' ),
+        [ motherPic, setMotherPic ] = useState( null ),
+        [ fatherPic, setFatherPic ] = useState( null ),
+        [ documentObject, setDocumentObjects ] = useState( [] ),
         [ isSaveDisabled, setIsSaveDisabled ] = useState( true ),
         [ isSaveClicked, setIsSaveClicked ] = useState( false ),
+        [ isMetaImageTriggered, setIsMetaImageTriggered ] = useState( false ),
         [ isProfileReplaced, setIsProfileReplaced ] = useState( false ),
         [ isMetaTriggered, setIsMetaTriggered ] = useState( false ),
         profileRef = useRef( 0 ),
@@ -32,6 +36,8 @@ export const Profile = () => {
         fatherProfileRef = useRef( 0 ),
         [ userMeta, setUserMeta ] = useState({}),
         { dob, secondaryContact, motherName, fatherName, motherEmail, fatherEmail, motherContact, fatherContact, motherProfile, fatherProfile, documents, motherTongue = 'Nepali', language = 'Nepali' } = userMeta
+        console.log( motherProfile, 'motherProfile' )
+        console.log( fatherProfile, 'fatherProfile' )
 
     useEffect(() => {
         setValue({
@@ -49,17 +55,30 @@ export const Profile = () => {
             setter: setUserMeta,
             body: JSON.stringify({ id: loggedInUser.id })
         })
-    }, [ loggedInUser ])
+    }, [ loggedInUser, isSaveClicked ])
 
     /* Handle Profile Picture Logic */
     const handleProfilePic = ( event ) => {
-        let files = event.target.files
+        let files = event.target.files,
+            name = event.target.name
+
         if( files.length > 0 ) {
-            setValue({
-                ...value,
-                profile: URL.createObjectURL( files[0] )
-            })
-            setImageObject( files[0] )
+            if( meta.includes( name ) ) {
+                setIsMetaTriggered( true )
+                setUserMeta({
+                    ...userMeta,
+                    [ name ]: URL.createObjectURL( files[0] )
+                })
+                if( val === 'motherProfile' ) setMotherPic( files[0] )
+                if( val === 'fatherProfile' ) setFatherPic( files[0] )
+                if( val === 'documents' ) setDocumentObjects( files )
+            } else {
+                setValue({
+                    ...value,
+                    profile: URL.createObjectURL( files[0] )
+                })
+                setImageObject( files[0] )
+            }
             setIsSaveDisabled( false )
             setIsProfileReplaced( true )
         }
@@ -72,6 +91,7 @@ export const Profile = () => {
 
         if( meta.includes( name ) ) {
             setIsMetaTriggered( true )
+            if( [ 'motherProfile', 'fatherProfile', 'documents' ].includes( name ) ) setIsMetaImageTriggered( true )
             setUserMeta({
                 ...userMeta,
                 [ name ]: val
@@ -96,21 +116,42 @@ export const Profile = () => {
                 headersMultipart: true,
                 body: formData
             })
+            if( isMetaTriggered ) {
+                formData.append('fatherProfile', fatherPic);
+                formData.append('motherProfile', motherPic);
+                formData.append('documents', documentObject);
+                ourFetch({
+                    api: '/uploads',
+                    callback: uploadsCallback,
+                    headersMultipart: true,
+                    body: formData
+                })
+            }
         } else {
             ourFetch({
                 api: '/update-profile',
                 body: JSON.stringify( value ),
                 callback: saveCallback
             })
+            if( isMetaTriggered ) {
+                const formData = new FormData();
+                formData.append('fatherProfile', fatherPic);
+                formData.append('motherProfile', motherPic);
+                formData.append('documents', documentObject);
+                ourFetch({
+                    api: '/uploads',
+                    callback: uploadsCallback,
+                    headersMultipart: true,
+                    body: formData
+                })
+                ourFetch({
+                    api: '/update-usermeta',
+                    body: JSON.stringify( userMeta ),
+                    callback: metaCallback
+                })
+            }
         }
 
-        if( isMetaTriggered ) {
-            ourFetch({
-                api: '/update-usermeta',
-                body: JSON.stringify( userMeta ),
-                callback: metaCallback
-            })
-        }
     }
 
     /**
@@ -118,7 +159,11 @@ export const Profile = () => {
      */
     const metaCallback = ( data ) => {
         let { success, result } = data
-        if( success ) console.log( 'meta callback success' )
+        if( success ) {
+            setIsSaveClicked( true )
+            setIsSaveDisabled( true )
+            setIsMetaTriggered( false )
+        }
     }
 
     /**
@@ -149,6 +194,23 @@ export const Profile = () => {
             api: '/update-profile',
             body: JSON.stringify({ ...value, profile: newImage })
         })
+        if( isMetaTriggered ) {
+            ourFetch({
+                api: '/update-usermeta',
+                body: JSON.stringify( userMeta ),
+                callback: metaCallback
+            })
+        }
+    }
+
+    /**
+     * Uploads Callback
+     */
+    const uploadsCallback = ( data ) => {
+        let { success, files } = data
+        if( success ) {
+            console.log( files )
+        }
     }
 
     return <main className="cmg-main" id="cmg-main">
@@ -234,13 +296,23 @@ export const Profile = () => {
                     <div className="form-flex">
                         <div className='form-field'>
                             <label className='form-label'>{ 'Mother Profile: ' }</label>
-                            <input className="second" name='motherProfile' type="file" ref={ motherProfileRef } value={ motherProfile } onChange={ handleChange } hidden />
-                            <div className="no-image" onClick={() => motherProfileRef.current.click()}></div>
+                            <input className="second" name='motherProfile' type="file" ref={ motherProfileRef } onChange={ handleProfilePic } hidden />
+                            { motherProfile === null ?
+                                <div className="no-image" onClick={() => motherProfileRef.current.click()}></div> :
+                                <figure className="image-fig" onClick={() => motherProfileRef.current.click()}>
+                                    <img src={ motherProfile } alt="" />
+                                </figure>
+                            }
                         </div>
                         <div className='form-field'>
                             <label className='form-label'>{ 'Father Profile: ' }</label>
-                            <input className="second" name='fatherProfile' type="file" ref={ fatherProfileRef } value={ fatherProfile } onChange={ handleChange } hidden />
-                            <div className="no-image" onClick={() => fatherProfileRef.current.click()}></div>
+                            <input className="second" name='fatherProfile' type="file" ref={ fatherProfileRef } onChange={ handleProfilePic } hidden />
+                            { fatherProfile === null ?
+                                <div className="no-image" onClick={() => fatherProfileRef.current.click()}></div> :
+                                <figure className="image-fig" onClick={() => fatherProfileRef.current.click()}>
+                                    <img src={ fatherProfile } alt="" />
+                                </figure>
+                            }
                         </div>
                     </div>
                     <div className="form-flex">

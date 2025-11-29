@@ -458,6 +458,32 @@ app.post( '/get-message', ( request, res ) => {
 });
 
 /**
+ * MARK: Multiple Uploads
+ */
+app.post( '/uploads', upload.fields([
+    { name: 'motherProfile', maxCount: 1 },
+    { name: 'fatherProfile', maxCount: 1 },
+    { name: 'documents', maxCount: 10 }
+  ]),
+  (req, res) => {
+    if (!req.files) return res.status(400).send('No files uploaded.');
+
+    // Example: map files to paths
+    const uploadedFiles = {};
+    for (const field in req.files) {
+      uploadedFiles[field] = req.files[field].map(file => `/uploads/${file.originalname}`);
+    }
+
+    res.send({
+      message: 'Files uploaded successfully!',
+      files: uploadedFiles,
+      success: true
+    });
+  }
+);
+
+
+/**
  * MARK: Upload
  */
 app.post('/upload', upload.single('image'), (req, res) => {
