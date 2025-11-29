@@ -101,6 +101,7 @@ con.connect(function(err) {
           subjectsQuery += "completion INT(255) NOT NULL DEFAULT 0, "
           subjectsQuery += "registered_date DATETIME DEFAULT CURRENT_TIMESTAMP, "
           subjectsQuery += "file VARCHAR(500),"
+          subjectsQuery += "notes LONGTEXT,"
           subjectsQuery += "FOREIGN KEY(course_id) REFERENCES courses(id),"
           subjectsQuery += "FOREIGN KEY(teacherId) REFERENCES users(id) "
           subjectsQuery += ");"

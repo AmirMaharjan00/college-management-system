@@ -26,6 +26,7 @@ const port = process.env.PORT || 5000;
 
 app.use('/uploads', express.static('uploads'));
 app.use('/images', express.static('images'));
+app.use("/files", express.static(path.join(__dirname, "uploads"))); // or "images"
 
 app.use( express.json() );
 app.use( cookieParser() );
@@ -465,7 +466,8 @@ app.post('/upload', upload.single('image'), (req, res) => {
   if (!req.file) return res.status(400).send('No file uploaded.');
   res.send({
     message: 'Image uploaded successfully!',
-    imageUrl: path
+    imageUrl: path,
+    success: true
   });
 });
 
@@ -1107,5 +1109,19 @@ app.post( '/dashboard-fees-collection', ( request, res ) => {
   con.query( selectQuery, ( error, result ) => {
     if ( error ) return res.status( 500 ).json({ error: "Database selection failed" });
     return res.status( 200 ).json({ result: result, success: true });
+  })
+});
+
+/**
+* MARK: update subject
+*/
+app.post( '/update-subject-syllabus', ( request, res ) => {
+  const { id, file } = request.body,
+    updateQuery = `UPDATE subjects SET file="${ file }" WHERE id=${ id };`
+  con.query( updateQuery, ( error, result ) => {
+    if ( error ) {
+      return res.status( 500 ).json({ success: false, error: "Database Update failed" });
+    }
+    return res.status( 200 ).json({ success: true, result });
   })
 });

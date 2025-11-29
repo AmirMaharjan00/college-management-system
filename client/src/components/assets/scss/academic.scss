@@ -447,10 +447,29 @@ $maroon: #d62977;
     }
 
     .edit-popup-wrapper {
-      .pdf-viewer {
-        max-height: 500px;
+      .pdf {
+        max-height: 400px;
         width: 100%;
-        height: 500px;
+        height: 400px;
+        margin-bottom: 20px;
+
+        &.no-pdf {
+          border: 2px dashed #878a99;
+          position: relative;
+
+          &:after {
+            content: "\2b";
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 130px;
+          }
+
+          &:hover {
+            background: #878a9929;
+          }
+        }
       }
 
       .buttons {
@@ -468,6 +487,11 @@ $maroon: #d62977;
           cursor: pointer;
           transition: 0.3s;
           box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+
+          &[disabled] {
+            cursor: not-allowed;
+            opacity: 0.5;
+          }
 
           &:hover {
             background: #2980b9;
@@ -487,6 +511,9 @@ $maroon: #d62977;
           }
           &.save {
             background: $green;
+          }
+          &.close {
+            background: #ff0000;
           }
         }
       }
