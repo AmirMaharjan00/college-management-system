@@ -23,7 +23,7 @@ export const Routines = () => {
       return subjects.reduce(( _thisVal, subject ) => {
         let { semester } = subject
 
-        if ( ! _thisVal[ semester ] ) _thisVal[ semester ] = [];
+        if ( ! _thisVal[ semester ] ) _thisVal[ semester ] = [{ name: 'Break Time', teacherId: '-' }];
         _thisVal[ semester ].push( subject );
 
         return _thisVal;

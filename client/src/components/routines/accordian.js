@@ -65,7 +65,7 @@ const Accordion = ( props ) => {
               let { id, name, teacherId } = value
               return <tr key={ index}>
                 <td>{ index + 1 }</td>
-                <td className="course-name">{ `${ name } ( ${ id } )` }</td>
+                <td className="course-name">{ `${ name }${ id ? `( ${ id } )` : '' }` }</td>
                 <td>{ teacherId }</td>
                 <td>{ 'Starting Time.' }</td>
                 <td>{ 'Starting Time.' }</td>
