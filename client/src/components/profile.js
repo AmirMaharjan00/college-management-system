@@ -69,9 +69,9 @@ export const Profile = () => {
                     ...userMeta,
                     [ name ]: URL.createObjectURL( files[0] )
                 })
-                if( val === 'motherProfile' ) setMotherPic( files[0] )
-                if( val === 'fatherProfile' ) setFatherPic( files[0] )
-                if( val === 'documents' ) setDocumentObjects( files )
+                if( name === 'motherProfile' ) setMotherPic( files[0] )
+                if( name === 'fatherProfile' ) setFatherPic( files[0] )
+                if( name === 'documents' ) setDocumentObjects( files )
             } else {
                 setValue({
                     ...value,

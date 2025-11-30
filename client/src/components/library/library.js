@@ -232,6 +232,7 @@ const LineChart = () => {
 
     const options = {
         responsive: true,
+        maintainAspectRatio: false, // ignore default aspect ratio
         plugins: {
             legend: { position: 'top' },
             title: {
