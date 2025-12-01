@@ -101,6 +101,7 @@ con.connect(function(err) {
           subjectsQuery += "completion INT(255) NOT NULL DEFAULT 0, "
           subjectsQuery += "registered_date DATETIME DEFAULT CURRENT_TIMESTAMP, "
           subjectsQuery += "file VARCHAR(500),"
+          subjectsQuery += "notes LONGTEXT,"
           subjectsQuery += "FOREIGN KEY(course_id) REFERENCES courses(id),"
           subjectsQuery += "FOREIGN KEY(teacherId) REFERENCES users(id) "
           subjectsQuery += ");"
@@ -251,6 +252,34 @@ con.connect(function(err) {
         con.query( examsQuery, function (err, result) {
           if( err ) throw err
           console.log( 'Exams Table created.' )
+        });
+
+        /**
+         * Create User Meta Table
+         * MARK: User Meta
+         */
+        let userMetaQuery = "CREATE TABLE IF NOT EXISTS `usermeta` ("
+          userMetaQuery += "metaId INT(11) NOT NULL AUTO_INCREMENT PRIMARY KEY, "
+          userMetaQuery += "userId INT(11) NOT NULL, " 
+          userMetaQuery += "dob DATE, "
+          userMetaQuery += "secondaryContact INT(10), "
+          userMetaQuery += "motherName VARCHAR(255), "
+          userMetaQuery += "fatherName VARCHAR(255), "
+          userMetaQuery += "motherEmail VARCHAR(255), "
+          userMetaQuery += "fatherEmail VARCHAR(255), "
+          userMetaQuery += "motherProfile VARCHAR(255), "
+          userMetaQuery += "fatherProfile VARCHAR(255), "
+          userMetaQuery += "motherContact INT(10), "
+          userMetaQuery += "fatherContact INT(10), "
+          userMetaQuery += "documents LONGTEXT, "
+          userMetaQuery += "motherTongue VARCHAR(255) NOT NULL DEFAULT 'Nepali', "
+          userMetaQuery += "language VARCHAR(255) NOT NULL DEFAULT 'Nepali', "
+          userMetaQuery += "UNIQUE(userId), "
+          userMetaQuery += "FOREIGN KEY(userId) REFERENCES users(id) ON DELETE CASCADE ON UPDATE CASCADE "
+          userMetaQuery += ");"
+        con.query( userMetaQuery, function (err, result) {
+          if( err ) throw err
+          console.log( 'User Meta Table created.' )
         });
       }
     });

@@ -26,6 +26,7 @@ const port = process.env.PORT || 5000;
 
 app.use('/uploads', express.static('uploads'));
 app.use('/images', express.static('images'));
+app.use("/files", express.static(path.join(__dirname, "uploads"))); // or "images"
 
 app.use( express.json() );
 app.use( cookieParser() );
@@ -457,6 +458,32 @@ app.post( '/get-message', ( request, res ) => {
 });
 
 /**
+ * MARK: Multiple Uploads
+ */
+app.post( '/uploads', upload.fields([
+    { name: 'motherProfile', maxCount: 1 },
+    { name: 'fatherProfile', maxCount: 1 },
+    { name: 'documents', maxCount: 10 }
+  ]),
+  (req, res) => {
+    if (!req.files) return res.status(400).send('No files uploaded.');
+
+    // Example: map files to paths
+    const uploadedFiles = {};
+    for (const field in req.files) {
+      uploadedFiles[field] = req.files[field].map(file => `/uploads/${file.originalname}`);
+    }
+
+    res.send({
+      message: 'Files uploaded successfully!',
+      files: uploadedFiles,
+      success: true
+    });
+  }
+);
+
+
+/**
  * MARK: Upload
  */
 app.post('/upload', upload.single('image'), (req, res) => {
@@ -465,7 +492,8 @@ app.post('/upload', upload.single('image'), (req, res) => {
   if (!req.file) return res.status(400).send('No file uploaded.');
   res.send({
     message: 'Image uploaded successfully!',
-    imageUrl: path
+    imageUrl: path,
+    success: true
   });
 });
 
@@ -1107,5 +1135,85 @@ app.post( '/dashboard-fees-collection', ( request, res ) => {
   con.query( selectQuery, ( error, result ) => {
     if ( error ) return res.status( 500 ).json({ error: "Database selection failed" });
     return res.status( 200 ).json({ result: result, success: true });
+  })
+});
+
+/**
+* MARK: update subject
+*/
+app.post( '/update-subject-syllabus', ( request, res ) => {
+  const { id, file } = request.body,
+    updateQuery = `UPDATE subjects SET file="${ file }" WHERE id=${ id };`
+  con.query( updateQuery, ( error, result ) => {
+    if ( error ) {
+      return res.status( 500 ).json({ success: false, error: "Database Update failed" });
+    }
+    return res.status( 200 ).json({ success: true, result });
+  })
+});
+
+/**
+* MARK: Usermeta by userId
+*/
+app.post( '/user-usermata-join-via-id', ( request, res ) => {
+  const { id } = request.body,
+    selectQuery = `SELECT u.*, um.* FROM users u LEFT JOIN userMeta um ON u.id = um.userid WHERE u.id=${ id }`
+  con.query( selectQuery, ( error, result ) => {
+    if ( error ) {
+      return res.status( 500 ).json({ error: "Database selection failed" });
+    }
+    return res.status( 200 ).json({ success: true, result: result[0] });
+  })
+});
+
+
+/**
+* MARK: update-usermeta
+*/
+app.post( '/update-usermeta', ( request, res ) => {
+  const { id, dob, secondaryContact, motherName, fatherName, motherEmail, fatherEmail, motherContact, fatherContact, motherProfile, fatherProfile, documents, motherTongue = 'Nepali', language = 'Nepali' } = request.body,
+    updateQuery = `
+      INSERT INTO userMeta (
+        userId, dob, secondaryContact, motherName, fatherName,
+        motherEmail, fatherEmail, motherContact, fatherContact,
+        motherProfile, fatherProfile, documents, motherTongue, \`language\`
+      )
+      VALUES (
+        ${id},
+        ${dob ? `'${dob}'` : null},
+        ${secondaryContact ? `'${secondaryContact}'` : null},
+        ${motherName ? `'${motherName}'` : null},
+        ${fatherName ? `'${fatherName}'` : null},
+        ${motherEmail ? `'${motherEmail}'` : null},
+        ${fatherEmail ? `'${fatherEmail}'` : null},
+        ${motherContact ? `'${motherContact}'` : null},
+        ${fatherContact ? `'${fatherContact}'` : null},
+        ${motherProfile ? `'${motherProfile}'` : null},
+        ${fatherProfile ? `'${fatherProfile}'` : null},
+        ${documents ? `'${documents}'` : null},
+        ${motherTongue ? `'${motherTongue}'` : `'Nepali'`},
+        ${language ? `'${language}'` : `'Nepali'`}
+      )
+      ON DUPLICATE KEY UPDATE
+        dob = VALUES(dob),
+        secondaryContact = VALUES(secondaryContact),
+        motherName = VALUES(motherName),
+        fatherName = VALUES(fatherName),
+        motherEmail = VALUES(motherEmail),
+        fatherEmail = VALUES(fatherEmail),
+        motherContact = VALUES(motherContact),
+        fatherContact = VALUES(fatherContact),
+        motherProfile = VALUES(motherProfile),
+        fatherProfile = VALUES(fatherProfile),
+        documents = VALUES(documents),
+        motherTongue = VALUES(motherTongue),
+        \`language\` = VALUES(\`language\`);
+      `;
+
+  con.query( updateQuery, ( error, result ) => {
+    if ( error ) {
+      return res.status( 500 ).json({ success: false, error: "Database Update failed" });
+    }
+    return res.status( 200 ).json({ success: true, result: result[0] });
   })
 });

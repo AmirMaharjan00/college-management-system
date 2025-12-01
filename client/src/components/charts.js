@@ -70,6 +70,7 @@ export const LineChart = ( props ) => {
 
     const options = {
         responsive: true,
+        maintainAspectRatio: false, // ignore default aspect ratio
         plugins: {
             legend: { position: 'top' },
             title: {
@@ -127,6 +128,7 @@ export const DoughnutChart = ( props ) => {
 
     const options = {
         responsive: true,
+        maintainAspectRatio: false, // ignore default aspect ratio
         plugins: {
             legend: { position: 'bottom' },
             title: {
