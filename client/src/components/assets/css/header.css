@@ -9,11 +9,11 @@ MARK: GLOBAL
         color: var(--headerColor);
         border-radius: 5px;
         transition: all .3s ease-in-out;
+        cursor: pointer;
     }
 
-    #cmg-header .action .cmg-active-dropdown-item:hover {
-        transform: scale(1.1);
-        cursor: pointer;
+    .light #cmg-header .action .cmg-active-dropdown-item:hover {
+        background: #e9edf4;
     }
 
 /*
@@ -29,11 +29,10 @@ MARK: USER
     height: 40px;
     width: 40px;
     padding: 0;
+    border: none;
 }
 
 #cmg-head-user-wrapper .cmg-active-dropdown-item.profile img {
-    height: 100%;
-    width: 100%;
     object-fit: cover;
 }
 
@@ -314,8 +313,8 @@ MARK: NOTIFICATION
         width: 8px;
         height: 8px;
         position: absolute;
-        top: -6px;
-        right: 4px;
+        top: -2px;
+        right: -2px;
         background: #ff0000;
         border-radius: 100%;
     }

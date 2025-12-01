@@ -27,6 +27,7 @@
     --heading-color: #495057;
     --secondary-color: #878a99;
     --progress-bg: #edf3ff;
+    --cmg-aside-section-title: #525252;
 
     --cmg-white-dark-color: #fff;
     --cmg-black-dark-color: #000;
@@ -55,33 +56,37 @@ MARK: DARK MODE
         --heading-color: #ced4da;
         --progress-bg: #2a2d31;
         --darkGrey: #fff;
+        --cmg-aside-section-title: #B9B7C0;
 
         --cmg-white-dark-color: #000;
         --cmg-black-dark-color: #fff;
         --cmg-grey-dark-color: #efefef36;
     }
 
-a {
-    text-decoration: none;
-}
+    /* 
+        MARK: NORMALIZE CODE
+    */
+    a {
+        text-decoration: none;
+    }
 
-li {
-    list-style: none;
-}
+    li {
+        list-style: none;
+    }
 
-button {
-    cursor: pointer;
-    background: none;
-    border: none;
-}
+    button {
+        cursor: pointer;
+        background: none;
+        border: none;
+    }
 
-input {
-    padding: 10px;
-}
+    input {
+        padding: 10px;
+    }
 
-select {
-    padding: 10px 0;
-}
+    select {
+        padding: 10px 0;
+    }
 
 /* latin-ext */
 @font-face {
@@ -108,21 +113,9 @@ GLOBAL
 MARK: Global
 =========================
 */
-    #root .cmg-icon-wrapper {
-        display: flex !important;
-        gap: 10px;
-        align-items: center;
-    }
-
     #root .cmg-icon {
-        font-size: 12px;
-        /* background: #efefef;
-        width: 26px;
-        height: 26px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        border-radius: 3px; */
+        font-size: 14px;
+        line-height: 12px;
     }
 
     #root .cmg-dropdown {
@@ -141,12 +134,18 @@ MARK: Global
     #root .cmg-dropdown .cmg-list-item {
         padding: 10px;
         color: var(--color);
+        border-radius: 5px;
+        cursor: pointer;
+        transition: all .3s ease-in-out;
     }
 
-    #root .cmg-dropdown .cmg-list-item.active,
+    #root .cmg-dropdown .cmg-list-item.active {
+        background: rgba(255, 0, 51, 0.1);
+        color: var(--default);
+    }
+
     #root .cmg-dropdown .cmg-list-item:hover {
-        background: var(--default);
-        color: var(--white);
+        color: var(--default);
     }
 
     #root .cmg-dropdown .cmg-list-item:not( :last-child ) {
@@ -157,23 +156,32 @@ MARK: Global
         position: relative;
         height: 100%;
         display: flex;
+        cursor: pointer;
+        padding: 10px 0;
     }
 
     #root .dropdown:hover .cmg-dropdown {
         display: block;
-        right: -20px;
-        left: unset;
+        right: 0;
+        left: initial;
         transform: none;
+        padding: 15px;
+        border: 1px solid #efefef;
+        top: 40px;
     }
 
     #root .cmg-active-dropdown-item {
         display: flex;
         align-items: center;
-        gap: 8px;
+        gap: 10px;
     }
 
     #root .cmg-active-dropdown-item .label {
         text-transform: capitalize;
+    }
+
+    #root .cmg-active-dropdown-item .icon {
+        font-size: 12px;
     }
 
     body::-webkit-scrollbar {
@@ -213,12 +221,17 @@ MARK: Breadcrumb
 
     #cmg-breadcrumb .breadcrumb-item {
         font-size: 14px;
+        color: var(--cmg-black-dark-color);
+    }
+
+    #cmg-breadcrumb .breadcrumb-item a {
         color: var(--heading-color);
     }
 
     #cmg-breadcrumb .breadcrumb-item:not(:last-child):after {
         content: '/';
-        padding: 10px;
+        font-size: 12px;
+        margin-inline: 10px;
     }
 
 /*
@@ -321,7 +334,7 @@ MARK: Admin
         height: 100%;
     }
 
-    body #root {
+    body .cmg-wrapper {
         background: var(--body-bg);
         min-height: 100vh;
     }
@@ -355,27 +368,29 @@ MARK: Admin
         color: var(--heading-color);
     }
 
+    #cmg-main .dashboard-head .dashboard-actions {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
     #cmg-main .dashboard-head .button-action {
         padding: 10px;
         border-radius: 5px;
-        color: var(--color);
     }
 
     #cmg-main .dashboard-head .button-action.add-student {
         background: var(--blue);
-        margin-right: 10px;
         color: #fff;
     }
 
-    #cmg-main .dashboard-head .button-action.fees {
-        background: #747474;
-        color: var(--white);
-        font-size: 14px;
+    #cmg-main .dashboard-head .button-action.add-student:hover {
+        opacity: .8;
     }
 
-    #cmg-main .dashboard-head .button-action.fees:hover {
-        background: var(--blue);
-        box-shadow: 0px 0px 10px 0px var(--blue);
+    #cmg-main .dashboard-head .button-action.fees {
+        background: #e9edf4;
+        font-size: 14px;
     }
 
     #cmg-main .dashboard-welcome {
@@ -534,9 +549,8 @@ MARK: Admin
         display: flex;
         justify-content: space-between;
         align-items: center;
-        height: 50px;
+        padding: 5px 20px;
         border-bottom: 1px solid var(--actionBorder);
-        padding: 0 20px;
         color: var(--color);
     }
 
@@ -970,11 +984,10 @@ MARK: Admin
     }
 
     #dashboard-foot .dashboard-foot-item .head {
-        height: 50px;
         display: flex;
         align-items: center;
         justify-content: space-between;
-        padding: 0 20px;
+        padding: 5px 15px;
         border-bottom: 1px solid var(--actionBorder);
     }
 
@@ -1081,6 +1094,8 @@ MARK: Admin
 
     #dashboard-foot .to-do-list .foot .list input {
         width: 20px;
+        align-self: flex-start;
+        margin-top: 4px;
     }
 
     #dashboard-foot .to-do-list .foot .list .todo-detail {
@@ -1100,8 +1115,8 @@ MARK: Admin
 
     #dashboard-foot .to-do-list .foot .list .todo-status {
         font-size: 14px;
-        color: var(--color);
-        padding: 3px 5px;
+        color: #fff;
+        padding: 3px 7px;
         border-radius: 5px;
     }
 

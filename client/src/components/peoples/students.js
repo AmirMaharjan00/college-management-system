@@ -159,11 +159,11 @@ export const StudentsList = () => {
             <div className='action-buttons'>
                 <button className='action-btn refresh' onClick={ _fetch }><FontAwesomeIcon icon={ faRotate }/></button>
                 <button className='action-btn print' onClick={ handlePrint }><FontAwesomeIcon icon={ faPrint }/></button>
-                <button className='action-btn export' onClick={ handleExportPDF }>
+                <button className='action-btn export cmg-btn-spacing' onClick={ handleExportPDF }>
                     <FontAwesomeIcon icon={ faFileExport }/>
                     <span className='label'>Export as PDF</span>
                 </button>
-                <button className='action-btn add' onClick={ handleNewStudentAdd }>
+                <button className='action-btn add cmg-btn-spacing' onClick={ handleNewStudentAdd }>
                     <FontAwesomeIcon icon={ faUserPlus }/>
                     <span className='label'>Add Student</span>
                 </button>
