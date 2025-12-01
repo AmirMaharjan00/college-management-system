@@ -1,10 +1,12 @@
 import { Breadcrumb, Pagination, RowAndSearch, ActionButton } from "../components"
 import { TodaysDate } from "../includes/components-hooks"
-import { useContext, useState, createContext, useEffect, useMemo } from "react"
+import { useContext, useState, createContext, useEffect, useMemo, useRef } from "react"
 import { GLOBALCONTEXT } from "../../App"
 import { useDate } from "../includes/hooks"
 import { Link } from "react-router-dom"
 import { fetchCallback, getScript, ourFetch } from "../functions"
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faBullseye, faPenToSquare, faEye, faTrash } from "@fortawesome/free-solid-svg-icons"
 const AssignmentsContext = createContext()
 
 /**
@@ -13,20 +15,14 @@ const AssignmentsContext = createContext()
 export const Assignments = () => {
     const Global = useContext( GLOBALCONTEXT ),
         { formVisibility, loggedInUser, setOverlay, setHeaderOverlay, setFormVisibility } = Global,
-        { role } = loggedInUser,
+        { role, id: userId } = loggedInUser,
         [ formMode, setFormMode ] = useState( 'new' ),
         [ rowsPerPage, setRowsPerPage ] = useState( 10 ),
         [ searched, setSearched ] = useState( '' ),
         [ courses, setCourses ] = useState([]),
-        [ activeCourse, setActiveCourse ] = useState( 0 ),
-        courseSemesters = useMemo(() => {
-            let semester = courses.reduce(( _thisVal, course, index ) => {
-                if( index === activeCourse ) _thisVal = course.semester
-                return _thisVal
-            }, 0)
-            return new Array( semester ).fill( 0 )
-        }, [ courses ]),
         [ assignments, setAssignments ] = useState({}),
+        [ fileObj, setFileObj ] = useState( '' ),
+        [ insertSuccess, setInsertSuccess ] = useState( false ),
         [ activeAssignment, setActiveAssignment ] = useState( null ),
         [ activeAssignmentObj, setActiveAssignmentObj ] = useState(() => {
             if( assignments.length > 0 ) {
@@ -37,22 +33,35 @@ export const Assignments = () => {
             } else {
                 return {
                     title: '',
-                    assignedTo: '',
-                    semester: '',
+                    assignedTo: userId,
+                    semester: 1,
                     startDate: '',
                     endDate: '',
                     file: '',
-                    status: ''
+                    status: 'pending'
                 }
             }
         }, [ activeAssignment, assignments ]),
+        courseSemesters = useMemo(() => {
+            let { assignedTo } = activeAssignmentObj,
+                semester = courses.reduce(( _thisVal, course ) => {
+                    let { id } = course
+                    if( assignedTo == id ) _thisVal = course.semester
+                    return _thisVal
+                }, 0)
+            return new Array( semester ).fill( 0 )
+        }, [ courses, activeAssignmentObj ]),
         assignmentObject = {
             assignments,
             formMode, setFormMode,
             setOverlay, setHeaderOverlay, setFormVisibility,
             activeAssignmentObj, setActiveAssignmentObj,
             courses,
-            courseSemesters
+            courseSemesters,
+            fileObj, setFileObj,
+            userId,
+            setInsertSuccess,
+            role
         }
 
     useEffect(() => {
@@ -66,7 +75,8 @@ export const Assignments = () => {
             callback: fetchCallback,
             setter: setCourses
         })
-    }, [])
+        if( insertSuccess ) setInsertSuccess( false )
+    }, [ insertSuccess ])
 
     return <main className="cmg-main assignments" id="cmg-main">
         <AssignmentsContext.Provider value={ assignmentObject }>
@@ -108,7 +118,7 @@ export const Assignments = () => {
  */
 const Table = () => {
     const assignmentContext = useContext( AssignmentsContext ),
-        { assignments, setFormMode, setOverlay, setHeaderOverlay, setFormVisibility } = assignmentContext,
+        { assignments, setFormMode, setOverlay, setHeaderOverlay, setFormVisibility, role } = assignmentContext,
         { convertedDate } = useDate()
 
     /**
@@ -150,7 +160,20 @@ const Table = () => {
                         <td>{ convertedDate( startDate ) }</td>
                         <td>{ convertedDate( endDate ) }</td>
                         <td>{ status }</td>
-                        <td><button>View</button></td>
+                        <td>
+                            { ( role === 'admin' ) && <div className="has-tooltip action" >
+                                <FontAwesomeIcon className='edit' icon={ faPenToSquare } />
+                                <span className="tooltip-text">Edit</span>
+                            </div> }
+                            <div className="has-tooltip action">
+                                <FontAwesomeIcon className='view' icon={ faEye } />
+                                <span className="tooltip-text">View</span>
+                            </div>
+                            { ( role === 'admin' ) && <div className="has-tooltip action">
+                                <FontAwesomeIcon className='delete' icon={ faTrash } />
+                                <span className="tooltip-text">Delete</span>
+                            </div> }
+                        </td>
                     </tr>
                 }) : <tr className="no-records">
                     <td colSpan="7">No records</td>
@@ -165,14 +188,73 @@ const Table = () => {
  */
 const Form = () => {
     const assignmentContext = useContext( AssignmentsContext ),
-        { activeAssignmentObj, setActiveAssignmentObj, courses, courseSemesters } = assignmentContext,
-        { title, assignedTo, semester, startDate, endDate, file, status } = activeAssignmentObj
+        { activeAssignmentObj, setActiveAssignmentObj, courses, courseSemesters, fileObj, setFileObj, userId, setInsertSuccess, setFormMode, setOverlay, setHeaderOverlay, setFormVisibility } = assignmentContext,
+        { title, assignedTo, semester, startDate, endDate, file, status } = activeAssignmentObj,
+        fileRef = useRef()
 
     /**
      * Handle Submit
      */
-    const handleSubmit = () => {
+    const handleSubmit = ( event ) => {
+        event.preventDefault()
+        const formData = new FormData();
+        formData.append( 'image', activeAssignmentObj.file ); // 'image' should match your backend field name
+        ourFetch({
+            api: '/upload',
+            callback: uploadCallback,
+            headersMultipart: true,
+            body: formData
+        })
+    }
 
+    /**
+     * Upload Callback
+     */
+    const uploadCallback = ( data ) => {
+        let { success, imageUrl } = data
+        if( success ) {
+            ourFetch({
+                api: '/insert-assignment',
+                callback: insertCallback,
+                body: JSON.stringify({
+                    ...activeAssignmentObj,
+                    assignedBy: userId,
+                    file: imageUrl
+                })
+            })
+        }
+    }
+
+    /**
+     * Insert Callback
+     */
+    const insertCallback = ( data ) => {
+        if( data.success ) {
+            setInsertSuccess( true )
+            setFormMode( 'new' )
+            setOverlay( false )
+            setHeaderOverlay( false )
+            setFormVisibility( false )
+        }
+    }
+
+    /**
+     * Handle Change
+     */
+    const handleChange = ( event ) => {
+        let { name, value, files } = event.target
+        if( name === 'file' ) {
+            setFileObj( URL.createObjectURL( files[0] ) )
+            setActiveAssignmentObj({
+                ...activeAssignmentObj,
+                [ name ]: files[0]
+            })
+        } else {
+            setActiveAssignmentObj({
+                ...activeAssignmentObj,
+                [ name ]: value
+            })
+        }
     }
 
     return <div className="cmg-form-wrapper" id="cmg-form-wrapper">
@@ -186,7 +268,7 @@ const Form = () => {
                     Title
                     <span className="form-error">*</span>
                 </label>
-                <input type="text" placeholder="Chapter 1 assignment" name="title" value={ title } required />
+                <input type="text" placeholder="Chapter 1 assignment" name="title" value={ title } onChange={ handleChange } required />
             </div>
             <div className="form-flex">
                 <div className="form-field">
@@ -194,44 +276,44 @@ const Form = () => {
                         Courses
                         <span className="form-error">*</span>
                     </label>
-                    <select name="assignedTo" id="assignedTo" value={ assignedTo }>
+                    <select name="assignedTo" id="assignedTo" value={ assignedTo } onChange={ handleChange }>
                         {
                             courses.map(( course ) => {
                                 let { id, abbreviation } = course
-                                return <option value={ id }>{ `${ abbreviation } ( ID: ${ id } )` }</option>
+                                return <option key={ id } value={ id }>{ `${ abbreviation } ( ID: ${ id } )` }</option>
                             })
                         }
                     </select>
                 </div>
-                <div className="form-field">
+                { courseSemesters.length > 1 && <div className="form-field">
                     <label className="form-label">
                         Semester
                         <span className="form-error">*</span>
                     </label>
-                    <select name="assignedTo" id="assignedTo" value={ semester }>
+                    <select name="semester" id="semester" value={ semester } onChange={ handleChange }>
                         {
                             courseSemesters.map(( sem, index ) => {
                                 let count = index + 1
-                                return <option value={ count }>{ `${ getScript( count ) } Semester` }</option>
+                                return <option key={ index } value={ count }>{ `${ getScript( count ) } Semester` }</option>
                             })
                         }
                     </select>
-                </div>
+                </div> }
             </div>
             <div className="form-flex">
                 <div className="form-field">
                     <label className="form-label">
-                        Courses
+                        Start Date
                         <span className="form-error">*</span>
                     </label>
-                    <input type="date" name="startDate" value={ startDate } required />
+                    <input type="date" name="startDate" value={ startDate } onChange={ handleChange } required />
                 </div>
                 <div className="form-field">
                     <label className="form-label">
-                        Semester
+                        End Date
                         <span className="form-error">*</span>
                     </label>
-                    <input type="date" name="endDate" value={ endDate } required />
+                    <input type="date" name="endDate" value={ endDate } onChange={ handleChange } required />
                 </div>
             </div>
             <div className="form-field">
@@ -239,8 +321,12 @@ const Form = () => {
                     Add Attachment
                     <span className="form-error">*</span>
                 </label>
-                <input type="file" name="file" value={ file } required hidden/>
-                <div className="no-file"></div>
+                <input type="file" name="file" ref={ fileRef } onChange={ handleChange } required hidden/>
+                {
+                    fileObj ?
+                    <iframe src={ fileObj } width="100%" height="100%" allowFullScreen={ true } /> :
+                    <div className="no-file" onClick={() => fileRef.current.click() }></div>
+                }
             </div>
             <input type="submit" value={ 'Add Assignment' } />
         </form>

@@ -1221,7 +1221,7 @@ app.post( '/update-usermeta', ( request, res ) => {
 * MARK: All Assignements
 */
 app.post( '/all-assignments', ( request, res ) => {
-  const selectQuery = `SELECT a.*, t.id AS teacherId, t.name AS teacherName FROM assignments a LEFT JOIN users AS t ON a.assignedBy = t.id`
+  const selectQuery = `SELECT a.*, t.id AS teacherId, t.name AS teacherName FROM assignments a LEFT JOIN users AS t ON a.assignedBy = t.id ORDER BY a.assignmentId DESC`
   con.query( selectQuery, ( error, result ) => {
     if ( error ) {
       return res.status( 500 ).json({ error: "Database selection failed" });
@@ -1235,9 +1235,9 @@ app.post( '/all-assignments', ( request, res ) => {
  */
 app.post('/insert-assignment', (req, res) => {
   const { title, assignedBy, assignedTo, semester, startDate, endDate, status, file } = req.body
-  const insertQuery = 'INSERT INTO assignments (title, assignedBy, assignedTo, semester, startDate, endDate, status, file) VALUES (?, ?, ?, ?, ?, ?, ?, ?)'
+  const insertQuery = `INSERT INTO assignments (title, assignedBy, assignedTo, semester, startDate, endDate, status, file) VALUES ('${ title }', ${ assignedBy }, ${ assignedTo }, ${ semester }, '${ startDate }', '${ endDate }', '${ status }', '${ file }')`
   con.query( insertQuery, [ title, assignedBy, assignedTo, semester, startDate, endDate, status, file ], ( error, result ) => {
-    if ( error ) return res.status( 500 ).json({ error: "Database insertion failed" });
+    if ( error ) return res.status( 500 ).json({ error: "Database insertion failed", success: false });
     return res.status( 200 ).json({ message: "Data inserted successfully!", success: true });
   })
 });
