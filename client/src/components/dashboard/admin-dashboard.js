@@ -6,10 +6,11 @@ import teacher from '../assets/images/teacher.png'
 import course from '../assets/images/course.png'
 import staff from '../assets/images/staff.png'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faArrowsRotate, faChevronDown, faChevronRight, faCheckDouble, faXmark, faCircleExclamation, faIcons, faCoins, faSackDollar, faCalendarDays, faMoneyBillTrendUp } from '@fortawesome/free-solid-svg-icons';
+import { faArrowsRotate, faChevronDown, faChevronRight, faCheckDouble, faXmark, faCircleExclamation, faIcons, faCoins, faSackDollar, faCalendarDays, faMoneyBillTrendUp, faUserPlus } from '@fortawesome/free-solid-svg-icons';
 import { faFlag } from '@fortawesome/free-regular-svg-icons';
 import { ourFetch, getOrdinals, firstLetterCapitalize, formatDate } from '../functions'
 import { Bar } from 'react-chartjs-2'
+// import 
 import {
     Chart as ChartJS,
     CategoryScale,
@@ -41,8 +42,8 @@ export const AdminDashboard = () => {
                 </ul>
             </div>
             <div className="dashboard-actions">
-                <button className="button-action add-student">
-                    <span></span>
+                <button className="button-action add-student cmg-btn-spacing">
+                    <FontAwesomeIcon icon={ faUserPlus }/>
                     <span>Add New Student</span>
                 </button>
                 <button className="button-action fees">Fees Details</button>
@@ -667,29 +668,55 @@ const LeaveRequest = () => {
  * MARK: Fees Collection
  */
 const FeesCollection = () => {
-    const [ fees, setFees ] = useState({
+    // const [ fees, setFees ] = useState({
+    //     result: [],
+    //     success: false
+    // }),
+    
+    // months = useMemo(() => {
+    //     return fees?.result.reduce(( val, _this ) => {
+    //         val = [ ...val, _this.month ]
+    //         return val
+    //     }, [])
+    // }, [ fees ]),
+    // amounts = useMemo(() => {
+    //     return fees?.result.reduce(( val, _this ) => {
+    //         val = [ ...val, _this.total ]
+    //         return val
+    //     }, [])
+    // }, [ fees ])
+
+    // useEffect(() => {
+    //     ourFetch({
+    //         api: '/dashboard-fees-collection',
+    //         callback: setFees
+    //     })
+    // }, [])
+
+    const [fees, setFees] = useState({
         result: [],
         success: false
-    }),
-        months = useMemo(() => {
-            return fees?.result.reduce(( val, _this ) => {
-                val = [ ...val, _this.month ]
-                return val
-            }, [])
-        }, [ fees ]),
-        amounts = useMemo(() => {
-            return fees?.result.reduce(( val, _this ) => {
-                val = [ ...val, _this.total ]
-                return val
-            }, [])
-        }, [ fees ])
+    });
+
+    const months = useMemo(() => {
+        return (fees.result ?? []).map(item => item.month);
+    }, [fees]);
+
+    const amounts = useMemo(() => {
+        return (fees.result ?? []).map(item => item.total);
+    }, [fees]);
 
     useEffect(() => {
         ourFetch({
             api: '/dashboard-fees-collection',
-            callback: setFees
-        })
-    }, [])
+            callback: (res) => {
+                setFees({
+                    result: res.result ?? res.data ?? [],
+                    success: res.success
+                });
+            }
+        });
+    }, []);
 
     return <div className="fees-collection-wrapper element">
         <div className="head">

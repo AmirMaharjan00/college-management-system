@@ -3,3 +3,16 @@ img {
     width: 100%;
     object-fit: cover;
 }
+
+/* button */
+body #root .button-action.cmg-btn-spacing {
+    display: flex;
+    align-items: center;
+    transition: all .3s ease-in-out;
+    gap: 10px;
+    padding: 10px 14px;
+}
+
+.cmg-btn-spacing svg {
+    font-size: 12px;
+}
