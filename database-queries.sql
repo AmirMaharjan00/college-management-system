@@ -1,5 +1,5 @@
--- Add courses
--- MARK: COURSES
+
+
 INSERT INTO `courses` (`id`, `name`, `abbreviation`, `duration`, `semester`, `cost`, `registered_date`) VALUES 
 (NULL, 'Bachelor in Business Studies', 'BBS', '4', '4', '100000', current_timestamp()), 
 (NULL, 'Bachelor of Arts in Social Works', 'BASW', '4', '4', '200000', current_timestamp()), 
@@ -7,8 +7,8 @@ INSERT INTO `courses` (`id`, `name`, `abbreviation`, `duration`, `semester`, `co
 (NULL, 'Class 12', 'XII', '1', '1', '80000', current_timestamp()),
 (NULL, 'Bachelor in Computer Application', 'BCA', '4', '8', '360000', current_timestamp());
 
--- Add Users
--- MARK: USERS
+
+
 INSERT INTO `users` (`id`, `name`, `email`, `password`, `contact`, `address`, `gender`, `role`, `view`, `courseId`, `semester`, `status`, `profile`, `registered_date`) VALUES 
 (NULL, 'Shahid Smarak College', 'shahidsmarak@gmail.com', 'Shahid@123', '9876543210', 'Nepal', 'male', 'admin', 'light', null, '0', 'offline', '/images/user.jpg', current_timestamp()),
 (NULL, 'Amir Maharjan', 'mhrznamir.am@gmail.com', 'Amir@123', '9808362724', 'Nepal', 'male', 'student', 'light', 5, '8', 'offline', '/images/user.jpg', current_timestamp()),
@@ -35,8 +35,8 @@ INSERT INTO `users` (`id`, `name`, `email`, `password`, `contact`, `address`, `g
 (NULL, 'Rajesh Khadka', 'rajesh.khadka@college.edu', 'Rajesh@123', '9840033211', 'Nepal', 'male', 'teacher', 'light', null, '0', 'offline', '/images/user.jpg', current_timestamp()),
 (NULL, 'Sabina Tamang', 'sabina.tamang@college.edu', 'Sabina@123', '9860001122', 'Nepal', 'female', 'staff', 'dark', null, '0', 'offline', '/images/user.jpg', current_timestamp());
 
--- Add Subjects
--- MARK: SUBJECTS
+
+
 INSERT INTO `subjects` (`id`, `name`, `course_id`, `semester`, `year`, `code`, `teacherId`, `completion`, `registered_date`) VALUE
 (NULL, 'Computer Fundamentals & Applications', '5', '1', '1', 'CACS101', 15, 0, CURRENT_TIMESTAMP()),
 (NULL, 'Society and Technology', '5', '1', '1', 'CACO102', 16, 0, CURRENT_TIMESTAMP()),
@@ -110,8 +110,8 @@ INSERT INTO `subjects` (`id`, `name`, `course_id`, `semester`, `year`, `code`, `
 (NULL, 'Theoretical Ideologies of Social Work', 2, 4, 4, 'SW426', 17, 0, CURRENT_TIMESTAMP()),
 (NULL, 'Social Problems, Identification & Interventions', 2, 4, 4, 'SW427', 17, 0, CURRENT_TIMESTAMP());
 
--- Add Books
--- MARK: BOOKS
+
+
 INSERT INTO `books` (`id`, `courseId`, `semester`, `name`, `author`, `publication`, `copies`, `publishedYear`, `language`) VALUES
 (NULL, 5, 1, 'Computer Fundamentals & Applications', 'Amir Maharjan', 'Kirtipur Publication', 10, '2025-07-01', 'English'),
 (NULL, 5, 1, 'Introduction to Algorithms', 'Thomas H. Cormen', 'MIT Press', 10, '2020-06-15', 'English'),
@@ -134,8 +134,8 @@ INSERT INTO `books` (`id`, `courseId`, `semester`, `name`, `author`, `publicatio
 (NULL, 0, 1, 'Introduction to Machine Learning', 'Ethem Alpaydin', 'MIT Press', 10, '2022-10-10', 'English'),
 (NULL, 0, 1, 'Computer Architecture', 'John L. Hennessy', 'Morgan Kaufmann', 10, '2023-02-28', 'English');
 
--- Add Books Issued
--- MARK: BOOKS ISSUED
+
+
 INSERT INTO `booksissued` (`id`, `bookId`, `userId`, `issuedDate`, `dueDate`, `returnDate`, `status`, `fineAmount`, `issuedBy`, `fineStatus`) VALUES
 (NULL, '1', '3', CURRENT_TIMESTAMP(), '2025-07-09 00:00:00', NULL, 'returned', '0', '1', 'N/A'),
 (NULL, '2', '4', CURRENT_TIMESTAMP(), '2025-07-10 00:00:00', NULL, 'overdue', '50', '2', 'unpaid'),
@@ -158,8 +158,8 @@ INSERT INTO `booksissued` (`id`, `bookId`, `userId`, `issuedDate`, `dueDate`, `r
 (NULL, '19', '1', CURRENT_TIMESTAMP(), '2025-07-27 00:00:00', NULL, 'overdue', '50', '1', 'unpaid'),
 (NULL, '20', '2', CURRENT_TIMESTAMP(), '2025-07-28 00:00:00', NULL, 'issued', '0', '2', 'N/A');
 
--- Add Exams
--- MARK: EXAMS
+
+
 INSERT INTO `exams` (`id`, `title`, `type`, `data`, `start`, `end`, `courseId`, `semester`, `notice`) VALUES
 (NULL, 'First Terminal Exams 2020', 'first', '[{"date":"2020-02-10","subject":"Computer Fundamentals & Applications","code":"CACS101"},{"date":"2020-02-12","subject":"Digital Logic","code":"CACS105"}]', '2020-02-10 00:00:00', '2020-02-12 00:00:00', 5, 1, 'Be on time for all exams.'),
 (NULL, 'Second Terminal Exams 2020', 'second', '[{"date":"2020-07-15","subject":"C Programming","code":"CACS151"},{"date":"2020-07-17","subject":"Financial Accounting","code":"CAAC152"}]', '2020-07-15 00:00:00', '2020-07-17 00:00:00', 5, 2, 'Carry your admit card.'),
@@ -203,8 +203,8 @@ INSERT INTO `exams` (`id`, `title`, `type`, `data`, `start`, `end`, `courseId`, 
 (NULL, 'Second Terminal Exams 2025', 'second', '[{"date":"2025-07-14","subject":"Social Case Work and Group Work II","code":"SW423"}]', '2025-07-14 00:00:00', '2025-07-14 00:00:00', 2, 2, 'No cheating allowed.'),
 (NULL, 'Second Terminal Exams 2025', 'second', '[{"date":"2025-07-16","subject":"Social Work Field Practicum and Skills Lab","code":"SWP123"}]', '2025-07-16 00:00:00', '2025-07-16 00:00:00', 2, 2, 'Follow instructions carefully.');
 
--- Add Accounts
--- MARK: ACCOUNTS
+
+
 INSERT INTO `account` (`id`, `userId`, `amount`, `message`, `type`, `purpose`, `date`) VALUES
 (NULL, '2', '80000', 'Amir Maharjan has paid fees.', 'income', 'fees', '2020-02-15 10:20:00'),
 (NULL, '3', '45000', 'Saroj Maharjan has paid fees.', 'income', 'fees', '2020-04-10 14:35:00'),
@@ -254,8 +254,8 @@ INSERT INTO `account` (`id`, `userId`, `amount`, `message`, `type`, `purpose`, `
 (NULL, '21', '43000', 'Kiran Adhikari salary paid.', 'expenses', 'payroll', '2025-08-13 17:25:00'),
 (NULL, '20', '46000', 'Rachana KC salary paid.', 'expenses', 'payroll', '2025-08-13 18:15:00');
 
--- Add Complaints
--- MARK: COMPLAINTS
+
+
 INSERT INTO `complaints` (`id`, `by`, `against`, `subject`, `message`, `file`, `status`, `date`) VALUES
 (NULL, '2', '3', 'Wifi Connectivity Problems', 'The wifi in our common study area frequently drops every 10–15 minutes, which makes it very difficult to complete online assignments and attend virtual classes. Immediate action is needed to stabilize the connection.', NULL, 'pending', current_timestamp()),
 (NULL, '4', '5', 'Project Contribution Delay', 'You have not uploaded your portion of the group project, which is affecting the overall progress. Kindly submit your work by the end of this week so that the project can be completed on time.', NULL, 'pending', current_timestamp()),

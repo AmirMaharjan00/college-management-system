@@ -119,6 +119,12 @@ export const Sidebar = () => {
                             <span className='cmg-icon-label'>Complaints</span>
                         </Link>
                     </li >
+                    <li className={ getClass( '/dashboard/academic/assignments' ) }>
+                        <Link to="/dashboard/academic/assignments" className='cmg-icon-wrapper'>
+                            <span className='cmg-icon'><FontAwesomeIcon icon={ faClipboardList }/></span>
+                            <span className='cmg-icon-label'>Assignments</span>
+                        </Link>
+                    </li >
                 </ul >
             </div>
             <div className="cmg-menu-item">

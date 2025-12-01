@@ -1166,7 +1166,6 @@ app.post( '/user-usermata-join-via-id', ( request, res ) => {
   })
 });
 
-
 /**
 * MARK: update-usermeta
 */
@@ -1215,5 +1214,30 @@ app.post( '/update-usermeta', ( request, res ) => {
       return res.status( 500 ).json({ success: false, error: "Database Update failed" });
     }
     return res.status( 200 ).json({ success: true, result: result[0] });
+  })
+});
+
+/**
+* MARK: All Assignements
+*/
+app.post( '/all-assignments', ( request, res ) => {
+  const selectQuery = `SELECT a.*, t.id AS teacherId, t.name AS teacherName FROM assignments a LEFT JOIN users AS t ON a.assignedBy = t.id`
+  con.query( selectQuery, ( error, result ) => {
+    if ( error ) {
+      return res.status( 500 ).json({ error: "Database selection failed" });
+    }
+    return res.status( 200 ).json({ success: true, result });
+  })
+});
+
+/**
+ * MARK: Insert Assignment
+ */
+app.post('/insert-assignment', (req, res) => {
+  const { title, assignedBy, assignedTo, semester, startDate, endDate, status, file } = req.body
+  const insertQuery = 'INSERT INTO assignments (title, assignedBy, assignedTo, semester, startDate, endDate, status, file) VALUES (?, ?, ?, ?, ?, ?, ?, ?)'
+  con.query( insertQuery, [ title, assignedBy, assignedTo, semester, startDate, endDate, status, file ], ( error, result ) => {
+    if ( error ) return res.status( 500 ).json({ error: "Database insertion failed" });
+    return res.status( 200 ).json({ message: "Data inserted successfully!", success: true });
   })
 });

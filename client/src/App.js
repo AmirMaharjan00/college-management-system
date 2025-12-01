@@ -42,6 +42,7 @@ import { Courses } from "./components/academic/courses.js";
 import { Subjects } from "./components/academic/subjects.js";
 import { Syllabus } from "./components/academic/syllabus.js";
 import { Results } from "./components/academic/results.js";
+import { Assignments } from "./components/academic/assignments.js";
 // Inner Pages
 import { InnerSubject } from "./components/inner-pages/subject.js";
 
@@ -159,6 +160,7 @@ const Links = () => {
         <Route exact path="/dashboard/academic/subjects" element={<Subjects />} />
         <Route exact path="/dashboard/academic/syllabus" element={<Syllabus />} />
         <Route exact path="/dashboard/academic/results" element={<Results />} />
+        <Route exact path="/dashboard/academic/assignments" element={<Assignments />} />
         <Route exact path="/dashboard/subject" element={<InnerSubject />} />
       </Route>
       <Route exact path="/login" element={<Login />} />

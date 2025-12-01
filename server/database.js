@@ -281,6 +281,28 @@ con.connect(function(err) {
           if( err ) throw err
           console.log( 'User Meta Table created.' )
         });
+
+        /**
+         * Create Assignments Table
+         * MARK: Assignments
+         */
+        let assignmentQuery = "CREATE TABLE IF NOT EXISTS `assignments` ("
+          assignmentQuery += "assignmentId INT(11) NOT NULL AUTO_INCREMENT PRIMARY KEY, "
+          assignmentQuery += "title TEXT NOT NULL, " 
+          assignmentQuery += "assignedBy INT(11) NOT NULL, " 
+          assignmentQuery += "assignedTo INT(11) NOT NULL, "
+          assignmentQuery += "semester INT(11) NOT NULL DEFAULT 1, "
+          assignmentQuery += "startDate DATETIME, "
+          assignmentQuery += "endDate DATETIME, "
+          assignmentQuery += "status ENUM('pending', 'closed', 'completed') DEFAULT 'pending', "
+          assignmentQuery += "file LONGTEXT, "
+          assignmentQuery += "FOREIGN KEY(assignedBy) REFERENCES users(id), "
+          assignmentQuery += "FOREIGN KEY(assignedTo) REFERENCES courses(id) "
+          assignmentQuery += ");"
+        con.query( assignmentQuery, function (err, result) {
+          if( err ) throw err
+          console.log( 'Assignments Table created.' )
+        });
       }
     });
 });
