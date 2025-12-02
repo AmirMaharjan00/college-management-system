@@ -53,6 +53,7 @@ function App() {
     [ loggedInUser, setLoggedInUser ] = useState( {} ),
     [ overlay, setOverlay ] = useState( false ),
     [ isDarkMode, setIsDarkMode ] = useState( "light" ),
+    [ formMode, setFormMode ] = useState( "new" ),
     [ isUserLogoutDropdownActive, setIsUserLogoutDropdownActive ] = useState( false ),
     [ isUserAddNewActive, setIsUserAddNewActive ] = useState( false ),
     [ isAcademicYearActive, setIsAcademicYearActive ] = useState( false ),
@@ -110,7 +111,8 @@ function App() {
     canvasOpen, setCanvasOpen,
     formSuccess, setFormSuccess,
     feeDetails, setFeeDetails,
-    editPopupStatus, setEditPopupStatus
+    editPopupStatus, setEditPopupStatus,
+    formMode, setFormMode
   };
 
   return (

@@ -81,7 +81,8 @@ export const Overlay = () => {
             setCurrentBookId,
             setReturnBookVisibility,
             editPopupStatus,
-            setEditPopupStatus
+            setEditPopupStatus,
+            setFormMode
         } = global,
         location = useLocation()
 
@@ -89,6 +90,7 @@ export const Overlay = () => {
         if( location.pathname === '/dashboard/academic/syllabus' && editPopupStatus ) {
             setEditPopupStatus( false )
         } else {
+            setFormMode( 'new' )
             setOverlay( false )
             setIsUserLogoutDropdownActive( false )
             setIsUserAddNewActive( false )
