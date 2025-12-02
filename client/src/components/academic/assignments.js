@@ -6,7 +6,7 @@ import { useDate } from "../includes/hooks"
 import { Link } from "react-router-dom"
 import { fetchCallback, getScript, ourFetch, adjustDate } from "../functions"
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faPenToSquare, faEye, faTrash, faCircleXmark, faBarsStaggered } from "@fortawesome/free-solid-svg-icons"
+import { faPenToSquare, faEye, faTrash, faCircleXmark, faBarsStaggered, faHourglass } from "@fortawesome/free-solid-svg-icons"
 const AssignmentsContext = createContext(),
     backUrl = 'http://localhost:5000'
 
@@ -126,6 +126,8 @@ export const Assignments = () => {
 
             </div>
 
+            <Highlight />
+
             <RowAndSearch 
                 rowsPerPage = { rowsPerPage }
                 setRowsPerPage = { setRowsPerPage }
@@ -136,8 +138,57 @@ export const Assignments = () => {
 
             { formVisibility && <Form /> }
             { formMode === 'view' && <View /> }
+            { formMode === 'delete' && <Delete /> }
         </AssignmentsContext.Provider>
     </main>
+}
+
+/**
+ * MARK: Highlight
+ */
+const Highlight = () => {
+    return <div className="highlight-wrapper">
+        <div className='highlight'>
+            <FontAwesomeIcon icon={ faHourglass } className="icon" />
+            <div className="highlight-info">
+                <span className="status">Pending</span>
+                <div className="count-wrap">
+                    <span className="text count">{ 1 }</span>
+                    <span className="text label">Assignment</span>
+                </div>
+            </div>
+        </div>
+        <div className='highlight'>
+            <FontAwesomeIcon icon={ faHourglass } className="icon" />
+            <div className="highlight-info">
+                <span className="status">Completed</span>
+                <div className="count-wrap">
+                    <span className="text count">{ 1 }</span>
+                    <span className="text label">Assignment</span>
+                </div>
+            </div>
+        </div>
+        <div className='highlight'>
+            <FontAwesomeIcon icon={ faHourglass } className="icon" />
+            <div className="highlight-info">
+                <span className="status">Expired</span>
+                <div className="count-wrap">
+                    <span className="text count">{ 1 }</span>
+                    <span className="text label">Assignment</span>
+                </div>
+            </div>
+        </div>
+        <div className='highlight'>
+            <FontAwesomeIcon icon={ faHourglass } className="icon" />
+            <div className="highlight-info">
+                <span className="status">Pending</span>
+                <div className="count-wrap">
+                    <span className="text count">{ 1 }</span>
+                    <span className="text label">Assignment</span>
+                </div>
+            </div>
+        </div>
+    </div>
 }
 
 /**
@@ -190,16 +241,16 @@ const Table = () => {
                         <td>{ convertedDate( startDate ) }</td>
                         <td>{ convertedDate( endDate ) }</td>
                         <td>{ status.slice( 0, 1).toUpperCase() + status.slice( 1 ) }</td>
-                        <td>
-                            { ( role === 'admin' ) && <div className="has-tooltip action" onClick={() => handleViewClick( index, 'edit' )}>
+                        <td className="actions">
+                            { ( role === 'admin' ) && <div className="has-tooltip action edit" onClick={() => handleViewClick( index, 'edit' )}>
                                 <FontAwesomeIcon className='edit' icon={ faPenToSquare } />
                                 <span className="tooltip-text">Edit</span>
                             </div> }
-                            <div className="has-tooltip action" onClick={() => handleViewClick( index, 'view' )}>
+                            <div className="has-tooltip action view" onClick={() => handleViewClick( index, 'view' )}>
                                 <FontAwesomeIcon className='view' icon={ faEye } />
                                 <span className="tooltip-text">View</span>
                             </div>
-                            { ( role === 'admin' ) && <div className="has-tooltip action">
+                            { ( role === 'admin' ) && <div className="has-tooltip action delete" onClick={() => handleViewClick( index, 'delete' )}>
                                 <FontAwesomeIcon className='delete' icon={ faTrash } />
                                 <span className="tooltip-text">Delete</span>
                             </div> }
@@ -385,15 +436,15 @@ const View = () => {
         { activeAssignmentObj, overlay } = assignmentContext,
         { title, semester, abbreviation = 'BCA', subjectName, teacherName, startDate, endDate, status, file } = activeAssignmentObj,
         { convertedDate } = useDate(),
-        [ canvas, setCanvas ] = useState( false )
+        [ canvas, setCanvas ] = useState( 'left' )
 
     useEffect(() => {
-        if( canvas ) setCanvas( false )
+        if( canvas ) setCanvas( 'none' )
     }, [ overlay ])
 
-    return <div className={ `cmg-popup-wrapper${ canvas ? ' active' : '' }` }>
+    return <div className={ `cmg-popup-wrapper view${ canvas !== 'none' ? ' active' : '' }` }>
         <div className="section-head">
-            <FontAwesomeIcon icon={ faBarsStaggered } className="section-icon" onClick={() => setCanvas( true ) } />
+            <FontAwesomeIcon icon={ faBarsStaggered } className="section-icon" onClick={() => setCanvas( 'left' ) } />
             <h2 className="popup-title">{ title }</h2>
         </div>
         <p className="popup-description">{ `By ${ teacherName } for ${ abbreviation }, ${ getScript( semester ) } Semester.` }</p>
@@ -415,13 +466,61 @@ const View = () => {
             <span className="field">Status: </span>
             <span className="label">{ status.slice( 0, 1 ).toUpperCase() + status.slice( 1 ) }</span>
         </div>
-        <div className='canvas'>
-            {
-                canvas && file ?
-                <iframe src={ `${ backUrl }${ file }` } width="100%" height="100%" allowFullScreen="true" /> :
-                ''
-            }
-            <FontAwesomeIcon icon={ faCircleXmark } className="close-icon" onClick={() => setCanvas( false ) } />
+        <div className="submission-wrap">
+            <div className="group submitted">
+                <h2 className="group-head">Submitted Students</h2>
+                <table>
+                    <thead>
+                        <tr>
+                            <th className="head serial-number">S.No</th>
+                            <th className="head student">Students</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td className="head serial-number">1.</td>
+                            <td className="head student" onClick={() => setCanvas( 'right' )}>Amir Maharjan</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div className="group not-submitted">
+                <h2 className="group-head">Not Submitted Students</h2>
+                <table>
+                    <thead>
+                        <tr>
+                            <th className="head serial-number">S.No</th>
+                            <th className="head student">Students</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td className="head serial-number">1.</td>
+                            <td className="head student">Amir Maharjan</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div className={ `canvas ${ canvas }` }>
+            { canvas !== 'none' && <>
+                <iframe src={ `${ backUrl }${ file }` } width="100%" height="100%" allowFullScreen="true" />
+                <FontAwesomeIcon icon={ faCircleXmark } className="close-icon" onClick={() => setCanvas( 'none' ) } />
+            </> }
+        </div>
+    </div>
+}
+
+/**
+ * MARK: Delete
+ */
+const Delete = () => {
+    return <div className="cmg-popup-wrapper delete">
+        <h2 className="title">Are you sure you want to delete this assignment ?</h2>
+        <p className="description">Once done you can't revert this back.</p>
+        <div className="actions">
+            <button className="action no">No</button>
+            <button className="action yes">Yes</button>
         </div>
     </div>
 }
