@@ -623,7 +623,7 @@ app.post( '/books-fined', ( request, res ) => {
  * MARK: Books Fined
  */
 app.post( '/library-fines-monthwise', ( request, res ) => { 
-  const selectQuery = `SELECT MONTHNAME(dueDate) AS month, SUM(fineAmount) AS total FROM booksIssued WHERE status="overdue" GROUP BY MONTH(dueDate) ORDER BY MONTH(dueDate);`
+  const selectQuery = 'SELECT MONTHNAME(`dueDate`) AS month, SUM(fineAmount) AS total FROM booksIssued WHERE status="overdue" GROUP BY MONTH(`dueDate`), MONTHNAME(`dueDate`) ORDER BY MONTH(`dueDate`);'
   con.query( selectQuery, ( error, result ) => {
     if ( error ) {
       return res.status( 500 ).json({ error: "Database selection failed" });
@@ -879,7 +879,7 @@ app.post( '/income', ( request, res ) => {
  * MARK: YEAR EXPENSE
  */
 app.post( '/year-expenses', ( request, res ) => { 
-  const selectQuery = `SELECT MONTHNAME(date) AS month, SUM(amount) AS total FROM account WHERE type="expenses" GROUP BY MONTH(date) ORDER BY MONTH(date);`
+  const selectQuery = 'SELECT MONTHNAME(`date`) AS month, SUM(amount) AS total FROM account WHERE type="expenses" GROUP BY MONTH(`date`), MONTHNAME(`date`) ORDER BY MONTH(`date`);'
   con.query( selectQuery, ( error, result ) => {
     if ( error ) {
       return res.status( 500 ).json({ error: "Database selection failed" });
@@ -892,7 +892,7 @@ app.post( '/year-expenses', ( request, res ) => {
  * MARK: YEAR INCOME
  */
 app.post( '/year-income', ( request, res ) => { 
-  const selectQuery = `SELECT MONTHNAME(date) AS month, SUM(amount) AS total FROM account WHERE type="income" GROUP BY MONTH(date) ORDER BY MONTH(date);`
+  const selectQuery = 'SELECT MONTHNAME(`date`) AS month, SUM(amount) AS total FROM account WHERE type="income" GROUP BY MONTH(`date`), MONTHNAME(`date`) ORDER BY MONTH(`date`);'
   con.query( selectQuery, ( error, result ) => {
     if ( error ) {
       return res.status( 500 ).json({ error: "Database selection failed" });
@@ -931,7 +931,7 @@ app.post( '/add-fees', ( request, res ) => {
 * MARK: Users Student and Teacher API
 */
 app.post( '/expenses-income', ( request, res ) => { 
-  const selectQuery = `SELECT type, SUM(amount) AS total FROM account WHERE type IN ('expenses', 'income') AND YEAR(date) = YEAR(CURDATE()) GROUP BY type;`
+  const selectQuery = 'SELECT type, SUM(amount) AS total FROM account WHERE type IN ("expenses", "income") AND YEAR(`date`) = YEAR(CURDATE()) GROUP BY type;'
   con.query( selectQuery, ( error, result ) => {
     if ( error ) {
       return res.status( 500 ).json({ error: "Database selection failed" });
@@ -1131,7 +1131,7 @@ app.post( '/check-book', ( request, res ) => {
 * MARK: CHECK BOOKS
 */
 app.post( '/dashboard-fees-collection', ( request, res ) => { 
-  const selectQuery = `SELECT MONTHNAME(date) AS month, SUM(amount) AS total FROM account WHERE purpose="fees" GROUP BY MONTH(date) ORDER BY MONTH(date)`
+  const selectQuery = 'SELECT MONTHNAME(`date`) AS month, SUM(amount) AS total FROM account WHERE purpose="fees" GROUP BY MONTH(`date`), MONTHNAME(`date`) ORDER BY MONTH(`date`)'
   con.query( selectQuery, ( error, result ) => {
     if ( error ) return res.status( 500 ).json({ error: "Database selection failed" });
     return res.status( 200 ).json({ result: result, success: true });

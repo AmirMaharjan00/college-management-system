@@ -6,7 +6,7 @@ import { useDate } from "../includes/hooks"
 import { Link } from "react-router-dom"
 import { fetchCallback, getScript, ourFetch, adjustDate } from "../functions"
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faPenToSquare, faEye, faTrash, faChartSimple, faCircleXmark } from "@fortawesome/free-solid-svg-icons"
+import { faPenToSquare, faEye, faTrash, faCircleXmark, faBarsStaggered } from "@fortawesome/free-solid-svg-icons"
 const AssignmentsContext = createContext(),
     backUrl = 'http://localhost:5000'
 
@@ -391,16 +391,9 @@ const View = () => {
         if( canvas ) setCanvas( false )
     }, [ overlay ])
 
-    /**
-     * Handle canvas click
-     */
-    const handleCanvasClick = () => {
-        setCanvas( ! canvas )
-    }
-
-    return <div className="cmg-popup-wrapper">
+    return <div className={ `cmg-popup-wrapper${ canvas ? ' active' : '' }` }>
         <div className="section-head">
-            <FontAwesomeIcon icon={ canvas ? faCircleXmark : faChartSimple } rotation={ 90 } className="section-icon" onClick={ handleCanvasClick } />
+            <FontAwesomeIcon icon={ faBarsStaggered } className="section-icon" onClick={() => setCanvas( true ) } />
             <h2 className="popup-title">{ title }</h2>
         </div>
         <p className="popup-description">{ `By ${ teacherName } for ${ abbreviation }, ${ getScript( semester ) } Semester.` }</p>
@@ -422,11 +415,13 @@ const View = () => {
             <span className="field">Status: </span>
             <span className="label">{ status.slice( 0, 1 ).toUpperCase() + status.slice( 1 ) }</span>
         </div>
-        {
-            canvas && file ?
-            <iframe src={ `${ backUrl }${ file }` } width="100%" /> :
-            ''
-        }
-        <div className={ `canvas${ canvas ? ' active' : '' }` }></div>
+        <div className='canvas'>
+            {
+                canvas && file ?
+                <iframe src={ `${ backUrl }${ file }` } width="100%" height="100%" allowFullScreen="true" /> :
+                ''
+            }
+            <FontAwesomeIcon icon={ faCircleXmark } className="close-icon" onClick={() => setCanvas( false ) } />
+        </div>
     </div>
 }
