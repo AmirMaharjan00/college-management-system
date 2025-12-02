@@ -305,6 +305,24 @@ con.connect(function(err) {
           if( err ) throw err
           console.log( 'Assignments Table created.' )
         });
+
+        /**
+         * Create Assignments Meta Table
+         * MARK: Assignments Meta
+         */
+        let assignmentMetaQuery = "CREATE TABLE IF NOT EXISTS `assignmentsMeta` ("
+          assignmentMetaQuery += "metaId INT(11) NOT NULL AUTO_INCREMENT PRIMARY KEY, "
+          assignmentMetaQuery += "assignmentId INT(11) NOT NULL, " 
+          assignmentMetaQuery += "studentId INT(11) NOT NULL, "
+          assignmentMetaQuery += "message LONGTEXT, "
+          assignmentMetaQuery += "file LONGTEXT, "
+          assignmentMetaQuery += "FOREIGN KEY(assignmentId) REFERENCES assignments(assignmentId), "
+          assignmentMetaQuery += "FOREIGN KEY(studentId) REFERENCES users(id) "
+          assignmentMetaQuery += ");"
+        con.query( assignmentMetaQuery, function (err, result) {
+          if( err ) throw err
+          console.log( 'Assignments Meta Table created.' )
+        });
       }
     });
 });

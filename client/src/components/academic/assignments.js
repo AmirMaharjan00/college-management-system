@@ -6,7 +6,7 @@ import { useDate } from "../includes/hooks"
 import { Link } from "react-router-dom"
 import { fetchCallback, getScript, ourFetch, adjustDate } from "../functions"
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faPenToSquare, faEye, faTrash } from "@fortawesome/free-solid-svg-icons"
+import { faPenToSquare, faEye, faTrash, faChartSimple, faCircleXmark } from "@fortawesome/free-solid-svg-icons"
 const AssignmentsContext = createContext(),
     backUrl = 'http://localhost:5000'
 
@@ -15,7 +15,7 @@ const AssignmentsContext = createContext(),
  */
 export const Assignments = () => {
     const Global = useContext( GLOBALCONTEXT ),
-        { formVisibility, loggedInUser, setOverlay, setHeaderOverlay, setFormVisibility, formMode, setFormMode } = Global,
+        { formVisibility, loggedInUser, setOverlay, setHeaderOverlay, setFormVisibility, formMode, setFormMode, overlay } = Global,
         { role, id: userId } = loggedInUser,
         [ rowsPerPage, setRowsPerPage ] = useState( 10 ),
         [ searched, setSearched ] = useState( '' ),
@@ -62,7 +62,8 @@ export const Assignments = () => {
             setInsertSuccess,
             role,
             setActiveAssignment,
-            semesterSubjects
+            semesterSubjects,
+            overlay
         }
 
     useEffect(() => {
@@ -381,12 +382,27 @@ const Form = () => {
  */
 const View = () => {
     const assignmentContext = useContext( AssignmentsContext ),
-        { activeAssignmentObj } = assignmentContext,
+        { activeAssignmentObj, overlay } = assignmentContext,
         { title, semester, abbreviation = 'BCA', subjectName, teacherName, startDate, endDate, status, file } = activeAssignmentObj,
-        { convertedDate } = useDate()
+        { convertedDate } = useDate(),
+        [ canvas, setCanvas ] = useState( false )
+
+    useEffect(() => {
+        if( canvas ) setCanvas( false )
+    }, [ overlay ])
+
+    /**
+     * Handle canvas click
+     */
+    const handleCanvasClick = () => {
+        setCanvas( ! canvas )
+    }
 
     return <div className="cmg-popup-wrapper">
-        <h2 className="popup-title">{ title }</h2>
+        <div className="section-head">
+            <FontAwesomeIcon icon={ canvas ? faCircleXmark : faChartSimple } rotation={ 90 } className="section-icon" onClick={ handleCanvasClick } />
+            <h2 className="popup-title">{ title }</h2>
+        </div>
         <p className="popup-description">{ `By ${ teacherName } for ${ abbreviation }, ${ getScript( semester ) } Semester.` }</p>
         <div className="popup-flex">
             <div className="popup-item">
@@ -407,9 +423,10 @@ const View = () => {
             <span className="label">{ status.slice( 0, 1 ).toUpperCase() + status.slice( 1 ) }</span>
         </div>
         {
-            file ?
+            canvas && file ?
             <iframe src={ `${ backUrl }${ file }` } width="100%" /> :
             ''
         }
+        <div className={ `canvas${ canvas ? ' active' : '' }` }></div>
     </div>
 }
