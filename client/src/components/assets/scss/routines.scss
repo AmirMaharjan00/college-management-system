@@ -86,8 +86,8 @@
   overflow: hidden;
 }
 
-.title,
-.content {
+.accordion .title,
+.accordion .content {
   background-color: white;
   color: black;
 }
@@ -96,16 +96,11 @@ td {
   padding: 6px 10px;
 }
 
-.title {
+.accordion .title {
   display: flex;
   padding: 15px 20px;
   justify-content: space-between;
   align-items: center;
-}
-
-i {
-  font-size: 1.3rem;
-  transition: all 0.3s ease;
 }
 
 .content {

@@ -397,7 +397,7 @@ MARK: REGISTRATION
         display: flex;
         box-shadow: 0px 0px 20px 5px #ffffff44;
         border-radius: 30px;
-        z-index: 9;
+        z-index: 99;
     }
 
     #cmg-leave.new-register {

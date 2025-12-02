@@ -6,10 +6,11 @@ import teacher from '../assets/images/teacher.png'
 import course from '../assets/images/course.png'
 import staff from '../assets/images/staff.png'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faArrowsRotate, faChevronDown, faChevronRight, faCheckDouble, faXmark, faCircleExclamation, faIcons, faCoins, faSackDollar, faCalendarDays, faMoneyBillTrendUp } from '@fortawesome/free-solid-svg-icons';
+import { faArrowsRotate, faChevronDown, faChevronRight, faCheckDouble, faXmark, faCircleExclamation, faIcons, faCoins, faSackDollar, faCalendarDays, faMoneyBillTrendUp, faUserPlus } from '@fortawesome/free-solid-svg-icons';
 import { faFlag } from '@fortawesome/free-regular-svg-icons';
 import { ourFetch, getOrdinals, firstLetterCapitalize, formatDate } from '../functions'
 import { Bar } from 'react-chartjs-2'
+// import 
 import {
     Chart as ChartJS,
     CategoryScale,
@@ -41,8 +42,8 @@ export const AdminDashboard = () => {
                 </ul>
             </div>
             <div className="dashboard-actions">
-                <button className="button-action add-student">
-                    <span></span>
+                <button className="button-action add-student cmg-btn-spacing">
+                    <FontAwesomeIcon icon={ faUserPlus }/>
                     <span>Add New Student</span>
                 </button>
                 <button className="button-action fees">Fees Details</button>
@@ -74,11 +75,11 @@ export const AdminDashboard = () => {
                 <span className="link-label">New Events</span>
                 <span className="link-view-more"><FontAwesomeIcon icon={ faChevronRight } /></span>
             </div>
-            <div className="link card">
-                <span className="link-icon"><FontAwesomeIcon icon={ faCircleExclamation} /></span>
+            <Link to="/dashboard/academic/complaints" className='link card'>
+                <span className="link-icon"><FontAwesomeIcon icon={ faCircleExclamation } /></span>
                 <span className="link-label">Complaints</span>
                 <span className="link-view-more"><FontAwesomeIcon icon={ faChevronRight } /></span>
-            </div>
+            </Link>
             <Link to="/dashboard/account" className='link card'>
                 <span className="link-icon"><FontAwesomeIcon icon={ faCoins} /></span>
                 <span className="link-label">Finance & Accounts</span>
@@ -566,6 +567,7 @@ const LeaveRequest = () => {
     })
     const { result, success } = leaveRequests
     const [ dateDuration, setDateDuration ] = useState( 'today' )
+    const [ update, setUpdate ] = useState( false )
 
     useEffect(() => {
         ourFetch({
@@ -573,7 +575,8 @@ const LeaveRequest = () => {
             callback: setLeaveRequests,
             body: JSON.stringify({ dateDuration })
         })
-    }, [ dateDuration ])
+        setUpdate( false )
+    }, [ dateDuration, update ])
 
     /* Handle dropdown click */
     const handleDropdownClick = ( event ) => {
@@ -596,9 +599,15 @@ const LeaveRequest = () => {
     const handleButtonClick = ( leaveId, status ) => {
         ourFetch({
             api: '/update-leave-status',
-            callback: setLeaveRequests,
+            callback: leaveActionCallback,
             body: JSON.stringify({ id: leaveId, status })
         })
+    }
+
+    // Callback
+    const leaveActionCallback = ( data ) => {
+        let { result: res, success } = data
+        if( success ) setUpdate( true )
     }
 
     return <div className="leave-requests-wrapper element">
@@ -620,7 +629,7 @@ const LeaveRequest = () => {
         <div className="foot">
             {
                 success && result.map(( leave, index ) => {
-                    let { name, leaveType, role, start, end, appliedOn, profile, id: leaveId, status } = leave
+                    let { name, leaveType, role = 'admin', start, end, appliedOn, profile, id: leaveId, status } = leave
                     return <div className="leave-request" key={ index }>
                         <div className="leave-applicant">
                             <figure className="applicant-thumb"><img src={ profile } alt="#" /></figure>
@@ -659,6 +668,56 @@ const LeaveRequest = () => {
  * MARK: Fees Collection
  */
 const FeesCollection = () => {
+    // const [ fees, setFees ] = useState({
+    //     result: [],
+    //     success: false
+    // }),
+    
+    // months = useMemo(() => {
+    //     return fees?.result.reduce(( val, _this ) => {
+    //         val = [ ...val, _this.month ]
+    //         return val
+    //     }, [])
+    // }, [ fees ]),
+    // amounts = useMemo(() => {
+    //     return fees?.result.reduce(( val, _this ) => {
+    //         val = [ ...val, _this.total ]
+    //         return val
+    //     }, [])
+    // }, [ fees ])
+
+    // useEffect(() => {
+    //     ourFetch({
+    //         api: '/dashboard-fees-collection',
+    //         callback: setFees
+    //     })
+    // }, [])
+
+    const [fees, setFees] = useState({
+        result: [],
+        success: false
+    });
+
+    const months = useMemo(() => {
+        return (fees.result ?? []).map(item => item.month);
+    }, [fees]);
+
+    const amounts = useMemo(() => {
+        return (fees.result ?? []).map(item => item.total);
+    }, [fees]);
+
+    useEffect(() => {
+        ourFetch({
+            api: '/dashboard-fees-collection',
+            callback: (res) => {
+                setFees({
+                    result: res.result ?? res.data ?? [],
+                    success: res.success
+                });
+            }
+        });
+    }, []);
+
     return <div className="fees-collection-wrapper element">
         <div className="head">
             <span className="label">{ 'Fees Collection' }</span>
@@ -676,22 +735,26 @@ const FeesCollection = () => {
             </div>
         </div>
         <div className="body">
-            <BarChart />
+            <BarChart
+                months = { months }
+                amounts = { amounts }
+            />
         </div>
     </div>
 }
 
-const BarChart = () => {
+const BarChart = ({ months, amounts }) => {
     // Data for the chart
     const data = {
-      labels: ['January', 'February', 'March', 'April', 'May', 'June'], // X-axis labels
+      labels: months,
       datasets: [
         {
           label: 'Sales (in USD)', // Label for the bars
-          data: [3000, 2000, 4000, 2500, 3500, 4500], // Data points
+          data: amounts, // Data points
           backgroundColor: 'rgba(75, 192, 192, 0.2)', // Bar color
           borderColor: 'rgba(75, 192, 192, 1)', // Border color
           borderWidth: 1,
+          fill: false
         },
       ],
     };
@@ -699,6 +762,7 @@ const BarChart = () => {
     // Chart options
     const options = {
         responsive: true,
+        maintainAspectRatio: false, // ignore default aspect ratio
         plugins: {
             legend: {
                 position: 'top',

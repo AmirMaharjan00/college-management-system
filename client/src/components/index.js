@@ -1,5 +1,5 @@
 import { useContext, useEffect, useMemo } from 'react'
-import { useNavigate, Outlet } from 'react-router-dom'
+import { useNavigate, Outlet, useLocation } from 'react-router-dom'
 import { Header } from './header'
 import { Sidebar } from './sidebar'
 import { GLOBALCONTEXT } from '../App'
@@ -61,45 +61,54 @@ export const Index = () => {
  * MARK: OVERLAY
  */
 export const Overlay = () => {
-    const global = useContext( GLOBALCONTEXT )
-    const {
-        setOverlay,
-        setIsUserLogoutDropdownActive,
-        setIsUserAddNewActive,
-        setIsAcademicYearActive,
-        setIsLanguageActive,
-        setNewRegister,
-        setIsNotificationDropdownActive,
-        setIsNotificationShown,
-        setNotificationId,
-        setIsMessageDropdownActive,
-        setHeaderOverlay,
-        setLeaveModal,
-        setShowPayFeesForm,
-        setFormVisibility,
-        setDeleteBookVisibility,
-        setCurrentBookId,
-        setReturnBookVisibility
-    } = global
+    const global = useContext( GLOBALCONTEXT ),
+        {
+            setOverlay,
+            setIsUserLogoutDropdownActive,
+            setIsUserAddNewActive,
+            setIsAcademicYearActive,
+            setIsLanguageActive,
+            setNewRegister,
+            setIsNotificationDropdownActive,
+            setIsNotificationShown,
+            setNotificationId,
+            setIsMessageDropdownActive,
+            setHeaderOverlay,
+            setLeaveModal,
+            setShowPayFeesForm,
+            setFormVisibility,
+            setDeleteBookVisibility,
+            setCurrentBookId,
+            setReturnBookVisibility,
+            editPopupStatus,
+            setEditPopupStatus,
+            setFormMode
+        } = global,
+        location = useLocation()
 
     const handleOverlay = () => {
-        setOverlay( false )
-        setIsUserLogoutDropdownActive( false )
-        setIsUserAddNewActive( false )
-        setIsAcademicYearActive( false )
-        setIsLanguageActive( false )
-        setNewRegister( false )
-        setIsNotificationDropdownActive( false )
-        setIsNotificationShown( false )
-        setNotificationId( 0 )
-        setIsMessageDropdownActive( false )
-        setHeaderOverlay( false )
-        setLeaveModal( false )
-        setShowPayFeesForm( false )
-        setFormVisibility( false )
-        setDeleteBookVisibility( false )
-        setReturnBookVisibility( false )
-        setCurrentBookId( 0 )
+        if( location.pathname === '/dashboard/academic/syllabus' && editPopupStatus ) {
+            setEditPopupStatus( false )
+        } else {
+            setFormMode( 'new' )
+            setOverlay( false )
+            setIsUserLogoutDropdownActive( false )
+            setIsUserAddNewActive( false )
+            setIsAcademicYearActive( false )
+            setIsLanguageActive( false )
+            setNewRegister( false )
+            setIsNotificationDropdownActive( false )
+            setIsNotificationShown( false )
+            setNotificationId( 0 )
+            setIsMessageDropdownActive( false )
+            setHeaderOverlay( false )
+            setLeaveModal( false )
+            setShowPayFeesForm( false )
+            setFormVisibility( false )
+            setDeleteBookVisibility( false )
+            setReturnBookVisibility( false )
+            setCurrentBookId( 0 )
+        }
     }
 
     return <div className='cmg-overlay' id="cmg-overlay" onClick={ handleOverlay }></div>

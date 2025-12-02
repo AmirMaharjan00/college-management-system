@@ -100,6 +100,8 @@ con.connect(function(err) {
           subjectsQuery += "teacherId INT(255), "
           subjectsQuery += "completion INT(255) NOT NULL DEFAULT 0, "
           subjectsQuery += "registered_date DATETIME DEFAULT CURRENT_TIMESTAMP, "
+          subjectsQuery += "file VARCHAR(500),"
+          subjectsQuery += "notes LONGTEXT,"
           subjectsQuery += "FOREIGN KEY(course_id) REFERENCES courses(id),"
           subjectsQuery += "FOREIGN KEY(teacherId) REFERENCES users(id) "
           subjectsQuery += ");"
@@ -237,19 +239,89 @@ con.connect(function(err) {
          */
         let examsQuery = "CREATE TABLE IF NOT EXISTS `exams` ("
           examsQuery += "id INT(11) NOT NULL AUTO_INCREMENT PRIMARY KEY, "
-          examsQuery += "title TEXT NOT NULL, " 
+          examsQuery += "title LONGTEXT NOT NULL, " 
           examsQuery += "type ENUM('first', 'second', 'third', 'pre-board', 'practical') DEFAULT 'first', " 
           examsQuery += "data LONGTEXT NOT NULL, "  // { date: '', subject: '' }
           examsQuery += "start DATETIME, "
           examsQuery += "end DATETIME, "
           examsQuery += "courseId INT(11) DEFAULT 0, "
           examsQuery += "semester INT(11) DEFAULT 1, "
-          examsQuery += "notice TEXT, "
+          examsQuery += "notice LONGTEXT, "
           examsQuery += "FOREIGN KEY(courseId) REFERENCES courses(id) "
           examsQuery += ");"
         con.query( examsQuery, function (err, result) {
           if( err ) throw err
           console.log( 'Exams Table created.' )
+        });
+
+        /**
+         * Create User Meta Table
+         * MARK: User Meta
+         */
+        let userMetaQuery = "CREATE TABLE IF NOT EXISTS `usermeta` ("
+          userMetaQuery += "metaId INT(11) NOT NULL AUTO_INCREMENT PRIMARY KEY, "
+          userMetaQuery += "userId INT(11) NOT NULL, " 
+          userMetaQuery += "dob DATE, "
+          userMetaQuery += "secondaryContact INT(10), "
+          userMetaQuery += "motherName VARCHAR(255), "
+          userMetaQuery += "fatherName VARCHAR(255), "
+          userMetaQuery += "motherEmail VARCHAR(255), "
+          userMetaQuery += "fatherEmail VARCHAR(255), "
+          userMetaQuery += "motherProfile VARCHAR(255), "
+          userMetaQuery += "fatherProfile VARCHAR(255), "
+          userMetaQuery += "motherContact INT(10), "
+          userMetaQuery += "fatherContact INT(10), "
+          userMetaQuery += "documents LONGTEXT, "
+          userMetaQuery += "motherTongue VARCHAR(255) NOT NULL DEFAULT 'Nepali', "
+          userMetaQuery += "language VARCHAR(255) NOT NULL DEFAULT 'Nepali', "
+          userMetaQuery += "UNIQUE(userId), "
+          userMetaQuery += "FOREIGN KEY(userId) REFERENCES users(id) ON DELETE CASCADE ON UPDATE CASCADE "
+          userMetaQuery += ");"
+        con.query( userMetaQuery, function (err, result) {
+          if( err ) throw err
+          console.log( 'User Meta Table created.' )
+        });
+
+        /**
+         * Create Assignments Table
+         * MARK: Assignments
+         */
+        let assignmentQuery = "CREATE TABLE IF NOT EXISTS `assignments` ("
+          assignmentQuery += "assignmentId INT(11) NOT NULL AUTO_INCREMENT PRIMARY KEY, "
+          assignmentQuery += "title TEXT NOT NULL, " 
+          assignmentQuery += "assignedBy INT(11) NOT NULL, " 
+          assignmentQuery += "assignedTo INT(11) NOT NULL, "
+          assignmentQuery += "subjectId INT(11) NOT NULL, "
+          assignmentQuery += "semester INT(11) NOT NULL DEFAULT 1, "
+          assignmentQuery += "startDate DATETIME, "
+          assignmentQuery += "endDate DATETIME, "
+          assignmentQuery += "status ENUM('pending', 'closed', 'completed') DEFAULT 'pending', "
+          assignmentQuery += "file LONGTEXT, "
+          assignmentQuery += "FOREIGN KEY(assignedBy) REFERENCES users(id), "
+          assignmentQuery += "FOREIGN KEY(subjectId) REFERENCES subjects(id), "
+          assignmentQuery += "FOREIGN KEY(assignedTo) REFERENCES courses(id) "
+          assignmentQuery += ");"
+        con.query( assignmentQuery, function (err, result) {
+          if( err ) throw err
+          console.log( 'Assignments Table created.' )
+        });
+
+        /**
+         * Create Assignments Meta Table
+         * MARK: Assignments Meta
+         */
+        let assignmentMetaQuery = "CREATE TABLE IF NOT EXISTS `assignmentsMeta` ("
+          assignmentMetaQuery += "metaId INT(11) NOT NULL AUTO_INCREMENT PRIMARY KEY, "
+          assignmentMetaQuery += "assignmentId INT(11) NOT NULL, " 
+          assignmentMetaQuery += "studentId INT(11) NOT NULL, "
+          assignmentMetaQuery += "message LONGTEXT, "
+          assignmentMetaQuery += "file LONGTEXT, "
+          assignmentMetaQuery += "FOREIGN KEY(assignmentId) REFERENCES assignments(assignmentId), "
+          assignmentMetaQuery += "FOREIGN KEY(studentId) REFERENCES users(id) "
+          assignmentMetaQuery += ");"
+        con.query( assignmentMetaQuery, function (err, result) {
+          if( err ) throw err
+          console.log( 'Assignments Meta Table created.' )
         });
       }
     });

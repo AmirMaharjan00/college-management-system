@@ -232,6 +232,7 @@ const LineChart = () => {
 
     const options = {
         responsive: true,
+        maintainAspectRatio: false, // ignore default aspect ratio
         plugins: {
             legend: { position: 'top' },
             title: {
@@ -506,12 +507,12 @@ const Table = ( props ) => {
         <table className='table-wrapper' id='cmg-table'>
             <thead>
                 <tr>
-                    <th>S.No</th>
-                    <th>Book Name</th>
+                    <th style={{width: 40}}>S.No</th>
+                    <th style={{width: 50}}>Book Name</th>
                     <th>Issued By</th>
                     { ( tab === 'all-issued' ) && <th>Status</th> }
                     <th>Issued Date</th>
-                    <th>Due Date</th>
+                    <th style={{width: 110}}>Due Date</th>
                     { [ 'returned', 'fines', 'all-issued' ].includes( tab ) && <th>Returned Date</th> }
                     { [ 'returned', 'fines', 'all-issued' ].includes( tab ) && <th>Fine Status</th> }
                 </tr>

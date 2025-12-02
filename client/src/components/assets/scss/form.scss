@@ -68,6 +68,7 @@
         }
     }
 
+    input,
     input[type="text"],
     input[type="date"],
     input[type="submit"],
@@ -151,6 +152,44 @@
                 padding: 0;
                 border: none;
             }
+        }
+    }
+
+    .form-radio {
+        display: flex;
+        align-items: center;
+        gap: 20px;
+
+        .form-field-inner-wrapper {
+            display: flex;
+            gap: 20px;
+        }
+
+        .form-field-inner {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .form-label {
+            margin-bottom: 0;
+        }
+    }
+
+    .no-file {
+        border: 2px dashed #0000003b;
+        position: relative;
+        height: 40px;
+
+        &:after {
+            content: "\2b";
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 30px;
+            font-weight: 700;
         }
     }
 }

@@ -151,16 +151,16 @@ const Table = ( props ) => {
         { ( layout === 'list' ) ? <table className='table-wrapper'>
             <thead>
                 <tr>
-                    <th>S.No</th>
-                    <th>Book ID</th>
+                    <th style={{width: 40}}>S.No</th>
+                    <th style={{width: 50}}>Book ID</th>
                     <th>Book Name</th>
                     <th>Issued By</th>
                     <th>Issued To</th>
                     <th>Issued Date</th>
                     <th>Status</th>
-                    <th>Due Date</th>
-                    <th>Return Date</th>
-                    <th>Action</th>
+                    <th style={{width: 110}}>Due Date</th>
+                    <th style={{width: 110}}>Return Date</th>
+                    <th style={{width: 40}}>Action</th>
                 </tr>
             </thead>
             <tbody>

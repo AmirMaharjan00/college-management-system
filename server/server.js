@@ -26,6 +26,7 @@ const port = process.env.PORT || 5000;
 
 app.use('/uploads', express.static('uploads'));
 app.use('/images', express.static('images'));
+app.use("/files", express.static(path.join(__dirname, "uploads"))); // or "images"
 
 app.use( express.json() );
 app.use( cookieParser() );
@@ -457,6 +458,32 @@ app.post( '/get-message', ( request, res ) => {
 });
 
 /**
+ * MARK: Multiple Uploads
+ */
+app.post( '/uploads', upload.fields([
+    { name: 'motherProfile', maxCount: 1 },
+    { name: 'fatherProfile', maxCount: 1 },
+    { name: 'documents', maxCount: 10 }
+  ]),
+  (req, res) => {
+    if (!req.files) return res.status(400).send('No files uploaded.');
+
+    // Example: map files to paths
+    const uploadedFiles = {};
+    for (const field in req.files) {
+      uploadedFiles[field] = req.files[field].map(file => `/uploads/${file.originalname}`);
+    }
+
+    res.send({
+      message: 'Files uploaded successfully!',
+      files: uploadedFiles,
+      success: true
+    });
+  }
+);
+
+
+/**
  * MARK: Upload
  */
 app.post('/upload', upload.single('image'), (req, res) => {
@@ -465,7 +492,8 @@ app.post('/upload', upload.single('image'), (req, res) => {
   if (!req.file) return res.status(400).send('No file uploaded.');
   res.send({
     message: 'Image uploaded successfully!',
-    imageUrl: path
+    imageUrl: path,
+    success: true
   });
 });
 
@@ -595,7 +623,7 @@ app.post( '/books-fined', ( request, res ) => {
  * MARK: Books Fined
  */
 app.post( '/library-fines-monthwise', ( request, res ) => { 
-  const selectQuery = `SELECT MONTHNAME(dueDate) AS month, SUM(fineAmount) AS total FROM booksIssued WHERE status="overdue" GROUP BY MONTH(dueDate) ORDER BY MONTH(dueDate);`
+  const selectQuery = 'SELECT MONTHNAME(`dueDate`) AS month, SUM(fineAmount) AS total FROM booksIssued WHERE status="overdue" GROUP BY MONTH(`dueDate`), MONTHNAME(`dueDate`) ORDER BY MONTH(`dueDate`);'
   con.query( selectQuery, ( error, result ) => {
     if ( error ) {
       return res.status( 500 ).json({ error: "Database selection failed" });
@@ -851,7 +879,7 @@ app.post( '/income', ( request, res ) => {
  * MARK: YEAR EXPENSE
  */
 app.post( '/year-expenses', ( request, res ) => { 
-  const selectQuery = `SELECT MONTHNAME(date) AS month, SUM(amount) AS total FROM account WHERE type="expenses" GROUP BY MONTH(date) ORDER BY MONTH(date);`
+  const selectQuery = 'SELECT MONTHNAME(`date`) AS month, SUM(amount) AS total FROM account WHERE type="expenses" GROUP BY MONTH(`date`), MONTHNAME(`date`) ORDER BY MONTH(`date`);'
   con.query( selectQuery, ( error, result ) => {
     if ( error ) {
       return res.status( 500 ).json({ error: "Database selection failed" });
@@ -864,7 +892,7 @@ app.post( '/year-expenses', ( request, res ) => {
  * MARK: YEAR INCOME
  */
 app.post( '/year-income', ( request, res ) => { 
-  const selectQuery = `SELECT MONTHNAME(date) AS month, SUM(amount) AS total FROM account WHERE type="income" GROUP BY MONTH(date) ORDER BY MONTH(date);`
+  const selectQuery = 'SELECT MONTHNAME(`date`) AS month, SUM(amount) AS total FROM account WHERE type="income" GROUP BY MONTH(`date`), MONTHNAME(`date`) ORDER BY MONTH(`date`);'
   con.query( selectQuery, ( error, result ) => {
     if ( error ) {
       return res.status( 500 ).json({ error: "Database selection failed" });
@@ -903,7 +931,7 @@ app.post( '/add-fees', ( request, res ) => {
 * MARK: Users Student and Teacher API
 */
 app.post( '/expenses-income', ( request, res ) => { 
-  const selectQuery = `SELECT type, SUM(amount) AS total FROM account WHERE type IN ('expenses', 'income') AND YEAR(date) = YEAR(CURDATE()) GROUP BY type;`
+  const selectQuery = 'SELECT type, SUM(amount) AS total FROM account WHERE type IN ("expenses", "income") AND YEAR(`date`) = YEAR(CURDATE()) GROUP BY type;'
   con.query( selectQuery, ( error, result ) => {
     if ( error ) {
       return res.status( 500 ).json({ error: "Database selection failed" });
@@ -1040,6 +1068,7 @@ app.post( '/all-exams', ( request, res ) => {
 app.post( '/add-exams', ( request, res ) => { 
   const { title, type, data, start, end, course: courseId, semester, notice } = request.body,
     insertQuery = `INSERT INTO exams ( title, type, data, start, end, courseId, semester, notice ) VALUES ( ?, ?, ?, ?, ?, ?, ?, ? )`
+    console.log( insertQuery )
   con.query( insertQuery, [ title, type, JSON.stringify( data ), start, end, courseId, semester, notice ], ( error, result ) => {
     if ( error ) return res.status( 500 ).json({ error: "Database Insertion failed" });
     return res.status( 200 ).json({ result, success: true });
@@ -1095,5 +1124,122 @@ app.post( '/check-book', ( request, res ) => {
   con.query( selectQuery, ( error, result ) => {
     if ( error ) return res.status( 500 ).json({ error: "Database selection failed" });
     return res.status( 200 ).json({ result: result[0], success: true });
+  })
+});
+
+/**
+* MARK: CHECK BOOKS
+*/
+app.post( '/dashboard-fees-collection', ( request, res ) => { 
+  const selectQuery = 'SELECT MONTHNAME(`date`) AS month, SUM(amount) AS total FROM account WHERE purpose="fees" GROUP BY MONTH(`date`), MONTHNAME(`date`) ORDER BY MONTH(`date`)'
+  con.query( selectQuery, ( error, result ) => {
+    if ( error ) return res.status( 500 ).json({ error: "Database selection failed" });
+    return res.status( 200 ).json({ result: result, success: true });
+  })
+});
+
+/**
+* MARK: update subject
+*/
+app.post( '/update-subject-syllabus', ( request, res ) => {
+  const { id, file } = request.body,
+    updateQuery = `UPDATE subjects SET file="${ file }" WHERE id=${ id };`
+  con.query( updateQuery, ( error, result ) => {
+    if ( error ) {
+      return res.status( 500 ).json({ success: false, error: "Database Update failed" });
+    }
+    return res.status( 200 ).json({ success: true, result });
+  })
+});
+
+/**
+* MARK: Usermeta by userId
+*/
+app.post( '/user-usermata-join-via-id', ( request, res ) => {
+  const { id } = request.body,
+    selectQuery = `SELECT u.*, um.* FROM users u LEFT JOIN userMeta um ON u.id = um.userid WHERE u.id=${ id }`
+  con.query( selectQuery, ( error, result ) => {
+    if ( error ) {
+      return res.status( 500 ).json({ error: "Database selection failed" });
+    }
+    return res.status( 200 ).json({ success: true, result: result[0] });
+  })
+});
+
+/**
+* MARK: update-usermeta
+*/
+app.post( '/update-usermeta', ( request, res ) => {
+  const { id, dob, secondaryContact, motherName, fatherName, motherEmail, fatherEmail, motherContact, fatherContact, motherProfile, fatherProfile, documents, motherTongue = 'Nepali', language = 'Nepali' } = request.body,
+    updateQuery = `
+      INSERT INTO userMeta (
+        userId, dob, secondaryContact, motherName, fatherName,
+        motherEmail, fatherEmail, motherContact, fatherContact,
+        motherProfile, fatherProfile, documents, motherTongue, \`language\`
+      )
+      VALUES (
+        ${id},
+        ${dob ? `'${dob}'` : null},
+        ${secondaryContact ? `'${secondaryContact}'` : null},
+        ${motherName ? `'${motherName}'` : null},
+        ${fatherName ? `'${fatherName}'` : null},
+        ${motherEmail ? `'${motherEmail}'` : null},
+        ${fatherEmail ? `'${fatherEmail}'` : null},
+        ${motherContact ? `'${motherContact}'` : null},
+        ${fatherContact ? `'${fatherContact}'` : null},
+        ${motherProfile ? `'${motherProfile}'` : null},
+        ${fatherProfile ? `'${fatherProfile}'` : null},
+        ${documents ? `'${documents}'` : null},
+        ${motherTongue ? `'${motherTongue}'` : `'Nepali'`},
+        ${language ? `'${language}'` : `'Nepali'`}
+      )
+      ON DUPLICATE KEY UPDATE
+        dob = VALUES(dob),
+        secondaryContact = VALUES(secondaryContact),
+        motherName = VALUES(motherName),
+        fatherName = VALUES(fatherName),
+        motherEmail = VALUES(motherEmail),
+        fatherEmail = VALUES(fatherEmail),
+        motherContact = VALUES(motherContact),
+        fatherContact = VALUES(fatherContact),
+        motherProfile = VALUES(motherProfile),
+        fatherProfile = VALUES(fatherProfile),
+        documents = VALUES(documents),
+        motherTongue = VALUES(motherTongue),
+        \`language\` = VALUES(\`language\`);
+      `;
+
+  con.query( updateQuery, ( error, result ) => {
+    if ( error ) {
+      return res.status( 500 ).json({ success: false, error: "Database Update failed" });
+    }
+    return res.status( 200 ).json({ success: true, result: result[0] });
+  })
+});
+
+/**
+* MARK: All Assignements
+*/
+app.post( '/all-assignments', ( request, res ) => {
+  const selectQuery = `SELECT a.*, t.id AS teacherId, t.name AS teacherName, c.abbreviation, s.name AS subjectName FROM assignments a LEFT JOIN users AS t ON a.assignedBy = t.id LEFT JOIN courses AS c ON c.id = a.assignedTo LEFT JOIN subjects AS s ON s.id = a.subjectId ORDER BY a.assignmentId DESC`
+  con.query( selectQuery, ( error, result ) => {
+    if ( error ) {
+      return res.status( 500 ).json({ error: "Database selection failed" });
+    }
+    return res.status( 200 ).json({ success: true, result });
+  })
+});
+
+/**
+ * MARK: Insert Assignment
+ */
+app.post('/insert-assignment', (req, res) => {
+  const { title, assignedBy, assignedTo, subjectId, semester, startDate, endDate, status, file } = req.body
+  const insertQuery = `INSERT INTO assignments (title, assignedBy, assignedTo, subjectId, semester, startDate, endDate, status, file) VALUES ('${ title }', ${ assignedBy }, ${ assignedTo }, ${ subjectId }, ${ semester }, '${ startDate }', '${ endDate }', '${ status }', '${ file }')`
+
+  console.log( insertQuery )
+  con.query( insertQuery, [ title, assignedBy, assignedTo, semester, startDate, endDate, status, file ], ( error, result ) => {
+    if ( error ) return res.status( 500 ).json({ error: "Database insertion failed", success: false });
+    return res.status( 200 ).json({ message: "Data inserted successfully!", success: true });
   })
 });

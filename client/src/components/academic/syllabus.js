@@ -1,19 +1,24 @@
-import { useState, useEffect, useContext, useMemo } from 'react'
+import { useState, useEffect, useContext, useMemo, createContext, useRef } from 'react'
 import { fetchCallback, getScript, ourFetch } from '../functions'
 import { Breadcrumb } from '../components'
 import { TodaysDate } from "../includes/components-hooks"
 import { GLOBALCONTEXT } from '../../App'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faPenToSquare, faEye } from '@fortawesome/free-solid-svg-icons';
+import { Link } from 'react-router' 
+import { faPenToSquare, faEye, faCirclePlus, faRotate, faFloppyDisk, faCircleXmark, faCircleCheck } from '@fortawesome/free-solid-svg-icons';
+const SYLLABUS = createContext(),
+    backUrl = 'http://localhost:5000'
 
 /**
  * Syllabus
  */
 export const Syllabus = () => {
     const Global = useContext( GLOBALCONTEXT ),
-        { setOverlay, setHeaderOverlay, setFormVisibility, formVisibility, loggedInUser } = Global,
+        { setOverlay, setHeaderOverlay, setFormVisibility, formVisibility, loggedInUser, editPopupStatus, setEditPopupStatus } = Global,
         { role } = loggedInUser,
         [ courses, setCourses ] = useState([]),
+        [ isUpdated, setIsUpdated ] = useState( false ),
+        [ activeSubject, setActiveSubject ] = useState({}),
         [ activePopupId, setActivePopupId ] = useState( 0 ),
         [ activeSemester, setActiveSemester ] = useState( 1 ),
         [ subjects, setSubjects ] = useState([]),
@@ -27,7 +32,16 @@ export const Syllabus = () => {
                 let { semester } = subject
                 if( semester == activeSemester ) return subject
             })
-        }, [ subjects, activeSemester ])
+        }, [ subjects, activeSemester ]),
+        syllabusObject = {
+            filteredSubjects,
+            popupDetails,
+            activeSemester, setActiveSemester,
+            role,
+            setEditPopupStatus,
+            activeSubject, setActiveSubject,
+            setIsUpdated
+        }
 
     useEffect(() => {
         ourFetch({
@@ -44,7 +58,7 @@ export const Syllabus = () => {
             setter: setSubjects,
             body: JSON.stringify({ id: activePopupId })
         })
-    }, [ activePopupId ])
+    }, [ activePopupId, isUpdated ])
 
     /**
      * Handle Card Click
@@ -100,21 +114,20 @@ export const Syllabus = () => {
             }
         </div>
 
-        { ( activePopupId !== 0 ) && formVisibility && <Popup 
-            subjects = { filteredSubjects }
-            popupDetails = { popupDetails }
-            activeSemester = { activeSemester }
-            setActiveSemester = { setActiveSemester }
-            role = { role }
-        /> }
+        <SYLLABUS.Provider value={ syllabusObject }>
+            { ( activePopupId !== 0 ) && ! editPopupStatus && formVisibility && <Popup /> }
+            { editPopupStatus && <EditPopup /> }
+        </SYLLABUS.Provider>
+
     </main>
 }
 
 /**
  * MARK: POPUP
  */
-const Popup = ( props ) => {
-    const { subjects, popupDetails, setActiveSemester, activeSemester, role } = props,
+const Popup = () => {
+    const syllabusContext = useContext( SYLLABUS ),
+        { filteredSubjects, popupDetails, setActiveSemester, activeSemester, role, setEditPopupStatus, setActiveSubject } = syllabusContext,
         { name, abbreviation, semester } = popupDetails,
         semesterArr = new Array( semester ).fill( 0 )
 
@@ -123,6 +136,14 @@ const Popup = ( props ) => {
      */
     const handleSemesterClick = ( id ) => {
         setActiveSemester( id )
+    }
+
+    /**
+     * Handle edit click
+     */
+    const handleEditClick = ( obj ) => {
+        setEditPopupStatus( true )
+        setActiveSubject( obj )
     }
     
     return <div className='popup-wrapper'>
@@ -151,21 +172,23 @@ const Popup = ( props ) => {
                         </thead>
                         <tbody>
                             {
-                                subjects?.map(( subject ) => {
+                                filteredSubjects?.map(( subject, index ) => {
                                     if( subject ) {
-                                        let { name, code } = subject
-                                        return <tr>
+                                        let { name, code, file } = subject
+                                        return <tr key={ index }>
                                             <td>{ code }</td>
                                             <td>{ name }</td>
                                             <td>
-                                                {( role === 'admin' ) && <div className="has-tooltip action">
+                                                {( role === 'admin' ) && <div className="has-tooltip action" onClick={() => handleEditClick( subject ) }>
                                                     <FontAwesomeIcon className='edit' icon={ faPenToSquare } />
                                                     <span className="tooltip-text">Edit</span>
                                                 </div> }
-                                                <div className="has-tooltip action">
-                                                    <FontAwesomeIcon className='view' icon={ faEye } />
-                                                    <span className="tooltip-text">View</span>
-                                                </div>
+                                                <Link to={ file } target="_blank">
+                                                    <div className="has-tooltip action">
+                                                        <FontAwesomeIcon className='view' icon={ faEye } />
+                                                        <span className="tooltip-text">View</span>
+                                                    </div>
+                                                </Link>
                                             </td>
                                         </tr>
                                     }
@@ -175,6 +198,127 @@ const Popup = ( props ) => {
                     </table>
                 </div>
             </div>
+        </div>
+    </div>
+}
+
+/**
+ * MARK: Edit Popup
+ */
+const EditPopup = () => {
+    const syllabusContext = useContext( SYLLABUS ),
+        { setIsUpdated, setEditPopupStatus, activeSubject } = syllabusContext,
+        { id, file } = activeSubject,
+        fileRef = useRef( null ),
+        [ link, setLink ] = useState( null ),
+        [ isSaveDisabled, setIsSaveDisabled ] = useState( true ),
+        [ isSaved, setIsSaved ] = useState( false ),
+        [ newFileAdded, setNewFileAdded ] = useState( false ),
+        [ isReplaceDisabled, setIsReplaceDisabled ] = useState( file ? false : true ),
+        [ isAddDisabled, setIsAddDisabled ] = useState( file ? true : false )
+
+    /**
+     * Handle Replace Change
+     */    
+    const handleChange = ( event ) => {
+        let files = event.target.files
+        if( files ) {
+            setLink( files[0] )
+            setIsSaveDisabled( false )
+            setIsSaved( false )
+            setNewFileAdded( true )
+            setIsAddDisabled( true )
+            setIsReplaceDisabled( false )
+        }
+    }
+
+    /* Handle Save */
+    const handleSave = ( event ) => {
+        event.preventDefault()
+        const formData = new FormData();
+        formData.append( 'image', link ); // 'image' should match your backend field name
+        ourFetch({
+            api: '/upload',
+            callback: uploadCallback,
+            headersMultipart: true,
+            body: formData
+        })
+    }
+
+    /**
+     * Upload Callback
+     */
+    const uploadCallback = ( data ) => {
+        let { imageUrl, success } = data,
+            newPdf = `http://localhost:5000${ data.imageUrl }`
+        if( success ) {
+            ourFetch({
+                api: '/update-subject-syllabus',
+                body: JSON.stringify({ id, file: newPdf }),
+                callback: updateCallback
+            })
+            setIsSaved( true )
+            setIsSaveDisabled( true )
+        }
+    }
+
+    /**
+     * Update Callback
+     */
+    const updateCallback = ( data ) => {
+        let { success } = data
+        if( success ) setIsUpdated( true )
+    }
+
+    /**
+     * Get url from file
+     */
+    const getUrl = ( file ) => {
+        return URL.createObjectURL(
+            new Blob([ file ], { type: "application/pdf" })
+        )
+    }
+
+    /**
+     * Handle close click
+     */
+    const handleCloseClick = () => {
+        setEditPopupStatus( false )
+    }
+
+    return <div className='edit-popup-wrapper popup-wrapper'>
+        <h2 className="title">Edit this file.</h2>
+        { ( ! file && ! newFileAdded ) ? 
+            <div className="pdf no-pdf"></div> :
+            <div className="pdf pdf-viewer">
+                {
+                    newFileAdded ?
+                    <iframe src={ getUrl( link ) } width="100%" height="100%" allowFullScreen="true" />:
+                    <iframe src={ file ? file : getUrl( link ) } width="100%" height="100%" allowFullScreen="true" />
+                }
+            </div>
+        }
+        <div className="buttons">
+            <button className="action add" disabled={ isAddDisabled } onClick={() => fileRef.current.click()}>
+                <FontAwesomeIcon icon={ faCirclePlus } />
+                <span className="label">Add</span>
+            </button>
+            <button className="action replace" disabled={ isReplaceDisabled } onClick={() => fileRef.current.click()}>
+                <FontAwesomeIcon icon={ faRotate } />
+                <span className="label">Replace</span>
+            </button>
+            <button className="action save" onClick={ handleSave } disabled={ isSaveDisabled }>
+                <FontAwesomeIcon icon={ isSaved ? faCircleCheck : faFloppyDisk } />
+                { isSaved ? 
+                    <span className="label">Saved</span> :
+                    <span className="label">Save</span>
+                }
+            </button>
+            <button className="action close" onClick={ handleCloseClick }>
+                <FontAwesomeIcon icon={ faCircleXmark } />
+                <span className="label">Close</span>
+            </button>
+            <input type="file" name="add" accept="application/pdf" id="add" ref={ fileRef } onChange={ handleChange } hidden />
         </div>
     </div>
 }

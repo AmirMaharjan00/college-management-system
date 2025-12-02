@@ -79,7 +79,8 @@ export const formatDate = ( date ) => {
  * 
  */
 export const getScript = ( number ) => {
-    switch( number ) {
+    let sanitizedNumber = parseInt( number )
+    switch( sanitizedNumber ) {
         case 1 : 
             return `${ number }st`
         break;
