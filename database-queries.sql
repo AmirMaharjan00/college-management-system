@@ -129,10 +129,10 @@ INSERT INTO `books` (`id`, `courseId`, `semester`, `name`, `author`, `publicatio
 (NULL, 4, 1, 'Head First Java', 'Kathy Sierra', 'Reilly Media', 10, '2017-05-14', 'English'),
 (NULL, 4, 1, 'Clean Code', 'Robert C. Martin', 'Prentice Hall', 10, '2020-01-01', 'English'),
 (NULL, 4, 1, 'The Pragmatic Programmer', 'Andy Hunt', 'Addison-Wesley', 10, '2019-11-25', 'English'),
-(NULL, 0, 1, 'You Don’t Know JS', 'Kyle Simpson', 'Reilly Media', 10, '2021-04-04', 'English'),
-(NULL, 0, 1, 'Design Patterns', 'Erich Gamma', 'Addison-Wesley', 10, '2018-06-01', 'English'),
-(NULL, 0, 1, 'Introduction to Machine Learning', 'Ethem Alpaydin', 'MIT Press', 10, '2022-10-10', 'English'),
-(NULL, 0, 1, 'Computer Architecture', 'John L. Hennessy', 'Morgan Kaufmann', 10, '2023-02-28', 'English');
+(NULL, NULL, 1, "You Don't Know JS", 'Kyle Simpson', 'Reilly Media', 10, '2021-04-04', 'English'),
+(NULL, NULL, 1, 'Design Patterns', 'Erich Gamma', 'Addison-Wesley', 10, '2018-06-01', 'English'),
+(NULL, NULL, 1, 'Introduction to Machine Learning', 'Ethem Alpaydin', 'MIT Press', 10, '2022-10-10', 'English'),
+(NULL, NULL, 1, 'Computer Architecture', 'John L. Hennessy', 'Morgan Kaufmann', 10, '2023-02-28', 'English');
 
 
 
@@ -257,7 +257,7 @@ INSERT INTO `account` (`id`, `userId`, `amount`, `message`, `type`, `purpose`, `
 
 
 INSERT INTO `complaints` (`id`, `by`, `against`, `subject`, `message`, `file`, `status`, `date`) VALUES
-(NULL, '2', '3', 'Wifi Connectivity Problems', 'The wifi in our common study area frequently drops every 10–15 minutes, which makes it very difficult to complete online assignments and attend virtual classes. Immediate action is needed to stabilize the connection.', NULL, 'pending', current_timestamp()),
+(NULL, '2', '3', 'Wifi Connectivity Problems', 'The wifi in our common study area frequently drops every 10-15 minutes, which makes it very difficult to complete online assignments and attend virtual classes. Immediate action is needed to stabilize the connection.', NULL, 'pending', current_timestamp()),
 (NULL, '4', '5', 'Project Contribution Delay', 'You have not uploaded your portion of the group project, which is affecting the overall progress. Kindly submit your work by the end of this week so that the project can be completed on time.', NULL, 'pending', current_timestamp()),
 (NULL, '6', '7', 'Excessive Noise in Common Area', 'The noise levels in the common room during evening study hours are making it very hard to focus. Please ensure that loud activities are minimized, especially during designated study periods.', NULL, 'pending', current_timestamp()),
 (NULL, '8', '9', 'Lab Air Conditioning Issue', 'The air conditioning in the computer lab is extremely cold and often fluctuates between very cold and hot. It is affecting our comfort and concentration. Requesting a maintenance check soon.', NULL, 'pending', current_timestamp()),
