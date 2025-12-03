@@ -25,6 +25,7 @@ export const Assignments = () => {
         [ fileObj, setFileObj ] = useState( '' ),
         [ insertSuccess, setInsertSuccess ] = useState( false ),
         [ activeAssignment, setActiveAssignment ] = useState( null ),
+        [ statusCounts, setStatusCounts ] = useState([]),
         defaultValues = {
             title: '',
             assignedTo: 1,
@@ -32,7 +33,8 @@ export const Assignments = () => {
             startDate: '',
             endDate: '',
             file: '',
-            status: 'pending'
+            status: 'pending',
+            subjectId: 0
         },
         [ activeAssignmentObj, setActiveAssignmentObj ] = useState( defaultValues ),
         courseSemesters = useMemo(() => {
@@ -44,12 +46,7 @@ export const Assignments = () => {
                 }, 0)
             return new Array( semester ).fill( 0 )
         }, [ courses, activeAssignmentObj.assignedTo ]),
-        semesterSubjects = useMemo(() => {
-            return subjects.reduce(( _thisVal, subject ) => {
-                if( subject.semester == activeAssignmentObj.semester && activeAssignmentObj.assignedTo == subject.course_id ) _thisVal = [ ..._thisVal, subject ]
-                return _thisVal
-            }, [])
-        }, [ activeAssignmentObj.semester, activeAssignmentObj.assignedTo , subjects ]),
+        [ semesterSubjects, setSemesterSubjects ] = useState([]),
         assignmentObject = {
             assignments,
             formMode, setFormMode,
@@ -63,7 +60,8 @@ export const Assignments = () => {
             role,
             setActiveAssignment,
             semesterSubjects,
-            overlay
+            overlay,
+            statusCounts
         }
 
     useEffect(() => {
@@ -92,6 +90,11 @@ export const Assignments = () => {
             callback: fetchCallback,
             setter: setCourses
         })
+        ourFetch({
+            api: '/assignment-by-status',
+            callback: fetchCallback,
+            setter: setStatusCounts
+        })
         if( insertSuccess ) setInsertSuccess( false )
     }, [ insertSuccess ])
 
@@ -103,6 +106,18 @@ export const Assignments = () => {
             body: JSON.stringify({ id: activeAssignmentObj.assignedTo })
         })
     }, [ activeAssignmentObj.assignedTo ])
+
+    useEffect(() => {
+        let subjectsArray = subjects.reduce(( _thisVal, subject ) => {
+            if( subject.semester == activeAssignmentObj.semester && activeAssignmentObj.assignedTo == subject.course_id ) _thisVal = [ ..._thisVal, subject ]
+            return _thisVal
+        }, [])
+        setSemesterSubjects( subjectsArray )
+        setActiveAssignmentObj({
+            ...activeAssignmentObj,
+            subjectId: subjectsArray[ 0 ]?.id
+        })
+    }, [ activeAssignmentObj.semester, activeAssignmentObj.assignedTo , subjects ])
 
     return <main className="cmg-main assignments" id="cmg-main">
         <AssignmentsContext.Provider value={ assignmentObject }>
@@ -147,47 +162,22 @@ export const Assignments = () => {
  * MARK: Highlight
  */
 const Highlight = () => {
+    const assignmentContext = useContext( AssignmentsContext ),
+        { statusCounts } = assignmentContext
+
     return <div className="highlight-wrapper">
-        <div className='highlight'>
-            <FontAwesomeIcon icon={ faHourglass } className="icon" />
-            <div className="highlight-info">
-                <span className="status">Pending</span>
-                <div className="count-wrap">
-                    <span className="text count">{ 1 }</span>
-                    <span className="text label">Assignment</span>
+        {
+            statusCounts.map(( item, index ) => {
+                let { status, total } = item
+                return <div className='highlight' key={ index }>
+                    <span className={ `status ${ status }` }>{ status.slice( 0, 1 ).toUpperCase() + status.slice( 1 ) }</span>
+                    <div className="count-wrap">
+                        <span className="text count">{ total }</span>
+                        <span className="text label">Assignment</span>
+                    </div>
                 </div>
-            </div>
-        </div>
-        <div className='highlight'>
-            <FontAwesomeIcon icon={ faHourglass } className="icon" />
-            <div className="highlight-info">
-                <span className="status">Completed</span>
-                <div className="count-wrap">
-                    <span className="text count">{ 1 }</span>
-                    <span className="text label">Assignment</span>
-                </div>
-            </div>
-        </div>
-        <div className='highlight'>
-            <FontAwesomeIcon icon={ faHourglass } className="icon" />
-            <div className="highlight-info">
-                <span className="status">Expired</span>
-                <div className="count-wrap">
-                    <span className="text count">{ 1 }</span>
-                    <span className="text label">Assignment</span>
-                </div>
-            </div>
-        </div>
-        <div className='highlight'>
-            <FontAwesomeIcon icon={ faHourglass } className="icon" />
-            <div className="highlight-info">
-                <span className="status">Pending</span>
-                <div className="count-wrap">
-                    <span className="text count">{ 1 }</span>
-                    <span className="text label">Assignment</span>
-                </div>
-            </div>
-        </div>
+            })
+        }
     </div>
 }
 
@@ -237,12 +227,12 @@ const Table = () => {
                         <td>{ title }</td>
                         <td>{ `${ teacherName } ( ${ teacherId } )` }</td>
                         <td>{ `${ subjectName } ( ${ subjectId } )` }</td>
-                        <td>{ `${ abbreviation } ${ getScript( semester ) } Semester` }</td>
+                        <td>{ `${ abbreviation } ${( ! [ 'XI', 'XII' ].includes( abbreviation ) ) ? `${ getScript( semester ) } Semester` : '' }` }</td>
                         <td>{ convertedDate( startDate ) }</td>
                         <td>{ convertedDate( endDate ) }</td>
-                        <td>{ status.slice( 0, 1).toUpperCase() + status.slice( 1 ) }</td>
+                        <td className="status-wrap"><span className={ status }>{ status.slice( 0, 1).toUpperCase() + status.slice( 1 ) }</span></td>
                         <td className="actions">
-                            { ( role === 'admin' ) && <div className="has-tooltip action edit" onClick={() => handleViewClick( index, 'edit' )}>
+                            { ( [ 'admin', 'teacher' ].includes( role ) ) && <div className="has-tooltip action edit" onClick={() => handleViewClick( index, 'edit' )}>
                                 <FontAwesomeIcon className='edit' icon={ faPenToSquare } />
                                 <span className="tooltip-text">Edit</span>
                             </div> }
@@ -250,7 +240,7 @@ const Table = () => {
                                 <FontAwesomeIcon className='view' icon={ faEye } />
                                 <span className="tooltip-text">View</span>
                             </div>
-                            { ( role === 'admin' ) && <div className="has-tooltip action delete" onClick={() => handleViewClick( index, 'delete' )}>
+                            { ( [ 'admin', 'teacher' ].includes( role ) ) && <div className="has-tooltip action delete" onClick={() => handleViewClick( index, 'delete' )}>
                                 <FontAwesomeIcon className='delete' icon={ faTrash } />
                                 <span className="tooltip-text">Delete</span>
                             </div> }
@@ -375,7 +365,7 @@ const Form = () => {
                         {
                             courseSemesters.map(( sem, index ) => {
                                 let count = index + 1
-                                return <option key={ index } value={ count }>{ `${ getScript( count ) } Semester` }</option>
+                                return <option key={ index } value={ count } >{ `${ getScript( count ) } Semester` }</option>
                             })
                         }
                     </select>
@@ -433,7 +423,7 @@ const Form = () => {
  */
 const View = () => {
     const assignmentContext = useContext( AssignmentsContext ),
-        { activeAssignmentObj, overlay } = assignmentContext,
+        { activeAssignmentObj, overlay, role } = assignmentContext,
         { title, semester, abbreviation = 'BCA', subjectName, teacherName, startDate, endDate, status, file } = activeAssignmentObj,
         { convertedDate } = useDate(),
         [ canvas, setCanvas ] = useState( 'left' )
@@ -441,6 +431,15 @@ const View = () => {
     useEffect(() => {
         if( canvas ) setCanvas( 'none' )
     }, [ overlay ])
+
+    /**
+     * Handle Student click
+     */
+    const handleStudentClick = () => {
+        if( role !== 'student' ) {
+            setCanvas( 'right' )
+        }
+    }
 
     return <div className={ `cmg-popup-wrapper view${ canvas !== 'none' ? ' active' : '' }` }>
         <div className="section-head">
@@ -469,7 +468,7 @@ const View = () => {
         <div className="submission-wrap">
             <div className="group submitted">
                 <h2 className="group-head">Submitted Students</h2>
-                <table>
+                <table className={ `table${ ( role === 'student' ) ? ' student' : '' }` }>
                     <thead>
                         <tr>
                             <th className="head serial-number">S.No</th>
@@ -479,14 +478,16 @@ const View = () => {
                     <tbody>
                         <tr>
                             <td className="head serial-number">1.</td>
-                            <td className="head student" onClick={() => setCanvas( 'right' )}>Amir Maharjan</td>
+                            <td className="head student" onClick={ handleStudentClick }>
+                                <span className="student">Amir Maharjan</span>
+                            </td>
                         </tr>
                     </tbody>
                 </table>
             </div>
             <div className="group not-submitted">
                 <h2 className="group-head">Not Submitted Students</h2>
-                <table>
+                <table className={ `table${ ( role === 'student' ) ? ' student' : '' }` }>
                     <thead>
                         <tr>
                             <th className="head serial-number">S.No</th>

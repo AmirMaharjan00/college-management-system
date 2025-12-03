@@ -1231,6 +1231,17 @@ app.post( '/all-assignments', ( request, res ) => {
 });
 
 /**
+* MARK: Get assignment by status
+*/
+app.post( '/assignment-by-status', ( request, res ) => {
+  const selectQuery = `SELECT s.status, COALESCE(a.total, 0) AS total FROM ( SELECT 'pending' AS status UNION SELECT 'closed' ) AS s LEFT JOIN ( SELECT status, COUNT(*) AS total FROM assignments GROUP BY status ) AS a ON a.status = s.status`
+  con.query( selectQuery, ( error, result ) => {
+    if ( error ) return res.status( 500 ).json({ error: "Database selection failed" });
+    return res.status( 200 ).json({ success: true, result });
+  })
+});
+
+/**
  * MARK: Insert Assignment
  */
 app.post('/insert-assignment', (req, res) => {

@@ -949,6 +949,11 @@ $maroon: #d62977;
     }
   }
 
+  /**
+  ===========================
+  MARK: Assignment
+  ===========================
+  */
   &.assignments {
     .highlight-wrapper {
       display: grid;
@@ -961,9 +966,6 @@ $maroon: #d62977;
         padding: 20px;
         background: var(--card-bg);
         color: var(--color);
-        display: flex;
-        gap: 10px;
-        align-items: center;
 
         .status {
           position: absolute;
@@ -972,11 +974,21 @@ $maroon: #d62977;
           transform: translate(-50%, -50%);
           font-size: 30px;
           font-weight: 700;
-          color: rgba(0, 0, 0, 0.1725490196);
+          color: rgba(134, 134, 134, 0.195);
+
+          &.pending {
+            color: #04aa6d54;
+          }
+
+          &.closed {
+            color: #ff000045;
+          }
         }
 
         .text {
-          font-size: 20px;
+          font-size: 16px;
+          display: block;
+          text-align: center;
         }
 
         .icon {
@@ -984,8 +996,9 @@ $maroon: #d62977;
         }
 
         .count {
-          margin-right: 5px;
-          font-size: 20px;
+          font-size: 50px;
+          font-weight: 700;
+          margin-bottom: 10px;
         }
       }
     }
@@ -1006,6 +1019,19 @@ $maroon: #d62977;
           &.delete {
             color: #ff0000;
           }
+        }
+
+        .status-wrap {
+          span {
+            font-weight: 600;
+          }
+          .pending {
+           color: $green;;
+         }
+
+          .closed {
+           color: #ff0000;
+         }
         }
       }
     }
@@ -1028,7 +1054,7 @@ $maroon: #d62977;
             flex: 1 1;
 
             .group-head {
-              font-size: 20px;
+              font-size: 18px;
               margin-bottom: 5px;
             }
 
@@ -1040,6 +1066,24 @@ $maroon: #d62977;
                 color: var(--white);
                 padding: 7px 5px;
                 text-align: left;
+              }
+
+              tbody tr td .student {
+                cursor: pointer;
+
+                &:hover {
+                  color: var(--default);
+                }
+              }
+              
+              &.student {
+                tbody tr td .student {
+                  cursor: auto;
+                  
+                  &:hover {
+                    color: var(--color)
+                  }
+                }
               }
             }
           }

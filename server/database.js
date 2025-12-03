@@ -295,7 +295,7 @@ con.connect(function(err) {
           assignmentQuery += "semester INT(11) NOT NULL DEFAULT 1, "
           assignmentQuery += "startDate DATETIME, "
           assignmentQuery += "endDate DATETIME, "
-          assignmentQuery += "status ENUM('pending', 'closed', 'completed') DEFAULT 'pending', "
+          assignmentQuery += "status ENUM('pending', 'closed') DEFAULT 'pending', "
           assignmentQuery += "file LONGTEXT, "
           assignmentQuery += "FOREIGN KEY(assignedBy) REFERENCES users(id), "
           assignmentQuery += "FOREIGN KEY(subjectId) REFERENCES subjects(id), "
@@ -306,7 +306,7 @@ con.connect(function(err) {
           console.log( 'Assignments Table created.' )
         });
 
-        /**
+        /** 
          * Create Assignments Meta Table
          * MARK: Assignments Meta
          */

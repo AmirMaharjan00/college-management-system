@@ -269,3 +269,27 @@ INSERT INTO `complaints` (`id`, `by`, `against`, `subject`, `message`, `file`, `
 (NULL, '20', '21', 'Timetable Conflicts', 'There are overlaps in the class schedules that are causing students to miss important lectures. Requesting a revision of the timetable to avoid clashes.', NULL, 'pending', current_timestamp()),
 (NULL, '22', '23', 'Classroom Maintenance Issues', 'Lights and fans in classroom 3B are not functioning properly, making it uncomfortable and difficult to conduct classes. Immediate maintenance is needed.', NULL, 'pending', current_timestamp()),
 (NULL, '24', '2', 'Slow Internet Speed', 'The internet speed in the hostel is extremely slow, making it almost impossible to attend online classes or download study materials. Kindly address this issue urgently.', NULL, 'pending', current_timestamp());
+
+
+
+INSERT INTO `assignments` (`title`, `assignedBy`, `assignedTo`, `subjectId`, `semester`, `startDate`, `endDate`, `status`, `file`) VALUES
+('Assignment 1', 16, 1, 1, 3, '2025-01-01 10:00:00', '2025-01-10 23:59:00', 'pending', '/uploads/test.pdf'),
+('Assignment 2', 17, 2, 2, 5, '2025-01-03 09:30:00', '2025-01-15 23:59:00', 'closed', '/uploads/test.pdf'),
+('Assignment 3', 24, 3, 3, 1, '2025-01-05 11:00:00', '2025-01-20 23:59:00', 'closed', '/uploads/test.pdf'),
+('Assignment 4', 18, 4, 4, 7, '2025-01-08 14:00:00', '2025-01-25 23:59:00', 'pending', '/uploads/test.pdf'),
+('Assignment 5', 19, 5, 5, 2, '2025-01-10 10:00:00', '2025-01-28 23:59:00', 'pending', '/uploads/test.pdf'),
+('Assignment 6', 16, 2, 1, 6, '2025-01-12 09:45:00', '2025-02-01 23:59:00', 'pending', '/uploads/test.pdf'),
+('Assignment 7', 17, 3, 2, 8, '2025-01-14 13:15:00', '2025-02-02 23:59:00', 'closed', '/uploads/test.pdf'),
+('Assignment 8', 24, 4, 3, 4, '2025-01-16 10:30:00', '2025-02-05 23:59:00', 'pending', '/uploads/test.pdf'),
+('Assignment 9', 18, 5, 4, 1, '2025-01-18 12:00:00', '2025-02-07 23:59:00', 'closed', '/uploads/test.pdf'),
+('Assignment 10', 19, 1, 5, 2, '2025-01-20 08:00:00', '2025-02-10 23:59:00', 'pending', '/uploads/test.pdf'),
+('Assignment 11', 16, 2, 1, 7, '2025-01-22 09:00:00', '2025-02-12 23:59:00', 'pending', '/uploads/test.pdf'),
+('Assignment 12', 17, 3, 2, 3, '2025-01-24 11:45:00', '2025-02-15 23:59:00', 'closed', '/uploads/test.pdf'),
+('Assignment 13', 24, 4, 3, 8, '2025-01-25 10:00:00', '2025-02-17 23:59:00', 'pending', '/uploads/test.pdf'),
+('Assignment 14', 18, 5, 4, 6, '2025-01-27 09:30:00', '2025-02-20 23:59:00', 'pending', '/uploads/test.pdf'),
+('Assignment 15', 19, 1, 5, 4, '2025-01-29 08:15:00', '2025-02-22 23:59:00', 'pending', '/uploads/test.pdf'),
+('Assignment 16', 16, 2, 1, 5, '2025-01-30 10:30:00', '2025-02-25 23:59:00', 'closed', '/uploads/test.pdf'),
+('Assignment 17', 17, 3, 2, 2, '2025-02-01 12:00:00', '2025-02-28 23:59:00', 'pending', '/uploads/test.pdf'),
+('Assignment 18', 24, 4, 3, 7, '2025-02-03 11:00:00', '2025-03-02 23:59:00', 'closed', '/uploads/test.pdf'),
+('Assignment 19', 18, 5, 4, 8, '2025-02-05 09:45:00', '2025-03-05 23:59:00', 'pending', '/uploads/test.pdf'),
+('Assignment 20', 19, 1, 5, 1, '2025-02-07 14:00:00', '2025-03-07 23:59:00', 'pending', '/uploads/test.pdf');
