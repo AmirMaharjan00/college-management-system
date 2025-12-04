@@ -316,6 +316,7 @@ con.connect(function(err) {
           assignmentMetaQuery += "studentId INT(11) NOT NULL, "
           assignmentMetaQuery += "message LONGTEXT, "
           assignmentMetaQuery += "file LONGTEXT, "
+          assignmentMetaQuery += "UNIQUE KEY unique_assignment_student(assignmentId, studentId), "
           assignmentMetaQuery += "FOREIGN KEY(assignmentId) REFERENCES assignments(assignmentId), "
           assignmentMetaQuery += "FOREIGN KEY(studentId) REFERENCES users(id) "
           assignmentMetaQuery += ");"

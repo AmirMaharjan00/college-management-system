@@ -1074,6 +1074,12 @@ $maroon: #d62977;
 
               tbody tr td .student {
                 cursor: pointer;
+                margin-right: 10px;
+
+                ~ .view {
+                  font-size: 14px;
+                  color: #6c757d;
+                }
 
                 &:hover {
                   color: var(--default);

@@ -58,7 +58,7 @@ export const Assignments = () => {
             userId,
             setInsertSuccess,
             role,
-            setActiveAssignment,
+            activeAssignment, setActiveAssignment,
             semesterSubjects,
             overlay,
             statusCounts
@@ -68,7 +68,7 @@ export const Assignments = () => {
         let test
         if( [ 'view', 'edit' ].includes( formMode ) ) {
             test = assignments.length ? assignments.reduce(( _thisVal, assignment, index ) => {
-                if( index === activeAssignment ) _thisVal = assignment
+                if( assignment.assignmentId === activeAssignment ) _thisVal = assignment
                 return _thisVal
             }, {}) : defaultValues
             setFileObj( `${ backUrl }${ test.file }` )
@@ -154,6 +154,7 @@ export const Assignments = () => {
             { formVisibility && <Form /> }
             { formMode === 'view' && <View /> }
             { formMode === 'delete' && <Delete /> }
+            { formMode === 'submit' && <Submit /> }
         </AssignmentsContext.Provider>
     </main>
 }
@@ -232,15 +233,19 @@ const Table = () => {
                         <td>{ convertedDate( endDate ) }</td>
                         <td className="status-wrap"><span className={ status }>{ status.slice( 0, 1).toUpperCase() + status.slice( 1 ) }</span></td>
                         <td className="actions">
-                            { ( [ 'admin', 'teacher' ].includes( role ) ) && <div className="has-tooltip action edit" onClick={() => handleViewClick( index, 'edit' )}>
+                            { ( [ 'admin', 'teacher' ].includes( role ) ) && <div className="has-tooltip action edit" onClick={() => handleViewClick( assignmentId, 'edit' )}>
                                 <FontAwesomeIcon className='edit' icon={ faPenToSquare } />
                                 <span className="tooltip-text">Edit</span>
                             </div> }
-                            <div className="has-tooltip action view" onClick={() => handleViewClick( index, 'view' )}>
+                            { ( [ 'student' ].includes( role ) ) && <div className="has-tooltip action edit" onClick={() => handleViewClick( assignmentId, 'submit' )}>
+                                <FontAwesomeIcon className='edit' icon={ faPenToSquare } />
+                                <span className="tooltip-text">Edit</span>
+                            </div> }
+                            <div className="has-tooltip action view" onClick={() => handleViewClick( assignmentId, 'view' )}>
                                 <FontAwesomeIcon className='view' icon={ faEye } />
                                 <span className="tooltip-text">View</span>
                             </div>
-                            { ( [ 'admin', 'teacher' ].includes( role ) ) && <div className="has-tooltip action delete" onClick={() => handleViewClick( index, 'delete' )}>
+                            { ( [ 'admin', 'teacher' ].includes( role ) ) && <div className="has-tooltip action delete" onClick={() => handleViewClick( assignmentId, 'delete' )}>
                                 <FontAwesomeIcon className='delete' icon={ faTrash } />
                                 <span className="tooltip-text">Delete</span>
                             </div> }
@@ -423,14 +428,25 @@ const Form = () => {
  */
 const View = () => {
     const assignmentContext = useContext( AssignmentsContext ),
-        { activeAssignmentObj, overlay, role } = assignmentContext,
+        { activeAssignmentObj, overlay, role, userId, activeAssignment } = assignmentContext,
         { title, semester, abbreviation = 'BCA', subjectName, teacherName, startDate, endDate, status, file } = activeAssignmentObj,
         { convertedDate } = useDate(),
-        [ canvas, setCanvas ] = useState( 'left' )
+        [ canvas, setCanvas ] = useState( 'left' ),
+        [ assignments, setAssignments ] = useState([]),
+        [ currentCanvas, setCurrentCanvas ] = useState( file )
 
     useEffect(() => {
         if( canvas ) setCanvas( 'none' )
     }, [ overlay ])
+
+    useEffect(() => {
+        ourFetch({
+            api: '/select-assignement-via-id',
+            callback: fetchCallback,
+            setter: setAssignments,
+            body: JSON.stringify({ assignmentId: activeAssignment })
+        })
+    }, [ activeAssignment ])
 
     /**
      * Handle Student click
@@ -441,9 +457,25 @@ const View = () => {
         }
     }
 
+    /**
+     * View My file
+     */
+    const viewMyFile = ( file ) => {
+        setCurrentCanvas( file )
+        setCanvas( 'right' )
+    }
+
+    /**
+     * View Assignment
+     */
+    const viewAssignment = () => {
+        setCurrentCanvas( file )
+        setCanvas( 'left' )
+    }
+
     return <div className={ `cmg-popup-wrapper view${ canvas !== 'none' ? ' active' : '' }` }>
         <div className="section-head">
-            <FontAwesomeIcon icon={ faBarsStaggered } className="section-icon" onClick={() => setCanvas( 'left' ) } />
+            <FontAwesomeIcon icon={ faBarsStaggered } className="section-icon" onClick={ viewAssignment } />
             <h2 className="popup-title">{ title }</h2>
         </div>
         <p className="popup-description">{ `By ${ teacherName } for ${ abbreviation }, ${ getScript( semester ) } Semester.` }</p>
@@ -476,12 +508,22 @@ const View = () => {
                         </tr>
                     </thead>
                     <tbody>
-                        <tr>
-                            <td className="head serial-number">1.</td>
-                            <td className="head student" onClick={ handleStudentClick }>
-                                <span className="student">Amir Maharjan</span>
-                            </td>
-                        </tr>
+                        {
+                            assignments.map(( assignment, index ) => {
+                                let { name, file, studentId } = assignment,
+                                    count = index + 1;
+                                return <tr key={ index }>
+                                    <td className="head serial-number">{ `${ count }.` }</td>
+                                    <td className="head student" onClick={ handleStudentClick }>
+                                        <span className="student">{ name }</span>
+                                        {( userId === studentId ) && <div className="has-tooltip action view" onClick={() => viewMyFile( file ) }>
+                                            <FontAwesomeIcon className='view' icon={ faEye } />
+                                            <span className="tooltip-text">View</span>
+                                        </div> }
+                                    </td>
+                                </tr>
+                            })
+                        }
                     </tbody>
                 </table>
             </div>
@@ -505,7 +547,7 @@ const View = () => {
         </div>
         <div className={ `canvas ${ canvas }` }>
             { canvas !== 'none' && <>
-                <iframe src={ `${ backUrl }${ file }` } width="100%" height="100%" allowFullScreen="true" />
+                <iframe src={ `${ backUrl }${ currentCanvas }` } width="100%" height="100%" allowFullScreen="true" />
                 <FontAwesomeIcon icon={ faCircleXmark } className="close-icon" onClick={() => setCanvas( 'none' ) } />
             </> }
         </div>
@@ -523,5 +565,105 @@ const Delete = () => {
             <button className="action no">No</button>
             <button className="action yes">Yes</button>
         </div>
+    </div>
+}
+
+/**
+ * MARK: Submit
+ */
+const Submit = () => {
+    const submitRef = useRef(),
+        { activeAssignmentObj, userId, activeAssignment } = useContext( AssignmentsContext ),
+        { assignmentId } = activeAssignmentObj,
+        defaultValues = {
+            message: '',
+            file: null
+        },
+        [ submitObj, setSubmitObj ] = useState( defaultValues ),
+        { message, file } = submitObj,
+        [ submitStatus, setSubmitStatus ] = useState( false )
+
+        console.log( activeAssignmentObj )
+
+    /**
+     * Handle Change
+     */
+    const handleChange = ( event ) => {
+        let { value, name, files } = event.target
+        setSubmitObj({
+            ...submitObj,
+            [ name ]: ( name === 'file' && files ) ? files[0] : value
+        })
+    }
+
+    /**
+     * Handle Submit
+     */
+    const handleSubmit = ( event ) => {
+        event.preventDefault()
+        const formdata = new FormData()
+        formdata.append( 'image', file )
+        ourFetch({
+            api: '/upload',
+            callback: uploadCallback,
+            body: formdata,
+            headersMultipart: true
+        })
+    }
+
+    /**
+     * Upload callback
+     */
+    const uploadCallback = ( data ) => {
+        let { success, imageUrl } = data,
+            newSubmitObj = {
+                assignmentId: activeAssignment,
+                studentId: userId,
+                file: imageUrl,
+                message: message
+            }
+        if( success ) {
+            ourFetch({
+                api: '/insert-assignmentmeta',
+                callback: insertCallback,
+                body: JSON.stringify( newSubmitObj )
+            })
+        }
+    }
+
+    /**
+     * Insert Callback
+     */
+    const insertCallback = ( data ) => {
+        let { success } = data
+        if( success ) {
+            setSubmitStatus( true )
+            setSubmitObj( defaultValues )
+        }
+    }
+
+    return <div className="cmg-form-wrapper submit" id="cmg-form-wrapper">
+        <form method="POST" encType="multipart/form-data" onSubmit={ handleSubmit }>
+            <div className="form-head">
+                <h2 className="form-title">Submit the Assignment</h2>
+            </div>
+            <div className="form-field">
+                <label className="form-label">Message</label>
+                <textarea name="message" id="message" rows={ 10 } value={ message } onChange={ handleChange }></textarea>
+            </div>
+            <div className="form-field">
+                <label className="form-label">
+                    Add Attachment
+                    <span className="form-error">*</span>
+                </label>
+                <input type="file" name="file" ref={ submitRef } onChange={ handleChange } required hidden/>
+                {
+                    file ?
+                    <iframe src={ URL.createObjectURL( file ) } width="100%" height="100%" allowFullScreen={ true } /> :
+                    <div className="no-file" onClick={() => submitRef.current.click() }></div>
+                }
+            </div>
+            { submitStatus ? <input type="submit" value={ 'Submitted' } disabled /> : <input type="submit" value={ 'Submit Assignment' } /> }
+        </form>
     </div>
 }

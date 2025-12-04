@@ -1247,10 +1247,34 @@ app.post( '/assignment-by-status', ( request, res ) => {
 app.post('/insert-assignment', (req, res) => {
   const { title, assignedBy, assignedTo, subjectId, semester, startDate, endDate, status, file } = req.body
   const insertQuery = `INSERT INTO assignments (title, assignedBy, assignedTo, subjectId, semester, startDate, endDate, status, file) VALUES ('${ title }', ${ assignedBy }, ${ assignedTo }, ${ subjectId }, ${ semester }, '${ startDate }', '${ endDate }', '${ status }', '${ file }')`
-
-  console.log( insertQuery )
   con.query( insertQuery, [ title, assignedBy, assignedTo, semester, startDate, endDate, status, file ], ( error, result ) => {
     if ( error ) return res.status( 500 ).json({ error: "Database insertion failed", success: false });
     return res.status( 200 ).json({ message: "Data inserted successfully!", success: true });
+  })
+});
+
+/**
+ * MARK: Insert Assignmentmeta
+ */
+app.post('/insert-assignmentmeta', (req, res) => {
+  const { assignmentId, studentId, message, file } = req.body,
+    insertQuery = `INSERT INTO assignmentsmeta (assignmentId, studentId, message, file) VALUES (${ assignmentId }, ${ studentId }, '${ message }', '${ file }') ON DUPLICATE KEY UPDATE message = VALUES(message), file = VALUES(file);`
+
+  console.log( insertQuery )
+  con.query( insertQuery, ( error, result ) => {
+    if ( error ) return res.status( 500 ).json({ error: "Database insertion failed", success: false });
+    return res.status( 200 ).json({ message: "Data inserted successfully!", success: true });
+  })
+});
+
+/**
+* MARK: Get assignmentmeta by id
+*/
+app.post( '/select-assignement-via-id', ( request, res ) => {
+  const { assignmentId } = request.body 
+    selectQuery = `SELECT a.*, u.* FROM assignmentsMeta a LEFT JOIN users u ON a.studentId = u.id WHERE a.assignmentId=${ assignmentId }`
+  con.query( selectQuery, ( error, result ) => {
+    if ( error ) return res.status( 500 ).json({ error: "Database selection failed" });
+    return res.status( 200 ).json({ success: true, result });
   })
 });
