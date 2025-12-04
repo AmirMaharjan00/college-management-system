@@ -801,9 +801,12 @@ MARK: Admin
     }
 
     #dashboard-earnings .finance-wrapper .finance .finance-icon {
-        padding: 15px;
         background: #1abe17;
-        color: var(--color);
+        width: 40px;
+        height: 40px;
+        text-align: center;
+        line-height: 40px;
+        color: #fff;
         border-radius: 5px;
     }
 
@@ -897,9 +900,9 @@ MARK: Admin
 
     #dashboard-earnings .notice-board .head .view-all {
         font-size: 14px;
-        padding: 3px 5px;
+        padding: 3px 7px;
         background: #1abe17;
-        color: var(--color);
+        color: #fff;
         border-radius: 5px;
     }
 
@@ -925,8 +928,11 @@ MARK: Admin
     }
 
     #dashboard-earnings .notice-board .foot .notice .notice-icon {
-        padding: 7px 10px;
         color: #3d5ee1;
+        width: 35px;
+        height: 35px;
+        text-align: center;
+        line-height: 35px;
         background: #3d5ee13f;
         border-radius: 50%;
         font-size: 12px;
@@ -958,9 +964,9 @@ MARK: Admin
 
     #dashboard-earnings .notice-board .foot .notice .notice-duration {
         background: var(--lightGrey);
-        padding: 5px;
+        padding: 3px 7px;
         border-radius: 5px;
-        color: var(--color);
+        color: #fff;
         font-size: 14px;
     }
 

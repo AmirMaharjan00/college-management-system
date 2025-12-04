@@ -44,14 +44,18 @@ $maroon: #d62977;
       padding: 10px;
       border-radius: 5px;
 
-      &:hover {
-        transform: scale(1.03);
-        box-shadow: var(--boxShadow);
+      &.refresh,
+      &.print {
+        padding: 0;
+        width: 40px;
       }
 
-      &.export svg,
-      &.add svg {
-        margin-right: 5px;
+      &:hover {
+        color: var(--default);
+      }
+
+      &.add:hover {
+        opacity: .8;
       }
     }
   }
