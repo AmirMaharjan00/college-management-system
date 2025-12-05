@@ -165,7 +165,7 @@ export const Assignments = () => {
 const Highlight = () => {
     const assignmentContext = useContext( AssignmentsContext ),
         { statusCounts } = assignmentContext
-
+    
     return <div className="highlight-wrapper">
         {
             statusCounts.map(( item, index ) => {
@@ -433,12 +433,13 @@ const View = () => {
         { convertedDate } = useDate(),
         [ canvas, setCanvas ] = useState( 'left' ),
         [ assignments, setAssignments ] = useState([]),
-        [ currentCanvas, setCurrentCanvas ] = useState( file )
+        [ currentCanvas, setCurrentCanvas ] = useState( file ),
+        [ notSubmitted, setNotSubmitted ] = useState([])
 
     useEffect(() => {
         if( canvas ) setCanvas( 'none' )
     }, [ overlay ])
-
+        
     useEffect(() => {
         ourFetch({
             api: '/select-assignement-via-id',
@@ -446,15 +447,19 @@ const View = () => {
             setter: setAssignments,
             body: JSON.stringify({ assignmentId: activeAssignment })
         })
-    }, [ activeAssignment ])
+        ourFetch({
+            api: '/assignment-not-submitted',
+            callback: fetchCallback,
+            setter: setNotSubmitted,
+            body: JSON.stringify({ assignmentId: activeAssignment, semester })
+        })
+    }, [ activeAssignment, semester ])
 
     /**
      * Handle Student click
      */
-    const handleStudentClick = () => {
-        if( role !== 'student' ) {
-            setCanvas( 'right' )
-        }
+    const handleStudentClick = ( file ) => {
+        if( role !== 'student' ) viewMyFile( file )
     }
 
     /**
@@ -509,20 +514,22 @@ const View = () => {
                     </thead>
                     <tbody>
                         {
-                            assignments.map(( assignment, index ) => {
-                                let { name, file, studentId } = assignment,
+                            assignments.length ? assignments.map(( assignment, index ) => {
+                                let { name, file: _thisFile, studentId } = assignment,
                                     count = index + 1;
                                 return <tr key={ index }>
                                     <td className="head serial-number">{ `${ count }.` }</td>
-                                    <td className="head student" onClick={ handleStudentClick }>
-                                        <span className="student">{ name }</span>
-                                        {( userId === studentId ) && <div className="has-tooltip action view" onClick={() => viewMyFile( file ) }>
+                                    <td className="head student">
+                                        <span className="student" onClick={() => handleStudentClick( _thisFile ) }>{ name }</span>
+                                        {( userId === studentId ) && <div className="has-tooltip action view" onClick={() => viewMyFile( _thisFile ) }>
                                             <FontAwesomeIcon className='view' icon={ faEye } />
                                             <span className="tooltip-text">View</span>
                                         </div> }
                                     </td>
                                 </tr>
-                            })
+                            }): <tr className="no-records">
+                                <td colSpan="2">No students have submitted.</td>
+                            </tr>
                         }
                     </tbody>
                 </table>
@@ -537,10 +544,24 @@ const View = () => {
                         </tr>
                     </thead>
                     <tbody>
-                        <tr>
-                            <td className="head serial-number">1.</td>
-                            <td className="head student">Amir Maharjan</td>
-                        </tr>
+                        {
+                            notSubmitted.length ? notSubmitted.map(( assignment, index ) => {
+                                let { name, file: _thisFile, studentId } = assignment,
+                                    count = index + 1;
+                                return <tr key={ index }>
+                                    <td className="head serial-number">{ `${ count }.` }</td>
+                                    <td className="head student">
+                                        <span className="student" onClick={() => handleStudentClick( _thisFile ) }>{ name }</span>
+                                        {( userId === studentId ) && <div className="has-tooltip action view" onClick={() => viewMyFile( _thisFile ) }>
+                                            <FontAwesomeIcon className='view' icon={ faEye } />
+                                            <span className="tooltip-text">View</span>
+                                        </div> }
+                                    </td>
+                                </tr>
+                            }): <tr className="no-records">
+                                <td colSpan="2">All students have submitted.</td>
+                            </tr>
+                        }
                     </tbody>
                 </table>
             </div>

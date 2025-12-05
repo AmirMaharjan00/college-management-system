@@ -17,7 +17,7 @@ export const useDate = () => {
         setTimeout(() => {
             setSeconds( String( dateInstance.getSeconds() ).padStart( 2, '0' ) )
         }, 1000)
-    })
+    }, [])
 
     const getDate = () => {
         return `${ day }/${ month }/${ year } ${ getDay( dateInstance.getDay() ) }`

@@ -1044,7 +1044,6 @@ app.post( '/all-complaints', ( request, res ) => {
     { id, role } = user
   let selectQuery = `SELECT complaints.*, x.name AS complaintBy, x.profile as profileBy, z.name AS complaintAgainst, z.profile as profileAgainst FROM complaints JOIN users AS x ON complaints.by = x.id JOIN users AS z ON complaints.against = z.id`
   if( role !== 'admin' ) selectQuery += ` WHERE complaints.by=${ id }`
-  console.log( selectQuery )
   con.query( selectQuery, ( error, result ) => {
     if ( error ) return res.status( 500 ).json({ error: "Database selection failed" });
     return res.status( 200 ).json({ result, success: true });
@@ -1273,6 +1272,18 @@ app.post('/insert-assignmentmeta', (req, res) => {
 app.post( '/select-assignement-via-id', ( request, res ) => {
   const { assignmentId } = request.body 
     selectQuery = `SELECT a.*, u.* FROM assignmentsMeta a LEFT JOIN users u ON a.studentId = u.id WHERE a.assignmentId=${ assignmentId }`
+  con.query( selectQuery, ( error, result ) => {
+    if ( error ) return res.status( 500 ).json({ error: "Database selection failed" });
+    return res.status( 200 ).json({ success: true, result });
+  })
+});
+
+/**
+* MARK: Assignment Not Subbmitted
+*/
+app.post( '/assignment-not-submitted', ( request, res ) => {
+  const { assignmentId, semester } = request.body 
+    selectQuery = `SELECT * FROM users u WHERE u.role = 'student' AND NOT EXISTS ( SELECT 1 FROM assignmentsMeta am JOIN assignments a ON a.assignmentId = am.assignmentId WHERE am.studentId = u.id AND a.semester = ${ semester } AND am.assignmentId = ${ assignmentId } AND a.assignedTo = u.courseId)`
   con.query( selectQuery, ( error, result ) => {
     if ( error ) return res.status( 500 ).json({ error: "Database selection failed" });
     return res.status( 200 ).json({ success: true, result });

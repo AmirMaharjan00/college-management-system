@@ -1049,7 +1049,7 @@ $maroon: #d62977;
         .submission-wrap {
           display: flex;
           justify-content: space-between;
-          align-items: center;
+          align-items: start;
           gap: 50px;
           padding-top: 10px;
           border-top: 2px dashed rgba(0, 0, 0, 0.219);
@@ -1072,17 +1072,24 @@ $maroon: #d62977;
                 text-align: left;
               }
 
-              tbody tr td .student {
-                cursor: pointer;
-                margin-right: 10px;
-
-                ~ .view {
-                  font-size: 14px;
-                  color: #6c757d;
+              tbody tr {
+                &.no-records td {
+                  padding: 7px 5px;
+                  background: #dfdfdf;
+                  text-align: center;
                 }
+                td .student {
+                  cursor: pointer;
+                  margin-right: 10px;
 
-                &:hover {
-                  color: var(--default);
+                  ~ .view {
+                    font-size: 14px;
+                    color: #6c757d;
+                  }
+
+                  &:hover {
+                    color: var(--default);
+                  }
                 }
               }
               
