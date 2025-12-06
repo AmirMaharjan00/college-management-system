@@ -16,6 +16,39 @@
     }
 
     .cmg-form-wrapper.no-center {
-        width: 50%;
+        width: 100%;
+
+        .new-book-form {
+            .col {
+                flex: 1 1;
+                align-self: start;
+
+                .no-image {
+                    position: relative;
+                    border: 2px dashed black;
+                    padding: 30px;
+                    height: 100%;
+        
+                    .notice {
+                        color: red;
+
+                        &:after {
+                            content: "\2b";
+                            font-size: 30px;
+                            font-weight: 600;
+                            position: absolute;
+                            top: 50%;
+                            left: 50%;
+                            transform: translate(-50%, -50%);
+                            color: #000;
+                        }
+                    }
+                }
+
+                .range-indicator {
+                    border: 1px solid black;
+                }
+            }
+        }
     }
 }

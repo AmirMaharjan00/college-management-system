@@ -68,6 +68,11 @@
         }
     }
 
+    input[disabled] {
+        cursor: not-allowed !important;
+        opacity: 0.5;
+    }
+
     input,
     input[type="text"],
     input[type="date"],
@@ -190,6 +195,21 @@
             transform: translate(-50%, -50%);
             font-size: 30px;
             font-weight: 700;
+        }
+    }
+
+    .custom-range {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 10px;
+
+        input[type="range"] {
+            flex: 1 1;
+        }
+
+        input[type="number"] {
+            width: 20%;
         }
     }
 }

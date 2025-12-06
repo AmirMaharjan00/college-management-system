@@ -1289,3 +1289,16 @@ app.post( '/assignment-not-submitted', ( request, res ) => {
     return res.status( 200 ).json({ success: true, result });
   })
 });
+
+/**
+* MARK: update subject
+*/
+app.post( '/update-subject', ( request, res ) => {
+  const { notes, completion, id, name, semester, year, code, course_id, teacherId } = request.body 
+    selectQuery = `UPDATE subjects SET notes='${ notes }', completion=${ completion }, name='${ name }', semester=${ semester }, year=${ year }, code='${ code }', course_id=${ course_id }, teacherId=${ teacherId } WHERE id=${ id }`
+    console.log( selectQuery )
+  con.query( selectQuery, ( error, result ) => {
+    if ( error ) return res.status( 500 ).json({ error: "Database selection failed" });
+    return res.status( 200 ).json({ success: true, result });
+  })
+});

@@ -47,7 +47,7 @@ export const Subjects = () => {
                 let filtered = subjects.reduce(( val, item ) => {
                     let { teacherId } = item
                     if( role === 'teacher' && teacherId === userId ) val = [  ...val, item ]
-                    if( role === 'admin' ) val = [  ...val, item ]
+                    if( [ 'admin', 'student', 'staff' ].includes( role ) ) val = [  ...val, item ]
                     return val
                 }, [])
                 return filtered.slice( ( activePage - 1 ) * rowsPerPage, ( activePage * rowsPerPage ) );
@@ -65,7 +65,7 @@ export const Subjects = () => {
             let totalSubjects = subjects.reduce(( val, item ) => {
                 let { teacherId } = item
                 if( role === 'teacher' && teacherId === userId ) val = [  ...val, item ]
-                if( role === 'admin' ) val = [  ...val, item ]
+                if( [ 'admin', 'student', 'staff' ].includes( role ) ) val = [  ...val, item ]
                 return val
             }, [])
             return new Array( Math.ceil( totalSubjects.length / rowsPerPage ) ).fill( 0 )

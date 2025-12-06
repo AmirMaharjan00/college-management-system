@@ -1013,7 +1013,6 @@ MARK: Admin
 
     #dashboard-foot .subject-completion .foot .subject {
         display: grid;
-        gap: 12px;
     }
 
     #dashboard-foot .subject-completion .foot .subject + .subject {
@@ -1025,8 +1024,20 @@ MARK: Admin
         color: var(--cmg-black-dark-color);
     }
 
+    #dashboard-foot .subject-completion .foot .subject .subject-progress-wrap {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 20px;
+    }
+
     #dashboard-foot .subject-completion .foot .subject .subject-progress {
         width: 100%;
+    }
+
+    #dashboard-foot .subject-completion .foot .subject .subject-progress-wrap .indicator {
+        border: 1px solid black;
+        padding: 5px;
     }
 
     #dashboard-foot .subject-completion .foot .subject .completion {

@@ -545,10 +545,13 @@ const SubjectCompletion = () => {
             <ul className="subject-lists">
                 {
                     subjectList.length > 0 ? subjectList?.map(( subject, index ) => {
-                        let { name } = subject
+                        let { name, completion } = subject
                         return <li className="subject" key={ index }>
                             <span className="subject-label">{ name }</span>
-                            <progress className="subject-progress" value="50" max="100" />
+                            <div className="subject-progress-wrap">
+                                <progress className="subject-progress" value={ completion } max="100" />
+                                <span className="indicator">{ `${ completion }%` }</span>
+                            </div>
                         </li>
                     }) : <li className='subject'>{ 'No Subjects in this course.' }</li>
                 }
@@ -668,31 +671,6 @@ const LeaveRequest = () => {
  * MARK: Fees Collection
  */
 const FeesCollection = () => {
-    // const [ fees, setFees ] = useState({
-    //     result: [],
-    //     success: false
-    // }),
-    
-    // months = useMemo(() => {
-    //     return fees?.result.reduce(( val, _this ) => {
-    //         val = [ ...val, _this.month ]
-    //         return val
-    //     }, [])
-    // }, [ fees ]),
-    // amounts = useMemo(() => {
-    //     return fees?.result.reduce(( val, _this ) => {
-    //         val = [ ...val, _this.total ]
-    //         return val
-    //     }, [])
-    // }, [ fees ])
-
-    // useEffect(() => {
-    //     ourFetch({
-    //         api: '/dashboard-fees-collection',
-    //         callback: setFees
-    //     })
-    // }, [])
-
     const [fees, setFees] = useState({
         result: [],
         success: false
