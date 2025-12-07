@@ -1296,7 +1296,28 @@ app.post( '/assignment-not-submitted', ( request, res ) => {
 app.post( '/update-subject', ( request, res ) => {
   const { notes, completion, id, name, semester, year, code, course_id, teacherId } = request.body 
     selectQuery = `UPDATE subjects SET notes='${ notes }', completion=${ completion }, name='${ name }', semester=${ semester }, year=${ year }, code='${ code }', course_id=${ course_id }, teacherId=${ teacherId } WHERE id=${ id }`
-    console.log( selectQuery )
+  con.query( selectQuery, ( error, result ) => {
+    if ( error ) return res.status( 500 ).json({ error: "Database selection failed" });
+    return res.status( 200 ).json({ success: true, result });
+  })
+});
+
+/**
+* MARK: Select yearly expense income
+*/
+app.post( '/get-total-yearly-expense-income', ( request, res ) => {
+  const selectQuery = `SELECT SUM(CASE WHEN type = 'income' THEN amount ELSE 0 END) AS income, SUM(CASE WHEN type = 'expenses' THEN amount ELSE 0 END) AS expense FROM account WHERE year = YEAR(CURDATE())`
+  con.query( selectQuery, ( error, result ) => {
+    if ( error ) return res.status( 500 ).json({ error: "Database selection failed" });
+    return res.status( 200 ).json({ success: true, result: result[ 0 ] });
+  })
+});
+
+/**
+* MARK: Select yearly expense income
+*/
+app.post( '/get-monthly-expense-income', ( request, res ) => {
+  const selectQuery = `SELECT m.month_name AS month, COALESCE(SUM(CASE WHEN a.type = 'income' THEN a.amount END), 0) AS income, COALESCE(SUM(CASE WHEN a.type = 'expenses' THEN a.amount END), 0) AS expense FROM ( SELECT 1 AS month_num, 'January' AS month_name UNION ALL SELECT 2, 'February' UNION ALL SELECT 3, 'March' UNION ALL SELECT 4, 'April' UNION ALL SELECT 5, 'May' UNION ALL SELECT 6, 'June' UNION ALL SELECT 7, 'July' UNION ALL SELECT 8, 'August' UNION ALL SELECT 9, 'September' UNION ALL SELECT 10, 'October' UNION ALL SELECT 11, 'November' UNION ALL SELECT 12, 'December' ) AS m LEFT JOIN account a ON m.month_num = MONTH(a.date) AND YEAR(a.date) = YEAR(CURDATE()) GROUP BY m.month_num, m.month_name ORDER BY m.month_num`
   con.query( selectQuery, ( error, result ) => {
     if ( error ) return res.status( 500 ).json({ error: "Database selection failed" });
     return res.status( 200 ).json({ success: true, result });

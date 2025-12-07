@@ -8,8 +8,10 @@ import staff from '../assets/images/staff.png'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faArrowsRotate, faChevronDown, faChevronRight, faCheckDouble, faXmark, faCircleExclamation, faIcons, faCoins, faSackDollar, faCalendarDays, faMoneyBillTrendUp, faUserPlus } from '@fortawesome/free-solid-svg-icons';
 import { faFlag } from '@fortawesome/free-regular-svg-icons';
-import { ourFetch, getOrdinals, firstLetterCapitalize, formatDate } from '../functions'
+import { ourFetch, getOrdinals, firstLetterCapitalize, formatDate, fetchCallback } from '../functions'
 import { Bar } from 'react-chartjs-2'
+import { AddNewUser } from '../forms/add-new-user'
+import { LineChart } from '../charts'
 // import 
 import {
     Chart as ChartJS,
@@ -28,11 +30,22 @@ import {
  * @since 1.0.0
  */
 export const AdminDashboard = () => {
-    const global = useContext( GLOBALCONTEXT )
-    const { loggedInUser } = global
-    const { role, name } = loggedInUser
+    const global = useContext( GLOBALCONTEXT ),
+        { formVisibility, setFormVisibility, setOverlay, setHeaderOverlay, loggedInUser } = global,
+        { role, name } = loggedInUser,
+        [  ] = useState( false )
+
+    /**
+     * handle new student click
+     */
+    const handleNewStudentClick = () => {
+        setFormVisibility( true )
+        setOverlay( true )
+        setHeaderOverlay( true )
+    }
 
     return <>
+        { formVisibility && <AddNewUser /> }
         <div className="dashboard-head">
             <div className="dashboard-intro">
                 <h2 className="user-name">Admin Dashboard</h2>
@@ -42,11 +55,13 @@ export const AdminDashboard = () => {
                 </ul>
             </div>
             <div className="dashboard-actions">
-                <button className="button-action add-student cmg-btn-spacing">
+                <button className="button-action add-student cmg-btn-spacing" onClick={ handleNewStudentClick }>
                     <FontAwesomeIcon icon={ faUserPlus }/>
                     <span>Add New Student</span>
                 </button>
-                <button className="button-action fees">Fees Details</button>
+                <Link to="/dashboard/account">
+                    <button className="button-action fees">Fees Details</button>
+                </Link>
             </div>
         </div>{/* .dashboard-head */}
         <div className="dashboard-welcome">
@@ -87,28 +102,7 @@ export const AdminDashboard = () => {
             </Link>
         </div>{/* #dashboard-links */}
         <div className="dashboard-earnings" id="dashboard-earnings">
-            <div className="finance-wrapper">
-                <div className="finance total-earnings-wrapper">
-                    <div className="total-earnings">
-                        <div className="finance-head">
-                            <span className="finance-label">Total Earnings</span>
-                            <h2 className="finance-number">$64, 522,24</h2>
-                        </div>
-                        <span className="finance-icon"><FontAwesomeIcon icon={ faSackDollar } /></span>
-                    </div>
-                    <div className="diagram"></div>
-                </div>
-                <div className="finance total-expenses-wrapper">
-                    <div className="total-earnings">
-                        <div className="finance-head">
-                            <span className="finance-label">Total Expenses</span>
-                            <h2 className="finance-number">$60,522,24</h2>
-                        </div>
-                        <span className="finance-icon"><FontAwesomeIcon icon={ faSackDollar } /></span>
-                    </div>
-                    <div className="diagram"></div>
-                </div>
-            </div>
+            <Earnings />
             <div className="notice-board">
                 <div className="head">
                     <h2 className="label">Notice board</h2>
@@ -334,7 +328,6 @@ export const AdminDashboard = () => {
                 </div>
             </div>
         </div>
-
     </>
 }
 
@@ -757,4 +750,74 @@ const BarChart = ({ months, amounts }) => {
     };
 
     return <Bar data={data} options={options} />
+}
+
+/**
+ * MARK: Earnings
+ */
+const Earnings = () => {
+    const [ earnings, setEarnings ] = useState({
+        income: 0,
+        expense: 0
+    }),
+    [ monthly, setMonthly ] = useState([]),
+    { income, expense } = earnings,
+    filteredMonthly = useMemo(() => {
+        return monthly.reduce(( _thisVal, item ) => {
+            let { income, expense } = item
+            _thisVal[ 'income' ].push( income )
+            _thisVal[ 'expense' ].push( expense )
+            return _thisVal
+        }, { income: [], expense: [] })
+    }, [ monthly ])
+
+    useEffect(() => {
+        ourFetch({
+            api: '/get-total-yearly-expense-income',
+            callback: fetchCallback,
+            setter: setEarnings
+        })
+        ourFetch({
+            api: '/get-monthly-expense-income',
+            callback: fetchCallback,
+            setter: setMonthly
+        })
+    }, [])
+
+    return <div className="finance-wrapper">
+        <div className="finance total-earnings-wrapper">
+            <div className="total-earnings">
+                <div className="finance-head">
+                    <span className="finance-label">Total Earnings</span>
+                    <h2 className="finance-number">{ `Rs. ${ income }` }</h2>
+                </div>
+                <span className="finance-icon"><FontAwesomeIcon icon={ faSackDollar } /></span>
+            </div>
+            <div className="diagram">
+                <LineChart
+                    short = { true }
+                    label = "Income"
+                    _thisData = { filteredMonthly.income }
+                    useApi = { false }
+                />
+            </div>
+        </div>
+        <div className="finance total-expenses-wrapper">
+            <div className="total-earnings">
+                <div className="finance-head">
+                    <span className="finance-label">Total Expenses</span>
+                    <h2 className="finance-number">{ `Rs. ${ expense }` }</h2>
+                </div>
+                <span className="finance-icon"><FontAwesomeIcon icon={ faSackDollar } /></span>
+            </div>
+            <div className="diagram">
+                <LineChart
+                    short = { true }
+                    label = "Expenses"
+                    _thisData = { filteredMonthly.expense }
+                    useApi = { false }
+                />
+            </div>
+        </div>
+    </div>
 }

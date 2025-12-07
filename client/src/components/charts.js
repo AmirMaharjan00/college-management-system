@@ -32,29 +32,32 @@ ChartJS.register(
 export const LineChart = ( props ) => {
     const Global = useContext( GLOBALCONTEXT ),
         { formSuccess } = Global,
-        { api, label, title } = props,
+        { api, label, title, short = false, useApi = true, _thisData = [] } = props,
         [ monthlyFines, setMonthlyFines ] = useState([]),
         months = monthlyFines.reduce(( value, fine ) => {
             let { month, total } = fine
             value = { ...value, [ month ]: total }
             return value;
         }, {}),
-        labels = [ 'January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December' ];
-        // labels = [ 'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec' ];
+        fullMonths = [ 'January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December' ],
+        shortMonths = [ 'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec' ],
+        labels = short ? shortMonths : fullMonths
 
     useEffect(() => {
-        ourFetch({
-            api,
-            callback: fetchCallback,
-            setter: setMonthlyFines
-        })
+        if( useApi ) {
+            ourFetch({
+                api,
+                callback: fetchCallback,
+                setter: setMonthlyFines
+            })
+        }
     }, [ formSuccess ])
 
     const data = {
         labels,
         datasets: [{
             label,
-            data: labels.map(( month ) => {
+            data: _thisData.length > 0 ? _thisData : labels.map(( month ) => {
                 if( month in months ) {
                     return months[ month ]
                 } else {
@@ -72,17 +75,35 @@ export const LineChart = ( props ) => {
         responsive: true,
         maintainAspectRatio: false, // ignore default aspect ratio
         plugins: {
-            legend: { position: 'top' },
-            title: {
-                display: true,
-                text: title
-            },
+            legend: { position: 'top', display: false },
+            // title: {
+            //     display: true,
+            //     text: title
+            // },
+            tooltip: {
+                callbacks: {
+                    // Format tooltip value as '2k' or '2.5k'
+                    label: function (context) {
+                        const v = context.parsed.y ?? 0;
+                        // Show integer if divisible by 1000, otherwise one decimal (e.g. 2.5k)
+                        if (v % 1000 === 0) return `${context.dataset.label}: ${v / 1000}k`;
+                        return `${context.dataset.label}: ${+(v / 1000).toFixed(1)}k`;
+                    }
+                }
+            }
         },
         scales: {
-            x: {
-                title: {
-                    display: true,
-                    text: 'Month',
+            y: {
+                beginAtZero: true,
+                // Force ticks at every 1000 so you'll see 0, 1k, 2k, 3k...
+                ticks: {
+                    stepSize: 1000,
+                    callback: function (value) {
+                        // value is the tick number
+                        if (Number(value) === 0) return '0';
+                        // leave as integer thousands (2k) or decimal (2.5k) if needed
+                        return `${Number(value) / 1000}k`;
+                    },
                 },
             },
         },

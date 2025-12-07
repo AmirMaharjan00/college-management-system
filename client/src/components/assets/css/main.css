@@ -529,12 +529,12 @@ MARK: Admin
     }
 
     #fees-leave-request-wrapper .leave-requests-wrapper {
-        width: 500px;
+        width: 30%;
         height: 375px;
     }
 
     #fees-leave-request-wrapper .fees-collection-wrapper {
-        flex: 1;
+        flex: 1 1;
     }
 
     #fees-leave-request-wrapper .fees-collection-wrapper .head,
@@ -764,10 +764,11 @@ MARK: Admin
         justify-content: space-between;
         gap: 20px;
         margin-bottom: 20px;
+        height: 390px;
     }
 
     #dashboard-earnings .finance-wrapper {
-        width: 350px;
+        width: 25%;
         border-radius: 5px;
     }
 
@@ -780,9 +781,13 @@ MARK: Admin
     #dashboard-earnings .finance-wrapper .finance {
         padding: 20px;
         box-shadow: var(--boxShadow);
-        height: calc(290px/2);
         border-radius: 6px;
         background-color: var(--card-bg);
+    }
+
+    #dashboard-earnings .finance-wrapper .finance .diagram,
+    #dashboard-earnings .finance-wrapper .finance .cmg-line-chart {
+        height: 85px;
     }
 
     #dashboard-earnings .finance-wrapper .finance:first-child {
@@ -817,7 +822,7 @@ MARK: Admin
     #dashboard-earnings .finance-details {
         display: flex;
         flex-direction: column;
-        width: 350px;
+        width: 25%;
         gap: 10px;
         height: 400px;
     }
