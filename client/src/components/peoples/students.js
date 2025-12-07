@@ -247,42 +247,73 @@ export const StudentsList = () => {
                     filteredStudents.map(( student, index ) => {
                         let count = index + 1,
                             { id, name, gender, status, registered_date, semester, abbreviation, profile } = student
-                        return <div key={ index } className='grid'>
-                            <div className='head'>
-                                <span>{ id }</span>
-                                <div>
-                                    <span>{ status.slice( 0, 1 ).toUpperCase() + status.slice( 1 ) }</span>
-                                    <div className={ `more-button-wrapper${ currentDropdownId === id ? ' active' : '' }` } ref={ actionButton }>
-                                        <button className='more-button' onClick={() => handleActionButton( id )}><FontAwesomeIcon icon={ faEllipsisVertical }/></button>
-                                        { currentDropdownId === id && <ActionButtonDropdown id={ id } /> }
+                        return (
+                            <div key={index} className='grid card'>
+                                <div className='head card-head'>
+                                    <span className='card-id'>{ id }</span>
+
+                                    <div className='status-wrap'>
+                                        <span className='card-status'>
+                                            { status.slice(0, 1).toUpperCase() + status.slice(1) }
+                                        </span>
+
+                                        <div className={`more-button-wrapper${ currentDropdownId === id ? ' active' : '' }`} ref={actionButton} >
+                                            <button className='more-button' onClick={() => handleActionButton(id)} >
+                                                <FontAwesomeIcon icon={faEllipsisVertical} />
+                                            </button>
+
+                                            {currentDropdownId === id && <ActionButtonDropdown id={id} />}
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div className='body card-body'>
+                                    <div className='top card-top'>
+                                        <figure className='profile-wrap'>
+                                            <img src={profile} alt={name} />
+                                        </figure>
+
+                                        <div className='user user-wrap'>
+                                            <span className='name user-name'>
+                                                <Link to="/dashboard/user-details" state={{ user: student }}>
+                                                    {name}
+                                                </Link>
+                                            </span>
+
+                                            <span className='semester user-semester'>
+                                                { `${abbreviation} ${getScript(semester)}` }
+                                            </span>
+                                        </div>
                                     </div>
 
-                                </div>
-                            </div>
-                            <div className='body'>
-                                <div className='top'>
-                                    <figure><img src={ profile } alt={ name }/></figure>
-                                    <div className='user'>
-                                        <span className='name'><Link to="/dashboard/user-details" state={{ user: student }}>{ name }</Link></span>
-                                        <span className='semester'>{ `${ abbreviation } ${ getScript( semester ) }` }</span>
+                                    <div className='bottom card-bottom'>
+                                        <div className='info-item'>
+                                            <span className='prefix info-label'>Gender</span>
+                                            <span className='value info-value'>
+                                                { gender.slice(0, 1).toUpperCase() + gender.slice(1) }
+                                            </span>
+                                        </div>
+
+                                        <div className='info-item'>
+                                            <span className='prefix info-label'>Date of Join</span>
+                                            <span className='value info-value'>
+                                                { convertedDate(registered_date) }
+                                            </span>
+                                        </div>
                                     </div>
                                 </div>
-                                <div className='bottom'>
-                                    <div>
-                                        <span className='prefix'>Gender</span>
-                                        <span className='value'>{ gender.slice( 0, 1 ).toUpperCase() + gender.slice( 1 ) }</span>
-                                    </div>
-                                    <div>
-                                        <span className='prefix'>Date of Join</span>
-                                        <span className='value'>{ convertedDate( registered_date ) }</span>
-                                    </div>
+
+                                <div className='foot card-foot'>
+                                    <button className='msg-btn' onClick={() => handleMessageClick(id)}>
+                                        <FontAwesomeIcon icon={faMessage} />
+                                    </button>
+
+                                    <button className='collect-btn' onClick={() => handleFees(id)}>
+                                        Collect Fees
+                                    </button>
                                 </div>
                             </div>
-                            <div className='foot'>
-                                <button onClick={() => handleMessageClick( id )}><FontAwesomeIcon icon={ faMessage }/></button>
-                                <button onClick={() => handleFees( id )}>Collect Fees</button>
-                            </div>
-                        </div>
+                        );
                     })
                 }
             </div>}

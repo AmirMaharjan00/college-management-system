@@ -15,18 +15,7 @@
     }
 
     .cmg-menu::-webkit-scrollbar {
-        width: 6px;
         display: none;
-        transition: all .3s ease-in-out;
-    }
-
-    &:hover .cmg-menu::-webkit-scrollbar {
-        display: block;
-    }
-    
-    .cmg-menu::-webkit-scrollbar-thumb {
-        background-color: #a3a3a3;
-        border-radius: 10px;
     }
 
     .cmg-menu-item .submenu-heading {
@@ -93,15 +82,11 @@
 
 #cmg-body.open {
     #cmg-main {
-        margin-left: 90px;
+        margin-left: 70px;
     }
 
     #cmg-sidebar {
-        width: 90px;
-
-        &:hover .cmg-menu {
-            padding-left: 16px;
-        }
+        width: 70px;
     
         .cmg-menu-item {
             width: 40px;

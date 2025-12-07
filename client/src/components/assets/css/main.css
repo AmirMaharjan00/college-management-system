@@ -132,6 +132,17 @@ MARK: Global
         transition: all .3s ease-in-out;
         border: 1px solid #efefef;
         padding: 10px 20px;
+        max-height: 200px;
+        overflow-y: auto;
+    }
+
+    #root .cmg-dropdown::-webkit-scrollbar {
+        width: 4px;
+    }
+
+    #root .cmg-dropdown::-webkit-scrollbar-thumb {
+        background-color: #000;
+        border-radius: 20px;
     }
 
     #root .dropdown:hover .cmg-dropdown {

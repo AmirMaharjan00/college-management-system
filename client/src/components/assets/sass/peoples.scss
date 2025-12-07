@@ -59,10 +59,10 @@
                 gap: 10px;
 
                 .action-btn {
-                    padding: 10px;
+                    width: 35px;
+                    height: 35px;
                     background: var(--actionBorder);
                     border-radius: 5px;
-                    box-shadow: 0px 0px 1px 0px #000000b6;
                     color: var(--cmg-black-dark-color);
 
                     .label {
@@ -110,13 +110,14 @@
             -moz-appearance: none;
             background-color: #fff;
             border: 1px solid #ccc;
-            padding: 10px;
+            padding: 8px 10px;
             border-radius: 5px;
             background-image: url('data:image/svg+xml;utf8,<svg fill="gray" height="20" viewBox="0 0 24 24" width="20" xmlns="http://www.w3.org/2000/svg"><path d="M7 10l5 5 5-5z"/></svg>');
             background-repeat: no-repeat;
             background-position: right 10px center;
             background-size: 20px;
             width: 200px;
+            height: 35px;
         }
 
         select:focus {
@@ -198,10 +199,9 @@
             gap: 20px;
 
             .grid {
-                background: var(--white);
+                background: var(--cmg-white-dark-color);
                 border-radius: 5px;
                 transition: all .4s;
-                border-bottom: 1px solid var(--actionBorder);
 
                 .head {
                     display: flex;
@@ -210,9 +210,18 @@
                     border-bottom: 1px solid var(--actionBorder);
                     padding: 20px;
 
+                    .status-wrap {
+                        display: flex;
+                    }
+
+                    .status-wrap .card-status,
+                    .card-id {
+                        color: var(--cmg-black-dark-color);
+                    }
+
                     .more-button {
                         margin-left: 10px;
-                        padding: 7px 10px;
+                        color: var(--cmg-black-dark-color);
                     }
                 }
 
@@ -227,6 +236,7 @@
                         margin-bottom: 20px;
                         background: #f3f3f9;
                         padding: 10px;
+                        border-radius: 5px;
                         
                         figure {
                             height: 60px;
@@ -235,7 +245,7 @@
                             img {
                                 height: 100%;
                                 width: 100%;
-                                border-radius: 50%;
+                                border-radius: 5px;
                                 object-fit: cover;
                             }
                         }
@@ -246,11 +256,12 @@
                                 margin-bottom: 5px;
                                 font-size: 18px;
                                 font-weight: 700;
+                                color: var(--cmg-black-dark-color);
                             }
 
                             .semester {
                                 font-size: 14px;
-                                color: var(--lightgrey);
+                                color: var(--cmg-black-dark-color);
                             }
                         }
                     }
@@ -264,6 +275,7 @@
                         .prefix {
                             display: block;
                             margin-bottom: 5px;
+                            color: var(--cmg-black-dark-color);
                         }
 
                         .value {
@@ -280,6 +292,11 @@
                     display: flex;
                     justify-content: space-between;
                     align-items: center;
+
+                    .msg-btn,
+                    .collect-btn {
+                        color: var(--cmg-black-dark-color);
+                    }
                 }
             }
 
@@ -346,6 +363,10 @@
         }
     }
     
+}
+
+#root .dark #cmg-main.peoples-student-wrapper .grid-wrapper .grid .body .top {
+    background-color: #1a1d21;
 }
 
 /**

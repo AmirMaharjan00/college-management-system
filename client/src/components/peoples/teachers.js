@@ -16,6 +16,7 @@ export const TeachersList = () => {
         [ activePage, setActivePage ] = useState( 1 ),
         [ layout, setLayout ] = useState( 'list' ),
         [ sortBy, setSortBy ] = useState( 'asc' ),
+        [ currentDropdownId, setCurrentDropdownId ] = useState(0),
         totalPages = new Array( Math.ceil( allStudents.length / rowsPerPage ) ).fill( 0 )
 
     useEffect(() => {
@@ -27,9 +28,6 @@ export const TeachersList = () => {
         })
     }, [ sortBy, rowsPerPage ])
 
-    /**
-     * Filter students acording to search
-     */
     const filteredStudents = useMemo(() => {
         if( searched === '' ) return allStudents.slice( ( activePage - 1 ) * rowsPerPage, ( activePage * rowsPerPage ) );
         let newStudentsList = allStudents.reduce(( val, student ) => {
@@ -42,23 +40,9 @@ export const TeachersList = () => {
         return newStudentsList.slice( 0, 10 );
     }, [ searched, allStudents, activePage, rowsPerPage ])
 
-    /**
-     * Handle Search
-     */
-    const handleSearch = ( event ) => {
-        setSearched( event.target.value )
-    }
+    const handleSearch = ( event ) => setSearched( event.target.value )
+    const handleRowsPerPage = ( event ) => setRowsPerPage( event.target.value )
 
-    /**
-     * Handle Pagination
-     */
-    const handleRowsPerPage = ( event ) => {
-        setRowsPerPage( event.target.value )
-    }
-
-    /**
-     * Handle next & previous
-     */
     const handlePagination = ( type ) => {
         if( type === 'next' ) {
             if( activePage >= totalPages.length ) return
@@ -69,23 +53,27 @@ export const TeachersList = () => {
         }
     }
 
-    /**
-     * Handle Sort
-     */
-    const handleSort = ( event ) => {
-        setSortBy( event.target.value )
+    const handleSort = ( event ) => setSortBy( event.target.value )
+
+    const handleActionButton = (id) => {
+        if (currentDropdownId === id) {
+            setCurrentDropdownId(0)
+        } else {
+            setCurrentDropdownId(id)
+        }
     }
 
     return <main className="cmg-main peoples-student-wrapper" id="cmg-main">
         <div className='page-header students-list'>
             <div className="dashboard-intro">
                 <h2 className="user-name">Teachers List</h2>
-                <ul className="cmg-breadcrumb" id="cmg-breadcrumb">
+                <ul className="cmg-breadcrumb">
                     <li className="breadcrumb-item"><Link to="/dashboard">Dashboard</Link></li>
                     <li className="breadcrumb-item">Teachers</li>
                     <li className="breadcrumb-item">All Teachers</li>
                 </ul>
             </div>
+
             <div className='action-buttons'>
                 <button className='action-btn refresh'><FontAwesomeIcon icon={ faRotate }/></button>
                 <button className='action-btn print'><FontAwesomeIcon icon={ faPrint }/></button>
@@ -99,11 +87,11 @@ export const TeachersList = () => {
                 </button>
             </div>
         </div>
+
         <div className='list-head'>
             <div className='list-head-item filter-wrapper'>
                 <h2 className="label">Teachers List</h2>
                 <div className='action-buttons'>
-                    {/* <div>hel</div> */}
                     <button className='action-btn' onClick={() => setLayout( 'list' )}><FontAwesomeIcon icon={ faList }/></button>
                     <button className='action-btn' onClick={() => setLayout( 'grid' )}><FontAwesomeIcon icon={ faGrip }/></button>
                     <select className='sort-by' value={ sortBy } onChange={ handleSort }>
@@ -112,6 +100,7 @@ export const TeachersList = () => {
                     </select>
                 </div>
             </div>
+
             <div className='list-head-item rows-per-page-search-wrapper'>
                 <div className='rows-per-page-wrapper'>
                     <span className='prefix'>Row Per Page</span>
@@ -122,13 +111,18 @@ export const TeachersList = () => {
                     </select>
                     <span className='suffix'>Entries</span>
                 </div>
+
                 <div className='search-wrapper'>
-                    <input type="search" name="student-search" placeholder='Search...' onChange={ handleSearch }/>
+                    <input type="search" name="teacher-search" placeholder='Search...' onChange={ handleSearch }/>
                 </div>
             </div>
         </div>
+
         <div className='student-fees-wrapper' id="student-fees-wrapper">
-            { ( layout === 'list' ) ? <table className='table-wrapper'>
+            
+            {/* ---------- LIST VIEW ---------- */}
+            { ( layout === 'list' ) ? 
+            <table className='table-wrapper'>
                 <thead>
                     <tr>
                         <th style={{width: 40}}>S.No</th>
@@ -140,75 +134,105 @@ export const TeachersList = () => {
                         <th>Action</th>
                     </tr>
                 </thead>
+
                 <tbody>
                     {
                         filteredStudents.length ? filteredStudents.map(( student, index ) => {
                             let count = index + 1,
                                 { id, name, gender, status, registered_date, profile } = student
+
                             return <tr key={ index }>
                                 <td>{ count }</td>
                                 <td>{ id }</td>
+
                                 <td className='username-profile'>
-                                    <figure>
-                                        <img src={ profile } alt={ name }/>
-                                    </figure>
+                                    <figure><img src={ profile } alt={ name }/></figure>
                                     { name }
                                 </td>
-                                <td>{ gender.slice( 0, 1 ).toUpperCase() + gender.slice( 1 ) }</td>
-                                <td>{ status.slice( 0, 1 ).toUpperCase() + status.slice( 1 ) }</td>
+
+                                <td>{ gender[0].toUpperCase() + gender.slice(1) }</td>
+                                <td>{ status[0].toUpperCase() + status.slice(1) }</td>
                                 <td>{ convertedDate( registered_date ) }</td>
+
                                 <td className='action-buttons'>
                                     <button><FontAwesomeIcon icon={ faMessage }/></button>
-                                    <button>Collect Fees</button>
-                                    <button className='more-button'><FontAwesomeIcon icon={ faEllipsisVertical }/></button>
+
+                                    <div className={`more-button-wrapper${ currentDropdownId === id ? ' active' : '' }`}>
+                                        <button className='more-button' onClick={() => handleActionButton(id)}>
+                                            <FontAwesomeIcon icon={ faEllipsisVertical }/>
+                                        </button>
+
+                                        { currentDropdownId === id && <ActionButtonDropdown id={id} /> }
+                                    </div>
                                 </td>
                             </tr>
-                        }) : <tr className="no-records">
+                        }) : 
+                        <tr className="no-records">
                             <td colSpan="8">No Teachers.</td>
                         </tr>
                     }
                 </tbody>
-            </table> : <div className='grid-wrapper'>
+
+            </table> 
+
+            : 
+
+            /* ---------- GRID VIEW ---------- */
+            <div className='grid-wrapper'>
                 {
                     filteredStudents.map(( student, index ) => {
-                        let count = index + 1,
-                            { id, name, gender, status, registered_date, semester, abbreviation, profile } = student
-                        return <div key={ index } className='grid'>
-                            <div className='head'>
-                                <span>{ id }</span>
-                                <div>
-                                    <span>{ status.slice( 0, 1 ).toUpperCase() + status.slice( 1 ) }</span>
-                                    <button className='more-button'><FontAwesomeIcon icon={ faEllipsisVertical }/></button>
-                                </div>
-                            </div>
-                            <div className='body'>
-                                <div className='top'>
-                                    <figure><img src={ profile } alt={ name }/></figure>
-                                    <div className='user'>
-                                        <span className='name'>{ name }</span>
-                                        <span className='semester'>{ `${ abbreviation } ${ getScript( semester ) }` }</span>
+                        let { id, name, gender, status, registered_date, profile } = student
+
+                        return <div key={ index } className='grid card'>
+                            <div className='head card-head'>
+                                <span className='card-id'>{ id }</span>
+
+                                <div className='status-wrap'>
+                                    <span className='card-status'>
+                                        { status[0].toUpperCase() + status.slice(1) }
+                                    </span>
+
+                                    <div className={`more-button-wrapper${ currentDropdownId === id ? ' active' : '' }`}>
+                                        <button className='more-button' onClick={() => handleActionButton(id)}>
+                                            <FontAwesomeIcon icon={ faEllipsisVertical }/>
+                                        </button>
+
+                                        { currentDropdownId === id && <ActionButtonDropdown id={id} /> }
                                     </div>
                                 </div>
+                            </div>
+
+                            <div className='body card-body'>
+                                <div className='top card-top'>
+                                    <figure className='profile-wrap'><img src={ profile } alt={ name }/></figure>
+                                    <div className='user user-wrap'>
+                                        <span className='name user-name'>{ name }</span>
+                                    </div>
+                                </div>
+
                                 <div className='bottom'>
                                     <div>
-                                        <span className='prefix'>Gender</span>
-                                        <span className='value'>{ gender.slice( 0, 1 ).toUpperCase() + gender.slice( 1 ) }</span>
+                                        <span className='prefix info-label'>Gender</span>
+                                        <span className='value info-value'>{ gender[0].toUpperCase() + gender.slice(1) }</span>
                                     </div>
+
                                     <div>
-                                        <span className='prefix'>Date of Join</span>
-                                        <span className='value'>{ convertedDate( registered_date ) }</span>
+                                        <span className='prefix info-label'>Date of Join</span>
+                                        <span className='value info-value'>{ convertedDate( registered_date ) }</span>
                                     </div>
                                 </div>
                             </div>
-                            <div className='foot'>
-                                <button><FontAwesomeIcon icon={ faMessage }/></button>
-                                <button>Collect Fees</button>
+
+                            <div className='foot card-foot'>
+                                <button className='msg-btn'><FontAwesomeIcon icon={faMessage} /></button>
                             </div>
                         </div>
                     })
                 }
-            </div>}
+            </div> }
+
         </div>
+
         <Pagination
             totalPages = { totalPages }
             activePage = { activePage }
@@ -216,4 +240,17 @@ export const TeachersList = () => {
             handlePagination = { handlePagination }
         />
     </main>
+}
+
+/* ------------------------------
+   ACTION BUTTON DROPDOWN
+--------------------------------*/
+const ActionButtonDropdown = ({ id }) => {
+    return (
+        <div className='action-button-dropdown'>
+            <button>View Teacher</button>
+            <button>Edit</button>
+            <button>Delete</button>
+        </div>
+    )
 }
