@@ -448,7 +448,7 @@ const Highlights = () => {
  * 
  * MARK: SUBJECT COMPLETION
  */
-const SubjectCompletion = () => {
+export const SubjectCompletion = () => {
     const [ courses, setCourses ] = useState({
         result: [],
         success: false

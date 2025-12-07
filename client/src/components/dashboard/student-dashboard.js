@@ -1,14 +1,15 @@
 import { useContext, useEffect, useState } from 'react'
 import { GLOBALCONTEXT } from '../../App'
-import student from '../assets/images/student.png'
-import teacher from '../assets/images/teacher.png'
-import course from '../assets/images/course.png'
-import staff from '../assets/images/staff.png'
+import student from '../assets/images/account.png'
+import teacher from '../assets/images/assignments.png'
+import course from '../assets/images/exams.png'
+import staff from '../assets/images/library.png'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faArrowsRotate, faChevronDown, faChevronRight, faCheckDouble, faXmark, faCircleExclamation, faIcons, faCoins, faSackDollar, faCalendarDays, faMoneyBillTrendUp } from '@fortawesome/free-solid-svg-icons';
 import { faFlag } from '@fortawesome/free-regular-svg-icons';
 import { ourFetch, fetchCallback } from '../functions'
 import { Link } from 'react-router-dom'
+import { SubjectCompletion } from './admin-dashboard'
 
 /**
  * MARK: Student Dashboard
@@ -45,174 +46,12 @@ export const StudentDashboard = () => {
         </div>{/* .dashboard-welcome */}
         <Highlights />
         <div className="fees-leave-request-wrapper" id="fees-leave-request-wrapper">
-            <div className="fees-collection-wrapper element">
-                <div className="head">
-                    <span className="label">Fees Collection</span>
-                    <input type="date"/>
-                    <div className="dropdown time-period-wrapper">
-                        <span className="cmg-active-dropdown-item">
-                            <span className="label">Last 8 Quater</span>
-                            <span className="icon"><FontAwesomeIcon icon={ faChevronDown } /></span>
-                        </span>
-                        <ul className="cmg-dropdown">
-                            <li className="cmg-list-item active">This Month</li>
-                            <li className="cmg-list-item">This Year</li>
-                            <li className="cmg-list-item">Last 12 Quater</li>
-                            <li className="cmg-list-item">Last 16 Quater</li>
-                        </ul>
-                    </div>
-                </div>
-                <div className="body">
-
-                </div>
-            </div>
-            <div className="leave-requests-wrapper element">
-                <div className="head">
-                    <span className="label">Leave Requests</span>
-                    <div className="dropdown time-period-wrapper">
-                        <span className="cmg-active-dropdown-item">
-                            <span className="label">Today</span>
-                            <span className="icon"><FontAwesomeIcon icon={ faChevronDown } /></span>
-                        </span>
-                        <ul className="cmg-dropdown">
-                            <li className="cmg-list-item active">This Week</li>
-                            <li className="cmg-list-item">Last Week</li>
-                            <li className="cmg-list-item">This Month</li>
-                        </ul>
-                    </div>
-                </div>
-                <div className="foot">
-                    <div className="leave-request">
-                        <div className="leave-applicant">
-                            <figure className="applicant-thumb"><img src="#" alt="#" /></figure>
-                            <div className="applicant-info">
-                                <div className="name-type-wrapper">
-                                    <h2 className="applicant">Ramien</h2>
-                                    <span className="application-type">Casual</span>
-                                </div>
-                                <span className="applicant-post">Accountant</span>
-                            </div>
-                            <div className="applicant-request">
-                                <button className="request request-accept"><FontAwesomeIcon icon={ faCheckDouble } /></button>
-                                <button className="request request-reject"><FontAwesomeIcon icon={ faXmark } /></button>
-                            </div>
-                        </div>
-                        <div className="leave-date">
-                            <div className="action leave-wrapper">
-                                <span className="leave-label">Leave: </span>
-                                <span className="leave">12 - 13 May</span>
-                            </div>
-                            <div className="action apply-wrapper">
-                                <span className="apply-label">Apply on : </span>
-                                <span className="apply-date">12 May</span>
-                            </div>
-                        </div>
-                    </div>
-                    <div className="leave-request">
-                        <div className="leave-applicant">
-                            <figure className="applicant-thumb"><img src="#" alt="#" /></figure>
-                            <div className="applicant-info">
-                                <div className="name-type-wrapper">
-                                    <h2 className="applicant">James</h2>
-                                    <span className="application-type">Emergency</span>
-                                </div>
-                                <span className="applicant-post">Physics Teacher</span>
-                            </div>
-                            <div className="applicant-request">
-                                <button className="request request-accept"><FontAwesomeIcon icon={ faCheckDouble } /></button>
-                                <button className="request request-reject"><FontAwesomeIcon icon={ faXmark } /></button>
-                            </div>
-                        </div>
-                        <div className="leave-date">
-                            <div className="action leave-wrapper">
-                                <span className="leave-label">Leave: </span>
-                                <span className="leave">12 - 13 May</span>
-                            </div>
-                            <div className="action apply-wrapper">
-                                <span className="apply-label">Apply on : </span>
-                                <span className="apply-date">12 May</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
+            <FeesCollection />
+            <LeaveRequest />
         </div>{/* #fees-leave-request-wrapper */}
-        <div id="dashboard-links" className="dashboard-links">
-            <div className="link">
-                <span className="link-icon"><FontAwesomeIcon icon={ faCalendarDays } /></span>
-                <span className="link-label">View Attendence</span>
-                <span className="link-view-more"><FontAwesomeIcon icon={ faChevronRight } /></span>
-            </div>
-            <div className="link">
-                <span className="link-icon"><FontAwesomeIcon icon={ faIcons } /></span>
-                <span className="link-label">New Events</span>
-                <span className="link-view-more"><FontAwesomeIcon icon={ faChevronRight } /></span>
-            </div>
-            <div className="link">
-                <span className="link-icon"><FontAwesomeIcon icon={ faCircleExclamation} /></span>
-                <span className="link-label">Complaints</span>
-                <span className="link-view-more"><FontAwesomeIcon icon={ faChevronRight } /></span>
-            </div>
-            <div className="link">
-                <span className="link-icon"><FontAwesomeIcon icon={ faCoins} /></span>
-                <span className="link-label">Finance & Accounts</span>
-                <span className="link-view-more"><FontAwesomeIcon icon={ faChevronRight } /></span>
-            </div>
-        </div>{/* #dashboard-links */}
+        <ActionLinks />
         <div id="dashboard-foot" className="dashboard-foot">
-            <div className="dashboard-foot-item subject-completion">
-                <div className="head">
-                    <span className="label">Subject Completion</span>
-                    <div className="dropdown courses-wrapper">
-                        <span className="cmg-active-dropdown-item">
-                            <span className="label">BCA</span>
-                            <span className="icon"><FontAwesomeIcon icon={ faChevronDown } /></span>
-                        </span>
-                        <ul className="cmg-dropdown">
-                            <li className="cmg-list-item active">BCA</li>
-                            <li className="cmg-list-item">BBS</li>
-                            <li className="cmg-list-item">BSW</li>
-                            <li className="cmg-list-item">BBA</li>
-                            <li className="cmg-list-item">Class 12</li>
-                            <li className="cmg-list-item">Class 11</li>
-                        </ul>
-                    </div>
-                </div>
-                <div className="foot">
-                    <ul className="subject-lists">
-                        <li className="subject">
-                            <span className="subject-label">Cyber Law and Professional Ethics</span>
-                            <span className="completion">
-                                <div className="partial"></div>
-                            </span>
-                        </li>
-                        <li className="subject">
-                            <span className="subject-label">Cloud Computing</span>
-                            <span className="completion">
-                                <div className="partial"></div>
-                            </span>
-                        </li>
-                        <li className="subject">
-                            <span className="subject-label">Internship</span>
-                            <span className="completion">
-                                <div className="partial"></div>
-                            </span>
-                        </li>
-                        <li className="subject">
-                            <span className="subject-label">Artificial Intelligence</span>
-                            <span className="completion">
-                                <div className="partial"></div>
-                            </span>
-                        </li>
-                        <li className="subject">
-                            <span className="subject-label">Software Project Management</span>
-                            <span className="completion">
-                                <div className="partial"></div>
-                            </span>
-                        </li>
-                    </ul>
-                </div>
-            </div>
+            <SubjectCompletion />
             <div className="dashboard-foot-item student-activity">
                 <div className="head">
                     <span className="label">Student Activity</span>
@@ -352,19 +191,19 @@ const Highlights = () => {
 
     let highlightsArray = {
         student: {
-            label: 'Total Students',
+            label: 'Accounts',
             image: student
         },
         teacher: {
-            label: 'Total Teachers',
+            label: 'Assignments',
             image: teacher
         },
         staff: {
-            label: 'Total Staffs',
+            label: 'Library',
             image: staff
         },
         course: {
-            label: 'Total Courses',
+            label: 'Examination',
             image: course
         }
     }
@@ -423,5 +262,135 @@ const Highlights = () => {
                 </div>
             })
         }
+    </div>
+}
+
+/**
+ * MARK: Fees Collection
+ */
+const FeesCollection = () => {
+    return <div className="fees-collection-wrapper element">
+        <div className="head">
+            <span className="label">Fees Collection</span>
+            <div className="dropdown time-period-wrapper">
+                <span className="cmg-active-dropdown-item">
+                    <span className="label">Last 8 Quater</span>
+                    <span className="icon"><FontAwesomeIcon icon={ faChevronDown } /></span>
+                </span>
+                <ul className="cmg-dropdown">
+                    <li className="cmg-list-item active">This Month</li>
+                    <li className="cmg-list-item">This Year</li>
+                    <li className="cmg-list-item">Last 12 Quater</li>
+                    <li className="cmg-list-item">Last 16 Quater</li>
+                </ul>
+            </div>
+        </div>
+        <div className="body">
+
+        </div>
+    </div>
+}
+
+/**
+ * MARK: Leave Request
+ */
+const LeaveRequest = () => {
+    return <div className="leave-requests-wrapper element">
+        <div className="head">
+            <span className="label">Leave Requests</span>
+            <div className="dropdown time-period-wrapper">
+                <span className="cmg-active-dropdown-item">
+                    <span className="label">Today</span>
+                    <span className="icon"><FontAwesomeIcon icon={ faChevronDown } /></span>
+                </span>
+                <ul className="cmg-dropdown">
+                    <li className="cmg-list-item active">This Week</li>
+                    <li className="cmg-list-item">Last Week</li>
+                    <li className="cmg-list-item">This Month</li>
+                </ul>
+            </div>
+        </div>
+        <div className="foot">
+            <div className="leave-request">
+                <div className="leave-applicant">
+                    <figure className="applicant-thumb"><img src="#" alt="#" /></figure>
+                    <div className="applicant-info">
+                        <div className="name-type-wrapper">
+                            <h2 className="applicant">Ramien</h2>
+                            <span className="application-type">Casual</span>
+                        </div>
+                        <span className="applicant-post">Accountant</span>
+                    </div>
+                    <div className="applicant-request">
+                        <button className="request request-accept"><FontAwesomeIcon icon={ faCheckDouble } /></button>
+                        <button className="request request-reject"><FontAwesomeIcon icon={ faXmark } /></button>
+                    </div>
+                </div>
+                <div className="leave-date">
+                    <div className="action leave-wrapper">
+                        <span className="leave-label">Leave: </span>
+                        <span className="leave">12 - 13 May</span>
+                    </div>
+                    <div className="action apply-wrapper">
+                        <span className="apply-label">Apply on : </span>
+                        <span className="apply-date">12 May</span>
+                    </div>
+                </div>
+            </div>
+            <div className="leave-request">
+                <div className="leave-applicant">
+                    <figure className="applicant-thumb"><img src="#" alt="#" /></figure>
+                    <div className="applicant-info">
+                        <div className="name-type-wrapper">
+                            <h2 className="applicant">James</h2>
+                            <span className="application-type">Emergency</span>
+                        </div>
+                        <span className="applicant-post">Physics Teacher</span>
+                    </div>
+                    <div className="applicant-request">
+                        <button className="request request-accept"><FontAwesomeIcon icon={ faCheckDouble } /></button>
+                        <button className="request request-reject"><FontAwesomeIcon icon={ faXmark } /></button>
+                    </div>
+                </div>
+                <div className="leave-date">
+                    <div className="action leave-wrapper">
+                        <span className="leave-label">Leave: </span>
+                        <span className="leave">12 - 13 May</span>
+                    </div>
+                    <div className="action apply-wrapper">
+                        <span className="apply-label">Apply on : </span>
+                        <span className="apply-date">12 May</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+/**
+ * MARK: Action Links
+ */
+const ActionLinks = () => {
+    return <div id="dashboard-links" className="dashboard-links">
+        <Link to="/dashboard/library" className='link card'>
+            <span className="link-icon"><FontAwesomeIcon icon={ faCalendarDays } /></span>
+            <span className="link-label">Library</span>
+            <span className="link-view-more"><FontAwesomeIcon icon={ faChevronRight } /></span>
+        </Link>
+        <Link to="/dashboard/academic/assignments" className='link card'>
+            <span className="link-icon"><FontAwesomeIcon icon={ faIcons } /></span>
+            <span className="link-label">Assignments</span>
+            <span className="link-view-more"><FontAwesomeIcon icon={ faChevronRight } /></span>
+        </Link>
+        <Link to="/dashboard/academic/complaints" className='link card'>
+            <span className="link-icon"><FontAwesomeIcon icon={ faCircleExclamation } /></span>
+            <span className="link-label">Complaints</span>
+            <span className="link-view-more"><FontAwesomeIcon icon={ faChevronRight } /></span>
+        </Link>
+        <Link to="/dashboard/account" className='link card'>
+            <span className="link-icon"><FontAwesomeIcon icon={ faCoins} /></span>
+            <span className="link-label">Finance & Accounts</span>
+            <span className="link-view-more"><FontAwesomeIcon icon={ faChevronRight } /></span>
+        </Link>
     </div>
 }
