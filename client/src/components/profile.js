@@ -340,7 +340,7 @@ export const Profile = () => {
                     </div>
                     <div className='form-field'>
                         <label className='form-label'>{ 'Documents: ' }</label>
-                        <input className="second" name='documents' type="file" value={ documents } ref={ documentRef } onChange={ handleChange } hidden />
+                        <input className="second" name='documents' type="file" ref={ documentRef } onChange={ handleChange } hidden />
                         <div className="no-image" onClick={() => documentRef.current.click()}></div>
                     </div>
                     <button className="save-change save" onClick={ handleSave } disabled={ isSaveDisabled }>

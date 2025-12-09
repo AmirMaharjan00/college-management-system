@@ -1,4 +1,4 @@
-import { useContext, createContext, useState, useEffect, useMemo } from 'react'
+import { useContext, createContext, useState, useEffect, useMemo, useRef } from 'react'
 import { useNavigate, Link } from 'react-router-dom';
 import logo from './assets/images/sscollege-logo.jpg'
 import background from './assets/images/background.jpg'
@@ -496,15 +496,16 @@ const ShowNotification = ( props ) => {
  * @since 1.0.0
  */
 export const Chat = ( props ) => {
-    const Global = useContext( GLOBALCONTEXT )
-    const [ message, setMessage ] = useState( '' )
-    const [ history, setHistory ] = useState([])
-    const { setShowChat, loggedInUser } = Global
-    const { id: receiverId } = props
-    const [ chat, setChat ] = useState({})
-    const { name, profile } = chat
-    const { id: senderId } = loggedInUser
-    const [ didChatChange, setDidChatChange ] = useState( 0 )
+    const Global = useContext( GLOBALCONTEXT ),
+        [ message, setMessage ] = useState( '' ),
+        [ history, setHistory ] = useState([]),
+        { setShowChat, loggedInUser } = Global,
+        { id: receiverId } = props,
+        [ chat, setChat ] = useState({}),
+        { name, profile } = chat,
+        { id: senderId } = loggedInUser,
+        [ didChatChange, setDidChatChange ] = useState( false ),
+        bodyRef = useRef()
 
     useEffect(() => {
         ourFetch({
@@ -513,15 +514,24 @@ export const Chat = ( props ) => {
             setter: setChat,
             body: JSON.stringify({ id: receiverId })
         })
-    }, [])
-
-    useEffect(() => {
         ourFetch({
             api: '/get-message',
             callback: fetchCallback,
             setter: setHistory,
             body: JSON.stringify({ sender: senderId, receiver: receiverId })
         })
+    }, [])
+
+    useEffect(() => {
+        if( didChatChange ) {
+            ourFetch({
+                api: '/get-message',
+                callback: fetchCallback,
+                setter: setHistory,
+                body: JSON.stringify({ sender: senderId, receiver: receiverId })
+            })
+            setDidChatChange( false )
+        }
     }, [ didChatChange ])
 
     useEffect(() => {
@@ -532,6 +542,11 @@ export const Chat = ( props ) => {
         });
         return () => socket.off('receiveMessage');
     }, [ senderId, receiverId ])
+
+    useEffect(() => {
+        if ( ! bodyRef.current ) return;
+        bodyRef.current.scrollTop = bodyRef.current.scrollHeight;
+    }, [ history ]);
 
     /* Handle Close */
     const handleClose = () => {
@@ -559,10 +574,20 @@ export const Chat = ( props ) => {
 
         ourFetch({
             api: '/message',
-            callback: fetchCallback,
-            setter: setDidChatChange,
+            callback: insertCallback,
             body: JSON.stringify({ sender: senderId, receiver: receiverId, message, messageType: 'text' })
         })
+    }
+
+    /**
+     * Insert Callback
+     */
+    const insertCallback = ( data ) => {
+        let { result, success } = data
+        if( success ) {
+            setMessage( '' )
+            setDidChatChange( true )
+        }
     }
 
     return <div className='cmg-chat' id="cmg-chat">
@@ -575,7 +600,7 @@ export const Chat = ( props ) => {
             </div>
             <FontAwesomeIcon className="close" icon={ faXmark } onClick={ handleClose } />
         </div>
-        <div className='body'>
+        <div className='body' ref={ bodyRef }>
             {
                 ( history.length ) > 0 ? history.map(( chatVal, index ) => {
                     let { message: _message, sender } = chatVal
