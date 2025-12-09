@@ -293,3 +293,31 @@ INSERT INTO `assignments` (`title`, `assignedBy`, `assignedTo`, `subjectId`, `se
 ('Assignment 18', 24, 4, 3, 7, '2025-02-03 11:00:00', '2025-03-02 23:59:00', 'closed', '/uploads/test.pdf'),
 ('Assignment 19', 18, 5, 4, 8, '2025-02-05 09:45:00', '2025-03-05 23:59:00', 'pending', '/uploads/test.pdf'),
 ('Assignment 20', 19, 1, 5, 1, '2025-02-07 14:00:00', '2025-03-07 23:59:00', 'pending', '/uploads/test.pdf');
+
+
+
+INSERT INTO `userMeta` (`userId`, `dob`, `secondaryContact`, `motherName`, `fatherName`, `motherEmail`, `fatherEmail`, `motherProfile`, `fatherProfile`, `motherContact`, `fatherContact`, `documents`, `motherTongue`, `language`) VALUES
+(1, '2005-06-14', '9801234567', 'Mina Shrestha', 'Kamal Shrestha', 'mina.shrestha@example.com', 'kamal.shrestha@example.com', '/images/user.jpg', '/images/user.jpg', '9811112233', '9844332211', 'document1.pdf', 'Nepali', 'English'),
+(2, '2004-02-19', '9812345678', 'Sita Maharjan', 'Dawa Maharjan', 'sita.mhzn@example.com', 'dawa.mhzn@example.com', '/images/user.jpg', '/images/user.jpg', '9801122334', '9845566778', 'document2.pdf', 'Newari', 'Nepali'),
+(3, '2003-11-03', '9841234567', 'Kamala Maharjan', 'Ramesh Maharjan', 'kamala.mhzn@example.com', 'ramesh.mhzn@example.com', '/images/user.jpg', '/images/user.jpg', '9812233445', '9865566778', 'document3.pdf', 'Nepali', 'English'),
+(4, '2006-01-27', '9807654321', 'Sunita Maharjan', 'Purna Maharjan', 'sunita.m@example.com', 'purna.m@example.com', '/images/user.jpg', '/images/user.jpg', '9809988776', '9818877665', 'document4.pdf', 'Newari', 'Nepali'),
+(5, '2006-10-10', '9817778889', 'Rekha Maharjan', 'Deepak Maharjan', 'rekha.m@example.com', 'deepak.m@example.com', '/images/user.jpg', '/images/user.jpg', '9823344556', '9864433221', 'document5.pdf', 'Nepali', 'English'),
+(6, '2004-03-22', '9845566778', 'Laxmi Maharjan', 'Bikram Maharjan', 'laxmi@example.com', 'bikram@example.com', '/images/user.jpg', '/images/user.jpg', '9812233110', '9803322110', 'document6.pdf', 'Nepali', 'Nepali'),
+(7, '2005-09-01', '9809988776', 'Asha Maharjan', 'Tej Maharjan', 'asha@example.com', 'tej@example.com', '/images/user.jpg', '/images/user.jpg', '9841122334', '9865544332', 'document7.pdf', 'Newari', 'English'),
+(8, '2004-08-17', '9816677889', 'Sarala Kapali', 'Madan Kapali', 'sarala@example.com', 'madan@example.com', '/images/user.jpg', '/images/user.jpg', '9812233556', '9846677889', 'document8.pdf', 'Newari', 'Nepali'),
+(9, '2003-12-20', '9823344556', 'Maya Thapa', 'Gopal Thapa', 'maya@example.com', 'gopal@example.com', '/images/user.jpg', '/images/user.jpg', '9804455667', '9867788990', 'document9.pdf', 'Nepali', 'English'),
+(10, '2006-04-11', '9847788990', 'Sita Bohora', 'Ram Bohora', 'sibohora@example.com', 'rambohora@example.com', '/images/user.jpg', '/images/user.jpg', '9815566778', '9842233445', 'document10.pdf', 'Nepali', 'Nepali'),
+(11, '2005-07-09', '9861122334', 'Kabita Singh', 'Narayan Singh', 'kabita@example.com', 'narayan@example.com', '/images/user.jpg', '/images/user.jpg', '9843344556', '9816677889', 'document11.pdf', 'Nepali', 'English'),
+(12, '2004-05-14', '9802211334', 'Lalita Oli', 'Bhakta Oli', 'lalita@example.com', 'bhakta@example.com', '/images/user.jpg', '/images/user.jpg', '9825566778', '9862233445', 'document12.pdf', 'Nepali', 'Nepali'),
+(13, '2006-09-03', '9811144556', 'Sunita Manandhar', 'Keshab Manandhar', 'sunita.man@example.com', 'keshab.man@example.com', '/images/user.jpg', '/images/user.jpg', '9846655443', '9861122334', 'document13.pdf', 'Newari', 'English'),
+(14, '2005-01-28', '9848877665', 'Bina Adhikari', 'Rajendra Adhikari', 'bina@example.com', 'rajendra@example.com', '/images/user.jpg', '/images/user.jpg', '9812233445', '9845544332', 'document14.pdf', 'Nepali', 'English'),
+(15, '1980-03-21', '9812233441', 'Kamala Sharma', 'Bishnu Sharma', 'kamala.sharma@example.com', 'bishnu.sharma@example.com', '/images/user.jpg', '/images/user.jpg', '9803344556', '9841122334', 'document15.pdf', 'Nepali', 'Nepali'),
+(16, '1982-11-12', '9843322110', 'Anju Thapa', 'Kiran Thapa', 'anju@example.com', 'kthapa@example.com', '/images/user.jpg', '/images/user.jpg', '9817788990', '9846677889', 'document16.pdf', 'Nepali', 'English'),
+(17, '1978-05-08', '9865566778', 'Rita Gurung', 'Dilip Gurung', 'rita@example.com', 'dilip@example.com', '/images/user.jpg', '/images/user.jpg', '9848877665', '9865544332', 'document17.pdf', 'Nepali', 'Nepali'),
+(18, '1984-09-18', '9801122998', 'Sarita Lama', 'Dawa Lama', 'sarita@example.com', 'dawa@example.com', '/images/user.jpg', '/images/user.jpg', '9814455667', '9842233110', 'document18.pdf', 'Tamang', 'English'),
+(19, '1986-01-30', '9845566001', 'Goma Shrestha', 'Purna Shrestha', 'goma@example.com', 'purna@example.com', '/images/user.jpg', '/images/user.jpg', '9867788990', '9845566778', 'document19.pdf', 'Nepali', 'Nepali'),
+(20, '1983-04-05', '9821122334', 'Sushila KC', 'Narayan KC', 'sushila@example.com', 'narayankc@example.com', '/images/user.jpg', '/images/user.jpg', '9846655443', '9813344556', 'document20.pdf', 'Nepali', 'English'),
+(21, '1987-07-15', '9809988771', 'Gita Adhikari', 'Mohan Adhikari', 'gita@example.com', 'mohan@example.com', '/images/user.jpg', '/images/user.jpg', '9841100223', '9867788112', 'document21.pdf', 'Nepali', 'Nepali'),
+(22, '1988-12-10', '9812233114', 'Pabitra Maharjan', 'Santosh Maharjan', 'pabitra@example.com', 'santosh@example.com', '/images/user.jpg', '/images/user.jpg', '9845566332', '9861122445', 'document22.pdf', 'Newari', 'English'),
+(23, '1981-02-09', '9863344556', 'Muna Adhikari', 'Keshab Adhikari', 'muna@example.com', 'keshab@example.com', '/images/user.jpg', '/images/user.jpg', '9801133445', '9862211334', 'document23.pdf', 'Nepali', 'Nepali'),
+(24, '1985-09-22', '9849988776', 'Janaki Tamang', 'Pemba Tamang', 'janaki@example.com', 'pemba@example.com', '/images/user.jpg', '/images/user.jpg', '9814455990', '9866677889', 'document24.pdf', 'Tamang', 'English');

@@ -262,7 +262,7 @@ app.post( '/Users', ( request, res ) => {
 */
 app.post( '/user-by-id', ( request, res ) => { 
   const { id } = request.body;
-  const selectQuery = `SELECT * FROM users WHERE id="${ id }"`
+  const selectQuery = `SELECT * FROM users u LEFT JOIN userMeta um ON u.id = um.userId WHERE id="${ id }"`
   con.query( selectQuery, ( error, result ) => {
     if ( error ) {
       return res.status( 500 ).json({ error: "Database selection failed" });

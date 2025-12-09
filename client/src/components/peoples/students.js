@@ -9,6 +9,8 @@ import html2pdf from 'html2pdf.js';
 import { AddNewUser } from '../forms/add-new-user'
 import { Chat } from '../header'
 import { PayFees } from '../student/fees'
+import { jsPDF } from 'jspdf'
+import { applyPlugin } from 'jspdf-autotable'
 
 export const StudentsList = () => {
     const Global = useContext( GLOBALCONTEXT ),
@@ -101,8 +103,12 @@ export const StudentsList = () => {
      * Handle export to pdf
      */
     const handleExportPDF = () => {
-        let element = pdf.current
-        html2pdf().from( element ).save( 'students.pdf' )
+        // let element = pdf.current
+        // html2pdf().from( element ).save( 'students.pdf' )
+        applyPlugin( jsPDF )
+        const doc = new jsPDF()
+        doc.autoTable({ html: '#student-table' })
+        doc.save( 'students.pdf' )
     }
 
     /**
@@ -197,7 +203,7 @@ export const StudentsList = () => {
             </div>
         </div>
         <div className='student-fees-wrapper' id="student-fees-wrapper">
-            { ( layout === 'list' ) ? <table className='table-wrapper' ref={ pdf }>
+            { ( layout === 'list' ) ? <table className='table-wrapper' ref={ pdf } id="student-table">
                 <thead>
                     <tr>
                         <th style={{width: 40}}>S.No</th>
