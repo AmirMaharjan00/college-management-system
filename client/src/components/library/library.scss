@@ -34,6 +34,10 @@
           margin-right: 5px;
         }
       }
+
+      .recommend-button {
+        background: green;
+      }
     }
   }
 
@@ -741,6 +745,87 @@
             border-color: #4f46e5;
           }
         }
+      }
+    }
+  }
+
+  .analysis-wrapper {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    justify-content: space-between;
+    align-items: center;
+    gap: 20px;
+
+    .analysis {
+      background: var(--card-bg);
+
+      .tabs {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        border-bottom: 1px solid var(--actionBorder);
+
+        .tab {
+          padding: 20px;
+          flex: 1 1;
+          text-align: center;
+          font-weight: 700;
+          cursor: pointer;
+
+          &.active {
+            background: var(--default);
+            color: #fff;
+            cursor: auto;
+          }
+        }
+      }
+
+      .content {
+        height: 300px;
+        max-height: 300px;
+        background: var(--card-bg);
+        width: 100%;
+        display: block;
+        box-sizing: border-box;
+        overflow-y: scroll;
+        padding: 0;
+
+        .item {
+          padding: 10px;
+          color: var(--color);
+
+          .count {
+            margin-right: 10px;
+          }
+
+          &:not(:last-child) {
+            border-bottom: 1px solid var(--actionBorder);
+          }
+        }
+      }
+    }
+  }
+
+  .recommended-books-wrapper {
+    .title {
+      padding-bottom: 10px;
+      margin-bottom: 10px;
+      border-bottom: 1px solid var(--actionBorder);
+    }
+
+    .list {
+      padding-top: 10px;
+      height: 400px;
+      max-height: 400px;
+      overflow-y: scroll;
+
+      .item {
+        padding: 10px 0;
+  
+        &:not(:last-child) {
+          border-bottom: 1px solid var(--actionBorder);
+        }
+  
       }
     }
   }
