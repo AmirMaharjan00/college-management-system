@@ -10,7 +10,7 @@ import { ourFetch, fetchCallback, getScript, getCurrentSelectValue } from '../fu
 import { Line } from 'react-chartjs-2';
 import { useDate } from '../includes/hooks'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faCirclePlus, faChevronRight, faBookOpen, faBook, faRotateLeft, faSackDollar, } from '@fortawesome/free-solid-svg-icons';
+import { faChevronRight, faBookOpen, faBook, faRotateLeft, faSackDollar, } from '@fortawesome/free-solid-svg-icons';
 import { GLOBALCONTEXT } from '../../App'
 import { NewBookForm } from './books'
 import Select from 'react-select'
@@ -25,6 +25,7 @@ import {
   Legend,
 } from 'chart.js';
 import { ActionButton } from '../components'
+import { useNodeRef } from '@dnd-kit/utilities'
 
 // Register necessary chart components
 ChartJS.register(
@@ -44,11 +45,12 @@ const LibraryContext = createContext();
  */
 export const Library = () => {
     const globalObject = useContext( GLOBALCONTEXT ),
-        { loggedInUser } = globalObject,
-        { role } = loggedInUser,
+        { loggedInUser, formVisibility } = globalObject,
+        { role, id: myId, courseId: myCourseId, semester: mySemester } = loggedInUser,
         [ books, setBooks ] = useState([]),
         [ booksIssued, setBooksIssued ] = useState([]),
         [ booksReturned, setBooksReturned ] = useState([]),
+        [ users, setUsers ] = useState([]),
         [ submitSuccess, setSubmitSuccess ] = useState( false ),
         [ fines, setFines ] = useState([]),
         [ formMode, setFormMode ] = useState([]),
@@ -58,12 +60,6 @@ export const Library = () => {
             returned: 0,
             fines: 0
         }),
-        libraryObject = {
-            books,
-            booksIssued,
-            booksReturned,
-            fines
-        },
         highlightsArray = useMemo(() => {
             return {
                 student: {
@@ -91,7 +87,7 @@ export const Library = () => {
         }, [ count ])
 
     useEffect(() => {
-        if( role === 'admin' ) {
+        if( [ 'admin', 'student' ].includes( role ) ) {
             ourFetch({
                 api: '/all-books',
                 callback: fetchCallback,
@@ -102,16 +98,25 @@ export const Library = () => {
                 callback: fetchCallback,
                 setter: setBooksIssued
             })
-            ourFetch({
-                api: '/books-returned',
-                callback: fetchCallback,
-                setter: setBooksReturned
-            })
-            ourFetch({
-                api: '/books-fined',
-                callback: fetchCallback,
-                setter: setFines
-            })
+            if( role === 'student' ) {
+                ourFetch({
+                    api: '/users',
+                    callback: fetchCallback,
+                    setter: setUsers
+                })
+            }
+            if( role === 'admin' ) {
+                ourFetch({
+                    api: '/books-returned',
+                    callback: fetchCallback,
+                    setter: setBooksReturned
+                })
+                ourFetch({
+                    api: '/books-fined',
+                    callback: fetchCallback,
+                    setter: setFines
+                })
+            }
         }
     }, [])
 
@@ -125,6 +130,76 @@ export const Library = () => {
             })
         }
     }, [ books, booksIssued, booksReturned, fines ])
+
+    /**
+     * ABC Analysis
+     */
+    const abcAnalysis = useCallback(() => {
+        const count = {};
+
+        booksIssued.forEach( issue => {
+            count[ issue.bookId ] = { id: ( count[ issue.bookId ] || 0 ) + 1, name: issue.bookName };
+        });
+        
+        const sorted = Object.entries( count ).sort(( a, b ) => b[ 1 ].id - a[ 1 ].id);
+
+        return sorted.map(([ bookId, bookInfo ], index ) => ({
+            bookId: Number( bookId ),
+            bookName: bookInfo.name,
+            category:
+            index < 0.2 * sorted.length ? "a" :
+            index < 0.5 * sorted.length ? "b" : "c"
+        }));
+    }, [ booksIssued ])
+
+    /**
+     * FSN Analysis
+     */
+    function fsnAnalysis() {
+        const lastIssued = {};
+
+        booksIssued.forEach(issue => {
+            lastIssued[issue.bookId] = Math.max(
+            lastIssued[issue.bookId] || 0,
+            new Date(issue.issuedDate)
+            );
+        });
+
+        return books.map(book => {
+            if (!lastIssued[book.id]) {
+                return { book: book.name, status: "non-moving" };
+            }
+
+            const days = (Date.now() - lastIssued[book.id]) / (1000 * 60 * 60 * 24);
+            return {
+                book: book.name,
+                status: days < 30 ? "fast-moving" : "slow-moving"
+            };
+        });
+    }
+
+    /**
+     * Collaborative Filtering
+     */
+    function recommendBooks() {
+        const myBookIds = booksIssued.filter(ib => ib.userId === myId).map(ib => ib.bookId);
+
+        // Recommended books
+        return books.filter(b =>
+            !myBookIds.includes(b.id) &&
+            booksIssued.some(ib => ib.bookId === b.id && ib.userId !== myId)
+        );
+    }
+
+    const libraryObject = {
+        books,
+        booksIssued,
+        booksReturned,
+        fines,
+        abcAnalysis,
+        fsnAnalysis,
+        recommendBooks
+    }
 
     return <main className="cmg-main cmg-library" id="cmg-main">
         <LibraryContext.Provider value={ libraryObject }>
@@ -141,6 +216,14 @@ export const Library = () => {
                         setFormMode = { setFormMode }
                         label = { ( role === 'admin' ) ? "Add New Book" : "Check Book Availability" }
                     />
+                    { ( role === 'student' ) && <ActionButton
+                        label = "View Recommended Books"
+                        classes = "recommend-button"
+                        showIcon = { false }
+                        extendFunction = {function(){
+                            setFormMode( 'recommend' )
+                        }}
+                    /> }
                 </div>
             </div>{/* .dashboard-head */}
             <div className="dashboard-highlights">
@@ -175,6 +258,7 @@ export const Library = () => {
                     <LibrayPreview />
                 </div>
                 <QuickLinks />
+                <Analysis />
                 <NewBookForm
                     formMode = 'new'
                     setSubmitSuccess = { setSubmitSuccess }
@@ -185,7 +269,8 @@ export const Library = () => {
                     <Student
                         setCount = { setCount }
                     />
-                    <Form />
+                    { formMode === 'recommend' && formVisibility && <RecommendedBooks /> }
+                    { formMode === 'new' && <Form /> }
                 </>
            }
         </LibraryContext.Provider>
@@ -523,7 +608,7 @@ const Table = ( props ) => {
                         let count = index + 1,
                             { id, name, issuedBy, status, issuedDate, issuer, profile, returnDate, dueDate, fineStatus } = item
 
-                        return <tr>
+                        return <tr key={ index }>
                             <td>{ `${ count }.` }</td>
                             <td>{ `${ name } ( ${ id } )` }</td>
                             <td>
@@ -621,7 +706,6 @@ const Form = () => {
      */
     const handleReactSelectChange = ( option ) => {
         setIssuedCount( 0 )
-        console.log( option )
         let { label, value } = option
 
         setFormData({
@@ -710,3 +794,145 @@ const Form = () => {
         </form>
     </div>
 }
+
+/**
+ * Analysis
+ */
+const Analysis = () => {
+    const { abcAnalysis, fsnAnalysis } = useContext( LibraryContext ),
+        abcData = abcAnalysis(),
+        fsnData = fsnAnalysis(),
+        [ abcCategory, setAbcCategory ] = useState( 'a' ),
+        [ fsnTab, setFsnTab ] = useState( 'fast-moving' ),
+        abcFilter = useMemo(() => {
+            return abcData.filter( item => item.category === abcCategory )
+        }, [ abcData, abcCategory ]),
+        fsnFilter = useMemo(() => {
+            return fsnData.filter( item => item.status === fsnTab )
+        }, [ fsnData, fsnTab ])
+
+    return <div className="analysis-wrapper">
+        <div className="analysis abc-analysis">
+            <ul className="tabs">
+                <li className={ `tab ${ abcCategory === 'a' ? 'active' : '' }` } onClick={() => setAbcCategory( 'a' )}>Most Issued</li>
+                <li className={ `tab ${ abcCategory === 'b' ? 'active' : '' }` } onClick={() => setAbcCategory( 'b' )}>Moderate Issued</li>
+                <li className={ `tab ${ abcCategory === 'c' ? 'active' : '' }` } onClick={() => setAbcCategory( 'c' )}>Least Issued</li>
+            </ul>
+            <ul className="content">
+                {
+                    abcFilter.length ? abcFilter.map(( item, index ) => {
+                        let { bookName } = item
+                        return <li key={ index } className='item'>
+                            <span className='count'>{ `${ index + 1 }. ` }</span>
+                            <span className='name'>{ bookName }</span>
+                        </li>
+                    }) : <li className="item">No books.</li>
+                }
+            </ul>
+        </div>
+        <div className="analysis fsn-analysis">
+            <ul className="tabs">
+                <li className={ `tab ${ fsnTab === 'fast-moving' ? 'active' : '' }` } onClick={() => setFsnTab( 'fast-moving' )}>Fast Moving</li>
+                <li className={ `tab ${ fsnTab === 'slow-moving' ? 'active' : '' }` } onClick={() => setFsnTab( 'slow-moving' )}>Slow Moving</li>
+                <li className={ `tab ${ fsnTab === 'non-moving' ? 'active' : '' }` } onClick={() => setFsnTab( 'non-moving' )}>Non Moving</li>
+            </ul>
+            <div className="content">
+                {
+                    fsnFilter.length ? fsnFilter.map(( item, index ) => {
+                        let { book } = item
+                        return <li key={ index } className='item'>
+                            <span className='count'>{ `${ index + 1 }. ` }</span>
+                            <span className='name'>{ book }</span>
+                        </li>
+                    }) : <li className='item'>No books</li>
+                }
+            </div>
+        </div>
+    </div>
+}
+
+/**
+ * Recommended Books
+ */
+const RecommendedBooks = () => {
+    const { recommendBooks } = useContext( LibraryContext )
+
+    return <div className='recommended-books-wrapper cmg-popup-wrapper'>
+        <h2 className="title">Recommended Books</h2>
+        <ul className='list'>
+            {
+                recommendBooks().map(( book, index ) => {
+                    let { name } = book
+                    return <li key={ index } className='item'>
+                        <span className="count">{ `${ index + 1 }. ` }</span>
+                        <span className="name">{ name }</span>
+                    </li>
+                })
+            }
+        </ul>
+    </div>
+}
+
+
+// function cosineSimilarity(vecA, vecB) {
+//     let dot = 0;
+//     let normA = 0;
+//     let normB = 0;
+
+//     for (let i = 0; i < vecA.length; i++) {
+//         dot += vecA[i] * vecB[i];
+//         normA += vecA[i] * vecA[i];
+//         normB += vecB[i] * vecB[i];
+//     }
+
+//     if (normA === 0 || normB === 0) return 0;
+
+//     return dot / (Math.sqrt(normA) * Math.sqrt(normB));
+// }
+
+// function recommendBooksCosine(topK = 3) {
+//     const users = [...new Set(booksIssued.map(i => i.userId))];
+//     const bookIds = books.map(b => b.id);
+
+//     const userVectors = {};
+
+//     users.forEach(userId => {
+//         userVectors[userId] = bookIds.map(bookId =>
+//             booksIssued.some(
+//                 i => i.userId === userId && i.bookId === bookId
+//             )
+//                 ? 1
+//                 : 0
+//         );
+//     });
+
+//     const targetVector = userVectors[myId];
+//     if (!targetVector) return [];
+
+//     const similarities = users
+//         .filter(uid => uid !== myId)
+//         .map(uid => ({
+//             userId: uid,
+//             score: cosineSimilarity(targetVector, userVectors[uid])
+//         }))
+//         .filter(s => s.score > 0)
+//         .sort((a, b) => b.score - a.score)
+//         .slice(0, topK);
+
+//     const recommendedBookIds = new Set();
+
+//     similarities.forEach(sim => {
+//         booksIssued.forEach(issue => {
+//             if (
+//                 issue.userId === sim.userId &&
+//                 !booksIssued.some(
+//                     i => i.userId === myId && i.bookId === issue.bookId
+//                 )
+//             ) {
+//                 recommendedBookIds.add(issue.bookId);
+//             }
+//         });
+//     });
+
+//     return books.filter(book => recommendedBookIds.has(book.id));
+// }
