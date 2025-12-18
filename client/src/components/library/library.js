@@ -179,6 +179,10 @@ export const Library = () => {
     }
 
     /**
+     * ✔ You find users most similar to me
+     * ✔ Look at what they read
+     * ✔ Remove books I already read
+     * ✔ Recommend the rest
      * Cosine Similarity
      */
     function cosineSimilarity( vecA, vecB ) {
