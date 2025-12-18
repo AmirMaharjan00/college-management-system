@@ -179,16 +179,66 @@ export const Library = () => {
     }
 
     /**
+     * Cosine Similarity
+     */
+    function cosineSimilarity( vecA, vecB ) {
+        let dot = 0,
+            normA = 0,
+            normB = 0;
+
+        for( let i = 0; i < vecA.length; i++ ) {
+            dot += vecA[ i ] * vecB[ i ];
+            normA += vecA[ i ] * vecA[ i ];
+            normB += vecB[ i ] * vecB[ i ];
+        }
+
+        if( normA === 0 || normB === 0 ) return 0;
+
+        return dot / ( Math.sqrt( normA ) * Math.sqrt( normB ) );
+    }
+
+    /**
      * Collaborative Filtering
      */
-    function recommendBooks() {
-        const myBookIds = booksIssued.filter(ib => ib.userId === myId).map(ib => ib.bookId);
+    const recommendBooksCosine = ( topK = 3 ) => {
+        const test = [ ...new Set( booksIssued.map( i => i.userId ) ) ],
+            bookIds = books.map( b => b.id ),
+            userVectors = {};
 
-        // Recommended books
-        return books.filter(b =>
-            !myBookIds.includes(b.id) &&
-            booksIssued.some(ib => ib.bookId === b.id && ib.userId !== myId)
-        );
+        test.forEach( userId => {
+            userVectors[ userId ] = bookIds.map( bookId =>
+                booksIssued.some( i => i.userId === userId && i.bookId === bookId ) ? 1 : 0
+            );
+        });
+
+        const targetVector = userVectors[ myId ];
+        if ( ! targetVector ) return [];
+
+        const similarities = test.filter(uid => uid !== myId)
+            .map(uid => ({
+                userId: uid,
+                score: cosineSimilarity( targetVector, userVectors[ uid ] )
+            }))
+            .filter(s => s.score > 0)
+            .sort((a, b) => b.score - a.score)
+            .slice(0, topK);
+
+        const recommendedBookIds = new Set();
+
+        similarities.forEach(sim => {
+            booksIssued.forEach(issue => {
+                if (
+                    issue.userId === sim.userId &&
+                    !booksIssued.some(
+                        i => i.userId === myId && i.bookId === issue.bookId
+                    )
+                ) {
+                    recommendedBookIds.add(issue.bookId);
+                }
+            });
+        });
+
+        return books.filter(book => recommendedBookIds.has(book.id));
     }
 
     const libraryObject = {
@@ -198,7 +248,7 @@ export const Library = () => {
         fines,
         abcAnalysis,
         fsnAnalysis,
-        recommendBooks
+        recommendBooksCosine
     }
 
     return <main className="cmg-main cmg-library" id="cmg-main">
@@ -855,13 +905,13 @@ const Analysis = () => {
  * Recommended Books
  */
 const RecommendedBooks = () => {
-    const { recommendBooks } = useContext( LibraryContext )
+    const { recommendBooksCosine } = useContext( LibraryContext )
 
     return <div className='recommended-books-wrapper cmg-popup-wrapper'>
         <h2 className="title">Recommended Books</h2>
         <ul className='list'>
             {
-                recommendBooks().map(( book, index ) => {
+                recommendBooksCosine().map(( book, index ) => {
                     let { name } = book
                     return <li key={ index } className='item'>
                         <span className="count">{ `${ index + 1 }. ` }</span>
@@ -872,67 +922,3 @@ const RecommendedBooks = () => {
         </ul>
     </div>
 }
-
-
-// function cosineSimilarity(vecA, vecB) {
-//     let dot = 0;
-//     let normA = 0;
-//     let normB = 0;
-
-//     for (let i = 0; i < vecA.length; i++) {
-//         dot += vecA[i] * vecB[i];
-//         normA += vecA[i] * vecA[i];
-//         normB += vecB[i] * vecB[i];
-//     }
-
-//     if (normA === 0 || normB === 0) return 0;
-
-//     return dot / (Math.sqrt(normA) * Math.sqrt(normB));
-// }
-
-// function recommendBooksCosine(topK = 3) {
-//     const users = [...new Set(booksIssued.map(i => i.userId))];
-//     const bookIds = books.map(b => b.id);
-
-//     const userVectors = {};
-
-//     users.forEach(userId => {
-//         userVectors[userId] = bookIds.map(bookId =>
-//             booksIssued.some(
-//                 i => i.userId === userId && i.bookId === bookId
-//             )
-//                 ? 1
-//                 : 0
-//         );
-//     });
-
-//     const targetVector = userVectors[myId];
-//     if (!targetVector) return [];
-
-//     const similarities = users
-//         .filter(uid => uid !== myId)
-//         .map(uid => ({
-//             userId: uid,
-//             score: cosineSimilarity(targetVector, userVectors[uid])
-//         }))
-//         .filter(s => s.score > 0)
-//         .sort((a, b) => b.score - a.score)
-//         .slice(0, topK);
-
-//     const recommendedBookIds = new Set();
-
-//     similarities.forEach(sim => {
-//         booksIssued.forEach(issue => {
-//             if (
-//                 issue.userId === sim.userId &&
-//                 !booksIssued.some(
-//                     i => i.userId === myId && i.bookId === issue.bookId
-//                 )
-//             ) {
-//                 recommendedBookIds.add(issue.bookId);
-//             }
-//         });
-//     });
-
-//     return books.filter(book => recommendedBookIds.has(book.id));
-// }
